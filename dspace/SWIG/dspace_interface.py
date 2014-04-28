@@ -764,6 +764,10 @@ def DSSSystemCharacteristicEquationCoefficientIndex(*args):
   return _dspace_interface.DSSSystemCharacteristicEquationCoefficientIndex(*args)
 DSSSystemCharacteristicEquationCoefficientIndex = _dspace_interface.DSSSystemCharacteristicEquationCoefficientIndex
 
+def DSSSystemCharacteristicEquationCoefficientsNumberSignChanges(*args):
+  return _dspace_interface.DSSSystemCharacteristicEquationCoefficientsNumberSignChanges(*args)
+DSSSystemCharacteristicEquationCoefficientsNumberSignChanges = _dspace_interface.DSSSystemCharacteristicEquationCoefficientsNumberSignChanges
+
 def DSSSystemLogarithmicGain(*args):
   return _dspace_interface.DSSSystemLogarithmicGain(*args)
 DSSSystemLogarithmicGain = _dspace_interface.DSSSystemLogarithmicGain
@@ -990,6 +994,10 @@ DSCaseLogarithmicGain = _dspace_interface.DSCaseLogarithmicGain
 def DSCaseDoubleValueBoundariesAtPoint(*args):
   return _dspace_interface.DSCaseDoubleValueBoundariesAtPoint(*args)
 DSCaseDoubleValueBoundariesAtPoint = _dspace_interface.DSCaseDoubleValueBoundariesAtPoint
+
+def DSCaseConditionsAreValid(*args):
+  return _dspace_interface.DSCaseConditionsAreValid(*args)
+DSCaseConditionsAreValid = _dspace_interface.DSCaseConditionsAreValid
 
 def DSCaseIsValid(*args):
   return _dspace_interface.DSCaseIsValid(*args)
@@ -1547,6 +1555,10 @@ DSCaseAtIndexOfArray = _dspace_interface.DSCaseAtIndexOfArray
 def DSDictionaryKeyAtIndex(*args):
   return _dspace_interface.DSDictionaryKeyAtIndex(*args)
 DSDictionaryKeyAtIndex = _dspace_interface.DSDictionaryKeyAtIndex
+
+def DSSSystemPositiveRootsSWIG(*args):
+  return _dspace_interface.DSSSystemPositiveRootsSWIG(*args)
+DSSSystemPositiveRootsSWIG = _dspace_interface.DSSSystemPositiveRootsSWIG
 VERSION = _dspace_interface.VERSION
 # This file is compatible with both classic and new-style classes.
 

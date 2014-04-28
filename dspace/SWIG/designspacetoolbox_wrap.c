@@ -2924,19 +2924,20 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 #define SWIGTYPE_p_DSVariable swig_types[11]
 #define SWIGTYPE_p_DSVariablePool swig_types[12]
 #define SWIGTYPE_p_DSVertices swig_types[13]
-#define SWIGTYPE_p_char swig_types[14]
-#define SWIGTYPE_p_double swig_types[15]
-#define SWIGTYPE_p_double_complex swig_types[16]
-#define SWIGTYPE_p_f_double__double swig_types[17]
-#define SWIGTYPE_p_int swig_types[18]
-#define SWIGTYPE_p_p_DSCase swig_types[19]
-#define SWIGTYPE_p_p_DSExpression swig_types[20]
-#define SWIGTYPE_p_p_DSVariable swig_types[21]
-#define SWIGTYPE_p_p_char swig_types[22]
-#define SWIGTYPE_p_p_void swig_types[23]
-#define SWIGTYPE_p_void swig_types[24]
-static swig_type_info *swig_types[26];
-static swig_module_info swig_module = {swig_types, 25, 0, 0, 0, 0};
+#define SWIGTYPE_p_bool swig_types[14]
+#define SWIGTYPE_p_char swig_types[15]
+#define SWIGTYPE_p_double swig_types[16]
+#define SWIGTYPE_p_double_complex swig_types[17]
+#define SWIGTYPE_p_f_double__double swig_types[18]
+#define SWIGTYPE_p_int swig_types[19]
+#define SWIGTYPE_p_p_DSCase swig_types[20]
+#define SWIGTYPE_p_p_DSExpression swig_types[21]
+#define SWIGTYPE_p_p_DSVariable swig_types[22]
+#define SWIGTYPE_p_p_char swig_types[23]
+#define SWIGTYPE_p_p_void swig_types[24]
+#define SWIGTYPE_p_void swig_types[25]
+static swig_type_info *swig_types[27];
+static swig_module_info swig_module = {swig_types, 26, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3490,6 +3491,16 @@ extern const char * DSDictionaryKeyAtIndex(const DSDictionary * dict, DSUInteger
         return names[index];
 }
 
+extern PyObject * DSSSystemPositiveRootsSWIG(const DSSSystem *ssys, const DSVariablePool *Xi0) {
+        bool isMarginal = false;
+        DSUInteger numberOfRoots;
+        PyObject * list = PyList_New(2);
+        numberOfRoots = DSSSystemPositiveRoots(ssys, Xi0, &isMarginal);
+        PyList_SetItem(list, 0, PyInt_FromLong((long int)numberOfRoots));
+        PyList_SetItem(list, 1, PyInt_FromLong((long int)isMarginal));
+        return list;
+}
+        
 
 #ifdef __cplusplus
 extern "C" {
@@ -9036,15 +9047,19 @@ SWIGINTERN PyObject *_wrap_DSSSystemRouthArrayForPoolTurnover(PyObject *SWIGUNUS
   PyObject *resultobj = 0;
   DSSSystem *arg1 = (DSSSystem *) 0 ;
   DSMatrix *arg2 = (DSMatrix *) 0 ;
+  bool *arg3 = (bool *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
   DSMatrix *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:DSSSystemRouthArrayForPoolTurnover",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DSSSystemRouthArrayForPoolTurnover",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemRouthArrayForPoolTurnover" "', argument " "1"" of type '" "DSSSystem const *""'"); 
@@ -9055,7 +9070,12 @@ SWIGINTERN PyObject *_wrap_DSSSystemRouthArrayForPoolTurnover(PyObject *SWIGUNUS
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSSSystemRouthArrayForPoolTurnover" "', argument " "2"" of type '" "DSMatrix const *""'"); 
   }
   arg2 = (DSMatrix *)(argp2);
-  result = (DSMatrix *)DSSSystemRouthArrayForPoolTurnover((DSSSystem const *)arg1,(DSMatrix const *)arg2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_bool, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DSSSystemRouthArrayForPoolTurnover" "', argument " "3"" of type '" "bool *""'"); 
+  }
+  arg3 = (bool *)(argp3);
+  result = (DSMatrix *)DSSSystemRouthArrayForPoolTurnover((DSSSystem const *)arg1,(DSMatrix const *)arg2,arg3);
   {
     DSUInteger i, j;
     PyObject *tuple = NULL;
@@ -9143,15 +9163,19 @@ SWIGINTERN PyObject *_wrap_DSSSystemRouthArray(PyObject *SWIGUNUSEDPARM(self), P
   PyObject *resultobj = 0;
   DSSSystem *arg1 = (DSSSystem *) 0 ;
   DSVariablePool *arg2 = (DSVariablePool *) 0 ;
+  bool *arg3 = (bool *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
   DSMatrix *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:DSSSystemRouthArray",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DSSSystemRouthArray",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemRouthArray" "', argument " "1"" of type '" "DSSSystem const *""'"); 
@@ -9162,7 +9186,12 @@ SWIGINTERN PyObject *_wrap_DSSSystemRouthArray(PyObject *SWIGUNUSEDPARM(self), P
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSSSystemRouthArray" "', argument " "2"" of type '" "DSVariablePool const *""'"); 
   }
   arg2 = (DSVariablePool *)(argp2);
-  result = (DSMatrix *)DSSSystemRouthArray((DSSSystem const *)arg1,(DSVariablePool const *)arg2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_bool, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DSSSystemRouthArray" "', argument " "3"" of type '" "bool *""'"); 
+  }
+  arg3 = (bool *)(argp3);
+  result = (DSMatrix *)DSSSystemRouthArray((DSSSystem const *)arg1,(DSVariablePool const *)arg2,arg3);
   {
     DSUInteger i, j;
     PyObject *tuple = NULL;
@@ -9216,15 +9245,19 @@ SWIGINTERN PyObject *_wrap_DSSSystemPositiveRoots(PyObject *SWIGUNUSEDPARM(self)
   PyObject *resultobj = 0;
   DSSSystem *arg1 = (DSSSystem *) 0 ;
   DSVariablePool *arg2 = (DSVariablePool *) 0 ;
+  bool *arg3 = (bool *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
   DSUInteger result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:DSSSystemPositiveRoots",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DSSSystemPositiveRoots",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemPositiveRoots" "', argument " "1"" of type '" "DSSSystem const *""'"); 
@@ -9235,7 +9268,12 @@ SWIGINTERN PyObject *_wrap_DSSSystemPositiveRoots(PyObject *SWIGUNUSEDPARM(self)
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSSSystemPositiveRoots" "', argument " "2"" of type '" "DSVariablePool const *""'"); 
   }
   arg2 = (DSVariablePool *)(argp2);
-  result = DSSSystemPositiveRoots((DSSSystem const *)arg1,(DSVariablePool const *)arg2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_bool, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DSSSystemPositiveRoots" "', argument " "3"" of type '" "bool *""'"); 
+  }
+  arg3 = (bool *)(argp3);
+  result = DSSSystemPositiveRoots((DSSSystem const *)arg1,(DSVariablePool const *)arg2,arg3);
   {
     resultobj = PyInt_FromLong((unsigned long)result);
   }
@@ -9395,6 +9433,39 @@ SWIGINTERN PyObject *_wrap_DSSSystemCharacteristicEquationCoefficientIndex(PyObj
   }
   arg2 = (DSVariablePool *)(argp2);
   result = DSSSystemCharacteristicEquationCoefficientIndex((DSSSystem const *)arg1,(DSVariablePool const *)arg2);
+  {
+    resultobj = PyInt_FromLong((unsigned long)result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSSSystemCharacteristicEquationCoefficientsNumberSignChanges(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSSSystem *arg1 = (DSSSystem *) 0 ;
+  DSVariablePool *arg2 = (DSVariablePool *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  DSUInteger result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSSSystemCharacteristicEquationCoefficientsNumberSignChanges",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemCharacteristicEquationCoefficientsNumberSignChanges" "', argument " "1"" of type '" "DSSSystem const *""'"); 
+  }
+  arg1 = (DSSSystem *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSSSystemCharacteristicEquationCoefficientsNumberSignChanges" "', argument " "2"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg2 = (DSVariablePool *)(argp2);
+  result = DSSSystemCharacteristicEquationCoefficientsNumberSignChanges((DSSSystem const *)arg1,(DSVariablePool const *)arg2);
   {
     resultobj = PyInt_FromLong((unsigned long)result);
   }
@@ -11090,6 +11161,28 @@ SWIGINTERN PyObject *_wrap_DSCaseDoubleValueBoundariesAtPoint(PyObject *SWIGUNUS
     }
     DSMatrixFree(matrix);
   }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseConditionsAreValid(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSCaseConditionsAreValid",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseConditionsAreValid" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  result = (bool)DSCaseConditionsAreValid((DSCase const *)arg1);
+  resultobj = SWIG_From_bool((bool)(result));
   return resultobj;
 fail:
   return NULL;
@@ -15985,6 +16078,37 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSSSystemPositiveRootsSWIG(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSSSystem *arg1 = (DSSSystem *) 0 ;
+  DSVariablePool *arg2 = (DSVariablePool *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSSSystemPositiveRootsSWIG",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemPositiveRootsSWIG" "', argument " "1"" of type '" "DSSSystem const *""'"); 
+  }
+  arg1 = (DSSSystem *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSSSystemPositiveRootsSWIG" "', argument " "2"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg2 = (DSVariablePool *)(argp2);
+  result = (PyObject *)DSSSystemPositiveRootsSWIG((DSSSystem const *)arg1,(DSVariablePool const *)arg2);
+  resultobj = result;
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
 	 { (char *)"DSErrorFunction", _wrap_DSErrorFunction, METH_VARARGS, NULL},
@@ -16154,6 +16278,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSSSystemPositiveRootsForSteadyState", _wrap_DSSSystemPositiveRootsForSteadyState, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemRouthIndex", _wrap_DSSSystemRouthIndex, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemCharacteristicEquationCoefficientIndex", _wrap_DSSSystemCharacteristicEquationCoefficientIndex, METH_VARARGS, NULL},
+	 { (char *)"DSSSystemCharacteristicEquationCoefficientsNumberSignChanges", _wrap_DSSSystemCharacteristicEquationCoefficientsNumberSignChanges, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemLogarithmicGain", _wrap_DSSSystemLogarithmicGain, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemNumberOfEquations", _wrap_DSSSystemNumberOfEquations, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemEquations", _wrap_DSSSystemEquations, METH_VARARGS, NULL},
@@ -16210,6 +16335,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCaseSSystem", _wrap_DSCaseSSystem, METH_VARARGS, NULL},
 	 { (char *)"DSCaseLogarithmicGain", _wrap_DSCaseLogarithmicGain, METH_VARARGS, NULL},
 	 { (char *)"DSCaseDoubleValueBoundariesAtPoint", _wrap_DSCaseDoubleValueBoundariesAtPoint, METH_VARARGS, NULL},
+	 { (char *)"DSCaseConditionsAreValid", _wrap_DSCaseConditionsAreValid, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIsValid", _wrap_DSCaseIsValid, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIsValidInStateSpace", _wrap_DSCaseIsValidInStateSpace, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIsValidAtPoint", _wrap_DSCaseIsValidAtPoint, METH_VARARGS, NULL},
@@ -16348,6 +16474,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSUIntegerAtIndexOfIntegerArray", _wrap_DSUIntegerAtIndexOfIntegerArray, METH_VARARGS, NULL},
 	 { (char *)"DSCaseAtIndexOfArray", _wrap_DSCaseAtIndexOfArray, METH_VARARGS, NULL},
 	 { (char *)"DSDictionaryKeyAtIndex", _wrap_DSDictionaryKeyAtIndex, METH_VARARGS, NULL},
+	 { (char *)"DSSSystemPositiveRootsSWIG", _wrap_DSSSystemPositiveRootsSWIG, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
@@ -16368,6 +16495,7 @@ static swig_type_info _swigt__p_DSUInteger = {"_p_DSUInteger", "DSUInteger *", 0
 static swig_type_info _swigt__p_DSVariable = {"_p_DSVariable", "DSVariable *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSVariablePool = {"_p_DSVariablePool", "DSVariablePool *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSVertices = {"_p_DSVertices", "DSVertices *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_bool = {"_p_bool", "bool *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_double = {"_p_double", "double *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_double_complex = {"_p_double_complex", "double complex *", 0, 0, (void*)0, 0};
@@ -16395,6 +16523,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_DSVariable,
   &_swigt__p_DSVariablePool,
   &_swigt__p_DSVertices,
+  &_swigt__p_bool,
   &_swigt__p_char,
   &_swigt__p_double,
   &_swigt__p_double_complex,
@@ -16422,6 +16551,7 @@ static swig_cast_info _swigc__p_DSUInteger[] = {  {&_swigt__p_DSUInteger, 0, 0, 
 static swig_cast_info _swigc__p_DSVariable[] = {  {&_swigt__p_DSVariable, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DSVariablePool[] = {  {&_swigt__p_DSVariablePool, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DSVertices[] = {  {&_swigt__p_DSVertices, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_bool[] = {  {&_swigt__p_bool, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_double[] = {  {&_swigt__p_double, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_double_complex[] = {  {&_swigt__p_double_complex, 0, 0, 0},{0, 0, 0, 0}};
@@ -16449,6 +16579,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_DSVariable,
   _swigc__p_DSVariablePool,
   _swigc__p_DSVertices,
+  _swigc__p_bool,
   _swigc__p_char,
   _swigc__p_double,
   _swigc__p_double_complex,

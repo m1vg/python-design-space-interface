@@ -144,11 +144,15 @@ class SSystem(GMASystem):
         value = expr.eval_with_values(p_vals=p_vals)
         return value
 
-    def positive_roots(self, parameter_values):
+    def positive_roots(self, parameter_values, show_marginal=True):
         
         if DSVariablePoolNumberOfVariables(DSSSystemXd_a(self._swigwrapper)) > 0:
-            raise TypeError, 'S-System must be reduced to ODE only system'
-        return DSSSystemPositiveRoots(self._swigwrapper, parameter_values._swigwrapper)
+            raise TypeError, 'S-System must be reduced to ODE-only system'
+        [positive_roots, has_marginal] = DSSSystemPositiveRootsSWIG(self._swigwrapper,
+                                                                   parameter_values._swigwrapper)
+        if has_marginal > 0:
+            positive_roots = str(positive_roots) + '*'
+        return positive_roots
     
     def routh_index(self, parameter_values):
         

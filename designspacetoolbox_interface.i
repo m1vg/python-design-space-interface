@@ -160,21 +160,21 @@
         }
 }
 
-%include "../DSErrors.h"
-%include "../DSMemoryManager.h"
-%include "../DSVariable.h"
-%include "../DSMatrix.h"
-%include "../DSMatrixArray.h"
-%include "../DSExpression.h"
-%include "../DSGMASystem.h"
-%include "../DSSSystem.h"
-%include "../DSCase.h"
-%include "../DSDesignSpace.h"
-%include "../DSVertices.h"
-%include "../DSDictionary.h"
-%include "../DSStack.h"
-%include "../DSCyclicalCase.h"
-%include "../DSNVertexEnumeration.h"
+%include "/usr/local/include/designspace/DSErrors.h"
+%include "/usr/local/include/designspace/DSMemoryManager.h"
+%include "/usr/local/include/designspace/DSVariable.h"
+%include "/usr/local/include/designspace/DSMatrix.h"
+%include "/usr/local/include/designspace/DSMatrixArray.h"
+%include "/usr/local/include/designspace/DSExpression.h"
+%include "/usr/local/include/designspace/DSGMASystem.h"
+%include "/usr/local/include/designspace/DSSSystem.h"
+%include "/usr/local/include/designspace/DSCase.h"
+%include "/usr/local/include/designspace/DSDesignSpace.h"
+%include "/usr/local/include/designspace/DSVertices.h"
+%include "/usr/local/include/designspace/DSDictionary.h"
+%include "/usr/local/include/designspace/DSStack.h"
+%include "/usr/local/include/designspace/DSCyclicalCase.h"
+%include "/usr/local/include/designspace/DSNVertexEnumeration.h"
 
 //
 //
@@ -505,6 +505,16 @@ extern const char * DSDictionaryKeyAtIndex(const DSDictionary * dict, DSUInteger
         return names[index];
 }
 
+extern PyObject * DSSSystemPositiveRootsSWIG(const DSSSystem *ssys, const DSVariablePool *Xi0) {
+        bool isMarginal = false;
+        DSUInteger numberOfRoots;
+        PyObject * list = PyList_New(2);
+        numberOfRoots = DSSSystemPositiveRoots(ssys, Xi0, &isMarginal);
+        PyList_SetItem(list, 0, PyInt_FromLong((long int)numberOfRoots));
+        PyList_SetItem(list, 1, PyInt_FromLong((long int)isMarginal));
+        return list;
+}
+        
 %}
 
 
