@@ -83,22 +83,53 @@ class Case(Model):
     def independent_variables(self):
         return self._independent_variables.keys()
     
-    @property
-    def valid_parameter_set(self):
-        variablepool = DSCaseValidParameterSet(self._swigwrapper)
+    def _valid_parameter_set_bounded(self, p_bounds):
+        lower = VariablePool(names=self.independent_variables)
+        upper = VariablePool(names=self.independent_variables)
+        for i in lower:
+            lower[i] = 1e-20
+            upper[i] = 1e20
+            if i not in p_bounds:
+                continue
+            k = p_bounds[i]
+            try:
+                lower[i] = min(k)
+                upper[i] = max(k)
+            except:
+                lower[i] = k
+                upper[i] = k
+        variablepool = DSCaseValidParameterSetAtSlice(self._swigwrapper, 
+                                                      lower._swigwrapper,
+                                                      upper._swigwrapper)
         pvals = VariablePool()
         pvals.set_swigwrapper(variablepool)
         return pvals
     
-    def valid_interior_parameter_set(self, distance=50):
-        pvals = self.valid_parameter_set
-        for i in pvals:
-            slice_range = self.vertices_1D_slice(pvals, i, 
-                                                 range_slice=[pvals[i]*(2*distance)**-1, 
-                                                              pvals[i]*2*distance],
-                                                 )
-            slice_range = [x[0] for x in slice_range]
-            pvals[i] = sum(slice_range)/len(slice_range)
+    def valid_parameter_set(self, p_bounds=None):
+        variablepool = DSCaseValidParameterSet(self._swigwrapper)
+        if p_bounds is not None:
+            pvals = self._valid_parameter_set_bounded(p_bounds)
+            return pvals
+        pvals = VariablePool()
+        pvals.set_swigwrapper(variablepool)
+        return pvals
+    
+    def valid_interior_parameter_set(self, p_bounds=None, distance=50):
+        pvals = self.valid_parameter_set(p_bounds=p_bounds)
+        for j in xrange(0, 2):
+            for i in pvals:
+                if p_bounds is not None:
+                    if i not in p_bounds:
+                        continue
+                    if isinstance(p_bounds[i], list) is False:
+                        continue
+                    slice_range = self.vertices_1D_slice(pvals, i, 
+                                                         range_slice=[max([pvals[i]*(2*distance)**-1, min(p_bounds[i])]), 
+                                                                      min([pvals[i]*2*distance, max(p_bounds[i])])],
+                                                         log_out=True
+                                                         )
+                    slice_range = [x[0] for x in slice_range]
+                    pvals[i] = 10**(slice_range[0] + (slice_range[1] - slice_range[0])/2)
         return pvals
         
     @property
@@ -185,7 +216,15 @@ class Case(Model):
         
     def steady_state_function(self, function, parameter_values):
         return self.ssystem.steady_state_function(function, parameter_values)
+    
+    def is_consistent(self, p_bounds=None):
         
+        if p_bounds is not None:
+            raise NotImplementedError, 'Needs to be implemented'
+            ## return self._is_valid_slice(p_bounds)
+            #do something
+        return DSCaseConditionsAreValid(self._swigwrapper)
+ 
     def is_valid(self, p_bounds=None):
         
         if p_bounds is not None:
@@ -498,6 +537,20 @@ class CaseIntersection(object):
             return self._is_valid_slice(p_bounds)
         return DSCaseIntersectionIsValid(len(self._cases), [i._swigwrapper for i in self._cases])
     
+    def valid_parameter_set_excluding_slice(self, names):
+        if isinstance(names, list) is False:
+            names = [names]
+        cases = self._cases
+        vp=DSCaseIntersectionExceptSliceValidParameterSet(len(cases), 
+                                                          [i._swigwrapper for i in cases],
+                                                          len(names), names
+                                                          )
+        if vp is None:
+            return None
+        pvals = VariablePool()
+        pvals.set_swigwrapper(vp)
+        return pvals
+        
     def vertices_1D_slice(self, p_vals, slice_variable, range_slice=None,
                           log_out=False):
         lower = p_vals.copy()
@@ -552,7 +605,7 @@ class CaseIntersection(object):
         if log_out is True:
             return log_vertices
         return vertices
-
+    
     def faces_3D_slice(self, p_vals, x_variable, y_variable, z_variable, 
                           range_x=None, range_y=None, range_z=None,
                           log_out=False):
