@@ -107,7 +107,7 @@ case10_6 = ds_cycles('10_6')
 # available for a case is available to a subcase. As an example, we will obtain
 # a parameter set that makes Case 7 Subcase 6 the dominant case.
 
-pvals = case10_6.valid_parameter_set
+pvals = case10_6.valid_parameter_set()
 print pvals
 
 ## Cyclical subcases
