@@ -46,6 +46,7 @@ class Case(Model):
             return case_info[0].strip()
         else:
             return '_'.join([i.strip(' :') for i in case_info])
+            
     def set_swigwrapper(self, case_swigwrapper):
         self._swigwrapper = case_swigwrapper
         Xd = VariablePool()
