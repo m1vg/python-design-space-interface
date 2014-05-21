@@ -44,6 +44,8 @@ class DesignSpace(GMASystem):
         super(DesignSpace, self).__init__(equations, **kwargs)
         setattr(self, '_resolve_cycles', False)
         if constraints is not None:
+            if isinstance(constraints, list) is False:
+                constraints = [constraints]
             DSDesignSpaceAddConstraints(self._swigwrapper, constraints, len(constraints))
         if resolve_cycles == True:
             setattr(self, '_resolve_cycles', True)
@@ -85,6 +87,9 @@ class DesignSpace(GMASystem):
             iterable = index_or_iterable
         if by_signature is True:
             iterable = [':' + str(i) for i in iterable]
+        if constraints is not None:
+            if isinstance(constraints, list) is False:
+                constraints = [constraints]
         cases = list()
         for index in iterable:
             try:
