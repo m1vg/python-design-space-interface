@@ -1224,6 +1224,10 @@ def DSDesignSpaceCyclicalCaseDictionary(*args):
   return _dspace_interface.DSDesignSpaceCyclicalCaseDictionary(*args)
 DSDesignSpaceCyclicalCaseDictionary = _dspace_interface.DSDesignSpaceCyclicalCaseDictionary
 
+def DSDesignSpaceAddConstraints(*args):
+  return _dspace_interface.DSDesignSpaceAddConstraints(*args)
+DSDesignSpaceAddConstraints = _dspace_interface.DSDesignSpaceAddConstraints
+
 def DSDesignSpacePrint(*args):
   return _dspace_interface.DSDesignSpacePrint(*args)
 DSDesignSpacePrint = _dspace_interface.DSDesignSpacePrint

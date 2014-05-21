@@ -13596,6 +13596,56 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSDesignSpaceAddConstraints(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  char **arg2 = (char **) 0 ;
+  DSUInteger arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DSDesignSpaceAddConstraints",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceAddConstraints" "', argument " "1"" of type '" "DSDesignSpace *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj1)) {
+      int size = PyList_Size(obj1);
+      int i = 0;
+      arg2 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj1,i);
+        if (PyString_Check(o))
+        arg2[i] = PyString_AsString(PyList_GetItem(obj1,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg2);
+          return NULL;
+        }
+      }
+      arg2[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg3 = (DSUInteger) PyLong_AsUnsignedLongMask(obj2);
+  }
+  DSDesignSpaceAddConstraints(arg1,(char const **)arg2,arg3);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSDesignSpacePrint(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
@@ -16392,6 +16442,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSDesignSpaceCaseWithCaseSignatureIsValid", _wrap_DSDesignSpaceCaseWithCaseSignatureIsValid, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceGMASystem", _wrap_DSDesignSpaceGMASystem, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCyclicalCaseDictionary", _wrap_DSDesignSpaceCyclicalCaseDictionary, METH_VARARGS, NULL},
+	 { (char *)"DSDesignSpaceAddConstraints", _wrap_DSDesignSpaceAddConstraints, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpacePrint", _wrap_DSDesignSpacePrint, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCaseNumbersWithPrefix", _wrap_DSDesignSpaceCaseNumbersWithPrefix, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCalculateCases", _wrap_DSDesignSpaceCalculateCases, METH_VARARGS, NULL},

@@ -16,7 +16,7 @@ from dspace.expressions import Expression
 
 class DesignSpace(GMASystem):
     
-    def __init__(self, equations, parameter_dict=None, resolve_cycles=False, **kwargs):
+    def __init__(self, equations, parameter_dict=None, resolve_cycles=False, constraints=None, **kwargs):
         ''' Initializes a new object with the input parameters for a routine
             analysis.
         
@@ -43,6 +43,8 @@ class DesignSpace(GMASystem):
             equations = equations.replace_symbols(parameter_dict)
         super(DesignSpace, self).__init__(equations, **kwargs)
         setattr(self, '_resolve_cycles', False)
+        if constraints is not None:
+            DSDesignSpaceAddConstraints(self._swigwrapper, constraints, len(constraints))
         if resolve_cycles == True:
             setattr(self, '_resolve_cycles', True)
             DSDesignSpaceCalculateCyclicalCases(self._swigwrapper)
