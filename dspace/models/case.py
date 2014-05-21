@@ -578,7 +578,6 @@ class CaseIntersection(object):
             return log_vertices
         return vertices
 
-
     def vertices_2D_slice(self, p_vals, x_variable, y_variable, range_x=None, range_y=None,
                           log_out=False):
         lower = p_vals.copy()
