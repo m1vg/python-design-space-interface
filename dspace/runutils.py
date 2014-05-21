@@ -50,6 +50,10 @@ class Input(object):
             
             y_range (list): A list with the lower and upper bound of the 
                 y-axis.
+            
+            zlim (list): A list with the lower and upper bound of the 
+                z-axis. This argument forces all heatmaps for concentrations,
+                fluxes and arbitrary functions to have a fixed scale.
                 
             centered_axes (bool): A boolean value indicating if axes ranges 
                 should be centered around the x-axis and y-axis values
@@ -88,6 +92,8 @@ class Input(object):
         aux = []
         if 'auxiliary_variables' in options:
             aux = options['auxiliary_variables']
+        if 'zlim' not in options:
+            options['zlim'] = None
         eq = dspace.Equations(f_str, auxiliary_variables=aux)
         options.pop('equations')
         ds = dspace.DesignSpace(eq, **options)
@@ -205,7 +211,8 @@ class Input(object):
                                          self._xrange, self._yrange,
                                          resolution=resolution,
                                          log_linear=False,
-                                         included_cases=self._included_cases)
+                                         included_cases=self._included_cases,
+                                         zlim=options['zlim'])
             ax.set_title('[$'+dependent+'$] plot')
         
     def _plot_fluxes(self, options):
@@ -229,7 +236,8 @@ class Input(object):
                                          self._xrange, self._yrange,
                                          resolution=resolution,
                                          log_linear=False,
-                                         included_cases=self._included_cases)
+                                         included_cases=self._included_cases,
+                                         zlim=options['zlim'])
             ax.set_title(r'$V_{'+dependent+'}$ plot')
             
     def _plot_functions(self, options):
@@ -256,7 +264,8 @@ class Input(object):
                                          self._xrange, self._yrange,
                                          resolution=resolution,
                                          log_linear=log_linear,
-                                         included_cases=self._included_cases)
+                                         included_cases=self._included_cases,
+                                         zlim=options['zlim'])
             ax.set_title(r'f:='+fn+' plot')
         
     

@@ -49,7 +49,8 @@ Input(['X1. = a1 + a2*X3 - b1*X1',
       plot_steady_states=['X1', 'X2'],   # Concentrations to plot.
       plot_fluxes=['X1'],                # Fluxes to plot.
       plot_stability=True,               # Should draw stability plot.
-      plot_functions=['log(X1*X2/a1)'])  # Arbitrary functions to plot.
+      plot_functions=['log(X1*X2/a1)'],  # Arbitrary functions to plot.
+      )  
 
 ## Specifying a subset of cases to draw.
 # The same system can be analyzed, except a subset of cases can be selected for 
@@ -70,5 +71,7 @@ Input(['X1. = a1 + a2*X3 - b1*X1',
       plot_fluxes=['X1'],
       plot_stability=True,
       plot_functions=['X1'],
-      draw_cases=[2, 3])
+      draw_cases=[2, 3]
+      zlim=[-10, 10] # Explicitly sets z-lim of steady state, flux and function plots
+      )
 
