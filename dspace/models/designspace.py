@@ -56,7 +56,7 @@ class DesignSpace(GMASystem):
     def __len__(self):
         return DSDesignSpaceNumberOfCases(self._swigwrapper)+1        
         
-    def _case_with_signature(self, signature):
+    def _case_with_signature(self, signature, constraints):
         siglist = []
         try:
             case, subcase = signature.split('_')
@@ -76,9 +76,9 @@ class DesignSpace(GMASystem):
                 siglist.append(int(signature[i]))
             i+=1
         index = DSCaseNumberForSignature(siglist, DSDesignSpaceGMASystem(self._swigwrapper))
-        return self(str(index)+subcase)
+        return self(str(index)+subcase, constraints=constraints)
     
-    def __call__(self, index_or_iterable, by_signature=False):
+    def __call__(self, index_or_iterable, by_signature=False, constraints=None):
         if isinstance(index_or_iterable, (int, str)) is True:
             iterable = [index_or_iterable]
         else:
@@ -96,11 +96,12 @@ class DesignSpace(GMASystem):
                 name = self.name + ': Case ' + str(index)
                 case = self._cyclical_case(index, name)
                 if case is None:
-                    case = Case(self, DSDesignSpaceCaseWithCaseNumber(self._swigwrapper, index), name=name)
+                    case = Case(self, DSDesignSpaceCaseWithCaseNumber(self._swigwrapper, index), 
+                                name=name, constraints=constraints)
                 cases.append(case)
             elif isinstance(index, str) is True:
                 if index[0] == ':':
-                    cases.append(self._case_with_signature(index[1:]))
+                    cases.append(self._case_with_signature(index[1:], constraints))
                     continue
                 indices = index.split('_')
                 name = self.name + ': Case ' + indices[0]

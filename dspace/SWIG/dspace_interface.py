@@ -995,6 +995,10 @@ def DSCaseDoubleValueBoundariesAtPoint(*args):
   return _dspace_interface.DSCaseDoubleValueBoundariesAtPoint(*args)
 DSCaseDoubleValueBoundariesAtPoint = _dspace_interface.DSCaseDoubleValueBoundariesAtPoint
 
+def DSCaseAddConstraints(*args):
+  return _dspace_interface.DSCaseAddConstraints(*args)
+DSCaseAddConstraints = _dspace_interface.DSCaseAddConstraints
+
 def DSCaseConditionsAreValid(*args):
   return _dspace_interface.DSCaseConditionsAreValid(*args)
 DSCaseConditionsAreValid = _dspace_interface.DSCaseConditionsAreValid
@@ -1223,6 +1227,10 @@ DSDesignSpaceGMASystem = _dspace_interface.DSDesignSpaceGMASystem
 def DSDesignSpaceCyclicalCaseDictionary(*args):
   return _dspace_interface.DSDesignSpaceCyclicalCaseDictionary(*args)
 DSDesignSpaceCyclicalCaseDictionary = _dspace_interface.DSDesignSpaceCyclicalCaseDictionary
+
+def DSDesignSpaceTermListForAllStrings(*args):
+  return _dspace_interface.DSDesignSpaceTermListForAllStrings(*args)
+DSDesignSpaceTermListForAllStrings = _dspace_interface.DSDesignSpaceTermListForAllStrings
 
 def DSDesignSpaceAddConstraints(*args):
   return _dspace_interface.DSDesignSpaceAddConstraints(*args)

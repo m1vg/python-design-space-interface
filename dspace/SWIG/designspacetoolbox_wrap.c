@@ -11167,6 +11167,56 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSCaseAddConstraints(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  char **arg2 = (char **) 0 ;
+  DSUInteger arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DSCaseAddConstraints",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseAddConstraints" "', argument " "1"" of type '" "DSCase *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj1)) {
+      int size = PyList_Size(obj1);
+      int i = 0;
+      arg2 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj1,i);
+        if (PyString_Check(o))
+        arg2[i] = PyString_AsString(PyList_GetItem(obj1,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg2);
+          return NULL;
+        }
+      }
+      arg2[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg3 = (DSUInteger) PyLong_AsUnsignedLongMask(obj2);
+  }
+  DSCaseAddConstraints(arg1,(char const **)arg2,arg3);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSCaseConditionsAreValid(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSCase *arg1 = (DSCase *) 0 ;
@@ -13590,6 +13640,48 @@ SWIGINTERN PyObject *_wrap_DSDesignSpaceCyclicalCaseDictionary(PyObject *SWIGUNU
   arg1 = (DSDesignSpace *)(argp1);
   result = (DSDictionary *)DSDesignSpaceCyclicalCaseDictionary((DSDesignSpace const *)arg1);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSDictionary, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceTermListForAllStrings(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  char **arg1 = (char **) (char **)0 ;
+  DSUInteger arg2 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  void *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSDesignSpaceTermListForAllStrings",&obj0,&obj1)) SWIG_fail;
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj0)) {
+      int size = PyList_Size(obj0);
+      int i = 0;
+      arg1 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj0,i);
+        if (PyString_Check(o))
+        arg1[i] = PyString_AsString(PyList_GetItem(obj0,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg1);
+          return NULL;
+        }
+      }
+      arg1[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg2 = (DSUInteger) PyLong_AsUnsignedLongMask(obj1);
+  }
+  result = (void *)DSDesignSpaceTermListForAllStrings((char *const *)arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_void, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -16385,6 +16477,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCaseSSystem", _wrap_DSCaseSSystem, METH_VARARGS, NULL},
 	 { (char *)"DSCaseLogarithmicGain", _wrap_DSCaseLogarithmicGain, METH_VARARGS, NULL},
 	 { (char *)"DSCaseDoubleValueBoundariesAtPoint", _wrap_DSCaseDoubleValueBoundariesAtPoint, METH_VARARGS, NULL},
+	 { (char *)"DSCaseAddConstraints", _wrap_DSCaseAddConstraints, METH_VARARGS, NULL},
 	 { (char *)"DSCaseConditionsAreValid", _wrap_DSCaseConditionsAreValid, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIsValid", _wrap_DSCaseIsValid, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIsValidInStateSpace", _wrap_DSCaseIsValidInStateSpace, METH_VARARGS, NULL},
@@ -16442,6 +16535,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSDesignSpaceCaseWithCaseSignatureIsValid", _wrap_DSDesignSpaceCaseWithCaseSignatureIsValid, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceGMASystem", _wrap_DSDesignSpaceGMASystem, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCyclicalCaseDictionary", _wrap_DSDesignSpaceCyclicalCaseDictionary, METH_VARARGS, NULL},
+	 { (char *)"DSDesignSpaceTermListForAllStrings", _wrap_DSDesignSpaceTermListForAllStrings, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceAddConstraints", _wrap_DSDesignSpaceAddConstraints, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpacePrint", _wrap_DSDesignSpacePrint, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCaseNumbersWithPrefix", _wrap_DSDesignSpaceCaseNumbersWithPrefix, METH_VARARGS, NULL},

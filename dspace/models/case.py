@@ -14,7 +14,7 @@ from math import *
 
 class Case(Model):
     
-    def __init__(self, model, swigwrapper, name=None, **kwargs):
+    def __init__(self, model, swigwrapper, name=None, constraints=None, **kwargs):
         ''' Init method for the model base class.
         
         The model object is initialized with data to construct
@@ -29,7 +29,9 @@ class Case(Model):
         setattr(self, '_ssystem', None)
         setattr(self, '_independent_variables', None)
         self.set_swigwrapper(swigwrapper)
-        
+        if constraints is not None:
+            DSCaseAddConstraints(self._swigwrapper, constraints, len(constraints))
+            
     def __del__(self):
         ''' 
         '''
