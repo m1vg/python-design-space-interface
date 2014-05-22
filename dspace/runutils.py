@@ -27,9 +27,13 @@ class Input(object):
         
         Kwargs:
             auxiliary_variables (list): A list of strings, where each string is
-                the name of an auxiliary variable. Default is noe auxiliary 
+                the name of an auxiliary variable. Default is no auxiliary 
                 variables.
             
+            constraints (list): A list of strings, where each string is
+                a condition of the form 'lhs > 'rhs', or 'lhs < rhs'. The 
+                constraints are added to the design space object.
+
             resolve_cycles (bool): A boolean value indicating if cycles should 
                 be resolved automatcally. Default is False. 
                 
@@ -94,6 +98,7 @@ class Input(object):
     def _main(self, options):
         f_str = options['equations']
         aux = []
+        constraints = None
         if 'auxiliary_variables' in options:
             aux = options['auxiliary_variables']
         if 'zlim' not in options:
@@ -128,7 +133,8 @@ class Input(object):
             case = self._ds(case_id)
             parameters = case.valid_interior_parameter_set(distance=1e3)
             options['parameters'] = parameters
-            print parameters
+            for i in pvals:
+                print str(i) + ': ' + str(parameters[i])
         try:
             pvals.update(options['parameters'])
         except:

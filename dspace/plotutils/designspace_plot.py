@@ -7,7 +7,7 @@ from __future__ import division
 import numpy as np
 import matplotlib as mt
 import matplotlib.pyplot as plt
-from math import log10
+from math import log10, floor, ceil
 
 from dspace.SWIG.dspace_interface import *
 from dspace.variables import VariablePool
@@ -60,6 +60,7 @@ def draw_region_colorbar(self, ax, color_dict, **kwargs):
 @monkeypatch_method(dspace.models.designspace.DesignSpace)
 def draw_function_colorbar(self, ax, zlim, cmap, **kwargs):
      
+    zrange = zlim[1]-zlim[0]
     x=np.linspace(0, 1, 2)
     y=np.linspace(zlim[0], zlim[1], 100)
     a=np.outer(y,np.ones(2))
@@ -67,7 +68,7 @@ def draw_function_colorbar(self, ax, zlim, cmap, **kwargs):
     ax.xaxis.set_visible(False)
     ax.yaxis.set_ticks_position('right')
     ax.yaxis.set_label_position('right')
-    ax.set_yticks([zlim[0]]+[float(format(y[i-1], '.3f')) for i in [20, 40, 60, 80]]+[zlim[1]])
+    ax.set_yticks([round(zlim[0]+i*zrange, 2) for i in [0., 0.25, 0.5, 0.75, 1.]])
     ax.set_ylim(zlim[0], zlim[1])
 
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
@@ -353,7 +354,7 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
             max_lim = max(max_lim, lims[1])
             patches.append(pc)
     if zlim is None:
-        zlim = [min_lim, max_lim]
+        zlim = [floor(min_lim), ceil(max_lim)]
     if zlim[0] == zlim[1]:
         delta_z = zlim[0]*0.1
         zlim = [zlim[0]-delta_z, zlim[1]+delta_z]
