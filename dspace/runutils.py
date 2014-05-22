@@ -39,6 +39,10 @@ class Input(object):
                 
             version (str): String representation of a version number. 
             
+            get_parameters (int or str) : An int or str indicating the case
+                number, subcase number or case signature marker for which an
+                internal parameter set will be obtained.
+            
             parameters (dict): A dictionary of the system parameters.
                          
             xaxis (str): Name of the variable on the x-axis of plots.
@@ -119,6 +123,12 @@ class Input(object):
         setattr(self, '_xrange', x_range)
         setattr(self, '_yrange', y_range)
         setattr(self, '_included_cases', None)
+        if 'get_parameters' in options:
+            case_id = options['get_parameters']
+            case = self._ds(case_id)
+            parameters = case.valid_interior_parameter_set(distance=1e3)
+            options['parameters'] = parameters
+            print parameters
         try:
             pvals.update(options['parameters'])
         except:
