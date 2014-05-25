@@ -542,19 +542,42 @@ class CaseIntersection(object):
             return self._is_valid_slice(p_bounds)
         return DSCaseIntersectionIsValid(len(self._cases), [i._swigwrapper for i in self._cases])
     
-    def valid_parameter_set_excluding_slice(self, names):
+    def valid_parameter_set_excluding_slice(self, names, constraints=None):
         if isinstance(names, list) is False:
             names = [names]
         cases = self._cases
-        vp=DSCaseIntersectionExceptSliceValidParameterSet(len(cases), 
-                                                          [i._swigwrapper for i in cases],
-                                                          len(names), names
-                                                          )
+        if constraints is None:
+            vp=DSCaseIntersectionExceptSliceValidParameterSet(len(cases), 
+                                                              [i._swigwrapper for i in cases],
+                                                              len(names), names
+                                                              )
+        else:
+            if isinstance(constraints, list) is False:
+                constraints=[constraints]
+            print constraints
+            vp=DSCaseIntersectionExceptSliceValidParameterSetWithConstraints(
+             len(cases), 
+             [i._swigwrapper for i in cases],
+             len(names), names,
+             constraints,
+             len(constraints)
+             )
         if vp is None:
             return None
-        pvals = VariablePool()
-        pvals.set_swigwrapper(vp)
-        return pvals
+        pv = VariablePool()
+        pv.set_swigwrapper(vp)
+        p_sets = dict()
+        index = 0
+        for i in cases:
+            pvals = VariablePool(names=i.independent_variables)
+            for j in pvals:
+                if j in names:
+                    pvals[j] = pv['$s'+str(index)]
+                    index += 1
+                else:
+                    pvals[j] = pv[j]
+            p_sets[str(i)] = pvals
+        return p_sets
         
     def vertices_1D_slice(self, p_vals, slice_variable, range_slice=None,
                           log_out=False):

@@ -12660,6 +12660,104 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSCaseIntersectionExceptSliceValidParameterSetWithConstraints(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSUInteger arg1 ;
+  DSCase **arg2 = (DSCase **) 0 ;
+  DSUInteger arg3 ;
+  char **arg4 = (char **) 0 ;
+  char **arg5 = (char **) 0 ;
+  DSUInteger arg6 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  DSVariablePool *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOO:DSCaseIntersectionExceptSliceValidParameterSetWithConstraints",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
+  {
+    arg1 = (DSUInteger) PyLong_AsUnsignedLongMask(obj0);
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj1)) {
+      int size = PyList_Size(obj1);
+      int i = 0;
+      arg2 = (const DSCase **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj1,i);
+        if (SWIG_ConvertPtr(o, &(arg2[i]), SWIGTYPE_p_DSCase, SWIG_POINTER_EXCEPTION) == -1) {
+          PyErr_SetString(PyExc_TypeError,"list must contain DSCase objects");
+          free(arg2);
+          return NULL;
+        }
+      }
+      arg2[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg3 = (DSUInteger) PyLong_AsUnsignedLongMask(obj2);
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj3)) {
+      int size = PyList_Size(obj3);
+      int i = 0;
+      arg4 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj3,i);
+        if (PyString_Check(o))
+        arg4[i] = PyString_AsString(PyList_GetItem(obj3,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg4);
+          return NULL;
+        }
+      }
+      arg4[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj4)) {
+      int size = PyList_Size(obj4);
+      int i = 0;
+      arg5 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj4,i);
+        if (PyString_Check(o))
+        arg5[i] = PyString_AsString(PyList_GetItem(obj4,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg5);
+          return NULL;
+        }
+      }
+      arg5[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg6 = (DSUInteger) PyLong_AsUnsignedLongMask(obj5);
+  }
+  result = (DSVariablePool *)DSCaseIntersectionExceptSliceValidParameterSetWithConstraints(arg1,(DSCase const **)arg2,arg3,(char const **)arg4,(char const **)arg5,arg6);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSCaseIntersectionExceptSliceValidParameterSetAtSlice(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSUInteger arg1 ;
@@ -16503,6 +16601,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCaseIntersectionExceptSliceIsValid", _wrap_DSCaseIntersectionExceptSliceIsValid, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIntersectionExceptSliceIsValidAtSlice", _wrap_DSCaseIntersectionExceptSliceIsValidAtSlice, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIntersectionExceptSliceValidParameterSet", _wrap_DSCaseIntersectionExceptSliceValidParameterSet, METH_VARARGS, NULL},
+	 { (char *)"DSCaseIntersectionExceptSliceValidParameterSetWithConstraints", _wrap_DSCaseIntersectionExceptSliceValidParameterSetWithConstraints, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIntersectionExceptSliceValidParameterSetAtSlice", _wrap_DSCaseIntersectionExceptSliceValidParameterSetAtSlice, METH_VARARGS, NULL},
 	 { (char *)"DSCaseNumberForSignature", _wrap_DSCaseNumberForSignature, METH_VARARGS, NULL},
 	 { (char *)"DSCaseSignatureForCaseNumber", _wrap_DSCaseSignatureForCaseNumber, METH_VARARGS, NULL},
