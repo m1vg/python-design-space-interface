@@ -554,7 +554,6 @@ class CaseIntersection(object):
         else:
             if isinstance(constraints, list) is False:
                 constraints=[constraints]
-            print constraints
             vp=DSCaseIntersectionExceptSliceValidParameterSetWithConstraints(
              len(cases), 
              [i._swigwrapper for i in cases],
@@ -572,11 +571,11 @@ class CaseIntersection(object):
             pvals = VariablePool(names=i.independent_variables)
             for j in pvals:
                 if j in names:
-                    pvals[j] = pv['$s'+str(index)]
-                    index += 1
+                    pvals[j] = pv['$'+j+'_'+str(index)]
                 else:
                     pvals[j] = pv[j]
             p_sets[str(i)] = pvals
+            index += 1
         return p_sets
         
     def vertices_1D_slice(self, p_vals, slice_variable, range_slice=None,
