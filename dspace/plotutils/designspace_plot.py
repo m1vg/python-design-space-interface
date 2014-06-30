@@ -68,7 +68,8 @@ def draw_function_colorbar(self, ax, zlim, cmap, **kwargs):
     ax.xaxis.set_visible(False)
     ax.yaxis.set_ticks_position('right')
     ax.yaxis.set_label_position('right')
-    ax.set_yticks([round(zlim[0]+i*zrange, 2) for i in [0., 0.25, 0.5, 0.75, 1.]])
+    ndigits = -int(floor(log10(zrange)))
+    ax.set_yticks([round(zlim[0]+i*zrange, ndigits) for i in [0., 0.25, 0.5, 0.75, 1.]])
     ax.set_ylim(zlim[0], zlim[1])
 
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
@@ -354,9 +355,15 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
             max_lim = max(max_lim, lims[1])
             patches.append(pc)
     if zlim is None:
-        zlim = [floor(min_lim), ceil(max_lim)]
+        if min_lim == max_lim:
+            delta_z = 1e-3
+            min_lim = min_lim-delta_z
+            max_lim = max_lim+delta_z
+        ndigits = -int(floor(log10(max_lim - min_lim)))
+        print ndigits, min_lim, round(min_lim, ndigits), max_lim, round(max_lim, ndigits)
+        zlim = [round(min_lim, ndigits), round(max_lim, ndigits)]
     if zlim[0] == zlim[1]:
-        delta_z = zlim[0]*0.1
+        delta_z = 1e-3
         zlim = [zlim[0]-delta_z, zlim[1]+delta_z]
     for pc in patches:
         pc.set_clim(zlim)
