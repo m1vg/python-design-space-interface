@@ -1548,6 +1548,10 @@ def DSSWIGDesignSpaceParseWrapper(*args):
   return _dspace_interface.DSSWIGDesignSpaceParseWrapper(*args)
 DSSWIGDesignSpaceParseWrapper = _dspace_interface.DSSWIGDesignSpaceParseWrapper
 
+def DSSWIGDesignSpaceParseWrapperWithXi(*args):
+  return _dspace_interface.DSSWIGDesignSpaceParseWrapperWithXi(*args)
+DSSWIGDesignSpaceParseWrapperWithXi = _dspace_interface.DSSWIGDesignSpaceParseWrapperWithXi
+
 def DSSWIGGMASystemParseWrapper(*args):
   return _dspace_interface.DSSWIGGMASystemParseWrapper(*args)
 DSSWIGGMASystemParseWrapper = _dspace_interface.DSSWIGGMASystemParseWrapper

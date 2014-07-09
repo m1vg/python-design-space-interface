@@ -449,6 +449,23 @@ extern DSDesignSpace * DSSWIGDesignSpaceParseWrapper(char ** const strings, cons
         DSVariablePoolFree(Xd);
         return ds;
 }
+        
+extern DSDesignSpace * DSSWIGDesignSpaceParseWrapperWithXi(char ** const strings, const DSUInteger numberOfEquations, char ** Xd_list, const DSUInteger numberOfXd, char ** Xi_list, const DSUInteger numberOfXi)
+{
+        DSUInteger i;
+        DSVariablePool * Xd = DSVariablePoolAlloc();
+        DSVariablePool * Xi = DSVariablePoolAlloc();
+        for (i = 0; i < numberOfXd; i++) {
+                DSVariablePoolAddVariableWithName(Xd, Xd_list[i]);
+        }
+        for (i = 0; i < numberOfXi; i++) {
+                DSVariablePoolAddVariableWithName(Xi, Xi_list[i]);
+        }
+        DSDesignSpace * ds = DSDesignSpaceByParsingStringsWithXi(strings, Xd, Xi, numberOfEquations);
+        DSVariablePoolFree(Xd);
+        DSVariablePoolFree(Xi);
+        return ds;
+}
 
 extern DSGMASystem * DSSWIGGMASystemParseWrapper(char ** const strings, const DSUInteger numberOfEquations, char ** Xd_list, const DSUInteger numberOfXd)
 {

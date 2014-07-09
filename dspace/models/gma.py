@@ -19,7 +19,7 @@ class GMASystem(Model):
         if swigwrapper is not None:
             self.set_swigwrapper(swigwrapper)
         else:
-            self._parse_equations()
+            self._parse_equations(**kwargs)
         
     def __del__(self):
         if self._swigwrapper is not None:
@@ -40,7 +40,7 @@ class GMASystem(Model):
         self._independent_variables = Xi
         Xd.set_swigwrapper(None)
         
-    def _parse_equations(self):
+    def _parse_equations(self, **kwargs):
         auxiliary_variables = self.auxiliary_variables
         swigwrapper = DSSWIGGMASystemParseWrapper(self.equations,
                                                   len(self.equations),

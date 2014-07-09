@@ -3435,6 +3435,23 @@ extern DSDesignSpace * DSSWIGDesignSpaceParseWrapper(char ** const strings, cons
         DSVariablePoolFree(Xd);
         return ds;
 }
+        
+extern DSDesignSpace * DSSWIGDesignSpaceParseWrapperWithXi(char ** const strings, const DSUInteger numberOfEquations, char ** Xd_list, const DSUInteger numberOfXd, char ** Xi_list, const DSUInteger numberOfXi)
+{
+        DSUInteger i;
+        DSVariablePool * Xd = DSVariablePoolAlloc();
+        DSVariablePool * Xi = DSVariablePoolAlloc();
+        for (i = 0; i < numberOfXd; i++) {
+                DSVariablePoolAddVariableWithName(Xd, Xd_list[i]);
+        }
+        for (i = 0; i < numberOfXi; i++) {
+                DSVariablePoolAddVariableWithName(Xi, Xi_list[i]);
+        }
+        DSDesignSpace * ds = DSDesignSpaceByParsingStringsWithXi(strings, Xd, Xi, numberOfEquations);
+        DSVariablePoolFree(Xd);
+        DSVariablePoolFree(Xi);
+        return ds;
+}
 
 extern DSGMASystem * DSSWIGGMASystemParseWrapper(char ** const strings, const DSUInteger numberOfEquations, char ** Xd_list, const DSUInteger numberOfXd)
 {
@@ -16061,6 +16078,106 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSSWIGDesignSpaceParseWrapperWithXi(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  char **arg1 = (char **) (char **)0 ;
+  DSUInteger arg2 ;
+  char **arg3 = (char **) 0 ;
+  DSUInteger arg4 ;
+  char **arg5 = (char **) 0 ;
+  DSUInteger arg6 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  DSDesignSpace *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOO:DSSWIGDesignSpaceParseWrapperWithXi",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj0)) {
+      int size = PyList_Size(obj0);
+      int i = 0;
+      arg1 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj0,i);
+        if (PyString_Check(o))
+        arg1[i] = PyString_AsString(PyList_GetItem(obj0,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg1);
+          return NULL;
+        }
+      }
+      arg1[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg2 = (DSUInteger) PyLong_AsUnsignedLongMask(obj1);
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj2)) {
+      int size = PyList_Size(obj2);
+      int i = 0;
+      arg3 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj2,i);
+        if (PyString_Check(o))
+        arg3[i] = PyString_AsString(PyList_GetItem(obj2,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg3);
+          return NULL;
+        }
+      }
+      arg3[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg4 = (DSUInteger) PyLong_AsUnsignedLongMask(obj3);
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj4)) {
+      int size = PyList_Size(obj4);
+      int i = 0;
+      arg5 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj4,i);
+        if (PyString_Check(o))
+        arg5[i] = PyString_AsString(PyList_GetItem(obj4,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg5);
+          return NULL;
+        }
+      }
+      arg5[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg6 = (DSUInteger) PyLong_AsUnsignedLongMask(obj5);
+  }
+  result = (DSDesignSpace *)DSSWIGDesignSpaceParseWrapperWithXi(arg1,arg2,arg3,arg4,arg5,arg6);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSSWIGGMASystemParseWrapper(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   char **arg1 = (char **) (char **)0 ;
@@ -16712,6 +16829,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSSWIGVoidAsVertices", _wrap_DSSWIGVoidAsVertices, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGVoidAsExpression", _wrap_DSSWIGVoidAsExpression, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGDesignSpaceParseWrapper", _wrap_DSSWIGDesignSpaceParseWrapper, METH_VARARGS, NULL},
+	 { (char *)"DSSWIGDesignSpaceParseWrapperWithXi", _wrap_DSSWIGDesignSpaceParseWrapperWithXi, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGGMASystemParseWrapper", _wrap_DSSWIGGMASystemParseWrapper, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGSSystemParseWrapper", _wrap_DSSWIGSSystemParseWrapper, METH_VARARGS, NULL},
 	 { (char *)"DSExpressionAtIndexOfExpressionArray", _wrap_DSExpressionAtIndexOfExpressionArray, METH_VARARGS, NULL},

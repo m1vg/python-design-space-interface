@@ -16,7 +16,11 @@ from dspace.expressions import Expression
 
 class DesignSpace(GMASystem):
     
-    def __init__(self, equations, parameter_dict=None, resolve_cycles=False, constraints=None, **kwargs):
+    def __init__(self, equations,
+                 parameter_dict=None, 
+                 resolve_cycles=False,
+                 constraints=None, match_Xi=None,
+                 **kwargs):
         ''' Initializes a new object with the input parameters for a routine
             analysis.
         
@@ -41,7 +45,7 @@ class DesignSpace(GMASystem):
         '''
         if parameter_dict is not None:
             equations = equations.replace_symbols(parameter_dict)
-        super(DesignSpace, self).__init__(equations, **kwargs)
+        super(DesignSpace, self).__init__(equations, match_Xi=match_Xi, **kwargs)
         setattr(self, '_resolve_cycles', False)
         if constraints is not None:
             if isinstance(constraints, list) is False:
@@ -131,13 +135,23 @@ class DesignSpace(GMASystem):
             return cases[0]
         return cases
             
-    def _parse_equations(self):
+    def _parse_equations(self, match_Xi=None, **kwargs):
         auxiliary_variables = self.auxiliary_variables
-        swigwrapper = DSSWIGDesignSpaceParseWrapper(self.equations,
-                                                    len(self.equations),
-                                                    auxiliary_variables,
-                                                    len(auxiliary_variables)
-                                                    )
+        if match_Xi is None:
+            swigwrapper = DSSWIGDesignSpaceParseWrapper(self.equations,
+                                                        len(self.equations),
+                                                        auxiliary_variables,
+                                                        len(auxiliary_variables)
+                                                        )
+        else:
+            xi_list = match_Xi.independent_variables
+            swigwrapper = DSSWIGDesignSpaceParseWrapperWithXi(self.equations,
+                                                              len(self.equations),
+                                                              auxiliary_variables,
+                                                              len(auxiliary_variables),
+                                                              xi_list,
+                                                              len(xi_list),
+                                                              )
         self.set_swigwrapper(swigwrapper)
     
     def set_swigwrapper(self, ds_swigwrapper):
