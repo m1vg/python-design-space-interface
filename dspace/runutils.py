@@ -1,10 +1,12 @@
 '''Utility simplifying routine analysis by system design space.
 
 '''
-
+from __future__ import division
 import dspace
 import dspace.plotutils
+import matplotlib as mt
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
 class Input(object):
     
@@ -175,13 +177,29 @@ class Input(object):
         for i in self._ds(cases):
             case_string += str(i.case_number) + ': ' + i.signature + '\n'
         print case_string
-
+        
     def _plot_designspace(self, options):
         
         if 'plot_designspace' not in options:
             return
         if options['plot_designspace'] is not True:
             return
+        ## if ds.number_of_cases > 1e5 and self._included_cases is not None:
+        ##     colors = dict()
+        ##     j = 0
+        ##     for i in self._included_cases:
+        ##         case = self._ds(i)
+        ##         colors[i] = cm.hsv(j/len(self._included_cases))
+        ##         case.draw_2D_slice(plt.gca(), self._pvals,
+        ##                            self._xaxis, self._yaxis,
+        ##                            self._xrange, self._yrange,
+        ##                            fc=colors[i], ec='none'
+        ##                            )
+        ##         j += 1
+        ##     c_ax,kw=mt.colorbar.make_axes(plt.gca())
+        ##     c_ax.set_aspect(15)
+        ##     self._ds.draw_region_colorbar(c_ax, colors)
+        ##     return
         fig = plt.figure()
         plt.clf()
         ax = plt.gca()
@@ -197,6 +215,22 @@ class Input(object):
             return
         if options['plot_stability'] is not True:
             return
+        ## if ds.number_of_cases > 1e5 and self._included_cases is not None:
+        ##     colors = dict()
+        ##     j = 0
+        ##     for i in self._included_cases:
+        ##         case = self._ds(i)
+        ##         colors[i] = cm.hsv(j/len(self._included_cases))
+        ##         case.draw_2D_slice(plt.gca(), self._pvals,
+        ##                            self._xaxis, self._yaxis,
+        ##                            self._xrange, self._yrange,
+        ##                            fc=colors[i], ec='none'
+        ##                            )
+        ##         j += 1
+        ##     c_ax,kw=mt.colorbar.make_axes(plt.gca())
+        ##     c_ax.set_aspect(15)
+        ##     self._ds.draw_region_colorbar(c_ax, colors)
+        ##     return
         fig = plt.figure()
         plt.clf()
         ax = plt.gca()
