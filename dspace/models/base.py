@@ -61,7 +61,7 @@ class Equations(object):
     def dependent_variables(self):
         differentiated = list()
         for i in self._eq:
-            temp = i.split('=')[0]
+            temp = i.split('=')[0].strip()
             temp = temp.split('.')
             if len(temp) == 1 or temp[0] not in (string.lowercase + string.uppercase + '_') is True:
                 continue
