@@ -165,6 +165,12 @@ class Input(object):
             self._included_cases=options['draw_cases']
         except:
             pass
+        parameter_test = dict(options['parameters'])
+        parameter_test[self._xaxis] = self._xrange
+        parameter_test[self._yaxis] = self._yrange
+        valid_test = self._ds.valid_cases(p_bounds=parameter_test)
+        if len(valid_test) == 0:
+            raise ValueError, 'Slice of parameter space does not produce valid cases' 
 
     
     def _print_valid_cases(self, options):
