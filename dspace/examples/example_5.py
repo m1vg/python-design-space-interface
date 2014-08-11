@@ -49,7 +49,7 @@ Input(['X1. = a1 + a2*X3 - b1*X1',
       plot_steady_states=['X1', 'X2'],   # Concentrations to plot.
       plot_fluxes=['X1'],                # Fluxes to plot.
       plot_stability=True,               # Should draw stability plot.
-      plot_functions=['log(X1*X2/a1)'],  # Arbitrary functions to plot.
+      plot_functions=['log(V_X1/X2)'],  # Arbitrary functions to plot.
       )  
 
 ## Specifying a subset of cases to draw.
@@ -61,7 +61,8 @@ Input(['X1. = a1 + a2*X3 - b1*X1',
       auxiliary_variables=[],
       xaxis='X3',
       yaxis='a1',
-      parameters={'a1':1, 'a2':1, 'b1':1e-3, 'b2':1e-3, 'X3':100},
+      #get_parameters=4,           # Automatically gets a parameter set for case 4.
+      get_parameters=':2121',      # Automatically gets a parameter set for case with signature :2121. 
       print_valid_cases=True,
       x_range=[1e-3, 1e3],
       y_range=[1e-3, 1e3],
