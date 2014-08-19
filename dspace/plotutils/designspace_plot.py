@@ -59,7 +59,6 @@ def draw_region_colorbar(self, ax, color_dict, **kwargs):
 
 @monkeypatch_method(dspace.models.designspace.DesignSpace)
 def draw_function_colorbar(self, ax, zlim, cmap, **kwargs):
-     
     zrange = zlim[1]-zlim[0]
     x=np.linspace(0, 1, 2)
     y=np.linspace(zlim[0], zlim[1], 100)
@@ -69,7 +68,8 @@ def draw_function_colorbar(self, ax, zlim, cmap, **kwargs):
     ax.yaxis.set_ticks_position('right')
     ax.yaxis.set_label_position('right')
     ndigits = -int(floor(log10(zrange)))
-    ax.set_yticks([round(zlim[0]+i*zrange, ndigits) for i in [0., 0.25, 0.5, 0.75, 1.]])
+    attempts = [5, 6, 4, 7, 3, 8, 2]
+    ax.set_yticks([round(zlim[0]+i*zrange, ndigits+2) for i in [0., 0.25, 0.5, 0.75, 1.]])
     ax.set_ylim(zlim[0], zlim[1])
 
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
@@ -312,8 +312,6 @@ def draw_3D_slice(self, ax, p_vals, x_variable, y_variable,z_variable, range_x,
     case_int_list = self.intersecting_cases(intersections, 
                                             valid_cases,
                                             p_bounds=p_bounds)
-    print intersections
-    print case_int_list
     if color_dict is None:
         color_dict = dict()
     for case_int in case_int_list:
@@ -385,7 +383,6 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
             min_lim = min_lim-delta_z
             max_lim = max_lim+delta_z
         ndigits = -int(floor(log10(max_lim - min_lim)))
-        print ndigits, min_lim, round(min_lim, ndigits), max_lim, round(max_lim, ndigits)
         zlim = [round(min_lim, ndigits), round(max_lim, ndigits)]
     if zlim[0] == zlim[1]:
         delta_z = 1e-3

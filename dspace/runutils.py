@@ -180,8 +180,9 @@ class Input(object):
             return
         cases = self._ds.valid_cases()
         case_string = 'Valid Cases:\n'
-        for i in self._ds(cases):
-            case_string += str(i.case_number) + ': ' + i.signature + '\n'
+        for i in cases:
+            case = self._ds(i)
+            case_string += str(i) + ': ' + case.signature + '\n'
         print case_string
         
     def _plot_designspace(self, options):
