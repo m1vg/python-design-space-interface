@@ -286,9 +286,19 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
     ax.set_xlabel(r'$\log_{10}$(' + x_variable + ')')
     ax.set_ylabel(r'$\log_{10}$(' + y_variable + ')')
     if colorbar is True:
-        c_ax,kw=mt.colorbar.make_axes(ax)
-        c_ax.set_aspect(15)
-        self.draw_region_colorbar(c_ax, colors)
+        labels = colors.keys()
+        try:
+            labels.sort(cmp=key_sort_function)
+        except:
+            pass
+        labels.reverse()
+        num = 0 
+        while num < len(labels):
+            temp_dict = {i:colors[i] for i in labels[num:min(num+15, len(labels))]}
+            c_ax,kw=mt.colorbar.make_axes(ax)
+            c_ax.set_aspect(15)
+            self.draw_region_colorbar(c_ax, temp_dict)
+            num += 15
     return color_dict
 
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   

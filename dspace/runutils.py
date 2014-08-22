@@ -172,7 +172,6 @@ class Input(object):
         if len(valid_test) == 0:
             raise ValueError, 'Slice of parameter space does not produce valid cases' 
 
-    
     def _print_valid_cases(self, options):
         if 'print_valid_cases' not in options:
             return
