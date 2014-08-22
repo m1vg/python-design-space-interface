@@ -299,6 +299,7 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
             c_ax.set_aspect(15)
             self.draw_region_colorbar(c_ax, temp_dict)
             num += 15
+        plt.sca(ax)
     return color_dict
 
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
