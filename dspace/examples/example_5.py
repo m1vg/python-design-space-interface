@@ -31,7 +31,7 @@ help(Input)
 # arguments to the Input class.
 
 Input(['X1. = a1 + a2*X3 - b1*X1',
-       'X2. = b1*X1 + a2*X3^2 - b2*X2'], # Specify the system of equations.
+       'X2. = a3*X1 + a2*X3^2 - b2*X2'], # Specify the system of equations.
       auxiliary_variables=[],            # Identify auxiliary variables.
       xaxis='X3',                        # Specify the x-axis.
       yaxis='a1',                        # Specify the y-axis.
@@ -39,12 +39,17 @@ Input(['X1. = a1 + a2*X3 - b1*X1',
                   'a2':1, 
                   'b1':1e-3, 
                   'b2':1e-3,
-                   'X3':100
+                  'a3':1e-3,
+                  'X3':100
                    },                    # Input the nominal parameter set.
       print_valid_cases=True,            # Specify if will print valid cases.
       x_range=[1e-3, 1e3],               # Range of the x-axis.
       y_range=[1e-3, 1e3],               # Range of the y-axis.
       centered_axes=True,                # Axis are centered about parameters.
+      plot_interactive={'a2':[1e-5, 1e5],
+                        'b2':[1e-10, 1e10],
+                        'b1':[1e-10, 1e10],
+                        'a3':[1e-5, 1e5]},
       plot_designspace=True,             # Should draw design space plot.
       plot_steady_states=['X1', 'X2'],   # Concentrations to plot.
       plot_fluxes=['X1'],                # Fluxes to plot.
@@ -60,7 +65,7 @@ Input(['X1. = a1 + a2*X3 - b1*X1',
        'X2. = b1*X1 + a2*X3^2 - b2*X2'],
       auxiliary_variables=[],
       xaxis='X3',
-      yaxis='a1',
+      yaxis='a2',
       #get_parameters=4,           # Automatically gets a parameter set for case 4.
       get_parameters=':2121',      # Automatically gets a parameter set for case with signature :2121. 
       print_valid_cases=True,
