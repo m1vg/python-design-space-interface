@@ -154,9 +154,24 @@ fig = gcf()
 ax = gca()
 colors = ds.draw_2D_slice(ax,
                           pvals,       # Pass the reference parameter set.
-                          'X3',        # First, indicate the x-axis variable.
-                          'X4',        # Second, indicate the y-axis variable.
-                          [1e-3, 1e3], #Indicate the range on the x-axis.
-                          [1e-3, 1e3], #Indicate the range on the y-axis.
+                          'X3',        # The x-axis variable.
+                          'X4',        # The y-axis variable.
+                          [1e-3, 1e3], # Range on the x-axis.
+                          [1e-3, 1e3], # Indicate the range on the y-axis.
                           )
 grid(True)
+show()
+
+##
+# We make the design space object plot an interactive 2D slice with a specified 
+# x and y axis, a reference parameter set and a dictionary with parameter, range
+# pairs indicating sliders to exlore parameter space.
+
+ds.draw_2D_slice_interactive(
+          pvals,                          # Pass the reference parameter set.
+          'X3',                           # The x-axis variable.
+          'X4',                           # The y-axis variable.
+          [1e-3, 1e3],                    # The range on the x-axis.
+          [1e-3, 1e3],                    # The range on the y-axis.
+          {'alpha':[1e-5, 1e5]}           # Specify variables with sliders and their range
+          )
