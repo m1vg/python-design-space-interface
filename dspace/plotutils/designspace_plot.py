@@ -344,6 +344,7 @@ class SliderCallback(object):
                 self.c_axs.append(c_ax)
             self.ds.draw_region_colorbar(c_ax, temp_dict)
             num += 15 
+            j += 1
         
 
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
