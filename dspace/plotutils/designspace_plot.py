@@ -36,7 +36,52 @@ def key_sort_function(x, y):
         if str(y[i]) < str(x[i]):
             return 1
     return 0
+    
+
+class SliderCallback(object):
+    
+    def __init__(self, ds, slider_dictionary, c_axs,  colordict, *args, **kwargs):
+        self.ds = ds
+        self.sliders = slider_dictionary
+        self.c_axs = c_axs
+        self.args = args
+        self.kwargs = kwargs
+        kwargs['color_dict'] = colordict
+        kwargs['colorbar'] = False
         
+    def __call__(self, val):
+        ax = self.args[0]
+        pvals = self.args[1]
+        sliders = self.sliders
+        number_c_axs = len(self.c_axs)
+        color_dict = self.kwargs['color_dict']
+        for i in sliders:
+            pvals[i] = 10**sliders[i].val
+        ax.clear()
+        for i in self.c_axs:
+            i.clear()
+        color_dict.update(self.ds.draw_2D_slice(*self.args, **self.kwargs))
+        labels = color_dict.keys()
+        try:
+            labels.sort(cmp=key_sort_function)
+        except:
+            pass
+        labels.reverse()
+        num = 0 
+        j = 0
+        while num < len(labels):
+            temp_dict = {i:color_dict[i] for i in labels[num:min(num+15, len(labels))]}
+            if j < len(self.c_axs):
+                c_ax = self.c_axs[j]
+            else:
+                c_ax,kw=mt.colorbar.make_axes(ax)
+                c_ax.set_aspect(15)
+                self.c_axs.append(c_ax)
+            self.ds.draw_region_colorbar(c_ax, temp_dict)
+            num += 15 
+            j += 1
+        plt.draw()
+             
 @monkeypatch_method(dspace.models.designspace.DesignSpace)
 def draw_region_colorbar(self, ax, color_dict, **kwargs):
     
@@ -303,50 +348,6 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
         plt.sca(ax)
     return color_dict
 
-class SliderCallback(object):
-    
-    def __init__(self, ds, slider_dictionary, c_axs,  colordict, *args, **kwargs):
-        self.ds = ds
-        self.sliders = slider_dictionary
-        self.c_axs = c_axs
-        self.args = args
-        self.kwargs = kwargs
-        kwargs['color_dict'] = colordict
-        kwargs['colorbar'] = False
-        
-    def __call__(self, val):
-        ax = self.args[0]
-        pvals = self.args[1]
-        sliders = self.sliders
-        number_c_axs = len(self.c_axs)
-        color_dict = self.kwargs['color_dict']
-        for i in sliders:
-            pvals[i] = 10**sliders[i].val
-        ax.clear()
-        for i in self.c_axs:
-            i.clear()
-        color_dict.update(self.ds.draw_2D_slice(*self.args, **self.kwargs))
-        labels = color_dict.keys()
-        try:
-            labels.sort(cmp=key_sort_function)
-        except:
-            pass
-        labels.reverse()
-        num = 0 
-        j = 0
-        while num < len(labels):
-            temp_dict = {i:color_dict[i] for i in labels[num:min(num+15, len(labels))]}
-            if j < len(self.c_axs):
-                c_ax = self.c_axs[j]
-            else:
-                c_ax,kw=mt.colorbar.make_axes(ax)
-                c_ax.set_aspect(15)
-                self.c_axs.append(c_ax)
-            self.ds.draw_region_colorbar(c_ax, temp_dict)
-            num += 15 
-            j += 1
-        
-
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
 def draw_2D_slice_interactive(self, p_vals, x_variable, y_variable,
                               range_x, range_y, slider_ranges,
@@ -360,6 +361,8 @@ def draw_2D_slice_interactive(self, p_vals, x_variable, y_variable,
     ax = plt.axes([0.1, 0.2+slider_block, 0.8, 0.7-slider_block])
     c_axs = list()
     cdict = dict()
+    if 'color_dict' in kwargs:
+        cdict.update(kwargs['color_dict'])
     j = 0
     sliders = dict()
     for i in slider_ranges:

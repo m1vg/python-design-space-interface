@@ -167,11 +167,14 @@ show()
 # x and y axis, a reference parameter set and a dictionary with parameter, range
 # pairs indicating sliders to exlore parameter space.
 
+colors['3'] = (1, 1, 0)
+
 ds.draw_2D_slice_interactive(
           pvals,                          # Pass the reference parameter set.
           'X3',                           # The x-axis variable.
           'X4',                           # The y-axis variable.
           [1e-3, 1e3],                    # The range on the x-axis.
           [1e-3, 1e3],                    # The range on the y-axis.
-          {'alpha':[1e-5, 1e5]}           # Specify slider parameters and ranges
+          {'alpha':[1e-5, 1e5]},          # Specify slider parameters and ranges
+          color_dict = colors
           )
