@@ -228,8 +228,8 @@ class Input(object):
         slider_block = 0.03*number_of_sliders
         fig = plt.figure()
         plt.clf()
-        self._plot_ax = plt.axes([0.1, 0.2+slider_block, 0.6, 0.7-slider_block])
-        self._plot_c_ax = plt.axes([0.8, 0.2+slider_block, 0.1, 0.7-slider_block])
+        self._plot_ax = plt.axes([0.1, 0.2+slider_block, 0.7, 0.7-slider_block])
+        self._plot_c_ax = plt.axes([0.85, 0.2+slider_block, 0.05, 0.7-slider_block])
         self._cdict = dict()
         j = 0
         sliders = list()
@@ -243,10 +243,9 @@ class Input(object):
             j += 1
             sliders.append(slider)
             callbacks.append(on_change)
-        
+        self._redraw_interactive()
         for j in xrange(len(sliders)):
             sliders[j].on_changed(callbacks[j])
-        
         plt.show()
         plt.interactive(previous)
         

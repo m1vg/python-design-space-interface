@@ -7,6 +7,7 @@ from __future__ import division
 import numpy as np
 import matplotlib as mt
 import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider
 from math import log10, floor, ceil
 
 from dspace.SWIG.dspace_interface import *
@@ -302,6 +303,82 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
         plt.sca(ax)
     return color_dict
 
+class SliderCallback(object):
+    
+    def __init__(self, ds, slider_dictionary, c_axs,  colordict, *args, **kwargs):
+        self.ds = ds
+        self.sliders = slider_dictionary
+        self.c_axs = c_axs
+        self.args = args
+        self.kwargs = kwargs
+        kwargs['color_dict'] = colordict
+        kwargs['colorbar'] = False
+        
+    def __call__(self, val):
+        ax = self.args[0]
+        pvals = self.args[1]
+        sliders = self.sliders
+        number_c_axs = len(self.c_axs)
+        color_dict = self.kwargs['color_dict']
+        for i in sliders:
+            pvals[i] = 10**sliders[i].val
+        ax.clear()
+        for i in self.c_axs:
+            i.clear()
+        color_dict.update(self.ds.draw_2D_slice(*self.args, **self.kwargs))
+        labels = color_dict.keys()
+        try:
+            labels.sort(cmp=key_sort_function)
+        except:
+            pass
+        labels.reverse()
+        num = 0 
+        j = 0
+        while num < len(labels):
+            temp_dict = {i:color_dict[i] for i in labels[num:min(num+15, len(labels))]}
+            if j < len(self.c_axs):
+                c_ax = self.c_axs[j]
+            else:
+                c_ax,kw=mt.colorbar.make_axes(ax)
+                c_ax.set_aspect(15)
+                self.c_axs.append(c_ax)
+            self.ds.draw_region_colorbar(c_ax, temp_dict)
+            num += 15 
+        
+
+@monkeypatch_method(dspace.models.designspace.DesignSpace)   
+def draw_2D_slice_interactive(self, p_vals, x_variable, y_variable,
+                              range_x, range_y, slider_ranges,
+                              **kwargs):
+    previous = plt.isinteractive()
+    plt.ioff()
+    number_of_sliders = len(slider_ranges)
+    slider_block = 0.03*number_of_sliders
+    fig = plt.figure()
+    plt.clf()
+    ax = plt.axes([0.1, 0.2+slider_block, 0.8, 0.7-slider_block])
+    c_axs = list()
+    cdict = dict()
+    j = 0
+    sliders = dict()
+    for i in slider_ranges:
+        slider_ax = plt.axes([0.1, 0.1+j*0.03, 0.8, 0.02])
+        slider = Slider(slider_ax, i, 
+                        log10(slider_ranges[i][0]), log10(slider_ranges[i][1]), 
+                        valinit=log10(p_vals[i]), color='#AAAAAA'
+                        )
+        j += 1
+        sliders[i] = slider
+    update = SliderCallback(self, sliders, c_axs, cdict, 
+                            ax, p_vals, x_variable, y_variable, range_x, range_y,
+                            **kwargs)
+    update(1)
+    for i in sliders:
+        sliders[i].on_changed(update)
+    plt.show()
+    plt.interactive(previous)
+        
+    
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
 def draw_3D_slice(self, ax, p_vals, x_variable, y_variable,z_variable, range_x,
                   range_y, range_z, color_dict=None,
