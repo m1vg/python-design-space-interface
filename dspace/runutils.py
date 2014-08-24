@@ -9,18 +9,6 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from matplotlib.widgets import Slider
 from math import *
-
-class SliderCallback(object):
-    
-    def __init__(self, pvals, parameter, redraw):
-        self._pvals = pvals
-        self._name = parameter
-        self._redraw = redraw
-        
-    def __call__(self, val):
-        pvals = self._pvals
-        pvals[self._name] = 10**val
-        self._redraw()
             
 class Input(object):
     
@@ -198,23 +186,7 @@ class Input(object):
             case = self._ds(i)
             case_string += str(i) + ': ' + case.signature + '\n'
         print case_string
-    
-    def _redraw_interactive(self):
-        
-        ax = self._plot_ax
-        c_ax = self._plot_c_ax
-        cdict = self._cdict
-        ax.clear()
-        c_ax.clear()
-        ## print self._pvals['a1']
-        cdict.update(self._ds.draw_2D_slice(ax, self._pvals,
-                                            self._xaxis, self._yaxis,
-                                            self._xrange, self._yrange,
-                                            included_cases=self._included_cases,
-                                            colorbar=False,
-                                            color_dict=cdict))
-        self._ds.draw_region_colorbar(c_ax, cdict)
-        
+            
     def _interactive_plot(self, options):
         
         if 'plot_interactive' not in options:
@@ -222,32 +194,12 @@ class Input(object):
         slider_dict = options['plot_interactive']
         if isinstance(slider_dict, dict) is False:
             raise TypeError, 'Interactive plot requires a dictionary of parameter : range pairs.'
-        previous = plt.isinteractive()
-        plt.ioff()
-        number_of_sliders = len(slider_dict)
-        slider_block = 0.03*number_of_sliders
-        fig = plt.figure()
-        plt.clf()
-        self._plot_ax = plt.axes([0.1, 0.2+slider_block, 0.7, 0.7-slider_block])
-        self._plot_c_ax = plt.axes([0.85, 0.2+slider_block, 0.05, 0.7-slider_block])
-        self._cdict = dict()
-        j = 0
-        sliders = list()
-        callbacks = list()
-        for i in slider_dict:
-            on_change = SliderCallback(self._pvals, i, self._redraw_interactive)
-            slider_ax = plt.axes([0.1, 0.1+j*0.03, 0.8, 0.02])
-            slider = Slider(slider_ax, i, 
-                            log10(slider_dict[i][0]), log10(slider_dict[i][1]), 
-                            valinit=log10(self._pvals[i]), color='#AAAAAA')
-            j += 1
-            sliders.append(slider)
-            callbacks.append(on_change)
-        self._redraw_interactive()
-        for j in xrange(len(sliders)):
-            sliders[j].on_changed(callbacks[j])
-        plt.show()
-        plt.interactive(previous)
+        self._ds.draw_2D_slice_interactive(self._pvals,
+                                           self._xaxis, self._yaxis,
+                                           self._xrange, self._yrange,
+                                           slider_dict,
+                                           included_cases=self._included_cases
+                                           )
         
     def _plot_designspace(self, options):
         
