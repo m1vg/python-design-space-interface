@@ -46,15 +46,18 @@ Input(['X1. = a1 + a2*X3 - b1*X1',
       x_range=[1e-3, 1e3],               # Range of the x-axis.
       y_range=[1e-3, 1e3],               # Range of the y-axis.
       centered_axes=True,                # Axis are centered about parameters.
-      plot_interactive={'a2':[1e-5, 1e5],
+      # Include interactive plot with 4 sliders: one for each a2, b2, b1 and a3.
+      plot_interactive={'a2':[1e-5, 1e5],   
                         'b2':[1e-10, 1e10],
-                        'b1':[1e-10, 1e10],
+                        'b1':[1e-10, 1e10], 
                         'a3':[1e-5, 1e5]},
+      
       plot_designspace=True,             # Should draw design space plot.
       plot_steady_states=['X1', 'X2'],   # Concentrations to plot.
       plot_fluxes=['X1'],                # Fluxes to plot.
       plot_stability=True,               # Should draw stability plot.
-      plot_functions=['log(V_X1/X2)'],  # Arbitrary functions to plot.
+      plot_functions=['log(V_X1/X2)'],   # Arbitrary functions to plot.
+      intersections=[1, 3]
       )  
 
 ## Specifying a subset of cases to draw.

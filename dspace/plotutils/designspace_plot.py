@@ -70,7 +70,7 @@ class SliderCallback(object):
         num = 0 
         j = 0
         while num < len(labels):
-            temp_dict = {i:color_dict[i] for i in labels[num:min(num+15, len(labels))]}
+            temp_dict = {i:color_dict[i] for i in labels[num:min(num+20, len(labels))]}
             if j < len(self.c_axs):
                 c_ax = self.c_axs[j]
             else:
@@ -78,7 +78,7 @@ class SliderCallback(object):
                 c_ax.set_aspect(15)
                 self.c_axs.append(c_ax)
             self.ds.draw_region_colorbar(c_ax, temp_dict)
-            num += 15 
+            num += 20 
             j += 1
         plt.draw()
              
@@ -340,11 +340,11 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
         labels.reverse()
         num = 0 
         while num < len(labels):
-            temp_dict = {i:colors[i] for i in labels[num:min(num+15, len(labels))]}
+            temp_dict = {i:colors[i] for i in labels[num:min(num+20, len(labels))]}
             c_ax,kw=mt.colorbar.make_axes(ax)
             c_ax.set_aspect(15)
             self.draw_region_colorbar(c_ax, temp_dict)
-            num += 15
+            num += 20
         plt.sca(ax)
     return color_dict
 
