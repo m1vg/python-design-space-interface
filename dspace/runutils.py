@@ -207,6 +207,10 @@ class Input(object):
             return
         if options['plot_designspace'] is not True:
             return
+        if 'intersections' in options:
+            intersections = options['intersections']
+        else:
+            intersections = [1, 2, 3, 4, 5]
         ## if ds.number_of_cases > 1e5 and self._included_cases is not None:
         ##     colors = dict()
         ##     j = 0
@@ -229,7 +233,9 @@ class Input(object):
         self._ds.draw_2D_slice(plt.gca(), self._pvals,
                                self._xaxis, self._yaxis,
                                self._xrange, self._yrange,
-                               included_cases=self._included_cases)
+                               included_cases=self._included_cases,
+                               intersections=intersections
+                               )
         ax.set_title('Design space plot')
         
     def _plot_stability(self, options):
