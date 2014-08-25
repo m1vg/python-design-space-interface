@@ -97,10 +97,10 @@ def draw_region_colorbar(self, ax, color_dict, **kwargs):
         ax.fill([0, 1, 1, 0], [i, i, i+increment, i+increment], ec='none', fc=color_dict[key])
         i += increment
     ax.set_yticks([increment*(i+0.5) for i in range(0, len(labels)+1)])
-    ax.set_yticklabels(labels, **kwargs)
     ax.set_ylim([0, 1])
     ax.xaxis.set_visible(False)
     ax.yaxis.set_ticks_position('right')
+    ax.set_yticklabels(labels, fontsize=8, **kwargs)
     ax.yaxis.set_ticks_position('none')
 
 @monkeypatch_method(dspace.models.designspace.DesignSpace)
