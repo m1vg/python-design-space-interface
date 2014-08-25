@@ -211,6 +211,10 @@ class Input(object):
             intersections = options['intersections']
         else:
             intersections = [1, 2, 3, 4, 5]
+        if 'colorbar' in options:
+            colorbar = options['colorbar']
+        else:
+            colorbar = 'auto'
         ## if ds.number_of_cases > 1e5 and self._included_cases is not None:
         ##     colors = dict()
         ##     j = 0

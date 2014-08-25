@@ -100,7 +100,7 @@ def draw_region_colorbar(self, ax, color_dict, **kwargs):
     ax.set_ylim([0, 1])
     ax.xaxis.set_visible(False)
     ax.yaxis.set_ticks_position('right')
-    ax.set_yticklabels(labels, fontsize=8, **kwargs)
+    ax.set_yticklabels(labels, **kwargs)
     ax.yaxis.set_ticks_position('none')
 
 @monkeypatch_method(dspace.models.designspace.DesignSpace)
@@ -331,7 +331,9 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
     ax.set_ylim([log10(min(range_y)), log10(max(range_y))])
     ax.set_xlabel(r'$\log_{10}$(' + x_variable + ')')
     ax.set_ylabel(r'$\log_{10}$(' + y_variable + ')')
-    if colorbar is True:
+    if colorbar is False:
+        return color_dict
+    if colorbar is True or colorbar == 'auto':
         labels = colors.keys()
         try:
             labels.sort(cmp=key_sort_function)
@@ -345,6 +347,17 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
             c_ax.set_aspect(15)
             self.draw_region_colorbar(c_ax, temp_dict)
             num += 20
+        plt.sca(ax)
+    elif colorbar == 'single':
+        labels = colors.keys()
+        try:
+            labels.sort(cmp=key_sort_function)
+        except:
+            pass
+        labels.reverse()
+        c_ax,kw=mt.colorbar.make_axes(ax)
+        c_ax.set_aspect(15)
+        self.draw_region_colorbar(c_ax, colors)
         plt.sca(ax)
     return color_dict
 
