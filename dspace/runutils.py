@@ -238,7 +238,8 @@ class Input(object):
                                self._xaxis, self._yaxis,
                                self._xrange, self._yrange,
                                included_cases=self._included_cases,
-                               intersections=intersections
+                               intersections=intersections,
+                               colorbar=colorbar
                                )
         ax.set_title('Design space plot')
         
