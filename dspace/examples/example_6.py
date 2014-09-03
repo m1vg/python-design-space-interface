@@ -1,6 +1,11 @@
 ##########################
 # Design Space Example 6
 ##########################
+
+# WARNING!! This example does not currently work with the develop version of
+# the C toolbox. Until further notice, running this file will cause errors to
+# appear.
+
 # This example is similar to previous examples, but demonstrates the analysis
 # of systems with cycles. A cycle that is dominant creates singularity in 
 # conventional design space analysis.  These singularities are resolved 
@@ -34,9 +39,9 @@ matplotlib.interactive(True)
 # The equations and dependent variables are entered as strings.
 
 f = ['X1. = alpha*X5 + 2*X4 - 2*X1^2', 
-     'X2. = X1^2 - X2 - X2*X6 - beta*X2^2',
+     'X2. = X1^2 - X2 - X2*X6',# - beta*X2^2
      'X3. = X2 - X3',
-     'X4. = X3 + X2*X6 - X4 ']
+     'X4. = X3 + X2*X6 - X4 -beta*X4^2']
 
 # The next step is to construct an Equations object using this list of strings.
 
