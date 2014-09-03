@@ -80,7 +80,7 @@ Input(['X1. = a1 + a2*X3 - b1*X1',
       plot_fluxes=['X1'],
       plot_stability=True,
       plot_functions=['X1'],
-      draw_cases=[2, 3],
+      draw_cases=[':1121', 3],
       zlim=[-10, 10] # Explicitly sets z-lim of steady state, flux and function plots
       )
 
