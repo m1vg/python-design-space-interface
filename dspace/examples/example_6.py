@@ -25,13 +25,6 @@ from math import *
 from matplotlib.pyplot import *
 matplotlib.interactive(True)
 
-constraints = ['2.000000019968105*alpha^-1.000000000000000*X5^-1.000000000000000*k41*X4 > 1',
-               'X7*X1^-2.000000000000000*X3 > 1',
-               'k23*X6^-1.000000000000000 > 1',
-               'X7*k34^-1.000000000000000 > 1',
-               'X6^-1.000000000000000*k34*X2^-1.000000000000000*X3 > 1',
-               'k41*beta^-1.000000000000000*X4^-1.000000000000000 > 1']
-
 ## Enter Equations
 # The following system has three dependent variables and two independent
 # variables.  Ultimately, the design space will vary over the two
@@ -49,6 +42,18 @@ f = ['X1. = alpha*X5 + 2*k41*X4 - 2*X1^2',
  'X2. = X1^2 + X3*X7 - k23*X2 - X2*X6',# - beta*X2^2
  'X3. = k23*X2 - k34*X3 - X3*X7',
  'X4. = k34*X3 + X2*X6 - k41*X4 - beta*X4^2']
+
+
+
+## f = ['X1. = alpha*X5 + 2*X4 - 2*X1^2', 
+##  'X2. = X1^2 - X2 - X2*X6 - beta*X2^2',
+##  'X3. = X2 - X3',
+##  'X4. = X3 + X2*X6 - X4']
+
+## f = ['X1. = alpha*X5 + 2*k41*X4 - 2*X1^2', 
+##  'X2. = X1^2 - k23*X2 - X2*X6 - beta*X2^2',
+##  'X3. = k23*X2 - k34*X3',
+##  'X4. = k34*X3 + X2*X6 - k41*X4']
 
 # The next step is to construct an Equations object using this list of strings.
 
@@ -173,6 +178,15 @@ pvals['alpha'] = 10
 pvals['beta'] = 0.1
 pvals['X7'] = 1.5
 
+
+ds_cycles.draw_2D_slice_interactive(pvals,             # Pass the reference parameter set.
+                                    'X5',              # First, indicate the x-axis variable.
+                                    'X6',              # Second, indicate the y-axis variable.
+                                    [1e-3, 1e3],       # The range on the x-axis.
+                                    [1e-3, 1e3],       # The range on the y-axis.
+                                    {'X7':[1e-5, 1e5]}
+                                    )
+
 fig = figure(1)
 clf()
 
@@ -200,6 +214,7 @@ ds_nocycles.draw_2D_slice(ax,
                       color_dict=colors
                       )
 ax.set_title(ds_nocycles.name)
+
 
 ## 
 ## for i in ['X1', 'X2', 'X3', 'X4']:

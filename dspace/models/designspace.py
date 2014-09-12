@@ -325,16 +325,95 @@ class DesignSpace(GMASystem):
                     if min_value > max_value:
                         raise ValueError, 'parameter slice bounds are inverted: min is larger than max'
                         lower[key] = min_value
-                        upper[key] = max_value        
-        for i in xrange(len(intersects)):            
-            comb = itertools.combinations(valid_cases, intersects[i])
-            valid_cases = set()
-            for j in comb:
-                current_set = set(k for k in j)
-                case_int = CaseIntersection([self(case_numbers[k]) for k in current_set])                
-                if case_int.is_valid(p_bounds=p_bounds) is True:
-                    intersections.append([case_numbers[k] for k in current_set])
-                    valid_cases = valid_cases.union(current_set)
+                        upper[key] = max_value
+        sets = [valid_cases]     
+        for i in xrange(len(intersects)):
+            sets_to_check = sets
+            sets = []
+            for valid_cases in sets_to_check:     
+                if len(valid_cases) < intersects[i]:
+                    continue     
+                comb = itertools.combinations(valid_cases, intersects[i])
+                valid_cases = set()
+                for j in comb:
+                    current_set = set(k for k in j)
+                    case_int = CaseIntersection([self(case_numbers[k]) for k in current_set])                
+                    if case_int.is_valid(p_bounds=p_bounds) is True:
+                        found = False
+                        for j in xrange(len(sets)):
+                            if len(sets[j].union(current_set)) == len(sets[j])+1:
+                                sets[j] = sets[j].union(current_set)
+                                found = True
+                                break
+                        if found is False:
+                            sets.append(current_set)
+                        ## valid_cases = valid_cases.union(current_set)
+                        intersections.append([case_numbers[k] for k in current_set])        
+        ## for i in xrange(len(intersects)):            
+        ##     comb = itertools.combinations(valid_cases, intersects[i])
+        ##     valid_cases = set()
+        ##     for j in comb:
+        ##         current_set = set(k for k in j)
+        ##         case_int = CaseIntersection([self(case_numbers[k]) for k in current_set])                
+        ##         if case_int.is_valid(p_bounds=p_bounds) is True:
+        ##             intersections.append([case_numbers[k] for k in current_set])
+        ##             valid_cases = valid_cases.union(current_set)
+        return intersections
+    
+    def maximum_co_localized_cases(self, slice_variables, intersects, case_numbers, p_bounds=None):
+        if isinstance(intersects, list) is False:
+            intersects = [intersects]
+        if len(case_numbers) == 0:
+            return None
+        intersections = list()        
+        Cases = self(case_numbers)
+        for i in xrange(len(Cases)):
+            case = Cases[i]
+            case_num = case.case_number
+            case_numbers = self._cyclical_case_as_subcases(case_num, case_numbers)
+        valid_cases=set(range(len(case_numbers)))
+        if p_bounds is not None:
+            lower = VariablePool(names=self.independent_variables)
+            upper = VariablePool(names=self.independent_variables)
+            for key in lower:
+                lower[key] = 1e-20
+                upper[key] = 1e20
+                for (key,value) in p_bounds.iteritems():
+                    try:
+                        min_value,max_value = value
+                    except TypeError:
+                        min_value = value
+                        max_value = value
+                    if min_value > max_value:
+                        raise ValueError, 'parameter slice bounds are inverted: min is larger than max'
+                        lower[key] = min_value
+                        upper[key] = max_value
+        sets = [valid_cases]     
+        for i in xrange(len(intersects)):
+            sets_to_check = sets
+            sets = []
+            print 'Set: '+str(len(sets_to_check))
+            for valid_cases in sets_to_check:     
+                if len(valid_cases) < intersects[i]:
+                    continue     
+                comb = itertools.combinations(valid_cases, intersects[i])
+                print len(valid_cases)
+                valid_cases = set()
+                for j in comb:
+                    current_set = set(k for k in j)
+                    case_int = CaseIntersection([self(case_numbers[k]) for k in current_set])                
+                    pvals=case_int.valid_parameter_set_excluding_slice(slice_variables)
+                    if pvals is not None:
+                        found = False
+                        for j in xrange(len(sets)):
+                            if len(sets[j].union(current_set)) == len(sets[j])+1:
+                                sets[j] = sets[j].union(current_set)
+                                found = True
+                                break
+                        if found is False:
+                            sets.append(current_set)
+                        ## valid_cases = valid_cases.union(current_set)
+                        intersections.append([case_numbers[k] for k in current_set])
         return intersections
     
     def intersecting_cases(self, intersects, case_numbers, p_bounds=None):
@@ -392,3 +471,4 @@ class DesignSpace(GMASystem):
                 if len(x):
                     lines.append((x, y, j))
         return lines
+## 
