@@ -392,12 +392,10 @@ class DesignSpace(GMASystem):
         for i in xrange(len(intersects)):
             sets_to_check = sets
             sets = []
-            print 'Set: '+str(len(sets_to_check))
             for valid_cases in sets_to_check:     
                 if len(valid_cases) < intersects[i]:
                     continue     
                 comb = itertools.combinations(valid_cases, intersects[i])
-                print len(valid_cases)
                 valid_cases = set()
                 for j in comb:
                     current_set = set(k for k in j)
