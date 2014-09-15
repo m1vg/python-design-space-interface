@@ -360,6 +360,13 @@ class DesignSpace(GMASystem):
         ##             valid_cases = valid_cases.union(current_set)
         return intersections
     
+    def co_localize_cases(self, case_numbers, constraints=None, by_signature=False):
+        to_colocalize = ds(case_numbers, by_signature=by_signature)
+        co_localized = to_colocalize.valid_parameter_set_excluding_slice(x_parameter, 
+                                                                         constraints=constraints)
+        return co_localized
+        
+        
     def maximum_co_localized_cases(self, slice_variables, intersects, case_numbers, p_bounds=None):
         if isinstance(intersects, list) is False:
             intersects = [intersects]
