@@ -362,7 +362,7 @@ class DesignSpace(GMASystem):
     
     def co_localize_cases(self, case_numbers, slice_parameters, constraints=None, by_signature=False):
         cases = self(case_numbers, by_signature=by_signature)
-        to_colocalize = dspace.CaseIntersection(cases)
+        to_colocalize = CaseIntersection(cases)
         co_localized = to_colocalize.valid_parameter_set_excluding_slice(slice_parameters, 
                                                                          constraints=constraints)
         return co_localized
