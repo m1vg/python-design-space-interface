@@ -440,6 +440,7 @@ class DesignSpace(GMASystem):
                 if pvals is not None:
                     if new is True:
                         intersections = []
+                    new = False
                     intersections.append([case_numbers[k] for k in current_set])
                     sets.append(current_set)
         ## sets = [set([i]) for i in valid_cases]     
