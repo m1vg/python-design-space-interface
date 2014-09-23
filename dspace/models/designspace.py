@@ -329,7 +329,7 @@ class DesignSpace(GMASystem):
         ## sets = [set([i]) for i in valid_cases]
         ## sets = [valid_caseset)   
         if 1 in intersects:
-            [intersections.append(i) for i in self.valid_cases(p_bounds=p_bounds)]
+            [intersections.append(i) for i in case_numbers if self(i).is_valid(p_bounds=p_bounds) is True]
         sets = [set([i]) for i in valid_cases]
         for i in xrange(2, max(intersects)+1):
             sets_to_check = sets
