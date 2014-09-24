@@ -20,7 +20,9 @@ class Expression(object):
         
     def __latex_str__(self, substitution_dictionary=None):
         
-        subs=dict()
+        subs=dict(log=r'\log',
+                  log10=r'\log_{10}',
+                  ln=r'\ln')
         if substitution_dictionary is not None:
             subs.update(substitution_dictionary)
         latex_dict = DSSWIGDSDictionaryFromPyDict(subs)
