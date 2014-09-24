@@ -31,7 +31,6 @@
         }
 }
 
-/* Type Map Data */
 
 %typemap(in) const DSUInteger * {
         /* Check if is a list */
@@ -420,6 +419,40 @@
 
 %inline %{
 
+extern DSDictionary * DSSWIGDSDictionaryFromPyDict(PyObject * pydict) {
+        DSDictionary * dictionary = NULL;
+        if (PyDict_Check(pydict) == false) {
+                PyErr_SetString(PyExc_TypeError,"not a dictionary");
+                goto bail;
+        }
+        int size = PyDict_Size(pydict);
+        int i = 0;
+        char * key_string, *value_string;
+        PyObject * keys = PyDict_Keys(pydict);
+        dictionary = DSDictionaryAlloc();
+        for (i = 0; i < size; i++) {
+                PyObject *key = PyList_GetItem(keys, i);
+                PyObject *value = PyDict_GetItem(pydict, key);
+                if (PyString_Check(key) && PyString_Check(value)) {
+                        key_string = PyString_AsString(key);
+                        value_string = PyString_AsString(value);
+                        DSDictionaryAddValueWithName(dictionary, key_string, strdup(value_string));
+                } else {
+                        PyErr_SetString(PyExc_TypeError,"dictionary must contain strings");
+                        DSDictionaryFreeWithFunction(dictionary, DSSecureFree);
+                        dictionary = NULL;
+                        break;
+                }
+        }
+bail:
+        return dictionary;
+}
+        
+extern void DSSWIGDSDictionaryFreeCharValues(DSDictionary * dictionary)
+{
+        DSDictionaryFreeWithFunction(dictionary, DSSecureFree);
+}
+        
 extern DSCyclicalCase * DSSWIGVoidAsSubcase(void *ptr)
 {
         return ptr;

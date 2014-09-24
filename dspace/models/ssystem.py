@@ -46,7 +46,7 @@ class SSystem(GMASystem):
             solution.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
         DSSecureFree(sol)
-        return solution
+        return Equations(solution, latex_symbols=self._latex)
     
     @property
     def solution(self):
@@ -57,7 +57,7 @@ class SSystem(GMASystem):
             solution.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
         DSSecureFree(sol)
-        return solution
+        return Equations(solution, latex_symbols=self._latex)
     
     @property
     def solution_log(self):
@@ -68,7 +68,7 @@ class SSystem(GMASystem):
             solution.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
         DSSecureFree(sol)
-        return solution
+        return Equations(solution, latex_symbols=self._latex)
     
     @property
     def dependent_variables(self):

@@ -11,11 +11,10 @@ from dspace.models.base import Equations,Model
 
 class GMASystem(Model):
     
-    def __init__(self, equations, name=None, swigwrapper=None, latex_symbols=None, **kwargs):
+    def __init__(self, equations, name=None, swigwrapper=None, **kwargs):
         super(GMASystem, self).__init__(equations, name=name, **kwargs)
         setattr(self, '_swigwrapper', None)
         setattr(self, '_independent_variables', None)
-        setattr(self, '_latex_symbols', latex_symbols)
 
         if swigwrapper is not None:
             self.set_swigwrapper(swigwrapper)
@@ -43,7 +42,7 @@ class GMASystem(Model):
         
     def _parse_equations(self, **kwargs):
         auxiliary_variables = self.auxiliary_variables
-        swigwrapper = DSSWIGGMASystemParseWrapper(self.equations,
+        swigwrapper = DSSWIGGMASystemParseWrapper(self.equations.system,
                                                   len(self.equations),
                                                   auxiliary_variables,
                                                   len(auxiliary_variables)
@@ -58,7 +57,7 @@ class GMASystem(Model):
         DSSecureFree(eqs)
         Xda = VariablePool()
         Xda.set_swigwrapper(DSVariablePoolCopy(DSGMASystemXd_a(self._swigwrapper)))
-        equations = Equations(equation_list, auxiliary_variables=Xda.keys())
+        equations = Equations(equation_list, auxiliary_variables=Xda.keys(), latex_symbols=self._latex)
         self._equations = equations
     
     @property

@@ -23,7 +23,10 @@ class Expression(object):
         subs=dict()
         if substitution_dictionary is not None:
             subs.update(substitution_dictionary)
-        return DSExpressionAsLatexString(self._swigwrapper, subs)
+        latex_dict = DSSWIGDSDictionaryFromPyDict(subs)
+        string = DSExpressionAsLatexString(self._swigwrapper, latex_dict)
+        DSSWIGDSDictionaryFreeCharValues(latex_dict)
+        return string
         
     def __repr__(self):
         

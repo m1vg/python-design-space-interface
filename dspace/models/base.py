@@ -30,7 +30,7 @@ from dspace.variables import VariablePool
 
 class Equations(object):
     
-    def __init__(self, system, auxiliary_variables=[]):
+    def __init__(self, system, auxiliary_variables=[], latex_symbols=None):
         ''' Init method for the model base class.
         
         The model object is initialized with data to construct
@@ -40,6 +40,7 @@ class Equations(object):
         '''
         setattr(self, '_eq', list())
         setattr(self, '_auxiliary_variables', list())
+        setattr(self, '_latex', dict())
         if isinstance(system, list) is False:
             system = [system]
         if isinstance(auxiliary_variables, list) is False:
@@ -52,6 +53,8 @@ class Equations(object):
             if isinstance(i, str) is False:
                 raise TypeError, 'ODE must be a string'
             self._auxiliary_variables.append(i)
+        if latex_symbols is not None:
+            self._latex.update(latex_symbols)
     
     @property                    
     def system(self):
@@ -72,7 +75,10 @@ class Equations(object):
     @property
     def auxiliary_variables(self):
         return list(self._auxiliary_variables)
-                
+    
+    def __getitem__(self, index):
+        return self._eq[index]
+    
     def __len__(self):
         return len(self._eq)
         
@@ -91,7 +97,7 @@ class Equations(object):
 
 class Model(object):
     
-    def __init__(self, equations, name=None, description=None,**kwargs):
+    def __init__(self, equations, name=None, description=None, latex_symbols=None, **kwargs):
         ''' Init method for the model base class.
         
         The model object is initialized with data to construct
@@ -106,6 +112,9 @@ class Model(object):
         if description is None:
             description = ''
         setattr(self, '_description', description)
+        setattr(self, '_latex', dict())
+        if latex_symbols is not None:
+            self._latex.update(latex_symbols)
 
 
     @property
@@ -114,7 +123,7 @@ class Model(object):
     
     @property
     def equations(self):
-        return self._equations.system
+        return self._equations
     
     @property
     def auxiliary_variables(self):

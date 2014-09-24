@@ -86,7 +86,7 @@ class CyclicalCase(Case):
             equations.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
         DSSecureFree(eqs)
-        return equations
+        return Equations(equations)
     
     @property
     def augmented_equations(self):
@@ -97,7 +97,7 @@ class CyclicalCase(Case):
             equations.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
         DSSecureFree(eqs)
-        return equations
+        return Equations(equations)
     
     @property
     def ssystem(self):
@@ -140,7 +140,7 @@ class CyclicalCase(Case):
             conditions.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
-        return conditions
+        return Equations(conditions)
         
     @property
     def conditions_log(self):
@@ -150,7 +150,7 @@ class CyclicalCase(Case):
             conditions.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
-        return conditions
+        return Equations(conditions)
     
     @property
     def boundaries(self):

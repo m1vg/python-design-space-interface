@@ -138,14 +138,14 @@ class DesignSpace(GMASystem):
     def _parse_equations(self, match_Xi=None, **kwargs):
         auxiliary_variables = self.auxiliary_variables
         if match_Xi is None:
-            swigwrapper = DSSWIGDesignSpaceParseWrapper(self.equations,
+            swigwrapper = DSSWIGDesignSpaceParseWrapper(self.equations.system,
                                                         len(self.equations),
                                                         auxiliary_variables,
                                                         len(auxiliary_variables)
                                                         )
         else:
             xi_list = match_Xi.independent_variables
-            swigwrapper = DSSWIGDesignSpaceParseWrapperWithXi(self.equations,
+            swigwrapper = DSSWIGDesignSpaceParseWrapperWithXi(self.equations.system,
                                                               len(self.equations),
                                                               auxiliary_variables,
                                                               len(auxiliary_variables),
@@ -163,7 +163,7 @@ class DesignSpace(GMASystem):
         DSSecureFree(eqs)
         Xda = VariablePool()
         Xda.set_swigwrapper(DSVariablePoolCopy(DSGMASystemXd_a(gma)))
-        equations = Equations(equation_list, auxiliary_variables=Xda.keys())
+        equations = Equations(equation_list, auxiliary_variables=Xda.keys(), latex_symbols=self._latex)
         self._equations = equations
     
     def set_swigwrapper(self, ds_swigwrapper):

@@ -24,7 +24,7 @@ class Case(Model):
         '''
         if name == None:
             name = 'Unnamed'
-        super(Case, self).__init__(model._equations,
+        super(Case, self).__init__(model.equations,
                                    name=name)
         setattr(self, '_ssystem', None)
         setattr(self, '_independent_variables', None)
@@ -78,7 +78,7 @@ class Case(Model):
             equations.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
         DSSecureFree(eqs)
-        return equations
+        return Equations(equations, latex_symbols=self._latex)
     
     @property
     def ssystem(self):
@@ -156,7 +156,7 @@ class Case(Model):
             conditions.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
-        return conditions
+        return Equations(conditions, latex_symbols=self._latex)
         
     @property
     def conditions_log(self):
@@ -166,7 +166,7 @@ class Case(Model):
             conditions.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
-        return conditions
+        return Equations(conditions, latex_symbols=self._latex)
     
     @property
     def boundaries(self):
@@ -176,7 +176,7 @@ class Case(Model):
             boundaries.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
-        return boundaries
+        return Equations(boundaries, latex_symbols=self._latex)
     
     @property
     def boundaries_log(self):
@@ -186,7 +186,7 @@ class Case(Model):
             boundaries.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
-        return boundaries
+        return Equations(boundaries, latex_symbols=self._latex)
     
     @property
     def is_cyclical(self):

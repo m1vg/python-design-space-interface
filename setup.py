@@ -25,5 +25,6 @@ setup(name = 'dspace',
                 'dspace.SWIG', 
                 'dspace.models', 
                 'dspace.plotutils',
-                'dspace.graphs', 
+                'dspace.graphs',
+                'dspace.display', 
                 'dspace.examples'])

@@ -1528,6 +1528,14 @@ def DSCaseNDVertexEnumeration(*args):
   return _dspace_interface.DSCaseNDVertexEnumeration(*args)
 DSCaseNDVertexEnumeration = _dspace_interface.DSCaseNDVertexEnumeration
 
+def DSSWIGDSDictionaryFromPyDict(*args):
+  return _dspace_interface.DSSWIGDSDictionaryFromPyDict(*args)
+DSSWIGDSDictionaryFromPyDict = _dspace_interface.DSSWIGDSDictionaryFromPyDict
+
+def DSSWIGDSDictionaryFreeCharValues(*args):
+  return _dspace_interface.DSSWIGDSDictionaryFreeCharValues(*args)
+DSSWIGDSDictionaryFreeCharValues = _dspace_interface.DSSWIGDSDictionaryFreeCharValues
+
 def DSSWIGVoidAsSubcase(*args):
   return _dspace_interface.DSSWIGVoidAsSubcase(*args)
 DSSWIGVoidAsSubcase = _dspace_interface.DSSWIGVoidAsSubcase

@@ -3404,6 +3404,40 @@ SWIG_From_char  (char c)
 
 
 
+extern DSDictionary * DSSWIGDSDictionaryFromPyDict(PyObject * pydict) {
+        DSDictionary * dictionary = NULL;
+        if (PyDict_Check(pydict) == false) {
+                PyErr_SetString(PyExc_TypeError,"not a dictionary");
+                goto bail;
+        }
+        int size = PyDict_Size(pydict);
+        int i = 0;
+        char * key_string, *value_string;
+        PyObject * keys = PyDict_Keys(pydict);
+        dictionary = DSDictionaryAlloc();
+        for (i = 0; i < size; i++) {
+                PyObject *key = PyList_GetItem(keys, i);
+                PyObject *value = PyDict_GetItem(pydict, key);
+                if (PyString_Check(key) && PyString_Check(value)) {
+                        key_string = PyString_AsString(key);
+                        value_string = PyString_AsString(value);
+                        DSDictionaryAddValueWithName(dictionary, key_string, strdup(value_string));
+                } else {
+                        PyErr_SetString(PyExc_TypeError,"dictionary must contain strings");
+                        DSDictionaryFreeWithFunction(dictionary, DSSecureFree);
+                        dictionary = NULL;
+                        break;
+                }
+        }
+bail:
+        return dictionary;
+}
+        
+extern void DSSWIGDSDictionaryFreeCharValues(DSDictionary * dictionary)
+{
+        DSDictionaryFreeWithFunction(dictionary, DSSecureFree);
+}
+        
 extern DSCyclicalCase * DSSWIGVoidAsSubcase(void *ptr)
 {
         return ptr;
@@ -15919,6 +15953,43 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSSWIGDSDictionaryFromPyDict(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *arg1 = (PyObject *) 0 ;
+  PyObject * obj0 = 0 ;
+  DSDictionary *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSSWIGDSDictionaryFromPyDict",&obj0)) SWIG_fail;
+  arg1 = obj0;
+  result = (DSDictionary *)DSSWIGDSDictionaryFromPyDict(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSDictionary, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSSWIGDSDictionaryFreeCharValues(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDictionary *arg1 = (DSDictionary *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSSWIGDSDictionaryFreeCharValues",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDictionary, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSWIGDSDictionaryFreeCharValues" "', argument " "1"" of type '" "DSDictionary *""'"); 
+  }
+  arg1 = (DSDictionary *)(argp1);
+  DSSWIGDSDictionaryFreeCharValues(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSSWIGVoidAsSubcase(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   void *arg1 = (void *) 0 ;
@@ -16833,6 +16904,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCyclicalCaseCalculateAllValidSubcasesForSlice", _wrap_DSCyclicalCaseCalculateAllValidSubcasesForSlice, METH_VARARGS, NULL},
 	 { (char *)"DSCyclicalCaseVerticesFor2DSlice", _wrap_DSCyclicalCaseVerticesFor2DSlice, METH_VARARGS, NULL},
 	 { (char *)"DSCaseNDVertexEnumeration", _wrap_DSCaseNDVertexEnumeration, METH_VARARGS, NULL},
+	 { (char *)"DSSWIGDSDictionaryFromPyDict", _wrap_DSSWIGDSDictionaryFromPyDict, METH_VARARGS, NULL},
+	 { (char *)"DSSWIGDSDictionaryFreeCharValues", _wrap_DSSWIGDSDictionaryFreeCharValues, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGVoidAsSubcase", _wrap_DSSWIGVoidAsSubcase, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGVoidAsCase", _wrap_DSSWIGVoidAsCase, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGVoidAsVertices", _wrap_DSSWIGVoidAsVertices, METH_VARARGS, NULL},
