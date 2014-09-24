@@ -84,7 +84,8 @@ class SSystem(GMASystem):
     def remove_algebraic_constraints(self):
         return SSystem(self._equations,
                        name=self.name + '(ODE only)',
-                       swigwrapper=DSSSystemByRemovingAlgebraicConstraints(self._swigwrapper))
+                       swigwrapper=DSSSystemByRemovingAlgebraicConstraints(self._swigwrapper),
+                       latex_symbols=self._latex)
         
     def steady_state(self, parameter_values, log_out=False):
         Xd = VariablePool()
