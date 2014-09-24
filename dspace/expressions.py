@@ -18,6 +18,13 @@ class Expression(object):
         
         return DSExpressionAsString(self._swigwrapper)
         
+    def __latex_str__(self, substitution_dictionary=None):
+        
+        subs=dict()
+        if substitution_dictionary is not None:
+            subs.update(substitution_dictionary)
+        return DSExpressionAsLatexString(self._swigwrapper, subs)
+        
     def __repr__(self):
         
         return str(self)

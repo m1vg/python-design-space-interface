@@ -558,9 +558,9 @@ def DSExpressionAsString(*args):
   return _dspace_interface.DSExpressionAsString(*args)
 DSExpressionAsString = _dspace_interface.DSExpressionAsString
 
-def DSExpressionAsTroffString(*args):
-  return _dspace_interface.DSExpressionAsTroffString(*args)
-DSExpressionAsTroffString = _dspace_interface.DSExpressionAsTroffString
+def DSExpressionAsLatexString(*args):
+  return _dspace_interface.DSExpressionAsLatexString(*args)
+DSExpressionAsLatexString = _dspace_interface.DSExpressionAsLatexString
 
 def DSExpressionPrint(*args):
   return _dspace_interface.DSExpressionPrint(*args)
