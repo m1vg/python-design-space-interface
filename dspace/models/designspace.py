@@ -20,6 +20,7 @@ class DesignSpace(GMASystem):
                  parameter_dict=None, 
                  resolve_cycles=False,
                  constraints=None, match_Xi=None,
+                 latex_symbols=None,
                  **kwargs):
         ''' Initializes a new object with the input parameters for a routine
             analysis.
@@ -45,7 +46,8 @@ class DesignSpace(GMASystem):
         '''
         if parameter_dict is not None:
             equations = equations.replace_symbols(parameter_dict)
-        super(DesignSpace, self).__init__(equations, match_Xi=match_Xi, **kwargs)
+        super(DesignSpace, self).__init__(equations, match_Xi=match_Xi, 
+                                          latex_symbols=latex_symbols, **kwargs)
         setattr(self, '_resolve_cycles', False)
         if constraints is not None:
             if isinstance(constraints, list) is False:
@@ -106,7 +108,7 @@ class DesignSpace(GMASystem):
                 case = self._cyclical_case(index, name)
                 if case is None:
                     case = Case(self, DSDesignSpaceCaseWithCaseNumber(self._swigwrapper, index), 
-                                name=name, constraints=constraints)
+                                name=name, constraints=constraints, latex_symbols=self._latex)
                 cases.append(case)
             elif isinstance(index, str) is True:
                 if index[0] == ':':
@@ -513,7 +515,7 @@ class DesignSpace(GMASystem):
             return None
         case = Case(self, DSDesignSpaceCaseWithCaseNumber(self._swigwrapper, case), name)
         eq6=Equations(case.equations, case.auxiliary_variables)
-        return CyclicalCase(eq6, sub, name = case.name)
+        return CyclicalCase(eq6, sub, name = case.name, latex_symbols=self._latex)
     
     def line_1D_positive_roots(self, function, p_vals, slice_variable, 
                                range_slice, resolution=100):

@@ -10,12 +10,13 @@ from dspace.expressions import Expression
 
 class CyclicalCase(Case):
     
-    def __init__(self, equations, swigwrapper, name = None, **kwargs):
+    def __init__(self, equations, swigwrapper, name = None, latex_symbols=None, **kwargs):
         
         if name == None:
             name = 'Unnamed'
         super(Case, self).__init__(equations,
-                                   name=name)
+                                   name=name,
+                                   latex_symbols=latex_symbols)
         setattr(self, '_ssystem', None)
         setattr(self, '_independent_variables', None)
         setattr(self, '_reduced_ssystem', None)

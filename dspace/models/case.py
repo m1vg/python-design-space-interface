@@ -14,7 +14,7 @@ from math import *
 
 class Case(Model):
     
-    def __init__(self, model, swigwrapper, name=None, constraints=None, **kwargs):
+    def __init__(self, model, swigwrapper, name=None, constraints=None, latex_symbols=None, **kwargs):
         ''' Init method for the model base class.
         
         The model object is initialized with data to construct
@@ -25,7 +25,8 @@ class Case(Model):
         if name == None:
             name = 'Unnamed'
         super(Case, self).__init__(model.equations,
-                                   name=name)
+                                   name=name,
+                                   latex_symbols=latex_symbols)
         setattr(self, '_ssystem', None)
         setattr(self, '_independent_variables', None)
         self.set_swigwrapper(swigwrapper)
@@ -67,7 +68,8 @@ class Case(Model):
         DSSecureFree(eqs_expr)
         self._ssystem = SSystem(self._equations,
                                 name=self.name,
-                                swigwrapper=DSCaseSSystem(case_swigwrapper))
+                                swigwrapper=DSCaseSSystem(case_swigwrapper),
+                                latex_symbols=self._latex)
 
     @property
     def equations(self):
