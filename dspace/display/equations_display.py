@@ -7,7 +7,7 @@ from dspace.plotutils.monkey_patching import monkeypatch_method
 from IPython.display import display, Math
 
 @monkeypatch_method(dspace.models.base.Equations)
-def __repr__(self):
+def __repr_math_(self):
     string = r'\begin{array}{rcl}'
     for i in self.system:
         eq = Expression(i)
