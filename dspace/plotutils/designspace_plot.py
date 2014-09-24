@@ -180,6 +180,10 @@ def draw_2D_routh_index(self, ax, p_vals, x_variable, y_variable, range_x, range
         self.draw_region_colorbar(c_ax, colors)
     ax.set_xlim([log10(min(range_x)), log10(max(range_x))])
     ax.set_ylim([log10(min(range_y)), log10(max(range_y))])
+    if x_variable in self._latex:
+        x_variable = self._latex[x_variable]
+    if y_variable in self._latex:
+        y_variable = self._latex[y_variable]
     ax.set_xlabel(r'$\log_{10}$(' + x_variable + ')')
     ax.set_ylabel(r'$\log_{10}$(' + y_variable + ')')
     return cf, colors
@@ -279,6 +283,10 @@ def draw_2D_positive_roots(self, ax, p_vals, x_variable, y_variable, range_x,
         self.draw_region_colorbar(c_ax, colors)
     ax.set_xlim([log10(min(range_x)), log10(max(range_x))])
     ax.set_ylim([log10(min(range_y)), log10(max(range_y))])
+    if x_variable in self._latex:
+        x_variable = self._latex[x_variable]
+    if y_variable in self._latex:
+        y_variable = self._latex[y_variable]
     ax.set_xlabel(r'$\log_{10}$(' + x_variable + ')')
     ax.set_ylabel(r'$\log_{10}$(' + y_variable + ')')
     return cf, colors
@@ -341,6 +349,10 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
         colors[key] = color_dict[key]
     ax.set_xlim([log10(min(range_x)), log10(max(range_x))])
     ax.set_ylim([log10(min(range_y)), log10(max(range_y))])
+    if x_variable in self._latex:
+        x_variable = self._latex[x_variable]
+    if y_variable in self._latex:
+        y_variable = self._latex[y_variable]
     ax.set_xlabel(r'$\log_{10}$(' + x_variable + ')')
     ax.set_ylabel(r'$\log_{10}$(' + y_variable + ')')
     if colorbar is False:
@@ -447,6 +459,12 @@ def draw_3D_slice(self, ax, p_vals, x_variable, y_variable,z_variable, range_x,
     ax.set_xlim([log10(min(range_x)), log10(max(range_x))])
     ax.set_ylim([log10(min(range_y)), log10(max(range_y))])
     ax.set_zlim([log10(min(range_z)), log10(max(range_z))])
+    if x_variable in self._latex:
+        x_variable = self._latex[x_variable]
+    if y_variable in self._latex:
+        y_variable = self._latex[y_variable]
+    if z_variable in self._latex:
+        z_variable = self._latex[z_variable]
     ax.set_xlabel(r'$\log_{10}$(' + x_variable + ')')
     ax.set_ylabel(r'$\log_{10}$(' + y_variable + ')')
     ax.set_zlabel(r'$\log_{10}$(' + z_variable + ')')
@@ -520,6 +538,10 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
         pc.set_clim(zlim)
     ax.set_xlim([log10(min(range_x)), log10(max(range_x))])
     ax.set_ylim([log10(min(range_y)), log10(max(range_y))])
+    if x_variable in self._latex:
+        x_variable = self._latex[x_variable]
+    if y_variable in self._latex:
+        y_variable = self._latex[y_variable]
     ax.set_xlabel(r'$\log_{10}$(' + x_variable + ')')
     ax.set_ylabel(r'$\log_{10}$(' + y_variable + ')')
     if colorbar is True:
@@ -546,6 +568,8 @@ def draw_1D_slice(self, ax, p_vals, slice_variable, range_slice, color_dict=None
         V = case_int.draw_1D_slice(ax, p_vals, slice_variable, range_slice, fc=color_dict[key],
                                    **kwargs)
     ax.set_xlim([log10(min(range_slice)), log10(max(range_slice))])
+    if slice_variable in self._latex:
+        slice_variable = self._latex[slice_variable]
     ax.set_xlabel(r'$\log_{10}$(' + slice_variable + ')')
     ax.yaxis.set_visible(False)
     if colorbar is True:
