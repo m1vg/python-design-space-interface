@@ -7687,6 +7687,8 @@ SWIGINTERN PyObject *_wrap_DSExpressionAsLatexString(PyObject *SWIGUNUSEDPARM(se
   DSDictionary *arg2 = (DSDictionary *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   char *result = 0 ;
@@ -7697,32 +7699,11 @@ SWIGINTERN PyObject *_wrap_DSExpressionAsLatexString(PyObject *SWIGUNUSEDPARM(se
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSExpressionAsLatexString" "', argument " "1"" of type '" "DSExpression const *""'"); 
   }
   arg1 = (DSExpression *)(argp1);
-  {
-    /* Check if is a list */
-    if (PyDict_Check(obj1)) {
-      int size = PyDict_Size(obj1);
-      int i = 0;
-      char * key_string, *value_string;
-      PyObject * keys = PyDict_Keys(obj1);
-      arg2 = DSDictionaryAlloc();//(char **) malloc((size+1)*sizeof(char *));
-      for (i = 0; i < size; i++) {
-        PyObject *key = PyList_GetItem(keys, i);
-        PyObject *value = PyDict_GetItem(obj1, key);
-        if (PyString_Check(key) && PyString_Check(value)) {
-          key_string = PyString_AsString(key);
-          value_string = PyString_AsString(value);
-          DSDictionaryAddValueWithName(arg2, key_string, strdup(value_string));
-        } else {
-          PyErr_SetString(PyExc_TypeError,"dictionary must contain strings");
-          DSDictionaryFreeWithFunction(arg2, DSSecureFree);
-          return NULL;
-        }
-      }
-    } else {
-      PyErr_SetString(PyExc_TypeError,"not a dictionary");
-      return NULL;
-    }
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_DSDictionary, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSExpressionAsLatexString" "', argument " "2"" of type '" "DSDictionary const *""'"); 
   }
+  arg2 = (DSDictionary *)(argp2);
   result = (char *)DSExpressionAsLatexString((DSExpression const *)arg1,(DSDictionary const *)arg2);
   {
     if (result == NULL) {
@@ -14723,35 +14704,16 @@ fail:
 SWIGINTERN PyObject *_wrap_DSDictionaryFree(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSDictionary *arg1 = (DSDictionary *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"O:DSDictionaryFree",&obj0)) SWIG_fail;
-  {
-    /* Check if is a list */
-    if (PyDict_Check(obj0)) {
-      int size = PyDict_Size(obj0);
-      int i = 0;
-      char * key_string, *value_string;
-      PyObject * keys = PyDict_Keys(obj0);
-      arg1 = DSDictionaryAlloc();//(char **) malloc((size+1)*sizeof(char *));
-      for (i = 0; i < size; i++) {
-        PyObject *key = PyList_GetItem(keys, i);
-        PyObject *value = PyDict_GetItem(obj0, key);
-        if (PyString_Check(key) && PyString_Check(value)) {
-          key_string = PyString_AsString(key);
-          value_string = PyString_AsString(value);
-          DSDictionaryAddValueWithName(arg1, key_string, strdup(value_string));
-        } else {
-          PyErr_SetString(PyExc_TypeError,"dictionary must contain strings");
-          DSDictionaryFreeWithFunction(arg1, DSSecureFree);
-          return NULL;
-        }
-      }
-    } else {
-      PyErr_SetString(PyExc_TypeError,"not a dictionary");
-      return NULL;
-    }
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDictionary, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDictionaryFree" "', argument " "1"" of type '" "DSDictionary *""'"); 
   }
+  arg1 = (DSDictionary *)(argp1);
   DSDictionaryFree(arg1);
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -14764,37 +14726,18 @@ SWIGINTERN PyObject *_wrap_DSDictionaryFreeWithFunction(PyObject *SWIGUNUSEDPARM
   PyObject *resultobj = 0;
   DSDictionary *arg1 = (DSDictionary *) 0 ;
   void *arg2 = (void *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
   int res2 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:DSDictionaryFreeWithFunction",&obj0,&obj1)) SWIG_fail;
-  {
-    /* Check if is a list */
-    if (PyDict_Check(obj0)) {
-      int size = PyDict_Size(obj0);
-      int i = 0;
-      char * key_string, *value_string;
-      PyObject * keys = PyDict_Keys(obj0);
-      arg1 = DSDictionaryAlloc();//(char **) malloc((size+1)*sizeof(char *));
-      for (i = 0; i < size; i++) {
-        PyObject *key = PyList_GetItem(keys, i);
-        PyObject *value = PyDict_GetItem(obj0, key);
-        if (PyString_Check(key) && PyString_Check(value)) {
-          key_string = PyString_AsString(key);
-          value_string = PyString_AsString(value);
-          DSDictionaryAddValueWithName(arg1, key_string, strdup(value_string));
-        } else {
-          PyErr_SetString(PyExc_TypeError,"dictionary must contain strings");
-          DSDictionaryFreeWithFunction(arg1, DSSecureFree);
-          return NULL;
-        }
-      }
-    } else {
-      PyErr_SetString(PyExc_TypeError,"not a dictionary");
-      return NULL;
-    }
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDictionary, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDictionaryFreeWithFunction" "', argument " "1"" of type '" "DSDictionary *""'"); 
   }
+  arg1 = (DSDictionary *)(argp1);
   res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
   if (!SWIG_IsOK(res2)) {
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSDictionaryFreeWithFunction" "', argument " "2"" of type '" "void *""'"); 
@@ -14810,36 +14753,17 @@ fail:
 SWIGINTERN PyObject *_wrap_DSDictionaryCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSDictionary *arg1 = (DSDictionary *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
   PyObject * obj0 = 0 ;
   DSUInteger result;
   
   if (!PyArg_ParseTuple(args,(char *)"O:DSDictionaryCount",&obj0)) SWIG_fail;
-  {
-    /* Check if is a list */
-    if (PyDict_Check(obj0)) {
-      int size = PyDict_Size(obj0);
-      int i = 0;
-      char * key_string, *value_string;
-      PyObject * keys = PyDict_Keys(obj0);
-      arg1 = DSDictionaryAlloc();//(char **) malloc((size+1)*sizeof(char *));
-      for (i = 0; i < size; i++) {
-        PyObject *key = PyList_GetItem(keys, i);
-        PyObject *value = PyDict_GetItem(obj0, key);
-        if (PyString_Check(key) && PyString_Check(value)) {
-          key_string = PyString_AsString(key);
-          value_string = PyString_AsString(value);
-          DSDictionaryAddValueWithName(arg1, key_string, strdup(value_string));
-        } else {
-          PyErr_SetString(PyExc_TypeError,"dictionary must contain strings");
-          DSDictionaryFreeWithFunction(arg1, DSSecureFree);
-          return NULL;
-        }
-      }
-    } else {
-      PyErr_SetString(PyExc_TypeError,"not a dictionary");
-      return NULL;
-    }
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDictionary, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDictionaryCount" "', argument " "1"" of type '" "DSDictionary const *""'"); 
   }
+  arg1 = (DSDictionary *)(argp1);
   result = DSDictionaryCount((DSDictionary const *)arg1);
   {
     resultobj = PyInt_FromLong((unsigned long)result);
@@ -14854,6 +14778,8 @@ SWIGINTERN PyObject *_wrap_DSDictionaryValueForName(PyObject *SWIGUNUSEDPARM(sel
   PyObject *resultobj = 0;
   DSDictionary *arg1 = (DSDictionary *) 0 ;
   char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
   int res2 ;
   char *buf2 = 0 ;
   int alloc2 = 0 ;
@@ -14862,32 +14788,11 @@ SWIGINTERN PyObject *_wrap_DSDictionaryValueForName(PyObject *SWIGUNUSEDPARM(sel
   void *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:DSDictionaryValueForName",&obj0,&obj1)) SWIG_fail;
-  {
-    /* Check if is a list */
-    if (PyDict_Check(obj0)) {
-      int size = PyDict_Size(obj0);
-      int i = 0;
-      char * key_string, *value_string;
-      PyObject * keys = PyDict_Keys(obj0);
-      arg1 = DSDictionaryAlloc();//(char **) malloc((size+1)*sizeof(char *));
-      for (i = 0; i < size; i++) {
-        PyObject *key = PyList_GetItem(keys, i);
-        PyObject *value = PyDict_GetItem(obj0, key);
-        if (PyString_Check(key) && PyString_Check(value)) {
-          key_string = PyString_AsString(key);
-          value_string = PyString_AsString(value);
-          DSDictionaryAddValueWithName(arg1, key_string, strdup(value_string));
-        } else {
-          PyErr_SetString(PyExc_TypeError,"dictionary must contain strings");
-          DSDictionaryFreeWithFunction(arg1, DSSecureFree);
-          return NULL;
-        }
-      }
-    } else {
-      PyErr_SetString(PyExc_TypeError,"not a dictionary");
-      return NULL;
-    }
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDictionary, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDictionaryValueForName" "', argument " "1"" of type '" "DSDictionary const *""'"); 
   }
+  arg1 = (DSDictionary *)(argp1);
   res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
   if (!SWIG_IsOK(res2)) {
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSDictionaryValueForName" "', argument " "2"" of type '" "char const *""'");
@@ -14906,36 +14811,17 @@ fail:
 SWIGINTERN PyObject *_wrap_DSDictionaryNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSDictionary *arg1 = (DSDictionary *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
   PyObject * obj0 = 0 ;
   char **result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"O:DSDictionaryNames",&obj0)) SWIG_fail;
-  {
-    /* Check if is a list */
-    if (PyDict_Check(obj0)) {
-      int size = PyDict_Size(obj0);
-      int i = 0;
-      char * key_string, *value_string;
-      PyObject * keys = PyDict_Keys(obj0);
-      arg1 = DSDictionaryAlloc();//(char **) malloc((size+1)*sizeof(char *));
-      for (i = 0; i < size; i++) {
-        PyObject *key = PyList_GetItem(keys, i);
-        PyObject *value = PyDict_GetItem(obj0, key);
-        if (PyString_Check(key) && PyString_Check(value)) {
-          key_string = PyString_AsString(key);
-          value_string = PyString_AsString(value);
-          DSDictionaryAddValueWithName(arg1, key_string, strdup(value_string));
-        } else {
-          PyErr_SetString(PyExc_TypeError,"dictionary must contain strings");
-          DSDictionaryFreeWithFunction(arg1, DSSecureFree);
-          return NULL;
-        }
-      }
-    } else {
-      PyErr_SetString(PyExc_TypeError,"not a dictionary");
-      return NULL;
-    }
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDictionary, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDictionaryNames" "', argument " "1"" of type '" "DSDictionary const *""'"); 
   }
+  arg1 = (DSDictionary *)(argp1);
   result = (char **)DSDictionaryNames((DSDictionary const *)arg1);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_p_char, 0 |  0 );
   return resultobj;
@@ -14949,6 +14835,8 @@ SWIGINTERN PyObject *_wrap_DSDictionaryAddValueWithName(PyObject *SWIGUNUSEDPARM
   DSDictionary *arg1 = (DSDictionary *) 0 ;
   char *arg2 = (char *) 0 ;
   void *arg3 = (void *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
   int res2 ;
   char *buf2 = 0 ;
   int alloc2 = 0 ;
@@ -14958,32 +14846,11 @@ SWIGINTERN PyObject *_wrap_DSDictionaryAddValueWithName(PyObject *SWIGUNUSEDPARM
   PyObject * obj2 = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"OOO:DSDictionaryAddValueWithName",&obj0,&obj1,&obj2)) SWIG_fail;
-  {
-    /* Check if is a list */
-    if (PyDict_Check(obj0)) {
-      int size = PyDict_Size(obj0);
-      int i = 0;
-      char * key_string, *value_string;
-      PyObject * keys = PyDict_Keys(obj0);
-      arg1 = DSDictionaryAlloc();//(char **) malloc((size+1)*sizeof(char *));
-      for (i = 0; i < size; i++) {
-        PyObject *key = PyList_GetItem(keys, i);
-        PyObject *value = PyDict_GetItem(obj0, key);
-        if (PyString_Check(key) && PyString_Check(value)) {
-          key_string = PyString_AsString(key);
-          value_string = PyString_AsString(value);
-          DSDictionaryAddValueWithName(arg1, key_string, strdup(value_string));
-        } else {
-          PyErr_SetString(PyExc_TypeError,"dictionary must contain strings");
-          DSDictionaryFreeWithFunction(arg1, DSSecureFree);
-          return NULL;
-        }
-      }
-    } else {
-      PyErr_SetString(PyExc_TypeError,"not a dictionary");
-      return NULL;
-    }
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDictionary, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDictionaryAddValueWithName" "', argument " "1"" of type '" "DSDictionary *""'"); 
   }
+  arg1 = (DSDictionary *)(argp1);
   res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
   if (!SWIG_IsOK(res2)) {
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSDictionaryAddValueWithName" "', argument " "2"" of type '" "char const *""'");
@@ -15006,35 +14873,16 @@ fail:
 SWIGINTERN PyObject *_wrap_DSDictionaryPrint(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSDictionary *arg1 = (DSDictionary *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"O:DSDictionaryPrint",&obj0)) SWIG_fail;
-  {
-    /* Check if is a list */
-    if (PyDict_Check(obj0)) {
-      int size = PyDict_Size(obj0);
-      int i = 0;
-      char * key_string, *value_string;
-      PyObject * keys = PyDict_Keys(obj0);
-      arg1 = DSDictionaryAlloc();//(char **) malloc((size+1)*sizeof(char *));
-      for (i = 0; i < size; i++) {
-        PyObject *key = PyList_GetItem(keys, i);
-        PyObject *value = PyDict_GetItem(obj0, key);
-        if (PyString_Check(key) && PyString_Check(value)) {
-          key_string = PyString_AsString(key);
-          value_string = PyString_AsString(value);
-          DSDictionaryAddValueWithName(arg1, key_string, strdup(value_string));
-        } else {
-          PyErr_SetString(PyExc_TypeError,"dictionary must contain strings");
-          DSDictionaryFreeWithFunction(arg1, DSSecureFree);
-          return NULL;
-        }
-      }
-    } else {
-      PyErr_SetString(PyExc_TypeError,"not a dictionary");
-      return NULL;
-    }
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDictionary, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDictionaryPrint" "', argument " "1"" of type '" "DSDictionary const *""'"); 
   }
+  arg1 = (DSDictionary *)(argp1);
   DSDictionaryPrint((DSDictionary const *)arg1);
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -15047,37 +14895,18 @@ SWIGINTERN PyObject *_wrap_DSDictionaryPrintWithFunction(PyObject *SWIGUNUSEDPAR
   PyObject *resultobj = 0;
   DSDictionary *arg1 = (DSDictionary *) 0 ;
   void *arg2 = (void *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
   int res2 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:DSDictionaryPrintWithFunction",&obj0,&obj1)) SWIG_fail;
-  {
-    /* Check if is a list */
-    if (PyDict_Check(obj0)) {
-      int size = PyDict_Size(obj0);
-      int i = 0;
-      char * key_string, *value_string;
-      PyObject * keys = PyDict_Keys(obj0);
-      arg1 = DSDictionaryAlloc();//(char **) malloc((size+1)*sizeof(char *));
-      for (i = 0; i < size; i++) {
-        PyObject *key = PyList_GetItem(keys, i);
-        PyObject *value = PyDict_GetItem(obj0, key);
-        if (PyString_Check(key) && PyString_Check(value)) {
-          key_string = PyString_AsString(key);
-          value_string = PyString_AsString(value);
-          DSDictionaryAddValueWithName(arg1, key_string, strdup(value_string));
-        } else {
-          PyErr_SetString(PyExc_TypeError,"dictionary must contain strings");
-          DSDictionaryFreeWithFunction(arg1, DSSecureFree);
-          return NULL;
-        }
-      }
-    } else {
-      PyErr_SetString(PyExc_TypeError,"not a dictionary");
-      return NULL;
-    }
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDictionary, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDictionaryPrintWithFunction" "', argument " "1"" of type '" "DSDictionary const *""'"); 
   }
+  arg1 = (DSDictionary *)(argp1);
   res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
   if (!SWIG_IsOK(res2)) {
     SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSDictionaryPrintWithFunction" "', argument " "2"" of type '" "void const *""'"); 
@@ -16587,37 +16416,18 @@ SWIGINTERN PyObject *_wrap_DSDictionaryKeyAtIndex(PyObject *SWIGUNUSEDPARM(self)
   PyObject *resultobj = 0;
   DSDictionary *arg1 = (DSDictionary *) 0 ;
   DSUInteger arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   char *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:DSDictionaryKeyAtIndex",&obj0,&obj1)) SWIG_fail;
-  {
-    /* Check if is a list */
-    if (PyDict_Check(obj0)) {
-      int size = PyDict_Size(obj0);
-      int i = 0;
-      char * key_string, *value_string;
-      PyObject * keys = PyDict_Keys(obj0);
-      arg1 = DSDictionaryAlloc();//(char **) malloc((size+1)*sizeof(char *));
-      for (i = 0; i < size; i++) {
-        PyObject *key = PyList_GetItem(keys, i);
-        PyObject *value = PyDict_GetItem(obj0, key);
-        if (PyString_Check(key) && PyString_Check(value)) {
-          key_string = PyString_AsString(key);
-          value_string = PyString_AsString(value);
-          DSDictionaryAddValueWithName(arg1, key_string, strdup(value_string));
-        } else {
-          PyErr_SetString(PyExc_TypeError,"dictionary must contain strings");
-          DSDictionaryFreeWithFunction(arg1, DSSecureFree);
-          return NULL;
-        }
-      }
-    } else {
-      PyErr_SetString(PyExc_TypeError,"not a dictionary");
-      return NULL;
-    }
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDictionary, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDictionaryKeyAtIndex" "', argument " "1"" of type '" "DSDictionary const *""'"); 
   }
+  arg1 = (DSDictionary *)(argp1);
   {
     arg2 = (DSUInteger) PyLong_AsUnsignedLongMask(obj1);
   }

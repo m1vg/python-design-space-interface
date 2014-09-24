@@ -153,6 +153,18 @@ class DesignSpace(GMASystem):
                                                               len(xi_list),
                                                               )
         self.set_swigwrapper(swigwrapper)
+        gma = DSDesignSpaceGMASystem(self._swigwrapper)
+        eqs = DSGMASystemEquations(gma)
+        equation_list = list()
+        for i in xrange(0, DSGMASystemNumberOfEquations(gma)):
+            expr = DSExpressionAtIndexOfExpressionArray(eqs, i)
+            equation_list.append(DSExpressionAsString(expr))
+            DSExpressionFree(expr)
+        DSSecureFree(eqs)
+        Xda = VariablePool()
+        Xda.set_swigwrapper(DSVariablePoolCopy(DSGMASystemXd_a(gma)))
+        equations = Equations(equation_list, auxiliary_variables=Xda.keys())
+        self._equations = equations
     
     def set_swigwrapper(self, ds_swigwrapper):
         self._swigwrapper = ds_swigwrapper

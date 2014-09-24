@@ -32,32 +32,6 @@
 }
 
 /* Type Map Data */
-%typemap(in) DSDictionary * {
-        /* Check if is a list */
-        if (PyDict_Check($input)) {
-                int size = PyDict_Size($input);
-                int i = 0;
-                char * key_string, *value_string;
-                PyObject * keys = PyDict_Keys($input);
-                $1 = DSDictionaryAlloc();//(char **) malloc((size+1)*sizeof(char *));
-                for (i = 0; i < size; i++) {
-                        PyObject *key = PyList_GetItem(keys, i);
-                        PyObject *value = PyDict_GetItem($input, key);
-                        if (PyString_Check(key) && PyString_Check(value)) {
-                                key_string = PyString_AsString(key);
-                                value_string = PyString_AsString(value);
-                                DSDictionaryAddValueWithName($1, key_string, strdup(value_string));
-                        } else {
-                                PyErr_SetString(PyExc_TypeError,"dictionary must contain strings");
-                                DSDictionaryFreeWithFunction($1, DSSecureFree);
-                                return NULL;
-                        }
-                }
-        } else {
-                PyErr_SetString(PyExc_TypeError,"not a dictionary");
-                return NULL;
-        }
-}
 
 %typemap(in) const DSUInteger * {
         /* Check if is a list */

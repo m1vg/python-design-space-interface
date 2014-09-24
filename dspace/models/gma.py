@@ -11,10 +11,11 @@ from dspace.models.base import Equations,Model
 
 class GMASystem(Model):
     
-    def __init__(self, equations, name=None, swigwrapper=None, **kwargs):
+    def __init__(self, equations, name=None, swigwrapper=None, latex_symbols=None, **kwargs):
         super(GMASystem, self).__init__(equations, name=name, **kwargs)
         setattr(self, '_swigwrapper', None)
         setattr(self, '_independent_variables', None)
+        setattr(self, '_latex_symbols', latex_symbols)
 
         if swigwrapper is not None:
             self.set_swigwrapper(swigwrapper)
@@ -48,8 +49,19 @@ class GMASystem(Model):
                                                   len(auxiliary_variables)
                                                   )
         self.set_swigwrapper(swigwrapper)
+        eqs = DSGMASystemEquations(self._swigwrapper)
+        equation_list = list()
+        for i in xrange(0, DSGMASystemNumberOfEquations(self._swigwrapper)):
+            expr = DSExpressionAtIndexOfExpressionArray(eqs, i)
+            equation_list.append(DSExpressionAsString(expr))
+            DSExpressionFree(expr)
+        DSSecureFree(eqs)
+        Xda = VariablePool()
+        Xda.set_swigwrapper(DSVariablePoolCopy(DSGMASystemXd_a(self._swigwrapper)))
+        equations = Equations(equation_list, auxiliary_variables=Xda.keys())
+        self._equations = equations
     
     @property
     def independent_variables(self):
         return self._independent_variables.keys()
-      
+    
