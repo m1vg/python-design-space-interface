@@ -8,7 +8,7 @@ from IPython.display import display, Math
 
 @monkeypatch_method(dspace.models.base.Equations)
 def _repr_latex_(self):
-    string = r'\begin{array}{r}'
+    string = r'\begin{array}{l}'
     for i in self.system:
         eq = Expression(i)
         string += eq.__latex_str__(substitution_dictionary=self._latex)
