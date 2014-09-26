@@ -9,4 +9,4 @@ if StrictVersion(__version__) < StrictVersion(__supported_versions__[0]):
     
 if len(compatability[1]) > 1:
     if StrictVersion(__version__) >= StrictVersion(__supported_versions__[1]):
-        raise ImportError, 'Needs Design Space Toolbox V2 C Library < ' __supported_versions__[1]    
+        raise ImportError, 'Needs Design Space Toolbox V2 C Library < ' +  __supported_versions__[1]    
