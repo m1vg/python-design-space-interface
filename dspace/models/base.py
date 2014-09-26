@@ -115,6 +115,8 @@ class Model(object):
         setattr(self, '_latex', dict())
         if latex_symbols is not None:
             self._latex.update(latex_symbols)
+        else:
+            self._latex.update(equations._latex)
 
 
     @property
