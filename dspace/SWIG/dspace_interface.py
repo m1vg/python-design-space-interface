@@ -69,6 +69,10 @@ except AttributeError:
     _newclass = 0
 
 
+
+def DSDesignSpaceToolboxVersionString():
+  return _dspace_interface.DSDesignSpaceToolboxVersionString()
+DSDesignSpaceToolboxVersionString = _dspace_interface.DSDesignSpaceToolboxVersionString
 M_DS_NOFILE = _dspace_interface.M_DS_NOFILE
 M_DS_NULL = _dspace_interface.M_DS_NULL
 M_DS_NOFORMAT = _dspace_interface.M_DS_NOFORMAT
@@ -1531,10 +1535,6 @@ DSCaseNDVertexEnumeration = _dspace_interface.DSCaseNDVertexEnumeration
 def DSSWIGDSDictionaryFromPyDict(*args):
   return _dspace_interface.DSSWIGDSDictionaryFromPyDict(*args)
 DSSWIGDSDictionaryFromPyDict = _dspace_interface.DSSWIGDSDictionaryFromPyDict
-
-def DSDesignSpaceToolboxVersionString():
-  return _dspace_interface.DSDesignSpaceToolboxVersionString()
-DSDesignSpaceToolboxVersionString = _dspace_interface.DSDesignSpaceToolboxVersionString
 
 def DSSWIGDSDictionaryFreeCharValues(*args):
   return _dspace_interface.DSSWIGDSDictionaryFreeCharValues(*args)

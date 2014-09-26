@@ -161,6 +161,7 @@
         }
 }
 
+%include "/usr/local/include/designspace/DSStd.h"
 %include "/usr/local/include/designspace/DSErrors.h"
 %include "/usr/local/include/designspace/DSMemoryManager.h"
 %include "/usr/local/include/designspace/DSVariable.h"
@@ -446,11 +447,6 @@ extern DSDictionary * DSSWIGDSDictionaryFromPyDict(PyObject * pydict) {
         }
 bail:
         return dictionary;
-}
-
-extern const char * DSDesignSpaceToolboxVersionString(void)
-{
-        return __DS_DESIGN_SPACE_VERSION__;
 }
         
 extern void DSSWIGDSDictionaryFreeCharValues(DSDictionary * dictionary)
