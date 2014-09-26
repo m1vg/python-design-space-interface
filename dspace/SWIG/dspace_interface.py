@@ -1532,6 +1532,10 @@ def DSSWIGDSDictionaryFromPyDict(*args):
   return _dspace_interface.DSSWIGDSDictionaryFromPyDict(*args)
 DSSWIGDSDictionaryFromPyDict = _dspace_interface.DSSWIGDSDictionaryFromPyDict
 
+def DSDesignSpaceToolboxVersionString():
+  return _dspace_interface.DSDesignSpaceToolboxVersionString()
+DSDesignSpaceToolboxVersionString = _dspace_interface.DSDesignSpaceToolboxVersionString
+
 def DSSWIGDSDictionaryFreeCharValues(*args):
   return _dspace_interface.DSSWIGDSDictionaryFreeCharValues(*args)
 DSSWIGDSDictionaryFreeCharValues = _dspace_interface.DSSWIGDSDictionaryFreeCharValues

@@ -3432,6 +3432,11 @@ extern DSDictionary * DSSWIGDSDictionaryFromPyDict(PyObject * pydict) {
 bail:
         return dictionary;
 }
+
+extern const char * DSDesignSpaceToolboxVersionString(void)
+{
+        return __DS_DESIGN_SPACE_VERSION__;
+}
         
 extern void DSSWIGDSDictionaryFreeCharValues(DSDictionary * dictionary)
 {
@@ -15969,6 +15974,24 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSDesignSpaceToolboxVersionString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":DSDesignSpaceToolboxVersionString")) SWIG_fail;
+  result = (char *)DSDesignSpaceToolboxVersionString();
+  {
+    if (result == NULL) {
+      return NULL;
+    }
+    resultobj = PyString_FromFormat("%s", result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSSWIGDSDictionaryFreeCharValues(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSDictionary *arg1 = (DSDictionary *) 0 ;
@@ -16905,6 +16928,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCyclicalCaseVerticesFor2DSlice", _wrap_DSCyclicalCaseVerticesFor2DSlice, METH_VARARGS, NULL},
 	 { (char *)"DSCaseNDVertexEnumeration", _wrap_DSCaseNDVertexEnumeration, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGDSDictionaryFromPyDict", _wrap_DSSWIGDSDictionaryFromPyDict, METH_VARARGS, NULL},
+	 { (char *)"DSDesignSpaceToolboxVersionString", _wrap_DSDesignSpaceToolboxVersionString, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGDSDictionaryFreeCharValues", _wrap_DSSWIGDSDictionaryFreeCharValues, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGVoidAsSubcase", _wrap_DSSWIGVoidAsSubcase, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGVoidAsCase", _wrap_DSSWIGVoidAsCase, METH_VARARGS, NULL},

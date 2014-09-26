@@ -447,6 +447,11 @@ extern DSDictionary * DSSWIGDSDictionaryFromPyDict(PyObject * pydict) {
 bail:
         return dictionary;
 }
+
+extern const char * DSDesignSpaceToolboxVersionString(void)
+{
+        return __DS_DESIGN_SPACE_VERSION__;
+}
         
 extern void DSSWIGDSDictionaryFreeCharValues(DSDictionary * dictionary)
 {
