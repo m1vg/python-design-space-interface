@@ -30,7 +30,7 @@ class CyclicalCase(Case):
         if sub is None:
             return None
         case = Case(self, DSCyclicalCaseSubcaseWithCaseNumber(self._swigwrapper, case), name)
-        eq6=Equations(case.equations, case.auxiliary_variables)
+        eq6=Equations(case.equations.system, case.auxiliary_variables)
         return CyclicalCase(eq6, sub, name = case.name)
 
     def __call__(self, index_or_iterable):

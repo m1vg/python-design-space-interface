@@ -514,7 +514,7 @@ class DesignSpace(GMASystem):
         if sub is None:
             return None
         case = Case(self, DSDesignSpaceCaseWithCaseNumber(self._swigwrapper, case), name)
-        eq6=Equations(case.equations, case.auxiliary_variables)
+        eq6=Equations(case.equations.system, case.auxiliary_variables)
         return CyclicalCase(eq6, sub, name = case.name, latex_symbols=self._latex)
     
     def line_1D_positive_roots(self, function, p_vals, slice_variable, 
