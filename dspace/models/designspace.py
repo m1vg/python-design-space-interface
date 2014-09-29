@@ -63,9 +63,11 @@ class DesignSpace(GMASystem):
             
     def __len__(self):
         return DSDesignSpaceNumberOfCases(self._swigwrapper)+1        
-        
+    
+    
     def _case_with_signature(self, signature, constraints):
         siglist = []
+        wild_cards = []
         try:
             case, subcase = signature.split('_')
             signature = case
@@ -80,11 +82,17 @@ class DesignSpace(GMASystem):
                 while signature[i] != ')':
                     i += 1
                 siglist.append(int(signature[start:i]))
+            elif signature[i] == '*':
+                num_wild = int(self.signature[i])
+                for j in xrange(num_wild):
+                    new_sig = signature.replace('*', str(j+1), 1)
+                    wild_cards += self._case_with_signature(new_sig, constraints)
+                return wild_cards
             else:
                 siglist.append(int(signature[i]))
             i+=1
         index = DSCaseNumberForSignature(siglist, DSDesignSpaceGMASystem(self._swigwrapper))
-        return self(str(index)+subcase, constraints=constraints)
+        return [self(str(index)+subcase, constraints=constraints)]
     
     def __call__(self, index_or_iterable, by_signature=False, constraints=None):
         if isinstance(index_or_iterable, (int, str)) is True:
@@ -112,7 +120,7 @@ class DesignSpace(GMASystem):
                 cases.append(case)
             elif isinstance(index, str) is True:
                 if index[0] == ':':
-                    cases.append(self._case_with_signature(index[1:], constraints))
+                    cases += self._case_with_signature(index[1:], constraints)
                     continue
                 indices = index.split('_')
                 name = self.name + ': Case ' + indices[0]
@@ -133,8 +141,8 @@ class DesignSpace(GMASystem):
                 cases.append(subcase)
             else:
                 raise TypeError, 'input argument must be a case number'
-        if isinstance(index_or_iterable, (int, str)) is True:
-            return cases[0]
+        if len(cases) == 1:
+            cases = cases[0]
         return cases
             
     def _parse_equations(self, match_Xi=None, **kwargs):
