@@ -25,12 +25,7 @@ class DesignSpace(GMASystem):
         ''' Initializes a new object with the input parameters for a routine
             analysis.
         
-        The object incorporates the  input parameters to construct a system
-        design space and specify the analysis that is performed.  The analyses
-        that are performed involve routine functions, such as plotting a 2D
-        design space,  steady state concentrations, steady state fluxes,
-        stability information, etc.  The input arguments are a set
-        of keyword arguments, that affect the output behavior.
+        
                  
         Args:
             equations (list): A list of equations in string format defining the 
@@ -142,7 +137,8 @@ class DesignSpace(GMASystem):
             else:
                 raise TypeError, 'input argument must be a case number'
         if len(cases) == 1:
-            cases = cases[0]
+            if isinstance(index_or_iterable, str) or isinstance(index_or_iterable, int):
+                cases = cases[0]
         return cases
             
     def _parse_equations(self, match_Xi=None, **kwargs):
@@ -348,8 +344,6 @@ class DesignSpace(GMASystem):
                         raise ValueError, 'parameter slice bounds are inverted: min is larger than max'
                         lower[key] = min_value
                         upper[key] = max_value
-        ## sets = [set([i]) for i in valid_cases]
-        ## sets = [valid_caseset)   
         if 1 in intersects:
             [intersections.append(i) for i in case_numbers if self(i).is_valid(p_bounds=p_bounds) is True]
         sets = [set([i]) for i in valid_cases]
@@ -371,37 +365,6 @@ class DesignSpace(GMASystem):
                     if i in intersects:
                         intersections.append([case_numbers[k] for k in current_set])
                     sets.append(current_set)
-        ## for i in xrange(len(intersects)):
-        ##     sets_to_check = sets
-        ##     sets = []
-        ##     for valid_cases in sets_to_check:     
-        ##         if len(valid_cases) < intersects[i]:
-        ##             continue     
-        ##         comb = itertools.combinations(valid_cases, intersects[i])
-        ##         valid_cases = set()
-        ##         for j in comb:
-        ##             current_set = set(k for k in j)
-        ##             case_int = CaseIntersection([self(case_numbers[k]) for k in current_set])                
-        ##             if case_int.is_valid(p_bounds=p_bounds) is True:
-        ##                 found = False
-        ##                 for j in xrange(len(sets)):
-        ##                     if len(sets[j].union(current_set)) == len(sets[j])+1:
-        ##                         sets[j] = sets[j].union(current_set)
-        ##                         found = True
-        ##                         break
-        ##                 if found is False:
-        ##                     sets.append(current_set)
-        ##                 ## valid_cases = valid_cases.union(current_set)
-        ##                 intersections.append([case_numbers[k] for k in current_set])        
-        ## for i in xrange(len(intersects)):            
-        ##     comb = itertools.combinations(valid_cases, intersects[i])
-        ##     valid_cases = set()
-        ##     for j in comb:
-        ##         current_set = set(k for k in j)
-        ##         case_int = CaseIntersection([self(case_numbers[k]) for k in current_set])                
-        ##         if case_int.is_valid(p_bounds=p_bounds) is True:
-        ##             intersections.append([case_numbers[k] for k in current_set])
-        ##             valid_cases = valid_cases.union(current_set)
         return intersections
     
     def co_localize_cases(self, case_numbers, slice_parameters, constraints=None, by_signature=False):
@@ -414,8 +377,6 @@ class DesignSpace(GMASystem):
         
     def maximum_co_localized_cases(self, slice_variables, case_numbers, p_bounds=None):
         new = False        
-        ## if isinstance(intersects, list) is False:
-        ##     intersects = [intersects]
         if len(case_numbers) == 0:
             return None
         intersections = list()        
@@ -465,46 +426,6 @@ class DesignSpace(GMASystem):
                     new = False
                     intersections.append([case_numbers[k] for k in current_set])
                     sets.append(current_set)
-        ## sets = [set([i]) for i in valid_cases]     
-        ## for i in xrange(len(intersects)):
-        ##     sets_to_check = sets
-        ##     sets = []
-        ##     identifiers = range(0, len(sets_to_check))
-        ##     comb = itertools.combinations(identifiers, intersects[i])
-        ##     for j in comb:
-        ##         current_set = set()
-        ##         for k in j:
-        ##             current_set = current_set.union(sets_to_check[k])
-        ##         if len(current_set) != intersects[i]:
-        ##             continue
-        ##         case_int = CaseIntersection([self(case_numbers[k]) for k in current_set])                
-        ##         pvals=case_int.valid_parameter_set_excluding_slice(slice_variables)                
-        ##         if pvals is not None:
-        ##              intersections.append([case_numbers[k] for k in current_set])
-        ##              sets.append(current_set)
-                     ## valid_cases = valid_cases.union(current_set)et)
-            ##     
-            ## 
-            ## for valid_cases in sets_to_check:     
-            ##     if len(valid_cases) < intersects[i]:
-            ##         continue     
-            ##     comb = itertools.combinations(valid_cases, intersects[i])
-            ##     valid_cases = set()
-            ##     for j in comb:
-            ##         current_set = set(k for k in j)
-            ##         case_int = CaseIntersection([self(case_numbers[k]) for k in current_set])                
-            ##         pvals=case_int.valid_parameter_set_excluding_slice(slice_variables)
-            ##         if pvals is not None:
-            ##             found = False
-            ##             for j in xrange(len(sets)):
-            ##                 if len(sets[j].union(current_set)) == len(sets[j])+1:
-            ##                     sets[j] = sets[j].union(current_set)
-            ##                     found = True
-            ##                     break
-            ##             if found is False:
-            ##                 sets.append(current_set)
-            ##             ## valid_cases = valid_cases.union(current_set)
-            ##             intersections.append([case_numbers[k] for k in current_set])
         return intersections
     
     def intersecting_cases(self, intersects, case_numbers, p_bounds=None):

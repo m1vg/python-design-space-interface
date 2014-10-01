@@ -27,16 +27,17 @@ for function in SWIG_REQUIREMENTS:
 
 
 from dspace.variables import VariablePool
+from dspace.expressions import Expression
 
 class Equations(object):
     
     def __init__(self, system, auxiliary_variables=[], latex_symbols=None):
-        ''' Init method for the model base class.
+        ''' Init method for the class used to represent equations.
         
-        The model object is initialized with data to construct
-        a dictionary of key value pairs, where the keys represent
-        names of the model's dependent variables, and the values
-        are the equations in the system.
+        The equations object is initialized with strings representing
+        the equations or system of equations. Its current use is primarily for
+        defining models, but it is intended to be a much more robus class that
+        serves as a front-end to the design space toolbox algebra system.
         '''
         setattr(self, '_eq', list())
         setattr(self, '_auxiliary_variables', list())
@@ -48,7 +49,7 @@ class Equations(object):
         for i in system:
             if isinstance(i, str) is False:
                 raise TypeError, 'ODE must be a string'
-            self._eq.append(i)
+            self._eq.append(Expression(i))
         for i in auxiliary_variables:
             if isinstance(i, str) is False:
                 raise TypeError, 'ODE must be a string'
@@ -58,12 +59,12 @@ class Equations(object):
     
     @property                    
     def system(self):
-        return list(self._eq)
+        return [str(i) for i in self._eq]
 
     @property
     def dependent_variables(self):
         differentiated = list()
-        for i in self._eq:
+        for i in self.system:
             temp = i.split('=')[0].strip()
             temp = temp.split('.')
             if len(temp) == 1 or temp[0] not in (string.lowercase + string.uppercase + '_') is True:
@@ -83,7 +84,8 @@ class Equations(object):
         return len(self._eq)
         
     def __repr__(self):
-        return str(self._eq)
+        string = '\n'.join([str(i) for i in self._eq])
+        return string
         
     def replace_symbols(self, symbol_dict):
         
@@ -100,10 +102,7 @@ class Model(object):
     def __init__(self, equations, name=None, description=None, latex_symbols=None, **kwargs):
         ''' Init method for the model base class.
         
-        The model object is initialized with data to construct
-        a dictionary of key value pairs, where the keys represent
-        names of the model's dependent variables, and the values
-        are the equations in the system.
+        
         '''
         setattr(self, '_equations', equations)
         if name is None:
@@ -136,6 +135,11 @@ class Model(object):
         return self._equations.dependent_variables
     
     def __repr__(self):
-        return 'Model: ' + self.name + '\n' + str(self.equations)     
+        string = 'Model: ' + self.name 
+        if self._description:
+            string += '\nDescription:\n' + self._description
+        string += '\nEquations:\n'+repr(self.equations)
+        
+        return string
    
             

@@ -50,4 +50,20 @@ class Expression(object):
         return DSExpressionEvaluateWithVariablePool(self._swigwrapper,
                                                     p_vals._swigwrapper)
     
+    @property
+    def lhs(self):
+        expr = None
+        lhs_swigwrapper = DSExpressionEquationLHSExpression(self._swigwrapper)
+        if lhs_swigwrapper is not None:
+            expr = Expression(None)
+            expr._swigwrapper = lhs_swigwrapper
+        return expr
     
+    @property  
+    def rhs(self):
+        expr = None
+        rhs_swigwrapper = DSExpressionEquationRHSExpression(self._swigwrapper)
+        if rhs_swigwrapper is not None:
+            expr = Expression(None)
+            expr._swigwrapper = rhs_swigwrapper
+        return expr
