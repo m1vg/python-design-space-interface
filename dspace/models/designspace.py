@@ -59,6 +59,16 @@ class DesignSpace(GMASystem):
     def __len__(self):
         return DSDesignSpaceNumberOfCases(self._swigwrapper)+1        
     
+    def __getstate__(self):
+        odict = self.__dict__.copy()
+        odict['_swigwrapper'] = DSSWIGDSDesignSpaceEncodedBytes(self._swigwrapper)
+        del odict['_independent_variables']
+        return odict
+    
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        encoded = state['_swigwrapper']
+        self.set_swigwrapper(DSSWIGDSDesignSpaceDecodeFromByteArray(encoded))
     
     def _case_with_signature(self, signature, constraints):
         siglist = []
@@ -483,4 +493,5 @@ class DesignSpace(GMASystem):
                 if len(x):
                     lines.append((x, y, j))
         return lines
-## 
+                
+                

@@ -1,0 +1,16 @@
+Python Design Space Interface 0.3.0
+
+
+Incompatabilities
+=================
+* Requires libprotobuf-c
+* Requires Design Space Toolbox V2 >= 0.3.0a0
+
+New features
+============
+* DesignSpace, Case, CyclicalCase are now picklable objects.
+
+Bug Fixes
+=========
+
+

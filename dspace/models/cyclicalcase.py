@@ -20,6 +20,7 @@ class CyclicalCase(Case):
         setattr(self, '_ssystem', None)
         setattr(self, '_independent_variables', None)
         setattr(self, '_reduced_ssystem', None)
+        setattr(self, '_freeData', False)
         self.set_swigwrapper(swigwrapper)
         
     def _cyclical_case(self, case, name):
@@ -76,8 +77,24 @@ class CyclicalCase(Case):
         return cases
     
     def __del__(self):
+        if self._freeData is True:
+            DSCyclicalCaseFree(self._swigwrapper)
         return
     
+    def __getstate__(self):
+        odict = self.__dict__.copy()
+        odict['_swigwrapper'] = DSSWIGDSCyclicalCaseEncodedBytes(self._swigwrapper)
+        del odict['_ssystem']
+        del odict['_independent_variables']
+        del odict['_dependent_variables']
+        return odict
+    
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        encoded = state['_swigwrapper']
+        self.set_swigwrapper(DSSWIGDSCyclicalCaseDecodeFromByteArray(encoded)) 
+        self._freeData = True
+        
     @property
     def equations(self):
         eqs = DSCyclicalCaseEquations(self._swigwrapper)

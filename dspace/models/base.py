@@ -86,6 +86,16 @@ class Equations(object):
     def __repr__(self):
         string = '\n'.join([str(i) for i in self._eq])
         return string
+    
+    def __getstate__(self):
+        odict = self.__dict__.copy()
+        odict['_eq'] = self.system
+        return odict
+    
+    def __setstate__(self, state):
+        self.__init__(state['_eq'], 
+                      auxiliary_variables=state['_auxiliary_variables'],
+                      latex_symbols=state['_latex'])
         
     def replace_symbols(self, symbol_dict):
         

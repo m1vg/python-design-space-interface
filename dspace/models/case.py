@@ -50,6 +50,18 @@ class Case(Model):
         else:
             return '_'.join([i.strip(' :') for i in case_info])
             
+    def __getstate__(self):
+        odict = self.__dict__.copy()
+        odict['_swigwrapper'] = DSSWIGDSCaseEncodedBytes(self._swigwrapper)
+        del odict['_ssystem']
+        del odict['_independent_variables']
+        return odict
+    
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        encoded = state['_swigwrapper']
+        self.set_swigwrapper(DSSWIGDSCaseDecodeFromByteArray(encoded)) 
+               
     def set_swigwrapper(self, case_swigwrapper):
         self._swigwrapper = case_swigwrapper
         Xd = VariablePool()
