@@ -89,7 +89,7 @@ class Equations(object):
         
     def replace_symbols(self, symbol_dict):
         
-        eq = [i for i in self._eq]
+        eq = self.system
         for i in xrange(0, len(self._eq)):
             for j in symbol_dict:
                 eq[i] = eq[i].replace(j, str(symbol_dict[j]))
