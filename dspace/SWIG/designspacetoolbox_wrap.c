@@ -15105,12 +15105,10 @@ fail:
 SWIGINTERN PyObject *_wrap_DSDesignSpaceDecode(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   size_t arg1 ;
-  char *arg2 = (char *) 0 ;
+  void *arg2 = (void *) 0 ;
   size_t val1 ;
   int ecode1 = 0 ;
   int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   DSDesignSpace *result = 0 ;
@@ -15121,17 +15119,14 @@ SWIGINTERN PyObject *_wrap_DSDesignSpaceDecode(PyObject *SWIGUNUSEDPARM(self), P
     SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "DSDesignSpaceDecode" "', argument " "1"" of type '" "size_t""'");
   } 
   arg1 = (size_t)(val1);
-  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSDesignSpaceDecode" "', argument " "2"" of type '" "char const *""'");
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSDesignSpaceDecode" "', argument " "2"" of type '" "void const *""'"); 
   }
-  arg2 = (char *)(buf2);
-  result = (DSDesignSpace *)DSDesignSpaceDecode(arg1,(char const *)arg2);
+  result = (DSDesignSpace *)DSDesignSpaceDecode(arg1,(void const *)arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSDesignSpace, 0 |  0 );
-  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
   return resultobj;
 fail:
-  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
   return NULL;
 }
 
