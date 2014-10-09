@@ -153,7 +153,7 @@ class Case(Model):
         
     @property
     def case_number(self):
-        return DSCaseNumber(self._swigwrapper)
+        return DSCaseIdentifier(self._swigwrapper)
 
     @property
     def signature(self):

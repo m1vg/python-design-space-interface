@@ -11395,13 +11395,18 @@ SWIGINTERN PyObject *_wrap_DSCaseWithTermsFromGMA(PyObject *SWIGUNUSEDPARM(self)
   PyObject *resultobj = 0;
   DSGMASystem *arg1 = (DSGMASystem *) 0 ;
   DSUInteger *arg2 = (DSUInteger *) 0 ;
+  char *arg3 = (char *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
   DSCase *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:DSCaseWithTermsFromGMA",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DSCaseWithTermsFromGMA",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSGMASystem, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseWithTermsFromGMA" "', argument " "1"" of type '" "DSGMASystem const *""'"); 
@@ -11429,10 +11434,17 @@ SWIGINTERN PyObject *_wrap_DSCaseWithTermsFromGMA(PyObject *SWIGUNUSEDPARM(self)
       return NULL;
     }
   }
-  result = (DSCase *)DSCaseWithTermsFromGMA((DSGMASystem const *)arg1,(DSUInteger const *)arg2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DSCaseWithTermsFromGMA" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = (char *)(buf3);
+  result = (DSCase *)DSCaseWithTermsFromGMA((DSGMASystem const *)arg1,(DSUInteger const *)arg2,(char const *)arg3);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSCase, 0 |  0 );
+  if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
   return resultobj;
 fail:
+  if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
   return NULL;
 }
 
@@ -11441,13 +11453,18 @@ SWIGINTERN PyObject *_wrap_DSCaseWithTermsFromDesignSpace(PyObject *SWIGUNUSEDPA
   PyObject *resultobj = 0;
   DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
   DSUInteger *arg2 = (DSUInteger *) 0 ;
+  char *arg3 = (char *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
   DSCase *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:DSCaseWithTermsFromDesignSpace",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DSCaseWithTermsFromDesignSpace",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseWithTermsFromDesignSpace" "', argument " "1"" of type '" "DSDesignSpace const *""'"); 
@@ -11475,10 +11492,17 @@ SWIGINTERN PyObject *_wrap_DSCaseWithTermsFromDesignSpace(PyObject *SWIGUNUSEDPA
       return NULL;
     }
   }
-  result = (DSCase *)DSCaseWithTermsFromDesignSpace((DSDesignSpace const *)arg1,(DSUInteger const *)arg2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DSCaseWithTermsFromDesignSpace" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = (char *)(buf3);
+  result = (DSCase *)DSCaseWithTermsFromDesignSpace((DSDesignSpace const *)arg1,(DSUInteger const *)arg2,(char const *)arg3);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSCase, 0 |  0 );
+  if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
   return resultobj;
 fail:
+  if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
   return NULL;
 }
 
@@ -11748,6 +11772,33 @@ SWIGINTERN PyObject *_wrap_DSCaseNumber(PyObject *SWIGUNUSEDPARM(self), PyObject
   result = DSCaseNumber((DSCase const *)arg1);
   {
     resultobj = PyInt_FromLong((unsigned long)result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseIdentifier(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSCaseIdentifier",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseIdentifier" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  result = (char *)DSCaseIdentifier((DSCase const *)arg1);
+  {
+    if (result == NULL) {
+      return NULL;
+    }
+    resultobj = PyString_FromFormat("%s", result);
   }
   return resultobj;
 fail:
@@ -14544,6 +14595,33 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSDesignSpaceCasePrefix(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSDesignSpaceCasePrefix",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceCasePrefix" "', argument " "1"" of type '" "DSDesignSpace const *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  result = (char *)DSDesignSpaceCasePrefix((DSDesignSpace const *)arg1);
+  {
+    if (result == NULL) {
+      return NULL;
+    }
+    resultobj = PyString_FromFormat("%s", result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSDesignSpaceTermListForAllStrings(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   char **arg1 = (char **) (char **)0 ;
@@ -15105,12 +15183,10 @@ fail:
 SWIGINTERN PyObject *_wrap_DSDesignSpaceDecode(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   size_t arg1 ;
-  char *arg2 = (char *) 0 ;
+  void *arg2 = (void *) 0 ;
   size_t val1 ;
   int ecode1 = 0 ;
   int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   DSDesignSpace *result = 0 ;
@@ -15121,17 +15197,14 @@ SWIGINTERN PyObject *_wrap_DSDesignSpaceDecode(PyObject *SWIGUNUSEDPARM(self), P
     SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "DSDesignSpaceDecode" "', argument " "1"" of type '" "size_t""'");
   } 
   arg1 = (size_t)(val1);
-  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSDesignSpaceDecode" "', argument " "2"" of type '" "char const *""'");
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSDesignSpaceDecode" "', argument " "2"" of type '" "void const *""'"); 
   }
-  arg2 = (char *)(buf2);
-  result = (DSDesignSpace *)DSDesignSpaceDecode(arg1,(char const *)arg2);
+  result = (DSDesignSpace *)DSDesignSpaceDecode(arg1,(void const *)arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSDesignSpace, 0 |  0 );
-  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
   return resultobj;
 fail:
-  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
   return NULL;
 }
 
@@ -16438,6 +16511,33 @@ SWIGINTERN PyObject *_wrap_DSCyclicalCaseNumber(PyObject *SWIGUNUSEDPARM(self), 
   result = DSCyclicalCaseNumber((DSCyclicalCase const *)arg1);
   {
     resultobj = PyInt_FromLong((unsigned long)result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCyclicalCaseIdentifier(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCyclicalCase *arg1 = (DSCyclicalCase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSCyclicalCaseIdentifier",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCyclicalCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCyclicalCaseIdentifier" "', argument " "1"" of type '" "DSCyclicalCase const *""'"); 
+  }
+  arg1 = (DSCyclicalCase *)(argp1);
+  result = (char *)DSCyclicalCaseIdentifier((DSCyclicalCase const *)arg1);
+  {
+    if (result == NULL) {
+      return NULL;
+    }
+    resultobj = PyString_FromFormat("%s", result);
   }
   return resultobj;
 fail:
@@ -17828,6 +17928,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCaseBoundaries", _wrap_DSCaseBoundaries, METH_VARARGS, NULL},
 	 { (char *)"DSCaseLogarithmicBoundaries", _wrap_DSCaseLogarithmicBoundaries, METH_VARARGS, NULL},
 	 { (char *)"DSCaseNumber", _wrap_DSCaseNumber, METH_VARARGS, NULL},
+	 { (char *)"DSCaseIdentifier", _wrap_DSCaseIdentifier, METH_VARARGS, NULL},
 	 { (char *)"DSCaseSignature", _wrap_DSCaseSignature, METH_VARARGS, NULL},
 	 { (char *)"DSCaseSSystem", _wrap_DSCaseSSystem, METH_VARARGS, NULL},
 	 { (char *)"DSCaseLogarithmicGain", _wrap_DSCaseLogarithmicGain, METH_VARARGS, NULL},
@@ -17894,6 +17995,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSDesignSpaceCaseWithCaseSignatureIsValid", _wrap_DSDesignSpaceCaseWithCaseSignatureIsValid, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceGMASystem", _wrap_DSDesignSpaceGMASystem, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCyclicalCaseDictionary", _wrap_DSDesignSpaceCyclicalCaseDictionary, METH_VARARGS, NULL},
+	 { (char *)"DSDesignSpaceCasePrefix", _wrap_DSDesignSpaceCasePrefix, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceTermListForAllStrings", _wrap_DSDesignSpaceTermListForAllStrings, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceAddConstraints", _wrap_DSDesignSpaceAddConstraints, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpacePrint", _wrap_DSDesignSpacePrint, METH_VARARGS, NULL},
@@ -17960,6 +18062,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCyclicalCaseBoundaries", _wrap_DSCyclicalCaseBoundaries, METH_VARARGS, NULL},
 	 { (char *)"DSCyclicalCaseLogarithmicBoundaries", _wrap_DSCyclicalCaseLogarithmicBoundaries, METH_VARARGS, NULL},
 	 { (char *)"DSCyclicalCaseNumber", _wrap_DSCyclicalCaseNumber, METH_VARARGS, NULL},
+	 { (char *)"DSCyclicalCaseIdentifier", _wrap_DSCyclicalCaseIdentifier, METH_VARARGS, NULL},
 	 { (char *)"DSCyclicalCaseSignature", _wrap_DSCyclicalCaseSignature, METH_VARARGS, NULL},
 	 { (char *)"DSCyclicalCaseSignatureToString", _wrap_DSCyclicalCaseSignatureToString, METH_VARARGS, NULL},
 	 { (char *)"DSCyclicalCaseSSystem", _wrap_DSCyclicalCaseSSystem, METH_VARARGS, NULL},

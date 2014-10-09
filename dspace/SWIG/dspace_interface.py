@@ -1055,6 +1055,10 @@ def DSCaseNumber(*args):
   return _dspace_interface.DSCaseNumber(*args)
 DSCaseNumber = _dspace_interface.DSCaseNumber
 
+def DSCaseIdentifier(*args):
+  return _dspace_interface.DSCaseIdentifier(*args)
+DSCaseIdentifier = _dspace_interface.DSCaseIdentifier
+
 def DSCaseSignature(*args):
   return _dspace_interface.DSCaseSignature(*args)
 DSCaseSignature = _dspace_interface.DSCaseSignature
@@ -1319,6 +1323,10 @@ DSDesignSpaceGMASystem = _dspace_interface.DSDesignSpaceGMASystem
 def DSDesignSpaceCyclicalCaseDictionary(*args):
   return _dspace_interface.DSDesignSpaceCyclicalCaseDictionary(*args)
 DSDesignSpaceCyclicalCaseDictionary = _dspace_interface.DSDesignSpaceCyclicalCaseDictionary
+
+def DSDesignSpaceCasePrefix(*args):
+  return _dspace_interface.DSDesignSpaceCasePrefix(*args)
+DSDesignSpaceCasePrefix = _dspace_interface.DSDesignSpaceCasePrefix
 
 def DSDesignSpaceTermListForAllStrings(*args):
   return _dspace_interface.DSDesignSpaceTermListForAllStrings(*args)
@@ -1587,6 +1595,10 @@ DSCyclicalCaseLogarithmicBoundaries = _dspace_interface.DSCyclicalCaseLogarithmi
 def DSCyclicalCaseNumber(*args):
   return _dspace_interface.DSCyclicalCaseNumber(*args)
 DSCyclicalCaseNumber = _dspace_interface.DSCyclicalCaseNumber
+
+def DSCyclicalCaseIdentifier(*args):
+  return _dspace_interface.DSCyclicalCaseIdentifier(*args)
+DSCyclicalCaseIdentifier = _dspace_interface.DSCyclicalCaseIdentifier
 
 def DSCyclicalCaseSignature(*args):
   return _dspace_interface.DSCyclicalCaseSignature(*args)
