@@ -13,6 +13,18 @@ from dspace.models.case import Case, CaseIntersection
 from dspace.models.cyclicalcase import CyclicalCase
 from dspace.expressions import Expression
 
+def sort_cases(x, y):
+    x = x.split('_')
+    y = y.split('_')
+    for i in xrange(min(len(x), len(y))):
+        xi = int(x[i])
+        yi = int(y[i])
+        if xi < yi:
+            return -1
+        if xi > yi:
+            return 1
+    return 0
+
 
 class DesignSpace(GMASystem):
     
@@ -111,41 +123,31 @@ class DesignSpace(GMASystem):
                 constraints = [constraints]
         cases = list()
         for index in iterable:
-            try:
-                new_index = int(index)
-                index = new_index
-            except:
-                pass
-            if isinstance(index, int) is True:
-                name = self.name + ': Case ' + str(index)
-                case = self._cyclical_case(index, name)
-                if case is None:
-                    case = Case(self, DSDesignSpaceCaseWithCaseNumber(self._swigwrapper, index), 
-                                name=name, constraints=constraints, latex_symbols=self._latex)
-                cases.append(case)
-            elif isinstance(index, str) is True:
+            if isinstance(index, int):
+                index = str(index)
+            if isinstance(index, str) is True:
                 if index[0] == ':':
                     cases += self._case_with_signature(index[1:], constraints)
                     continue
-                indices = index.split('_')
-                name = self.name + ': Case ' + indices[0]
-                case = self._cyclical_case(int(indices[0]), name)
-                if case is None:
-                    raise ValueError, 'Case ' + str(indices[0]) + ' is not cyclical'
-                indices.pop(0)
-                last_index = int(indices[-1])
-                indices.pop(-1)
-                for i in indices:
-                    name = name + ': Subcase ' + i
-                    subindex = int(i)
-                    case = case._cyclical_case(subindex, name)
-                    if case is None:
-                        raise ValueError, 'Subcase is not cyclical'
-                name = name + ': Subcase ' + str(last_index)
-                subcase = case(last_index)
-                cases.append(subcase)
+                case_swig = DSDesignSpaceCaseWithCaseIdentifier(self._swigwrapper, index)
+                if case_swig is None:
+                    raise ValueError, 'Case "' + index + '" does not exits'
+                name = self.name + ': Case ' + index
+                case = Case(self,
+                            case_swig,
+                            name)
+                eq=Equations(case.equations.system,
+                              case.auxiliary_variables)
+                cyclical_swig = DSDesignSpaceCyclicalCaseWithCaseIdentifier(self._swigwrapper, index)
+                if cyclical_swig is not None:
+                    cyclical = CyclicalCase(eq, cyclical_swig,
+                                            name = case.name + ' (cyclical)',
+                                            latex_symbols=self._latex)
+                    cases.append(cyclical)
+                else:
+                    cases.append(case)
             else:
-                raise TypeError, 'input argument must be a case number'
+                raise TypeError, 'input argument must be a case identifier or case signature'
         if len(cases) == 1:
             if isinstance(index_or_iterable, str) or isinstance(index_or_iterable, int):
                 cases = cases[0]
@@ -236,10 +238,10 @@ class DesignSpace(GMASystem):
         keys = [DSDictionaryKeyAtIndex(valid_cases, i) for i in xrange(0, number_of_cases)]
         for key in keys:
             case_swigwrapper = DSSWIGVoidAsCase(DSDictionaryValueForName(valid_cases, key))
-            cases.append(DSCaseNumber(case_swigwrapper))
+            cases.append(DSCaseIdentifier(case_swigwrapper))
             DSCaseFree(case_swigwrapper)
         DSDictionaryFree(valid_cases)
-        cases.sort()
+        cases.sort(cmp=sort_cases)
         return cases
 
     def _valid_cases_expanded_bounded(self, p_bounds):
@@ -267,10 +269,11 @@ class DesignSpace(GMASystem):
         keys = [DSDictionaryKeyAtIndex(valid_cases, i) for i in xrange(0, number_of_cases)]
         for key in keys:
             case_swigwrapper = DSSWIGVoidAsCase(DSDictionaryValueForName(valid_cases, key))
+            cases.append(DSCaseIdentifier(case_swigwrapper))
             DSCaseFree(case_swigwrapper)
         DSDictionaryFree(valid_cases)
-        keys.sort()
-        return keys
+        cases.sort(cmp=sort_cases)
+        return cases
 
       
     def _valid_cases_expand_cycles(self, p_bounds):
@@ -283,10 +286,11 @@ class DesignSpace(GMASystem):
         keys = [DSDictionaryKeyAtIndex(valid_cases, i) for i in xrange(0, number_of_cases)]
         for key in keys:
             case_swigwrapper = DSSWIGVoidAsCase(DSDictionaryValueForName(valid_cases, key))
+            cases.append(DSCaseIdentifier(case_swigwrapper))
             DSCaseFree(case_swigwrapper)
         DSDictionaryFree(valid_cases)
-        keys.sort()
-        return keys
+        cases.sort(cmp=sort_cases)
+        return cases
     
     def valid_cases(self, p_bounds=None, expand_cycles=True):
         if self._resolve_cycles is False:
@@ -300,11 +304,11 @@ class DesignSpace(GMASystem):
         cases = list()
         for i in xrange(0, number_valid):
             case_swigwrapper = DSCaseAtIndexOfArray(all_cases, i)
-            cases.append(DSCaseNumber(case_swigwrapper))
+            cases.append(DSCaseIdentifier(case_swigwrapper))
             DSCaseFree(case_swigwrapper)
         if all_cases is not None:
             DSSecureFree(all_cases)
-        cases.sort()
+        cases.sort(cmp=sort_cases)
         return cases
     
     def _cyclical_case_as_subcases(self, case_num, case_numbers):

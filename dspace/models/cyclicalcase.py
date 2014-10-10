@@ -144,7 +144,7 @@ class CyclicalCase(Case):
 
     @property
     def case_number(self):
-        return DSCyclicalCaseNumber(self._swigwrapper)
+        return DSCyclicalCaseIdentifier(self._swigwrapper)
     
     @property
     def signature(self):
