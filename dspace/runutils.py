@@ -47,9 +47,16 @@ class Input(object):
                 
             version (str): String representation of a version number. 
             
-            get_parameters (int or str) : An int or str indicating the case
+            get_parameters (int or str): An int or str indicating the case
                 number, subcase number or case signature marker for which an
                 internal parameter set will be obtained.
+            
+            minimize_function(st): A function in string form to optimize when
+                automatically getting parameters for a case.
+
+            maximize_function(st): A function in string form to optimize when
+                automatically getting parameters for a case. Adding this will
+                override the minimize function.
             
             parameters (dict): A dictionary of the system parameters.
                          
@@ -136,7 +143,20 @@ class Input(object):
         if 'get_parameters' in options:
             case_id = options['get_parameters']
             case = self._ds(case_id)
-            parameters = case.valid_interior_parameter_set(distance=1e3)
+            if 'objective_bounds' in options:
+                pbounds = options['objective_bounds']
+            else:
+                pbounds=None
+            if 'maximize_function' in options:
+                parameters = case.valid_parameter_set(optimize=options['maximize_function'],
+                                                      p_bounds=pbounds,
+                                                      minimize=False)
+            elif 'minimize_function' in options and 'objective_bounds' in options:
+                parameters = case.valid_parameter_set(optimize=options['minimize_function'],
+                                                      p_bounds=pbounds,
+                                                      minimize=True)
+            else:
+                parameters = case.valid_interior_parameter_set(distance=1e3)
             options['parameters'] = parameters
             for i in pvals:
                 print str(i) + ': ' + str(parameters[i])
