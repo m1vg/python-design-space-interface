@@ -12835,6 +12835,49 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSCaseValidParameterSetByOptimizingFunction(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  bool val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  DSVariablePool *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DSCaseValidParameterSetByOptimizingFunction",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseValidParameterSetByOptimizingFunction" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSCaseValidParameterSetByOptimizingFunction" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = (char *)(buf2);
+  ecode3 = SWIG_AsVal_bool(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "DSCaseValidParameterSetByOptimizingFunction" "', argument " "3"" of type '" "bool""'");
+  } 
+  arg3 = (bool)(val3);
+  result = (DSVariablePool *)DSCaseValidParameterSetByOptimizingFunction((DSCase const *)arg1,(char const *)arg2,arg3);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSCaseValidParameterSetAtSlice(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSCase *arg1 = (DSCase *) 0 ;
@@ -12871,6 +12914,101 @@ SWIGINTERN PyObject *_wrap_DSCaseValidParameterSetAtSlice(PyObject *SWIGUNUSEDPA
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSVariablePool, 0 |  0 );
   return resultobj;
 fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseValidParameterSetAtSliceByOptimizingFunction(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  DSVariablePool *arg2 = (DSVariablePool *) 0 ;
+  DSVariablePool *arg3 = (DSVariablePool *) 0 ;
+  char *arg4 = (char *) 0 ;
+  bool arg5 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  int res4 ;
+  char *buf4 = 0 ;
+  int alloc4 = 0 ;
+  bool val5 ;
+  int ecode5 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  DSVariablePool *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:DSCaseValidParameterSetAtSliceByOptimizingFunction",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseValidParameterSetAtSliceByOptimizingFunction" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSCaseValidParameterSetAtSliceByOptimizingFunction" "', argument " "2"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg2 = (DSVariablePool *)(argp2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DSCaseValidParameterSetAtSliceByOptimizingFunction" "', argument " "3"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg3 = (DSVariablePool *)(argp3);
+  res4 = SWIG_AsCharPtrAndSize(obj3, &buf4, NULL, &alloc4);
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "DSCaseValidParameterSetAtSliceByOptimizingFunction" "', argument " "4"" of type '" "char const *""'");
+  }
+  arg4 = (char *)(buf4);
+  ecode5 = SWIG_AsVal_bool(obj4, &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "DSCaseValidParameterSetAtSliceByOptimizingFunction" "', argument " "5"" of type '" "bool""'");
+  } 
+  arg5 = (bool)(val5);
+  result = (DSVariablePool *)DSCaseValidParameterSetAtSliceByOptimizingFunction((DSCase const *)arg1,(DSVariablePool const *)arg2,(DSVariablePool const *)arg3,(char const *)arg4,arg5);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (alloc4 == SWIG_NEWOBJ) free((char*)buf4);
+  return resultobj;
+fail:
+  if (alloc4 == SWIG_NEWOBJ) free((char*)buf4);
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseParseOptimizationFunction(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  DSMatrixArray *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSCaseParseOptimizationFunction",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseParseOptimizationFunction" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSCaseParseOptimizationFunction" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = (char *)(buf2);
+  result = (DSMatrixArray *)DSCaseParseOptimizationFunction((DSCase const *)arg1,(char const *)arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSMatrixArray, 0 |  0 );
+  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
   return NULL;
 }
 
@@ -17950,7 +18088,10 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCaseVerticesFor3DSlice", _wrap_DSCaseVerticesFor3DSlice, METH_VARARGS, NULL},
 	 { (char *)"DSCaseVerticesForNDSlice", _wrap_DSCaseVerticesForNDSlice, METH_VARARGS, NULL},
 	 { (char *)"DSCaseValidParameterSet", _wrap_DSCaseValidParameterSet, METH_VARARGS, NULL},
+	 { (char *)"DSCaseValidParameterSetByOptimizingFunction", _wrap_DSCaseValidParameterSetByOptimizingFunction, METH_VARARGS, NULL},
 	 { (char *)"DSCaseValidParameterSetAtSlice", _wrap_DSCaseValidParameterSetAtSlice, METH_VARARGS, NULL},
+	 { (char *)"DSCaseValidParameterSetAtSliceByOptimizingFunction", _wrap_DSCaseValidParameterSetAtSliceByOptimizingFunction, METH_VARARGS, NULL},
+	 { (char *)"DSCaseParseOptimizationFunction", _wrap_DSCaseParseOptimizationFunction, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIntersectionListIsValid", _wrap_DSCaseIntersectionListIsValid, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIntersectionIsValid", _wrap_DSCaseIntersectionIsValid, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIntersectionIsValidAtSlice", _wrap_DSCaseIntersectionIsValidAtSlice, METH_VARARGS, NULL},

@@ -21,20 +21,27 @@ from dspace.plotutils.monkey_patching import monkeypatch_method
 from dspace.models.designspace import DesignSpace
 
 import dspace.plotutils.case_plot
+from dspace.models.designspace import sort_cases
 
 def key_sort_function(x, y):
     
-    x = x.split(',')
-    y = y.split(',')
-    if len(x) < len(y):
-        return -1
-    if len(y) < len(x):
+    if ',' in x and ',' not in y:
         return 1
-    for i in xrange(len(x)):
-        if str(x[i]) < str(y[i]):
+    if ',' not in x and ',' in y:
+        return -1
+    if ',' in x and ',' in y:
+        x = x.split(',')
+        y = y.split(',')
+        if len(x) < len(y):
             return -1
-        if str(y[i]) < str(x[i]):
+        if len(y) < len(x):
             return 1
+        for i in xrange(len(x)):
+            diff = sort_cases(x, y)
+            if diff == 0:
+                continue
+            return diff
+    return sort_cases(x, y)
     return 0
     
 
