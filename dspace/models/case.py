@@ -50,6 +50,18 @@ class Case(Model):
         else:
             return '_'.join([i.strip(' :') for i in case_info])
             
+    def __getstate__(self):
+        odict = self.__dict__.copy()
+        odict['_swigwrapper'] = DSSWIGDSCaseEncodedBytes(self._swigwrapper)
+        del odict['_ssystem']
+        del odict['_independent_variables']
+        return odict
+    
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        encoded = state['_swigwrapper']
+        self.set_swigwrapper(DSSWIGDSCaseDecodeFromByteArray(encoded)) 
+               
     def set_swigwrapper(self, case_swigwrapper):
         self._swigwrapper = case_swigwrapper
         Xd = VariablePool()
@@ -90,7 +102,7 @@ class Case(Model):
     def independent_variables(self):
         return self._independent_variables.keys()
     
-    def _valid_parameter_set_bounded(self, p_bounds):
+    def _valid_parameter_set_bounded(self, p_bounds, optimize=None, minimize=True):
         lower = VariablePool(names=self.independent_variables)
         upper = VariablePool(names=self.independent_variables)
         for i in lower:
@@ -105,18 +117,32 @@ class Case(Model):
             except:
                 lower[i] = k
                 upper[i] = k
-        variablepool = DSCaseValidParameterSetAtSlice(self._swigwrapper, 
-                                                      lower._swigwrapper,
-                                                      upper._swigwrapper)
+        if optimize is not None:
+            variablepool = DSCaseValidParameterSetAtSliceByOptimizingFunction(self._swigwrapper, 
+                                                                              lower._swigwrapper,
+                                                                              upper._swigwrapper,
+                                                                              optimize,
+                                                                              minimize)
+        else:
+            variablepool = DSCaseValidParameterSetAtSlice(self._swigwrapper, 
+                                                          lower._swigwrapper,
+                                                          upper._swigwrapper)
         pvals = VariablePool()
         pvals.set_swigwrapper(variablepool)
         return pvals
     
-    def valid_parameter_set(self, p_bounds=None):
-        variablepool = DSCaseValidParameterSet(self._swigwrapper)
+    def valid_parameter_set(self, p_bounds=None, optimize=None, minimize=True):
         if p_bounds is not None:
-            pvals = self._valid_parameter_set_bounded(p_bounds)
+            pvals = self._valid_parameter_set_bounded(p_bounds, 
+                                                      optimize=optimize,
+                                                      minimize=minimize)
             return pvals
+        if optimize is not None:
+            variablepool = DSCaseValidParameterSetByOptimizingFunction(self._swigwrapper, 
+                                                                       optimize,
+                                                                       minimize)
+        else:
+            variablepool = DSCaseValidParameterSet(self._swigwrapper)
         pvals = VariablePool()
         pvals.set_swigwrapper(variablepool)
         return pvals
@@ -141,7 +167,7 @@ class Case(Model):
         
     @property
     def case_number(self):
-        return DSCaseNumber(self._swigwrapper)
+        return DSCaseIdentifier(self._swigwrapper)
 
     @property
     def signature(self):

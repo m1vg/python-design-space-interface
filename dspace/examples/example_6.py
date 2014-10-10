@@ -216,17 +216,17 @@ ds_nocycles.draw_2D_slice(ax,
 ax.set_title(ds_nocycles.name)
 
 
-## 
-## for i in ['X1', 'X2', 'X3', 'X4']:
-##     fig=figure()
-##     ds_cycles.draw_2D_ss_function(gca(),
-##                                   'log(V_'+i+')',
-##                                   pvals, 
-##                                   'X5',              # First, indicate the x-axis variable.
-##                                   'X6',              # Second, indicate the y-axis variable.
-##                                   [1e-3, 1e3],       # The range on the x-axis.
-##                                   [1e-3, 1e3],       # The range on the y-axis.
-##                                   )
-## 
+
+for i in ['X1', 'X2', 'X3', 'X4']:
+    fig=figure()
+    ds_cycles.draw_2D_ss_function(gca(),
+                                  'log(V_'+i+')',
+                                  pvals, 
+                                  'X5',              # First, indicate the x-axis variable.
+                                  'X6',              # Second, indicate the y-axis variable.
+                                  [1e-3, 1e3],       # The range on the x-axis.
+                                  [1e-3, 1e3],       # The range on the y-axis.
+                                  )
+
 
 

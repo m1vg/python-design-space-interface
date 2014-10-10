@@ -5,6 +5,8 @@
 #include <DSStd.h>
 #include <DSSSystem.h>
 #include <DSTypes.h>
+#include <DSDataSerialization.pb-c.h>
+        
 %}
 
 /* Type Map Data */
@@ -180,6 +182,110 @@
 
 
 %inline %{
+
+extern PyObject * DSSWIGDSCyclicalCaseEncodedBytes(DSCyclicalCase * aCase)
+{
+        PyObject * pyBuf = NULL;
+        DSCyclicalCaseMessage * message;
+        size_t length;
+        unsigned char * buffer;
+        message = DSCyclicalCaseEncode(aCase);
+        if (message == NULL) {
+                goto bail;
+        }
+        length = dscyclical_case_message__get_packed_size(message);
+        buffer = DSSecureMalloc(sizeof(char)*length);
+        dscyclical_case_message__pack(message, buffer);
+        pyBuf = PyByteArray_FromStringAndSize(buffer, length);
+        DSSecureFree(buffer);
+        dscyclical_case_message__free_unpacked(message, NULL);
+bail:
+        return pyBuf;
+}
+        
+extern DSCyclicalCase * DSSWIGDSCyclicalCaseDecodeFromByteArray(PyObject * byteArray)
+{
+        DSCyclicalCase * aCase = NULL;
+        size_t length;
+        const char * buffer;
+        if (PyByteArray_Check(byteArray) == 0) {
+                goto bail;
+        }
+        length = PyByteArray_Size(byteArray);
+        buffer = PyByteArray_AsString(byteArray);
+        aCase = DSCyclicalCaseDecode(length, buffer);
+bail:
+        return aCase;
+}
+        
+extern PyObject * DSSWIGDSCaseEncodedBytes(DSCase * aCase)
+{
+        PyObject * pyBuf = NULL;
+        DSCaseMessage * message;
+        size_t length;
+        unsigned char * buffer;
+        message = DSCaseEncode(aCase);
+        if (message == NULL) {
+                goto bail;
+        }
+        length = dscase_message__get_packed_size(message);
+        buffer = DSSecureMalloc(sizeof(char)*length);
+        dscase_message__pack(message, buffer);
+        pyBuf = PyByteArray_FromStringAndSize(buffer, length);
+        DSSecureFree(buffer);
+        dscase_message__free_unpacked(message, NULL);
+bail:
+        return pyBuf;
+}
+        
+extern DSCase * DSSWIGDSCaseDecodeFromByteArray(PyObject * byteArray)
+{
+        DSCase * aCase = NULL;
+        size_t length;
+        const char * buffer;
+        if (PyByteArray_Check(byteArray) == 0) {
+                goto bail;
+        }
+        length = PyByteArray_Size(byteArray);
+        buffer = PyByteArray_AsString(byteArray);
+        aCase = DSCaseDecode(length, buffer);
+bail:
+        return aCase;
+}
+        
+extern PyObject * DSSWIGDSDesignSpaceEncodedBytes(DSDesignSpace * ds) {
+        PyObject * pyBuf = NULL;
+        DSDesignSpaceMessage * message;
+        size_t length;
+        unsigned char * buffer;
+        message = DSDesignSpaceEncode(ds);
+        if (message == NULL) {
+                goto bail;
+        }
+        length = dsdesign_space_message__get_packed_size(message);
+        buffer = DSSecureMalloc(sizeof(char)*length);
+        dsdesign_space_message__pack(message, buffer);
+        pyBuf = PyByteArray_FromStringAndSize(buffer, length);
+        DSSecureFree(buffer);
+        dsdesign_space_message__free_unpacked(message, NULL);
+bail:
+        return pyBuf;
+}
+
+extern DSDesignSpace * DSSWIGDSDesignSpaceDecodeFromByteArray(PyObject * byteArray)
+{
+        DSDesignSpace * ds = NULL;
+        size_t length;
+        const char * buffer;
+        if (PyByteArray_Check(byteArray) == 0) {
+                goto bail;
+        }
+        length = PyByteArray_Size(byteArray);
+        buffer = PyByteArray_AsString(byteArray);
+        ds = DSDesignSpaceDecode(length, buffer);
+bail:
+        return ds;
+}
 
 extern DSDictionary * DSSWIGDSDictionaryFromPyDict(PyObject * pydict) {
         DSDictionary * dictionary = NULL;

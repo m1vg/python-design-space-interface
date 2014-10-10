@@ -53,7 +53,7 @@ Input(['X1. = a1 + a2*X3 - b1*X1',
                         'a3':[1e-5, 1e5]},
       
       plot_designspace=True,             # Should draw design space plot.
-      plot_steady_states=['X1', 'X2'],   # Concentrations to plot.
+      plot_steady_states=['X1'],         # Concentrations to plot.
       plot_fluxes=['X1'],                # Fluxes to plot.
       plot_stability=True,               # Should draw stability plot.
       plot_functions=['log(V_X1/X2)'],   # Arbitrary functions to plot.
@@ -69,18 +69,27 @@ Input(['X1. = a1 + a2*X3 - b1*X1',
       auxiliary_variables=[],
       xaxis='X3',
       yaxis='a2',
-      #get_parameters=4,           # Automatically gets a parameter set for case 4.
-      get_parameters=':2121',      # Automatically gets a parameter set for case with signature :2121. 
+      get_parameters=2,           # Automatically gets a parameter set for case 4.
+      #get_parameters=':1121',      # Automatically gets a parameter set for case with signature :2121. 
+      #minimize_function='X1',     # Determined parameter set minimizes this objective function.
+      maximize_function='X2',      # Determined parameter set minimizes this objective function.
+      objective_bounds={'a1':0.1, 
+                        'a2':[1e-3, 1e0],
+                        'a3':0.001,
+                        'X3':[1e-4, 1e4], 
+                        'b1':0.45,
+                        'b2':0.45
+                        },
       print_valid_cases=True,
-      x_range=[1e-3, 1e3],
-      y_range=[1e-3, 1e3],
-      centered_axes=True,
+      x_range=[1e-4, 1e4],
+      y_range=[1e-3, 1e0],
+      centered_axes=False,
       plot_designspace=True,
-      plot_steady_states=['X1'],
-      plot_fluxes=['X1'],
-      plot_stability=True,
-      plot_functions=['X1'],
+      plot_steady_states=['X2'],
+      ## plot_fluxes=['X2'],
+      ## plot_stability=True,
+      ## plot_functions=['X1'],
       draw_cases=[':11*1', 3],    # Can use signature (w/ wildcards) to get specific sets of cases
-      zlim=[-10, 10] # Explicitly sets z-lim of steady state, flux and function plots
+      zlim=[-1.5, 1.5] # Explicitly sets z-lim of steady state, flux and function plots
       )
 

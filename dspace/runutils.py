@@ -47,9 +47,16 @@ class Input(object):
                 
             version (str): String representation of a version number. 
             
-            get_parameters (int or str) : An int or str indicating the case
+            get_parameters (int or str): An int or str indicating the case
                 number, subcase number or case signature marker for which an
                 internal parameter set will be obtained.
+            
+            minimize_function(st): A function in string form to optimize when
+                automatically getting parameters for a case.
+
+            maximize_function(st): A function in string form to optimize when
+                automatically getting parameters for a case. Adding this will
+                override the minimize function.
             
             parameters (dict): A dictionary of the system parameters.
                          
@@ -136,7 +143,20 @@ class Input(object):
         if 'get_parameters' in options:
             case_id = options['get_parameters']
             case = self._ds(case_id)
-            parameters = case.valid_interior_parameter_set(distance=1e3)
+            if 'objective_bounds' in options:
+                pbounds = options['objective_bounds']
+            else:
+                pbounds=None
+            if 'maximize_function' in options:
+                parameters = case.valid_parameter_set(optimize=options['maximize_function'],
+                                                      p_bounds=pbounds,
+                                                      minimize=False)
+            elif 'minimize_function' in options and 'objective_bounds' in options:
+                parameters = case.valid_parameter_set(optimize=options['minimize_function'],
+                                                      p_bounds=pbounds,
+                                                      minimize=True)
+            else:
+                parameters = case.valid_interior_parameter_set(distance=1e3)
             options['parameters'] = parameters
             for i in pvals:
                 print str(i) + ': ' + str(parameters[i])
@@ -180,7 +200,11 @@ class Input(object):
             return
         if options['print_valid_cases'] is not True:
             return
-        cases = self._ds.valid_cases()
+        if 'draw_cases' in options:
+            cases = options['draw_cases']
+            cases = [case.case_number for case in self._ds(cases) if case.is_valid() is True]
+        else:
+            cases = self._ds.valid_cases()
         case_string = 'Valid Cases:\n'
         for i in cases:
             case = self._ds(i)
@@ -215,22 +239,6 @@ class Input(object):
             colorbar = options['colorbar']
         else:
             colorbar = 'auto'
-        ## if ds.number_of_cases > 1e5 and self._included_cases is not None:
-        ##     colors = dict()
-        ##     j = 0
-        ##     for i in self._included_cases:
-        ##         case = self._ds(i)
-        ##         colors[i] = cm.hsv(j/len(self._included_cases))
-        ##         case.draw_2D_slice(plt.gca(), self._pvals,
-        ##                            self._xaxis, self._yaxis,
-        ##                            self._xrange, self._yrange,
-        ##                            fc=colors[i], ec='none'
-        ##                            )
-        ##         j += 1
-        ##     c_ax,kw=mt.colorbar.make_axes(plt.gca())
-        ##     c_ax.set_aspect(15)
-        ##     self._ds.draw_region_colorbar(c_ax, colors)
-        ##     return
         fig = plt.figure()
         plt.clf()
         ax = plt.gca()
@@ -249,22 +257,6 @@ class Input(object):
             return
         if options['plot_stability'] is not True:
             return
-        ## if ds.number_of_cases > 1e5 and self._included_cases is not None:
-        ##     colors = dict()
-        ##     j = 0
-        ##     for i in self._included_cases:
-        ##         case = self._ds(i)
-        ##         colors[i] = cm.hsv(j/len(self._included_cases))
-        ##         case.draw_2D_slice(plt.gca(), self._pvals,
-        ##                            self._xaxis, self._yaxis,
-        ##                            self._xrange, self._yrange,
-        ##                            fc=colors[i], ec='none'
-        ##                            )
-        ##         j += 1
-        ##     c_ax,kw=mt.colorbar.make_axes(plt.gca())
-        ##     c_ax.set_aspect(15)
-        ##     self._ds.draw_region_colorbar(c_ax, colors)
-        ##     return
         fig = plt.figure()
         plt.clf()
         ax = plt.gca()
