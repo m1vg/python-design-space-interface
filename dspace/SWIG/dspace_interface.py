@@ -1316,6 +1316,10 @@ def DSDesignSpaceCaseWithCaseNumber(*args):
   return _dspace_interface.DSDesignSpaceCaseWithCaseNumber(*args)
 DSDesignSpaceCaseWithCaseNumber = _dspace_interface.DSDesignSpaceCaseWithCaseNumber
 
+def DSDesignSpaceCaseWithCaseIdentifier(*args):
+  return _dspace_interface.DSDesignSpaceCaseWithCaseIdentifier(*args)
+DSDesignSpaceCaseWithCaseIdentifier = _dspace_interface.DSDesignSpaceCaseWithCaseIdentifier
+
 def DSDesignSpaceCaseWithCaseSignature(*args):
   return _dspace_interface.DSDesignSpaceCaseWithCaseSignature(*args)
 DSDesignSpaceCaseWithCaseSignature = _dspace_interface.DSDesignSpaceCaseWithCaseSignature
@@ -1387,6 +1391,10 @@ DSDesignSpaceNumberOfCyclicalCases = _dspace_interface.DSDesignSpaceNumberOfCycl
 def DSDesignSpaceCyclicalCaseWithCaseNumber(*args):
   return _dspace_interface.DSDesignSpaceCyclicalCaseWithCaseNumber(*args)
 DSDesignSpaceCyclicalCaseWithCaseNumber = _dspace_interface.DSDesignSpaceCyclicalCaseWithCaseNumber
+
+def DSDesignSpaceCyclicalCaseWithCaseIdentifier(*args):
+  return _dspace_interface.DSDesignSpaceCyclicalCaseWithCaseIdentifier(*args)
+DSDesignSpaceCyclicalCaseWithCaseIdentifier = _dspace_interface.DSDesignSpaceCyclicalCaseWithCaseIdentifier
 
 def DSDesignSpaceCalculateCyclicalCase(*args):
   return _dspace_interface.DSDesignSpaceCalculateCyclicalCase(*args)

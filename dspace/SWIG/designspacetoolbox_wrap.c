@@ -4440,10 +4440,10 @@ SWIGINTERN PyObject *_wrap_DSVariablePoolValueForVariableWithName(PyObject *SWIG
   arg1 = (DSVariablePool *)(argp1);
   res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSVariablePoolValueForVariableWithName" "', argument " "2"" of type '" "char const const *""'");
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSVariablePoolValueForVariableWithName" "', argument " "2"" of type '" "char const *""'");
   }
   arg2 = (char *)(buf2);
-  result = (double)DSVariablePoolValueForVariableWithName((DSVariablePool const *)arg1,(char const const *)arg2);
+  result = (double)DSVariablePoolValueForVariableWithName((DSVariablePool const *)arg1,(char const *)arg2);
   resultobj = SWIG_From_double((double)(result));
   if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
   return resultobj;
@@ -14570,6 +14570,40 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSDesignSpaceCaseWithCaseIdentifier(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  DSCase *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSDesignSpaceCaseWithCaseIdentifier",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceCaseWithCaseIdentifier" "', argument " "1"" of type '" "DSDesignSpace const *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSDesignSpaceCaseWithCaseIdentifier" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = (char *)(buf2);
+  result = (DSCase *)DSDesignSpaceCaseWithCaseIdentifier((DSDesignSpace const *)arg1,(char const *)arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSCase, 0 |  0 );
+  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSDesignSpaceCaseWithCaseSignature(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
@@ -14762,7 +14796,7 @@ fail:
 
 SWIGINTERN PyObject *_wrap_DSDesignSpaceTermListForAllStrings(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  char **arg1 = (char **) (char **)0 ;
+  char **arg1 = (char **) 0 ;
   DSUInteger arg2 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
@@ -14794,7 +14828,7 @@ SWIGINTERN PyObject *_wrap_DSDesignSpaceTermListForAllStrings(PyObject *SWIGUNUS
   {
     arg2 = (DSUInteger) PyLong_AsUnsignedLongMask(obj1);
   }
-  result = (void *)DSDesignSpaceTermListForAllStrings((char *const *)arg1,arg2);
+  result = (void *)DSDesignSpaceTermListForAllStrings((char const **)arg1,arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_void, 0 |  0 );
   return resultobj;
 fail:
@@ -15162,6 +15196,40 @@ SWIGINTERN PyObject *_wrap_DSDesignSpaceCyclicalCaseWithCaseNumber(PyObject *SWI
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSCyclicalCase, 0 |  0 );
   return resultobj;
 fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceCyclicalCaseWithCaseIdentifier(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  DSCyclicalCase *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSDesignSpaceCyclicalCaseWithCaseIdentifier",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceCyclicalCaseWithCaseIdentifier" "', argument " "1"" of type '" "DSDesignSpace const *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSDesignSpaceCyclicalCaseWithCaseIdentifier" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = (char *)(buf2);
+  result = (DSCyclicalCase *)DSDesignSpaceCyclicalCaseWithCaseIdentifier((DSDesignSpace const *)arg1,(char const *)arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSCyclicalCase, 0 |  0 );
+  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
   return NULL;
 }
 
@@ -18131,6 +18199,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSDesignSpaceNumberOfValidCases", _wrap_DSDesignSpaceNumberOfValidCases, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceNumberOfCases", _wrap_DSDesignSpaceNumberOfCases, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCaseWithCaseNumber", _wrap_DSDesignSpaceCaseWithCaseNumber, METH_VARARGS, NULL},
+	 { (char *)"DSDesignSpaceCaseWithCaseIdentifier", _wrap_DSDesignSpaceCaseWithCaseIdentifier, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCaseWithCaseSignature", _wrap_DSDesignSpaceCaseWithCaseSignature, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCaseWithCaseNumberIsValid", _wrap_DSDesignSpaceCaseWithCaseNumberIsValid, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCaseWithCaseSignatureIsValid", _wrap_DSDesignSpaceCaseWithCaseSignatureIsValid, METH_VARARGS, NULL},
@@ -18149,6 +18218,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSDesignSpaceCalculateAllValidCasesForSlice", _wrap_DSDesignSpaceCalculateAllValidCasesForSlice, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceNumberOfCyclicalCases", _wrap_DSDesignSpaceNumberOfCyclicalCases, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCyclicalCaseWithCaseNumber", _wrap_DSDesignSpaceCyclicalCaseWithCaseNumber, METH_VARARGS, NULL},
+	 { (char *)"DSDesignSpaceCyclicalCaseWithCaseIdentifier", _wrap_DSDesignSpaceCyclicalCaseWithCaseIdentifier, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCalculateCyclicalCase", _wrap_DSDesignSpaceCalculateCyclicalCase, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCalculateCyclicalCases", _wrap_DSDesignSpaceCalculateCyclicalCases, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCalculateValidityOfCases", _wrap_DSDesignSpaceCalculateValidityOfCases, METH_VARARGS, NULL},

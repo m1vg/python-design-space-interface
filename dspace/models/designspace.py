@@ -123,41 +123,31 @@ class DesignSpace(GMASystem):
                 constraints = [constraints]
         cases = list()
         for index in iterable:
-            try:
-                new_index = int(index)
-                index = new_index
-            except:
-                pass
-            if isinstance(index, int) is True:
-                name = self.name + ': Case ' + str(index)
-                case = self._cyclical_case(index, name)
-                if case is None:
-                    case = Case(self, DSDesignSpaceCaseWithCaseNumber(self._swigwrapper, index), 
-                                name=name, constraints=constraints, latex_symbols=self._latex)
-                cases.append(case)
-            elif isinstance(index, str) is True:
+            if isinstance(index, int):
+                index = str(index)
+            if isinstance(index, str) is True:
                 if index[0] == ':':
                     cases += self._case_with_signature(index[1:], constraints)
                     continue
-                indices = index.split('_')
-                name = self.name + ': Case ' + indices[0]
-                case = self._cyclical_case(int(indices[0]), name)
-                if case is None:
-                    raise ValueError, 'Case ' + str(indices[0]) + ' is not cyclical'
-                indices.pop(0)
-                last_index = int(indices[-1])
-                indices.pop(-1)
-                for i in indices:
-                    name = name + ': Subcase ' + i
-                    subindex = int(i)
-                    case = case._cyclical_case(subindex, name)
-                    if case is None:
-                        raise ValueError, 'Subcase is not cyclical'
-                name = name + ': Subcase ' + str(last_index)
-                subcase = case(last_index)
-                cases.append(subcase)
+                case_swig = DSDesignSpaceCaseWithCaseIdentifier(self._swigwrapper, index)
+                if case_swig is None:
+                    raise ValueError, 'Case "' + index + '" does not exits'
+                name = self.name + ': Case ' + index
+                case = Case(self,
+                            case_swig,
+                            name)
+                eq=Equations(case.equations.system,
+                              case.auxiliary_variables)
+                cyclical_swig = DSDesignSpaceCyclicalCaseWithCaseIdentifier(self._swigwrapper, index)
+                if cyclical_swig is not None:
+                    cyclical = CyclicalCase(eq, cyclical_swig,
+                                            name = case.name + ' (cyclical)',
+                                            latex_symbols=self._latex)
+                    cases.append(cyclical)
+                else:
+                    cases.append(case)
             else:
-                raise TypeError, 'input argument must be a case number'
+                raise TypeError, 'input argument must be a case identifier or case signature'
         if len(cases) == 1:
             if isinstance(index_or_iterable, str) or isinstance(index_or_iterable, int):
                 cases = cases[0]
