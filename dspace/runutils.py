@@ -180,7 +180,11 @@ class Input(object):
             return
         if options['print_valid_cases'] is not True:
             return
-        cases = self._ds.valid_cases()
+        if 'draw_cases' in options:
+            cases = options['draw_cases']
+            cases = [case.case_number for case in self._ds(cases) if case.is_valid() is True]
+        else:
+            cases = self._ds.valid_cases()
         case_string = 'Valid Cases:\n'
         for i in cases:
             case = self._ds(i)
@@ -215,22 +219,6 @@ class Input(object):
             colorbar = options['colorbar']
         else:
             colorbar = 'auto'
-        ## if ds.number_of_cases > 1e5 and self._included_cases is not None:
-        ##     colors = dict()
-        ##     j = 0
-        ##     for i in self._included_cases:
-        ##         case = self._ds(i)
-        ##         colors[i] = cm.hsv(j/len(self._included_cases))
-        ##         case.draw_2D_slice(plt.gca(), self._pvals,
-        ##                            self._xaxis, self._yaxis,
-        ##                            self._xrange, self._yrange,
-        ##                            fc=colors[i], ec='none'
-        ##                            )
-        ##         j += 1
-        ##     c_ax,kw=mt.colorbar.make_axes(plt.gca())
-        ##     c_ax.set_aspect(15)
-        ##     self._ds.draw_region_colorbar(c_ax, colors)
-        ##     return
         fig = plt.figure()
         plt.clf()
         ax = plt.gca()
@@ -249,22 +237,6 @@ class Input(object):
             return
         if options['plot_stability'] is not True:
             return
-        ## if ds.number_of_cases > 1e5 and self._included_cases is not None:
-        ##     colors = dict()
-        ##     j = 0
-        ##     for i in self._included_cases:
-        ##         case = self._ds(i)
-        ##         colors[i] = cm.hsv(j/len(self._included_cases))
-        ##         case.draw_2D_slice(plt.gca(), self._pvals,
-        ##                            self._xaxis, self._yaxis,
-        ##                            self._xrange, self._yrange,
-        ##                            fc=colors[i], ec='none'
-        ##                            )
-        ##         j += 1
-        ##     c_ax,kw=mt.colorbar.make_axes(plt.gca())
-        ##     c_ax.set_aspect(15)
-        ##     self._ds.draw_region_colorbar(c_ax, colors)
-        ##     return
         fig = plt.figure()
         plt.clf()
         ax = plt.gca()

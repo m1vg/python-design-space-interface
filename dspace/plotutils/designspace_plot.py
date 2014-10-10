@@ -208,19 +208,12 @@ def draw_2D_positive_roots(self, ax, p_vals, x_variable, y_variable, range_x,
     p_bounds[y_variable] = range_y
     hatched_cases = []
     if included_cases is not None:
+        included_cases = [i.case_number for i in self(included_cases)]
         if self.number_of_cases < 1e5:
             valid_cases = self.valid_cases(p_bounds=p_bounds)
-            ## for i in included_cases:
-            ##     if isinstance(i, str) is True:
-            ##         if i[0] == ':':
-            ##             case = self(i)
-            ##             included_cases.remove(i)
-            ##             cases_to_draw.append(case.case_number)
-            included_cases = [str(i.case_number) for i in self(included_cases)]
-            hatched_cases = [i for i in valid_cases if str(i) not in included_cases]
-            valid_cases = [i for i in valid_cases if str(i) in included_cases]
+            hatched_cases = [i for i in valid_cases if i not in included_cases]
+            valid_cases = [i for i in valid_cases if i in included_cases]
         else:
-            included_cases = [str(i.case_number) for i in self(included_cases)]
             valid_cases = [i for i in included_cases if self(i).is_valid(p_bounds=p_bounds)]
     else:
         valid_cases = self.valid_cases(p_bounds=p_bounds)
@@ -313,19 +306,12 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
     p_bounds[y_variable] = range_y
     hatched_cases = []
     if included_cases is not None:
+        included_cases = [i.case_number for i in self(included_cases)]
         if self.number_of_cases < 1e5:
             valid_cases = self.valid_cases(p_bounds=p_bounds)
-            ## for i in included_cases:
-            ##     if isinstance(i, str) is True:
-            ##         if i[0] == ':':
-            ##             case = self(i)
-            ##             included_cases.remove(i)
-            ##             cases_to_draw.append(case.case_number)
-            included_cases = [str(i.case_number) for i in self(included_cases)]
-            hatched_cases = [i for i in valid_cases if str(i) not in included_cases]
-            valid_cases = [i for i in valid_cases if str(i) in included_cases]
+            hatched_cases = [i for i in valid_cases if i not in included_cases]
+            valid_cases = [i for i in valid_cases if i in included_cases]
         else:
-            included_cases = [str(i.case_number) for i in self(included_cases)]
             valid_cases = [i for i in included_cases if self(i).is_valid(p_bounds=p_bounds)]
     else:
         valid_cases = self.valid_cases(p_bounds=p_bounds)
@@ -443,15 +429,13 @@ def draw_3D_slice(self, ax, p_vals, x_variable, y_variable,z_variable, range_x,
     p_bounds[z_variable] = range_z
     valid_cases = self.valid_cases(p_bounds=p_bounds)
     if included_cases is not None:
-        valid_cases = self.valid_cases(p_bounds=p_bounds)
-        ## for i in included_cases:
-        ##     if isinstance(i, str) is True:
-        ##         if i[0] == ':':
-        ##             case = self(i)
-        ##             included_cases.remove(i)
-        ##             cases_to_draw.append(case.case_number)
-        included_cases = [str(i.case_number) for i in self(included_cases)]
-        valid_cases = [i for i in valid_cases if str(i) in included_cases]
+        included_cases = [i.case_number for i in self(included_cases)]
+        if self.number_of_cases < 1e5:
+            valid_cases = self.valid_cases(p_bounds=p_bounds)
+            hatched_cases = [i for i in valid_cases if i not in included_cases]
+            valid_cases = [i for i in valid_cases if i in included_cases]
+        else:
+            valid_cases = [i for i in included_cases if self(i).is_valid(p_bounds=p_bounds)]
     case_int_list = self.intersecting_cases(intersections, 
                                             valid_cases,
                                             p_bounds=p_bounds)
@@ -493,19 +477,12 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
     p_bounds[y_variable] = range_y
     hatched_cases = []
     if included_cases is not None:
+        included_cases = [i.case_number for i in self(included_cases)]
         if self.number_of_cases < 1e5:
             valid_cases = self.valid_cases(p_bounds=p_bounds)
-            ## for i in included_cases:
-            ##     if isinstance(i, str) is True:
-            ##         if i[0] == ':':
-            ##             case = self(i)
-            ##             included_cases.remove(i)
-            ##             cases_to_draw.append(case.case_number)
-            included_cases = [str(i.case_number) for i in self(included_cases)]
-            hatched_cases = [i for i in valid_cases if str(i) not in included_cases]
-            valid_cases = [i for i in valid_cases if str(i) in included_cases]
+            hatched_cases = [i for i in valid_cases if i not in included_cases]
+            valid_cases = [i for i in valid_cases if i in included_cases]
         else:
-            included_cases = [str(i.case_number) for i in self(included_cases)]
             valid_cases = [i for i in included_cases if self(i).is_valid(p_bounds=p_bounds)]
     else:
         valid_cases = self.valid_cases(p_bounds=p_bounds)
