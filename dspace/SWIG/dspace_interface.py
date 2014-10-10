@@ -1139,9 +1139,21 @@ def DSCaseValidParameterSet(*args):
   return _dspace_interface.DSCaseValidParameterSet(*args)
 DSCaseValidParameterSet = _dspace_interface.DSCaseValidParameterSet
 
+def DSCaseValidParameterSetByOptimizingFunction(*args):
+  return _dspace_interface.DSCaseValidParameterSetByOptimizingFunction(*args)
+DSCaseValidParameterSetByOptimizingFunction = _dspace_interface.DSCaseValidParameterSetByOptimizingFunction
+
 def DSCaseValidParameterSetAtSlice(*args):
   return _dspace_interface.DSCaseValidParameterSetAtSlice(*args)
 DSCaseValidParameterSetAtSlice = _dspace_interface.DSCaseValidParameterSetAtSlice
+
+def DSCaseValidParameterSetAtSliceByOptimizingFunction(*args):
+  return _dspace_interface.DSCaseValidParameterSetAtSliceByOptimizingFunction(*args)
+DSCaseValidParameterSetAtSliceByOptimizingFunction = _dspace_interface.DSCaseValidParameterSetAtSliceByOptimizingFunction
+
+def DSCaseParseOptimizationFunction(*args):
+  return _dspace_interface.DSCaseParseOptimizationFunction(*args)
+DSCaseParseOptimizationFunction = _dspace_interface.DSCaseParseOptimizationFunction
 
 def DSCaseIntersectionListIsValid(*args):
   return _dspace_interface.DSCaseIntersectionListIsValid(*args)
