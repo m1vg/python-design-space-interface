@@ -183,6 +183,12 @@
 
 %inline %{
 
+typedef DSCase DSPseudoCase;
+//extern DSCase * DSSWIGPseudoCaseAsCase(DSPseudoCase * pseudo)
+//{
+//        return pseudo;
+//}
+        
 extern PyObject * DSSWIGDSCyclicalCaseEncodedBytes(DSCyclicalCase * aCase)
 {
         PyObject * pyBuf = NULL;

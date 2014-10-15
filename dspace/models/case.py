@@ -521,10 +521,11 @@ class Case(Model):
 
 class CaseIntersection(object):
     
-    def __init__(self, cases, name=None):
+    def __init__(self, cases, name=None, co_localize_slice=None, constraints=None):
         
         setattr(self, '_name', 'Unnamed')
         setattr(self, '_cases', list())
+        setattr(self, '_test', None)
         if name is not None:
             self._name = str(name)
         if isinstance(cases, list) is False:
@@ -532,7 +533,9 @@ class CaseIntersection(object):
         for case in cases:
             if isinstance(case, Case) is False:
                 raise TypeError, 'must be an instance of the Case class'
-            self._cases.append(case)
+        self._cases.append(case)
+        self._test = DSPseudoCaseFromIntersectionOfCases(len(cases), [i._swigwrapper for i in self._cases])
+        ## self._test = DSSWIGPseudoCaseAsCase(self._test)
         return
     
     def __str__(self):
@@ -570,9 +573,7 @@ class CaseIntersection(object):
             return self._is_valid_slice(p_bounds)
         return DSCaseIntersectionIsValid(len(self._cases), [i._swigwrapper for i in self._cases])
     
-    def valid_parameter_set_excluding_slice(self, names, constraints=None):
-        if isinstance(names, list) is False:
-            names = [names]
+    def _valid_parameter_set_excluding_slice_bounded(self, names, p_bounds, optimize=None, minimize=True, constraints=None):
         cases = self._cases
         if constraints is None:
             vp=DSCaseIntersectionExceptSliceValidParameterSet(len(cases), 
@@ -588,7 +589,51 @@ class CaseIntersection(object):
              len(names), names,
              constraints,
              len(constraints)
-             )
+             ) 
+        return vp
+    def valid_parameter_set_excluding_slice(self, names, p_bounds=None, optimize=None, minimize=True, constraints=None):
+        if isinstance(names, list) is False:
+            names = [names]
+        cases = self._cases
+        if p_bounds is not None:
+            vp = self._valid_parameter_set_excluding_slice_bounded(names, p_bounds, 
+                                                              optimize=optimize,
+                                                              minimize=minimize,
+                                                              constraints=constraints)
+        else:
+            if constraints is None:
+                if optimize is None:
+                    vp=DSCaseIntersectionExceptSliceValidParameterSet(len(cases), 
+                                                                      [i._swigwrapper for i in cases],
+                                                                      len(names), names
+                                                                      )
+                else:
+                    vp=DSCaseIntersectionExceptSliceValidParameterSetByOptimizingFunction(                     len(cases), 
+                     [i._swigwrapper for i in cases],
+                     len(names), names,
+                     optimize,
+                     minimize
+                     )
+            else:
+                if isinstance(constraints, list) is False:
+                    constraints=[constraints]
+                if optimize is None:
+                    vp=DSCaseIntersectionExceptSliceValidParameterSetWithConstraints(
+                     len(cases), 
+                     [i._swigwrapper for i in cases],
+                     len(names), names,
+                     constraints,
+                     len(constraints)
+                     )
+                else:
+                    vp=DSCaseIntersectionExceptSliceValidParameterSetWithConstraints(
+                     len(cases), 
+                     [i._swigwrapper for i in cases],
+                     len(names), names,
+                     constraints,
+                     len(constraints)
+                     )
+            
         if vp is None:
             return None
         pv = VariablePool()

@@ -3413,6 +3413,12 @@ SWIG_From_char  (char c)
 
 
 
+typedef DSCase DSPseudoCase;
+//extern DSCase * DSSWIGPseudoCaseAsCase(DSPseudoCase * pseudo)
+//{
+//        return pseudo;
+//}
+        
 extern PyObject * DSSWIGDSCyclicalCaseEncodedBytes(DSCyclicalCase * aCase)
 {
         PyObject * pyBuf = NULL;
@@ -13013,6 +13019,115 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSPseudoCaseFromIntersectionOfCases(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSUInteger arg1 ;
+  DSCase **arg2 = (DSCase **) 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  DSPseudoCase *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSPseudoCaseFromIntersectionOfCases",&obj0,&obj1)) SWIG_fail;
+  {
+    arg1 = (DSUInteger) PyLong_AsUnsignedLongMask(obj0);
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj1)) {
+      int size = PyList_Size(obj1);
+      int i = 0;
+      arg2 = (const DSCase **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj1,i);
+        if (SWIG_ConvertPtr(o, &(arg2[i]), SWIGTYPE_p_DSCase, SWIG_POINTER_EXCEPTION) == -1) {
+          PyErr_SetString(PyExc_TypeError,"list must contain DSCase objects");
+          free(arg2);
+          return NULL;
+        }
+      }
+      arg2[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  result = (DSPseudoCase *)DSPseudoCaseFromIntersectionOfCases(arg1,(DSCase const **)arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSCase, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSPseudoCaseFromIntersectionOfCasesExcludingSlice(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSUInteger arg1 ;
+  DSCase **arg2 = (DSCase **) 0 ;
+  DSUInteger arg3 ;
+  char **arg4 = (char **) 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  DSPseudoCase *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:DSPseudoCaseFromIntersectionOfCasesExcludingSlice",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  {
+    arg1 = (DSUInteger) PyLong_AsUnsignedLongMask(obj0);
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj1)) {
+      int size = PyList_Size(obj1);
+      int i = 0;
+      arg2 = (const DSCase **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj1,i);
+        if (SWIG_ConvertPtr(o, &(arg2[i]), SWIGTYPE_p_DSCase, SWIG_POINTER_EXCEPTION) == -1) {
+          PyErr_SetString(PyExc_TypeError,"list must contain DSCase objects");
+          free(arg2);
+          return NULL;
+        }
+      }
+      arg2[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg3 = (DSUInteger) PyLong_AsUnsignedLongMask(obj2);
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj3)) {
+      int size = PyList_Size(obj3);
+      int i = 0;
+      arg4 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj3,i);
+        if (PyString_Check(o))
+        arg4[i] = PyString_AsString(PyList_GetItem(obj3,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg4);
+          return NULL;
+        }
+      }
+      arg4[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  result = (DSPseudoCase *)DSPseudoCaseFromIntersectionOfCasesExcludingSlice(arg1,(DSCase const **)arg2,arg3,(char const **)arg4);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSCase, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSCaseIntersectionListIsValid__varargs__(PyObject *SWIGUNUSEDPARM(self), PyObject *args, PyObject *varargs) {
   PyObject *resultobj = 0;
   DSUInteger arg1 ;
@@ -13757,6 +13872,323 @@ SWIGINTERN PyObject *_wrap_DSCaseIntersectionExceptSliceValidParameterSetAtSlice
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSVariablePool, 0 |  0 );
   return resultobj;
 fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseIntersectionExceptSliceValidParameterSetByOptimizingFunction(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSUInteger arg1 ;
+  DSCase **arg2 = (DSCase **) 0 ;
+  DSUInteger arg3 ;
+  char **arg4 = (char **) 0 ;
+  char *arg5 = (char *) 0 ;
+  bool arg6 ;
+  int res5 ;
+  char *buf5 = 0 ;
+  int alloc5 = 0 ;
+  bool val6 ;
+  int ecode6 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  DSVariablePool *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOO:DSCaseIntersectionExceptSliceValidParameterSetByOptimizingFunction",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
+  {
+    arg1 = (DSUInteger) PyLong_AsUnsignedLongMask(obj0);
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj1)) {
+      int size = PyList_Size(obj1);
+      int i = 0;
+      arg2 = (const DSCase **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj1,i);
+        if (SWIG_ConvertPtr(o, &(arg2[i]), SWIGTYPE_p_DSCase, SWIG_POINTER_EXCEPTION) == -1) {
+          PyErr_SetString(PyExc_TypeError,"list must contain DSCase objects");
+          free(arg2);
+          return NULL;
+        }
+      }
+      arg2[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg3 = (DSUInteger) PyLong_AsUnsignedLongMask(obj2);
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj3)) {
+      int size = PyList_Size(obj3);
+      int i = 0;
+      arg4 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj3,i);
+        if (PyString_Check(o))
+        arg4[i] = PyString_AsString(PyList_GetItem(obj3,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg4);
+          return NULL;
+        }
+      }
+      arg4[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  res5 = SWIG_AsCharPtrAndSize(obj4, &buf5, NULL, &alloc5);
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "DSCaseIntersectionExceptSliceValidParameterSetByOptimizingFunction" "', argument " "5"" of type '" "char const *""'");
+  }
+  arg5 = (char *)(buf5);
+  ecode6 = SWIG_AsVal_bool(obj5, &val6);
+  if (!SWIG_IsOK(ecode6)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "DSCaseIntersectionExceptSliceValidParameterSetByOptimizingFunction" "', argument " "6"" of type '" "bool""'");
+  } 
+  arg6 = (bool)(val6);
+  result = (DSVariablePool *)DSCaseIntersectionExceptSliceValidParameterSetByOptimizingFunction(arg1,(DSCase const **)arg2,arg3,(char const **)arg4,(char const *)arg5,arg6);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (alloc5 == SWIG_NEWOBJ) free((char*)buf5);
+  return resultobj;
+fail:
+  if (alloc5 == SWIG_NEWOBJ) free((char*)buf5);
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseIntersectionExceptSliceValidParameterSetWithConstraintsByOptimizingFunction(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSUInteger arg1 ;
+  DSCase **arg2 = (DSCase **) 0 ;
+  DSUInteger arg3 ;
+  char **arg4 = (char **) 0 ;
+  char **arg5 = (char **) 0 ;
+  DSUInteger arg6 ;
+  char *arg7 = (char *) 0 ;
+  bool arg8 ;
+  int res7 ;
+  char *buf7 = 0 ;
+  int alloc7 = 0 ;
+  bool val8 ;
+  int ecode8 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  PyObject * obj6 = 0 ;
+  PyObject * obj7 = 0 ;
+  DSVariablePool *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOOOO:DSCaseIntersectionExceptSliceValidParameterSetWithConstraintsByOptimizingFunction",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5,&obj6,&obj7)) SWIG_fail;
+  {
+    arg1 = (DSUInteger) PyLong_AsUnsignedLongMask(obj0);
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj1)) {
+      int size = PyList_Size(obj1);
+      int i = 0;
+      arg2 = (const DSCase **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj1,i);
+        if (SWIG_ConvertPtr(o, &(arg2[i]), SWIGTYPE_p_DSCase, SWIG_POINTER_EXCEPTION) == -1) {
+          PyErr_SetString(PyExc_TypeError,"list must contain DSCase objects");
+          free(arg2);
+          return NULL;
+        }
+      }
+      arg2[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg3 = (DSUInteger) PyLong_AsUnsignedLongMask(obj2);
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj3)) {
+      int size = PyList_Size(obj3);
+      int i = 0;
+      arg4 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj3,i);
+        if (PyString_Check(o))
+        arg4[i] = PyString_AsString(PyList_GetItem(obj3,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg4);
+          return NULL;
+        }
+      }
+      arg4[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj4)) {
+      int size = PyList_Size(obj4);
+      int i = 0;
+      arg5 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj4,i);
+        if (PyString_Check(o))
+        arg5[i] = PyString_AsString(PyList_GetItem(obj4,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg5);
+          return NULL;
+        }
+      }
+      arg5[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg6 = (DSUInteger) PyLong_AsUnsignedLongMask(obj5);
+  }
+  res7 = SWIG_AsCharPtrAndSize(obj6, &buf7, NULL, &alloc7);
+  if (!SWIG_IsOK(res7)) {
+    SWIG_exception_fail(SWIG_ArgError(res7), "in method '" "DSCaseIntersectionExceptSliceValidParameterSetWithConstraintsByOptimizingFunction" "', argument " "7"" of type '" "char const *""'");
+  }
+  arg7 = (char *)(buf7);
+  ecode8 = SWIG_AsVal_bool(obj7, &val8);
+  if (!SWIG_IsOK(ecode8)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode8), "in method '" "DSCaseIntersectionExceptSliceValidParameterSetWithConstraintsByOptimizingFunction" "', argument " "8"" of type '" "bool""'");
+  } 
+  arg8 = (bool)(val8);
+  result = (DSVariablePool *)DSCaseIntersectionExceptSliceValidParameterSetWithConstraintsByOptimizingFunction(arg1,(DSCase const **)arg2,arg3,(char const **)arg4,(char const **)arg5,arg6,(char const *)arg7,arg8);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (alloc7 == SWIG_NEWOBJ) free((char*)buf7);
+  return resultobj;
+fail:
+  if (alloc7 == SWIG_NEWOBJ) free((char*)buf7);
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseIntersectionExceptSliceValidParameterSetAtSliceByOptimizingFunction(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSUInteger arg1 ;
+  DSCase **arg2 = (DSCase **) 0 ;
+  DSUInteger arg3 ;
+  char **arg4 = (char **) 0 ;
+  DSVariablePool *arg5 = (DSVariablePool *) 0 ;
+  DSVariablePool *arg6 = (DSVariablePool *) 0 ;
+  char *arg7 = (char *) 0 ;
+  bool arg8 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
+  void *argp6 = 0 ;
+  int res6 = 0 ;
+  int res7 ;
+  char *buf7 = 0 ;
+  int alloc7 = 0 ;
+  bool val8 ;
+  int ecode8 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  PyObject * obj6 = 0 ;
+  PyObject * obj7 = 0 ;
+  DSVariablePool *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOOOO:DSCaseIntersectionExceptSliceValidParameterSetAtSliceByOptimizingFunction",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5,&obj6,&obj7)) SWIG_fail;
+  {
+    arg1 = (DSUInteger) PyLong_AsUnsignedLongMask(obj0);
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj1)) {
+      int size = PyList_Size(obj1);
+      int i = 0;
+      arg2 = (const DSCase **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj1,i);
+        if (SWIG_ConvertPtr(o, &(arg2[i]), SWIGTYPE_p_DSCase, SWIG_POINTER_EXCEPTION) == -1) {
+          PyErr_SetString(PyExc_TypeError,"list must contain DSCase objects");
+          free(arg2);
+          return NULL;
+        }
+      }
+      arg2[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg3 = (DSUInteger) PyLong_AsUnsignedLongMask(obj2);
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj3)) {
+      int size = PyList_Size(obj3);
+      int i = 0;
+      arg4 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj3,i);
+        if (PyString_Check(o))
+        arg4[i] = PyString_AsString(PyList_GetItem(obj3,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg4);
+          return NULL;
+        }
+      }
+      arg4[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  res5 = SWIG_ConvertPtr(obj4, &argp5,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "DSCaseIntersectionExceptSliceValidParameterSetAtSliceByOptimizingFunction" "', argument " "5"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg5 = (DSVariablePool *)(argp5);
+  res6 = SWIG_ConvertPtr(obj5, &argp6,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res6)) {
+    SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "DSCaseIntersectionExceptSliceValidParameterSetAtSliceByOptimizingFunction" "', argument " "6"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg6 = (DSVariablePool *)(argp6);
+  res7 = SWIG_AsCharPtrAndSize(obj6, &buf7, NULL, &alloc7);
+  if (!SWIG_IsOK(res7)) {
+    SWIG_exception_fail(SWIG_ArgError(res7), "in method '" "DSCaseIntersectionExceptSliceValidParameterSetAtSliceByOptimizingFunction" "', argument " "7"" of type '" "char const *""'");
+  }
+  arg7 = (char *)(buf7);
+  ecode8 = SWIG_AsVal_bool(obj7, &val8);
+  if (!SWIG_IsOK(ecode8)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode8), "in method '" "DSCaseIntersectionExceptSliceValidParameterSetAtSliceByOptimizingFunction" "', argument " "8"" of type '" "bool""'");
+  } 
+  arg8 = (bool)(val8);
+  result = (DSVariablePool *)DSCaseIntersectionExceptSliceValidParameterSetAtSliceByOptimizingFunction(arg1,(DSCase const **)arg2,arg3,(char const **)arg4,(DSVariablePool const *)arg5,(DSVariablePool const *)arg6,(char const *)arg7,arg8);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (alloc7 == SWIG_NEWOBJ) free((char*)buf7);
+  return resultobj;
+fail:
+  if (alloc7 == SWIG_NEWOBJ) free((char*)buf7);
   return NULL;
 }
 
@@ -18160,6 +18592,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCaseValidParameterSetAtSlice", _wrap_DSCaseValidParameterSetAtSlice, METH_VARARGS, NULL},
 	 { (char *)"DSCaseValidParameterSetAtSliceByOptimizingFunction", _wrap_DSCaseValidParameterSetAtSliceByOptimizingFunction, METH_VARARGS, NULL},
 	 { (char *)"DSCaseParseOptimizationFunction", _wrap_DSCaseParseOptimizationFunction, METH_VARARGS, NULL},
+	 { (char *)"DSPseudoCaseFromIntersectionOfCases", _wrap_DSPseudoCaseFromIntersectionOfCases, METH_VARARGS, NULL},
+	 { (char *)"DSPseudoCaseFromIntersectionOfCasesExcludingSlice", _wrap_DSPseudoCaseFromIntersectionOfCasesExcludingSlice, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIntersectionListIsValid", _wrap_DSCaseIntersectionListIsValid, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIntersectionIsValid", _wrap_DSCaseIntersectionIsValid, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIntersectionIsValidAtSlice", _wrap_DSCaseIntersectionIsValidAtSlice, METH_VARARGS, NULL},
@@ -18170,6 +18604,9 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCaseIntersectionExceptSliceValidParameterSet", _wrap_DSCaseIntersectionExceptSliceValidParameterSet, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIntersectionExceptSliceValidParameterSetWithConstraints", _wrap_DSCaseIntersectionExceptSliceValidParameterSetWithConstraints, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIntersectionExceptSliceValidParameterSetAtSlice", _wrap_DSCaseIntersectionExceptSliceValidParameterSetAtSlice, METH_VARARGS, NULL},
+	 { (char *)"DSCaseIntersectionExceptSliceValidParameterSetByOptimizingFunction", _wrap_DSCaseIntersectionExceptSliceValidParameterSetByOptimizingFunction, METH_VARARGS, NULL},
+	 { (char *)"DSCaseIntersectionExceptSliceValidParameterSetWithConstraintsByOptimizingFunction", _wrap_DSCaseIntersectionExceptSliceValidParameterSetWithConstraintsByOptimizingFunction, METH_VARARGS, NULL},
+	 { (char *)"DSCaseIntersectionExceptSliceValidParameterSetAtSliceByOptimizingFunction", _wrap_DSCaseIntersectionExceptSliceValidParameterSetAtSliceByOptimizingFunction, METH_VARARGS, NULL},
 	 { (char *)"DSCaseNumberForSignature", _wrap_DSCaseNumberForSignature, METH_VARARGS, NULL},
 	 { (char *)"DSCaseSignatureForCaseNumber", _wrap_DSCaseSignatureForCaseNumber, METH_VARARGS, NULL},
 	 { (char *)"DSCaseSignatureToString", _wrap_DSCaseSignatureToString, METH_VARARGS, NULL},
@@ -18315,7 +18752,7 @@ static PyMethodDef SwigMethods[] = {
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
-static swig_type_info _swigt__p_DSCase = {"_p_DSCase", "DSCase *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_DSCase = {"_p_DSCase", "DSCase *|DSPseudoCase *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSCaseMessage = {"_p_DSCaseMessage", "DSCaseMessage *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSCyclicalCase = {"_p_DSCyclicalCase", "DSCyclicalCase *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSCyclicalCaseMessage = {"_p_DSCyclicalCaseMessage", "DSCyclicalCaseMessage *", 0, 0, (void*)0, 0};
