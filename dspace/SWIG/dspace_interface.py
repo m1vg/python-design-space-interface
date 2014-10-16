@@ -1071,6 +1071,18 @@ def DSCaseLogarithmicGain(*args):
   return _dspace_interface.DSCaseLogarithmicGain(*args)
 DSCaseLogarithmicGain = _dspace_interface.DSCaseLogarithmicGain
 
+def DSCaseXd(*args):
+  return _dspace_interface.DSCaseXd(*args)
+DSCaseXd = _dspace_interface.DSCaseXd
+
+def DSCaseXd_a(*args):
+  return _dspace_interface.DSCaseXd_a(*args)
+DSCaseXd_a = _dspace_interface.DSCaseXd_a
+
+def DSCaseXi(*args):
+  return _dspace_interface.DSCaseXi(*args)
+DSCaseXi = _dspace_interface.DSCaseXi
+
 def DSCaseDoubleValueBoundariesAtPoint(*args):
   return _dspace_interface.DSCaseDoubleValueBoundariesAtPoint(*args)
 DSCaseDoubleValueBoundariesAtPoint = _dspace_interface.DSCaseDoubleValueBoundariesAtPoint

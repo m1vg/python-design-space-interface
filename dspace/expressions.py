@@ -67,3 +67,11 @@ class Expression(object):
             expr = Expression(None)
             expr._swigwrapper = rhs_swigwrapper
         return expr
+        
+    @property
+    def variables(self):
+        vp = DSExpressionVariablesInExpression(self._swigwrapper)
+        pv = VariablePool()
+        pv.set_swigwrapper(vp)
+        return pv.keys()
+    

@@ -11902,6 +11902,72 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSCaseXd(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  DSVariablePool *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSCaseXd",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseXd" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  result = (DSVariablePool *)DSCaseXd((DSCase const *)arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseXd_a(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  DSVariablePool *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSCaseXd_a",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseXd_a" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  result = (DSVariablePool *)DSCaseXd_a((DSCase const *)arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseXi(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  DSVariablePool *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSCaseXi",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseXi" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  result = (DSVariablePool *)DSCaseXi((DSCase const *)arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSCaseDoubleValueBoundariesAtPoint(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSCase *arg1 = (DSCase *) 0 ;
@@ -18570,6 +18636,9 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCaseSignature", _wrap_DSCaseSignature, METH_VARARGS, NULL},
 	 { (char *)"DSCaseSSystem", _wrap_DSCaseSSystem, METH_VARARGS, NULL},
 	 { (char *)"DSCaseLogarithmicGain", _wrap_DSCaseLogarithmicGain, METH_VARARGS, NULL},
+	 { (char *)"DSCaseXd", _wrap_DSCaseXd, METH_VARARGS, NULL},
+	 { (char *)"DSCaseXd_a", _wrap_DSCaseXd_a, METH_VARARGS, NULL},
+	 { (char *)"DSCaseXi", _wrap_DSCaseXi, METH_VARARGS, NULL},
 	 { (char *)"DSCaseDoubleValueBoundariesAtPoint", _wrap_DSCaseDoubleValueBoundariesAtPoint, METH_VARARGS, NULL},
 	 { (char *)"DSCaseAddConstraints", _wrap_DSCaseAddConstraints, METH_VARARGS, NULL},
 	 { (char *)"DSCaseConditionsAreValid", _wrap_DSCaseConditionsAreValid, METH_VARARGS, NULL},

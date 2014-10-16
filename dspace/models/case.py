@@ -519,233 +519,260 @@ class Case(Model):
         roots = ssys.positive_roots(parameter_values)
         return roots
 
-class CaseIntersection(object):
+class CaseIntersection(Case):
     
-    def __init__(self, cases, name=None, co_localize_slice=None, constraints=None):
+    def __init__(self, cases, name=None, constraints=None, latex_symbols=None):
+        
         
         setattr(self, '_name', 'Unnamed')
         setattr(self, '_cases', list())
-        setattr(self, '_test', None)
-        if name is not None:
-            self._name = str(name)
         if isinstance(cases, list) is False:
             cases= [cases]
         for case in cases:
             if isinstance(case, Case) is False:
                 raise TypeError, 'must be an instance of the Case class'
-        self._cases.append(case)
-        self._test = DSPseudoCaseFromIntersectionOfCases(len(cases), [i._swigwrapper for i in self._cases])
-        ## self._test = DSSWIGPseudoCaseAsCase(self._test)
+        cases_swig = [DSCaseCopy(i._swigwrapper) for i in cases]
+        new_cases = []
+        if constraints is not None:
+            if isinstance(constraints, list) is False:
+                constraints = [constraints]
+        for i in range(len(cases_swig)):
+            if constraints is not None:
+                DSCaseAddConstraints(cases_swig[i], constraints, len(constraints))
+            new_cases.append(Case(cases[i], cases_swig[i], name=cases[i].name))
+        swigwrapper = DSPseudoCaseFromIntersectionOfCases(len(cases), [i._swigwrapper for i in new_cases])
+        super(CaseIntersection, self).__init__(cases[0],
+                                               swigwrapper,
+                                               name=name,
+                                               latex_symbols=latex_symbols)
+        self._cases = new_cases
         return
+
+    def __del__(self):
+        ''' 
+        '''
+        if self._swigwrapper is not None:
+            DSCaseFree(self._swigwrapper)
+            
+    def set_swigwrapper(self, case_swigwrapper):
+        self._swigwrapper = case_swigwrapper
+        Xd = VariablePool()
+        Xd.set_swigwrapper(DSVariablePoolCopy(DSCaseXd(case_swigwrapper)))
+        for i in VariablePool():
+            if i not in self.dependent_variables:
+                raise NameError, 'Dependent Variables are inconsistent'
+        Xi = VariablePool()
+        Xi.set_swigwrapper(DSVariablePoolCopy(DSCaseXi(case_swigwrapper)))
+        self._independent_variables = Xi
     
     def __str__(self):
         jstr = ', '
         return jstr.join([str(i) for i in self._cases])
-        
+    ##     
     def __repr__(self):
         return 'CaseIntersection: Cases ' + str(self)
-        
-    def _is_valid_slice(self, p_bounds):
+    ##     
+    ## def _is_valid_slice(self, p_bounds):
+    ## 
+    ##     lower = VariablePool(names=self._cases[0].independent_variables)
+    ##     upper = VariablePool(names=self._cases[0].independent_variables)
+    ##     for i in lower:
+    ##         lower[i] = 1E-20
+    ##         upper[i] = 1E20
+    ##     for (key,value) in p_bounds.iteritems():
+    ##         try:
+    ##             min_value,max_value = value
+    ##         except TypeError:
+    ##             min_value = value
+    ##             max_value = value
+    ##         if min_value > max_value:
+    ##             raise ValueError, 'parameter slice bounds are inverted: min is larger than max'
+    ##         lower[key] = min_value
+    ##         upper[key] = max_value
+    ##     return DSCaseIntersectionIsValidAtSlice(len(self._cases),
+    ##                                             [i._swigwrapper for i in self._cases],
+    ##                                             lower._swigwrapper,
+    ##                                             upper._swigwrapper
+    ##                                             )
+    ## 
+    ## def is_valid(self, p_bounds=None):
+    ##     if p_bounds is not None:
+    ##         return self._is_valid_slice(p_bounds)
+    ##     return DSCaseIntersectionIsValid(len(self._cases), [i._swigwrapper for i in self._cases])
+    ## 
+    ## def _valid_parameter_set_excluding_slice_bounded(self, names, p_bounds, optimize=None, minimize=True, constraints=None):
+    ##     cases = self._cases
+    ##     if constraints is None:
+    ##         vp=DSCaseIntersectionExceptSliceValidParameterSet(len(cases), 
+    ##                                                           [i._swigwrapper for i in cases],
+    ##                                                           len(names), names
+    ##                                                           )
+    ##     else:
+    ##         if isinstance(constraints, list) is False:
+    ##             constraints=[constraints]
+    ##         vp=DSCaseIntersectionExceptSliceValidParameterSetWithConstraints(
+    ##          len(cases), 
+    ##          [i._swigwrapper for i in cases],
+    ##          len(names), names,
+    ##          constraints,
+    ##          len(constraints)
+    ##          ) 
+    ##     return vp
+    ## def valid_parameter_set_excluding_slice(self, names, p_bounds=None, optimize=None, minimize=True, constraints=None):
+    ##     if isinstance(names, list) is False:
+    ##         names = [names]
+    ##     cases = self._cases
+    ##     if p_bounds is not None:
+    ##         vp = self._valid_parameter_set_excluding_slice_bounded(names, p_bounds, 
+    ##                                                           optimize=optimize,
+    ##                                                           minimize=minimize,
+    ##                                                           constraints=constraints)
+    ##     else:
+    ##         if constraints is None:
+    ##             if optimize is None:
+    ##                 vp=DSCaseIntersectionExceptSliceValidParameterSet(len(cases), 
+    ##                                                                   [i._swigwrapper for i in cases],
+    ##                                                                   len(names), names
+    ##                                                                   )
+    ##             else:
+    ##                 vp=DSCaseIntersectionExceptSliceValidParameterSetByOptimizingFunction(    ##                  len(cases), 
+    ##                  [i._swigwrapper for i in cases],
+    ##                  len(names), names,
+    ##                  optimize,
+    ##                  minimize
+    ##                  )
+    ##         else:
+    ##             if isinstance(constraints, list) is False:
+    ##                 constraints=[constraints]
+    ##             if optimize is None:
+    ##                 vp=DSCaseIntersectionExceptSliceValidParameterSetWithConstraints(
+    ##                  len(cases), 
+    ##                  [i._swigwrapper for i in cases],
+    ##                  len(names), names,
+    ##                  constraints,
+    ##                  len(constraints)
+    ##                  )
+    ##             else:
+    ##                 vp=DSCaseIntersectionExceptSliceValidParameterSetWithConstraints(
+    ##                  len(cases), 
+    ##                  [i._swigwrapper for i in cases],
+    ##                  len(names), names,
+    ##                  constraints,
+    ##                  len(constraints)
+    ##                  )
+    ##         
+    ##     if vp is None:
+    ##         return None
+    ##     pv = VariablePool()
+    ##     pv.set_swigwrapper(vp)
+    ##     p_sets = dict()
+    ##     index = 0
+    ##     for i in cases:
+    ##         pvals = VariablePool(names=i.independent_variables)
+    ##         for j in pvals:
+    ##             if j in names:
+    ##                 pvals[j] = pv['$'+j+'_'+str(index)]
+    ##             else:
+    ##                 pvals[j] = pv[j]
+    ##         p_sets[str(i)] = pvals
+    ##         index += 1
+    ##     return p_sets
+    ##     
+    ## def vertices_1D_slice(self, p_vals, slice_variable, range_slice=None,
+    ##                       log_out=False):
+    ##     lower = p_vals.copy()
+    ##     upper = p_vals.copy()
+    ##     if range_slice is None:
+    ##         lower[slice_variable] = 1E-20
+    ##         upper[slice_variable] = 1E20
+    ##     else:
+    ##         lower[slice_variable] = min(range_slice)
+    ##         upper[slice_variable] = max(range_slice)
+    ##     log_vertices=DSCaseIntersectionVerticesForSlice(len(self._cases),
+    ##                                                     [i._swigwrapper for i in self._cases],
+    ##                                                     lower._swigwrapper,
+    ##                                                     upper._swigwrapper,
+    ##                                                     1,
+    ##                                                     [slice_variable]
+    ##                                                     )
+    ##     vertices = list()
+    ##     for vertex in log_vertices:
+    ##         vertices.append([10**coordinate for coordinate in vertex])
+    ##     if log_out is True:
+    ##         return log_vertices
+    ## ##     return vertices
 
-        lower = VariablePool(names=self._cases[0].independent_variables)
-        upper = VariablePool(names=self._cases[0].independent_variables)
-        for i in lower:
-            lower[i] = 1E-20
-            upper[i] = 1E20
-        for (key,value) in p_bounds.iteritems():
-            try:
-                min_value,max_value = value
-            except TypeError:
-                min_value = value
-                max_value = value
-            if min_value > max_value:
-                raise ValueError, 'parameter slice bounds are inverted: min is larger than max'
-            lower[key] = min_value
-            upper[key] = max_value
-        return DSCaseIntersectionIsValidAtSlice(len(self._cases),
-                                                [i._swigwrapper for i in self._cases],
-                                                lower._swigwrapper,
-                                                upper._swigwrapper
-                                                )
-    
-    def is_valid(self, p_bounds=None):
-        if p_bounds is not None:
-            return self._is_valid_slice(p_bounds)
-        return DSCaseIntersectionIsValid(len(self._cases), [i._swigwrapper for i in self._cases])
-    
-    def _valid_parameter_set_excluding_slice_bounded(self, names, p_bounds, optimize=None, minimize=True, constraints=None):
-        cases = self._cases
-        if constraints is None:
-            vp=DSCaseIntersectionExceptSliceValidParameterSet(len(cases), 
-                                                              [i._swigwrapper for i in cases],
-                                                              len(names), names
-                                                              )
-        else:
-            if isinstance(constraints, list) is False:
-                constraints=[constraints]
-            vp=DSCaseIntersectionExceptSliceValidParameterSetWithConstraints(
-             len(cases), 
-             [i._swigwrapper for i in cases],
-             len(names), names,
-             constraints,
-             len(constraints)
-             ) 
-        return vp
-    def valid_parameter_set_excluding_slice(self, names, p_bounds=None, optimize=None, minimize=True, constraints=None):
-        if isinstance(names, list) is False:
-            names = [names]
-        cases = self._cases
-        if p_bounds is not None:
-            vp = self._valid_parameter_set_excluding_slice_bounded(names, p_bounds, 
-                                                              optimize=optimize,
-                                                              minimize=minimize,
-                                                              constraints=constraints)
-        else:
-            if constraints is None:
-                if optimize is None:
-                    vp=DSCaseIntersectionExceptSliceValidParameterSet(len(cases), 
-                                                                      [i._swigwrapper for i in cases],
-                                                                      len(names), names
-                                                                      )
-                else:
-                    vp=DSCaseIntersectionExceptSliceValidParameterSetByOptimizingFunction(                     len(cases), 
-                     [i._swigwrapper for i in cases],
-                     len(names), names,
-                     optimize,
-                     minimize
-                     )
-            else:
-                if isinstance(constraints, list) is False:
-                    constraints=[constraints]
-                if optimize is None:
-                    vp=DSCaseIntersectionExceptSliceValidParameterSetWithConstraints(
-                     len(cases), 
-                     [i._swigwrapper for i in cases],
-                     len(names), names,
-                     constraints,
-                     len(constraints)
-                     )
-                else:
-                    vp=DSCaseIntersectionExceptSliceValidParameterSetWithConstraints(
-                     len(cases), 
-                     [i._swigwrapper for i in cases],
-                     len(names), names,
-                     constraints,
-                     len(constraints)
-                     )
-            
-        if vp is None:
-            return None
-        pv = VariablePool()
-        pv.set_swigwrapper(vp)
-        p_sets = dict()
-        index = 0
-        for i in cases:
-            pvals = VariablePool(names=i.independent_variables)
-            for j in pvals:
-                if j in names:
-                    pvals[j] = pv['$'+j+'_'+str(index)]
-                else:
-                    pvals[j] = pv[j]
-            p_sets[str(i)] = pvals
-            index += 1
-        return p_sets
-        
-    def vertices_1D_slice(self, p_vals, slice_variable, range_slice=None,
-                          log_out=False):
-        lower = p_vals.copy()
-        upper = p_vals.copy()
-        if range_slice is None:
-            lower[slice_variable] = 1E-20
-            upper[slice_variable] = 1E20
-        else:
-            lower[slice_variable] = min(range_slice)
-            upper[slice_variable] = max(range_slice)
-        log_vertices=DSCaseIntersectionVerticesForSlice(len(self._cases),
-                                                        [i._swigwrapper for i in self._cases],
-                                                        lower._swigwrapper,
-                                                        upper._swigwrapper,
-                                                        1,
-                                                        [slice_variable]
-                                                        )
-        vertices = list()
-        for vertex in log_vertices:
-            vertices.append([10**coordinate for coordinate in vertex])
-        if log_out is True:
-            return log_vertices
-        return vertices
-
-    def vertices_2D_slice(self, p_vals, x_variable, y_variable, range_x=None, range_y=None,
-                          log_out=False):
-        lower = p_vals.copy()
-        upper = p_vals.copy()
-        if range_x is None:
-            lower[x_variable] = 1E-20
-            upper[x_variable] = 1E20
-        else:
-            lower[x_variable] = min(range_x)
-            upper[x_variable] = max(range_x)
-        if range_y is None:
-            lower[y_variable] = 1E-20
-            upper[y_variable] = 1E20
-        else:
-            lower[y_variable] = min(range_y)
-            upper[y_variable] = max(range_y)
-        log_vertices=DSCaseIntersectionVerticesForSlice(len(self._cases),
-                                                        [i._swigwrapper for i in self._cases],
-                                                        lower._swigwrapper,
-                                                        upper._swigwrapper,
-                                                        2,
-                                                        [x_variable, y_variable]
-                                                        )
-        vertices = list()
-        for vertex in log_vertices:
-            vertices.append([10**coordinate for coordinate in vertex])
-        if log_out is True:
-            return log_vertices
-        return vertices
-    
-    def faces_3D_slice(self, p_vals, x_variable, y_variable, z_variable, 
-                          range_x=None, range_y=None, range_z=None,
-                          log_out=False):
-        lower = p_vals.copy()
-        upper = p_vals.copy()
-        faces = list()
-        if range_x is None:
-            lower[x_variable] = 1E-20
-            upper[x_variable] = 1E20
-        else:
-            lower[x_variable] = min(range_x)
-            upper[x_variable] = max(range_x)
-        if range_y is None:
-            lower[y_variable] = 1E-20
-            upper[y_variable] = 1E20
-        else:
-            lower[y_variable] = min(range_y)
-            upper[y_variable] = max(range_y)
-        if range_y is None:
-            lower[z_variable] = 1E-20
-            upper[z_variable] = 1E20
-        else:
-            lower[z_variable] = min(range_z)
-            upper[z_variable] = max(range_z)
-        faces_data=DSCaseIntersectionFacesFor3DSliceAndConnectivity(
-         len(self._cases),
-         [i._swigwrapper for i in self._cases], 
-         lower._swigwrapper,
-         upper._swigwrapper,
-         x_variable,
-         y_variable,
-         z_variable)
-        for i in xrange(DSMatrixArrayNumberOfMatrices(faces_data)):
-            log_vertices = DSMatrixArrayMatrix(faces_data, i)
-            if log_out is False:
-                vertices = list()
-                for vertex in log_vertices:
-                    vertices.append([10**coordinate for coordinate in vertex])
-            else:
-                vertices = log_vertices
-            faces.append(vertices)
-        return faces
+    ## def vertices_2D_slice(self, p_vals, x_variable, y_variable, range_x=None, range_y=None,
+    ##                       log_out=False):
+    ##     lower = p_vals.copy()
+    ##     upper = p_vals.copy()
+    ##     if range_x is None:
+    ##         lower[x_variable] = 1E-20
+    ##         upper[x_variable] = 1E20
+    ##     else:
+    ##         lower[x_variable] = min(range_x)
+    ##         upper[x_variable] = max(range_x)
+    ##     if range_y is None:
+    ##         lower[y_variable] = 1E-20
+    ##         upper[y_variable] = 1E20
+    ##     else:
+    ##         lower[y_variable] = min(range_y)
+    ##         upper[y_variable] = max(range_y)
+    ##     log_vertices=DSCaseIntersectionVerticesForSlice(len(self._cases),
+    ##                                                     [i._swigwrapper for i in self._cases],
+    ##                                                     lower._swigwrapper,
+    ##                                                     upper._swigwrapper,
+    ##                                                     2,
+    ##                                                     [x_variable, y_variable]
+    ##                                                     )
+    ##     vertices = list()
+    ##     for vertex in log_vertices:
+    ##         vertices.append([10**coordinate for coordinate in vertex])
+    ##     if log_out is True:
+    ##         return log_vertices
+    ##     return vertices
+    ## 
+    ## def faces_3D_slice(self, p_vals, x_variable, y_variable, z_variable, 
+    ##                       range_x=None, range_y=None, range_z=None,
+    ##                       log_out=False):
+    ##     lower = p_vals.copy()
+    ##     upper = p_vals.copy()
+    ##     faces = list()
+    ##     if range_x is None:
+    ##         lower[x_variable] = 1E-20
+    ##         upper[x_variable] = 1E20
+    ##     else:
+    ##         lower[x_variable] = min(range_x)
+    ##         upper[x_variable] = max(range_x)
+    ##     if range_y is None:
+    ##         lower[y_variable] = 1E-20
+    ##         upper[y_variable] = 1E20
+    ##     else:
+    ##         lower[y_variable] = min(range_y)
+    ##         upper[y_variable] = max(range_y)
+    ##     if range_y is None:
+    ##         lower[z_variable] = 1E-20
+    ##         upper[z_variable] = 1E20
+    ##     else:
+    ##         lower[z_variable] = min(range_z)
+    ##         upper[z_variable] = max(range_z)
+    ##     faces_data=DSCaseIntersectionFacesFor3DSliceAndConnectivity(
+    ##      len(self._cases),
+    ##      [i._swigwrapper for i in self._cases], 
+    ##      lower._swigwrapper,
+    ##      upper._swigwrapper,
+    ##      x_variable,
+    ##      y_variable,
+    ##      z_variable)
+    ##     for i in xrange(DSMatrixArrayNumberOfMatrices(faces_data)):
+    ##         log_vertices = DSMatrixArrayMatrix(faces_data, i)
+    ##         if log_out is False:
+    ##             vertices = list()
+    ##             for vertex in log_vertices:
+    ##                 vertices.append([10**coordinate for coordinate in vertex])
+    ##         else:
+    ##             vertices = log_vertices
+    ##         faces.append(vertices)
+    ## ## ##     return faces
 
  
