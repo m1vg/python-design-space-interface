@@ -571,6 +571,62 @@ class CaseIntersection(Case):
     ##     
     def __repr__(self):
         return 'CaseIntersection: Cases ' + str(self)
+        
+class CaseColocalization(CaseIntersection):
+    
+    def __init__(self, cases, slice_variables, name=None, constraints=None, latex_symbols=None):
+        
+        
+        setattr(self, '_name', 'Unnamed')
+        setattr(self, '_cases', list())
+        if isinstance(cases, list) is False:
+            cases= [cases]
+        for case in cases:
+            if isinstance(case, Case) is False:
+                raise TypeError, 'must be an instance of the Case class'
+        cases_swig = [DSCaseCopy(i._swigwrapper) for i in cases]
+        new_cases = []
+        if constraints is not None:
+            if isinstance(constraints, list) is False:
+                constraints = [constraints]
+        for i in range(len(cases_swig)):
+            if constraints is not None:
+                DSCaseAddConstraints(cases_swig[i], constraints, len(constraints))
+            new_cases.append(Case(cases[i], cases_swig[i], name=cases[i].name))
+        swigwrapper = DSPseudoCaseFromIntersectionOfCasesExcludingSlice(len(cases),
+                                                                        [i._swigwrapper for i in new_cases],
+                                                                        len(slice_variables),
+                                                                        slice_variables)
+        super(CaseIntersection, self).__init__(cases[0],
+                                                 swigwrapper,
+                                                 name=name,
+                                                 latex_symbols=latex_symbols)
+        self._cases = new_cases
+        return
+
+    def __del__(self):
+        ''' 
+        '''
+        if self._swigwrapper is not None:
+            DSCaseFree(self._swigwrapper)
+            
+    def set_swigwrapper(self, case_swigwrapper):
+        self._swigwrapper = case_swigwrapper
+        Xd = VariablePool()
+        Xd.set_swigwrapper(DSVariablePoolCopy(DSCaseXd(case_swigwrapper)))
+        for i in VariablePool():
+            if i not in self.dependent_variables:
+                raise NameError, 'Dependent Variables are inconsistent'
+        Xi = VariablePool()
+        Xi.set_swigwrapper(DSVariablePoolCopy(DSCaseXi(case_swigwrapper)))
+        self._independent_variables = Xi
+    
+    def __str__(self):
+        jstr = ', '
+        return jstr.join([str(i) for i in self._cases])
+    ##     
+    def __repr__(self):
+        return 'CaseIntersection: Cases ' + str(self)
     ##     
     ## def _is_valid_slice(self, p_bounds):
     ## 
