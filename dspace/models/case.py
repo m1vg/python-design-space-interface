@@ -147,8 +147,8 @@ class Case(Model):
         pvals.set_swigwrapper(variablepool)
         return pvals
     
-    def valid_interior_parameter_set(self, p_bounds=None, distance=50):
-        pvals = self.valid_parameter_set(p_bounds=p_bounds)
+    def valid_interior_parameter_set(self, p_bounds=None, distance=50, **kwargs):
+        pvals = self.valid_parameter_set(p_bounds=p_bounds, **kwargs)
         for j in xrange(0, 2):
             for i in pvals:
                 if p_bounds is not None:
@@ -162,6 +162,7 @@ class Case(Model):
                                                          log_out=True
                                                          )
                     slice_range = [x[0] for x in slice_range]
+                    print slice_range
                     pvals[i] = 10**(slice_range[0] + (slice_range[1] - slice_range[0])/2)
         return pvals
         
@@ -602,6 +603,7 @@ class CaseColocalization(CaseIntersection):
                                                  name=name,
                                                  latex_symbols=latex_symbols)
         self._cases = new_cases
+        self._slice_variables = slice_variables
         return
 
     def __del__(self):
@@ -624,9 +626,51 @@ class CaseColocalization(CaseIntersection):
     def __str__(self):
         jstr = ', '
         return jstr.join([str(i) for i in self._cases])
-    ##     
+        
     def __repr__(self):
-        return 'CaseIntersection: Cases ' + str(self)
+        return 'CaseColocalization: Cases ' + str(self)
+    
+    def valid_parameter_set(self, p_bounds=None, optimize=None, minimize=True, project=True):
+        psetHD = super(CaseIntersection, self).valid_parameter_set(
+                                          p_bounds=p_bounds,
+                                          optimize=optimize,
+                                          minimize=minimize)
+        if project is False:
+            return psetHD
+        p_sets = dict()
+        index = 0
+        for i in self._cases:
+            pvals = VariablePool(names=i.independent_variables)
+            for j in pvals:
+                if j in self._slice_variables:
+                    pvals[j] = psetHD['$'+j+'_'+str(index)]
+                else:
+                    pvals[j] = psetHD[j]
+            p_sets[str(i)] = pvals
+            index += 1
+        return p_sets
+        
+    def valid_interior_parameter_set(self, distance=50, p_bounds=None, project=True, **kwargs):
+        psetHD = super(CaseIntersection, self).valid_interior_parameter_set(
+                                          p_bounds=p_bounds,
+                                          distance=distance,
+                                          project=False, 
+                                          **kwargs)
+        if project is False:
+            return psetHD
+        p_sets = dict()
+        index = 0
+        for i in self._cases:
+            pvals = VariablePool(names=i.independent_variables)
+            for j in pvals:
+                if j in self._slice_variables:
+                    pvals[j] = psetHD['$'+j+'_'+str(index)]
+                else:
+                    pvals[j] = psetHD[j]
+            p_sets[str(i)] = pvals
+            index += 1
+        return p_sets
+
     ##     
     ## def _is_valid_slice(self, p_bounds):
     ## 
