@@ -4,6 +4,9 @@
 '''
 
 from __future__ import division
+
+import itertools
+
 import numpy as np
 import matplotlib as mt
 import matplotlib.pyplot as plt
@@ -22,6 +25,17 @@ from dspace.models.designspace import DesignSpace
 
 import dspace.plotutils.case_plot
 from dspace.models.designspace import sort_cases
+
+
+lb_plot_colors = {'>,>':(0.75/255, 137/255, 208/255),
+                  '0,>':(1., 0.5, 0.),
+                  '>,0':(0.5, 0., 1.),
+                  '<,>':'g',
+                  '>,<':'y',
+                  '0,<':(0.95, .95, 0.),
+                  '<,0':(0.5, 1., 0.),
+                  '<,<':'r',
+                  '0,0':'w'}
 
 def key_sort_function(x, y):
     
@@ -43,7 +57,8 @@ def key_sort_function(x, y):
             return diff
     return sort_cases(x, y)
     return 0
-    
+   
+ 
 
 class SliderCallback(object):
     
@@ -124,6 +139,66 @@ def draw_function_colorbar(self, ax, zlim, cmap, **kwargs):
     attempts = [5, 6, 4, 7, 3, 8, 2]
     ax.set_yticks([round(zlim[0]+i*zrange, ndigits+2) for i in [0., 0.25, 0.5, 0.75, 1.]])
     ax.set_ylim(zlim[0], zlim[1])
+
+@monkeypatch_method(dspace.models.designspace.DesignSpace)
+def data_2D_log_gain_repertoire(self, xaxis, yaxis, zaxis, p_bounds=None):
+    C=self.valid_cases(p_bounds=p_bounds)
+    K = list()
+    for i in C:
+        case = self(i)
+        K.append([int(case.case_number),
+                  case.ssystem.log_gain(zaxis, xaxis), 
+                  case.ssystem.log_gain(zaxis, yaxis)]) 
+    K = np.array(K)
+    ko = np.unique(np.append(K[:,1], K[:,2]))
+    combinations = itertools.permutations(ko, 2)
+    X = [(k[0], k[1], sum((K[:,1]==k[0])*(K[:,2]==k[1]))) for k in combinations]
+    for k in ko:
+        if abs(k) > 1E-10:
+            X.append((k, k, sum((K[:,1]==k)*(K[:,2]==k))))
+    X = np.array(X)
+    X[:,2] *= 100./max(X[:,2])
+    return X
+
+@monkeypatch_method(dspace.models.designspace.DesignSpace)   
+def draw_2D_log_gain_repertoire(self, ax, x_variable, y_variable, z_variable, 
+                                color_dict=lb_plot_colors):
+    X = self.data_2D_log_gain_repertoire(x_variable, 
+                                         y_variable, 
+                                         z_variable)
+    C=list()
+    for i in xrange(len(X[:,2])):
+        if X[i, 0] < 0.0 and X[i, 1] < 0.0:
+            C.append(color_dict['<,<'])
+        elif X[i, 0] < 0.0 and X[i, 1] > 0.0:
+            C.append(color_dict['<,>'])
+        elif X[i, 0] > 0.0 and X[i, 1] == 0.0:
+            C.append(color_dict['>,0'])
+        elif X[i, 0] < 0.0 and X[i, 1] == 0.0:
+            C.append(color_dict['<,0'])
+        elif X[i, 0] > 0.0 and X[i, 1] < 0.0:
+            C.append(color_dict['>,<'])
+        elif X[i, 0] == 0.0 and X[i, 1] > 0.0:
+            C.append(color_dict['0,>'])
+        elif X[i, 0] == 0.0 and X[i, 1] < 0.0:
+            C.append(color_dict['0,<'])
+        elif X[i, 0] > 0.0 and X[i, 1] > 0.0:
+            C.append(color_dict['>,>'])
+        else:
+            C.append((0.0, 0.0, 0.0))
+    ax.plot([0, 0], [0, -8.5], ls='--', c='gray')
+    ax.plot([0,-8.5], [0, 0], ls='--', c='gray')
+    ax.plot([0, 0], [0, 8.5], ls='--', c='gray')
+    ax.plot([0, 8.5], [0, 0], ls='--', c='gray')
+    ## ax.scatter(X[:, 0], X[:, 1], X[:, 2], facecolors=C, edgecolors='none')
+    ax.scatter(X[:, 0], X[:, 1], 20*np.array(X[:,2]!=0), facecolors=C, edgecolors='k', lw=0.3)
+    ## ax.scatter(X[X[:,2]!=0,0], X[X[:,2]!=0,1], s=3, c='k', edgecolors='none')
+    ax.set_xticks([-8, -4, 0, 4, 8])
+    ax.set_yticks([-8, -4, 0, 4, 8])
+    ax.set_xlim([-9, 9])
+    ax.set_ylim([-9, 9])
+    
+
 
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
 def draw_2D_routh_index(self, ax, p_vals, x_variable, y_variable, range_x, range_y, color_dict=None,
