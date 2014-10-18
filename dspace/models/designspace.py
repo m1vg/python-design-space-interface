@@ -381,10 +381,17 @@ class DesignSpace(GMASystem):
                     sets.append(current_set)
         return intersections
     
-    def co_localize_cases(self, case_numbers, slice_parameters, constraints=None, by_signature=False):
+    def co_localize_cases(self, case_numbers, slice_parameters, 
+                          constraints=None, p_bounds=None, 
+                          optimize=None, minimize=True,
+                          project=True,
+                          by_signature=False):
         cases = self(case_numbers, by_signature=by_signature)
         to_colocalize = CaseColocalization(cases, slice_parameters, constraints=constraints)
-        co_localized = to_colocalize.valid_parameter_set()
+        co_localized = to_colocalize.valid_parameter_set(p_bounds=p_bounds, 
+                                                         optimize=optimize,
+                                                         minimize=minimize,
+                                                         project=project)
         return co_localized
         
         
