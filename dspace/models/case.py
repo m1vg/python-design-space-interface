@@ -162,7 +162,6 @@ class Case(Model):
                                                          log_out=True
                                                          )
                     slice_range = [x[0] for x in slice_range]
-                    print slice_range
                     pvals[i] = 10**(slice_range[0] + (slice_range[1] - slice_range[0])/2)
         return pvals
         
@@ -580,8 +579,12 @@ class CaseColocalization(CaseIntersection):
         
         setattr(self, '_name', 'Unnamed')
         setattr(self, '_cases', list())
+        slice_constraints = []
+        case_constraints = []
         if isinstance(cases, list) is False:
             cases= [cases]
+        if isinstance(slice_variables, list) is False:
+            slice_variables = [slice_variables]
         for case in cases:
             if isinstance(case, Case) is False:
                 raise TypeError, 'must be an instance of the Case class'
@@ -590,14 +593,21 @@ class CaseColocalization(CaseIntersection):
         if constraints is not None:
             if isinstance(constraints, list) is False:
                 constraints = [constraints]
+            for i in constraints:
+                if '$' in i:
+                    slice_constraints.append(i)
+                else:
+                    case_constraints.append(i)
         for i in range(len(cases_swig)):
-            if constraints is not None:
-                DSCaseAddConstraints(cases_swig[i], constraints, len(constraints))
+            if len(case_constraints) > 0:
+                DSCaseAddConstraints(cases_swig[i], case_constraints, len(case_constraints))
             new_cases.append(Case(cases[i], cases_swig[i], name=cases[i].name))
         swigwrapper = DSPseudoCaseFromIntersectionOfCasesExcludingSlice(len(cases),
                                                                         [i._swigwrapper for i in new_cases],
                                                                         len(slice_variables),
                                                                         slice_variables)
+        if len(slice_constraints) > 0:
+            DSCaseAddConstraints(swigwrapper, slice_constraints, len(slice_constraints))
         super(CaseIntersection, self).__init__(cases[0],
                                                  swigwrapper,
                                                  name=name,
@@ -635,6 +645,8 @@ class CaseColocalization(CaseIntersection):
                                           p_bounds=p_bounds,
                                           optimize=optimize,
                                           minimize=minimize)
+        if len(psetHD) == 0:
+            return psetHD            
         if project is False:
             return psetHD
         p_sets = dict()
@@ -656,6 +668,8 @@ class CaseColocalization(CaseIntersection):
                                           distance=distance,
                                           project=False, 
                                           **kwargs)
+        if len(psetHD) == 0:
+            return psetHD
         if project is False:
             return psetHD
         p_sets = dict()

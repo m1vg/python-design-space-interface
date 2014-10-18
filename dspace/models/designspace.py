@@ -9,7 +9,7 @@ from dspace.variables import VariablePool
 from dspace.models.base import Equations,Model
 from dspace.models.gma import GMASystem
 from dspace.models.ssystem import SSystem
-from dspace.models.case import Case, CaseIntersection
+from dspace.models.case import Case, CaseIntersection, CaseColocalization
 from dspace.models.cyclicalcase import CyclicalCase
 from dspace.expressions import Expression
 
@@ -383,9 +383,8 @@ class DesignSpace(GMASystem):
     
     def co_localize_cases(self, case_numbers, slice_parameters, constraints=None, by_signature=False):
         cases = self(case_numbers, by_signature=by_signature)
-        to_colocalize = CaseIntersection(cases)
-        co_localized = to_colocalize.valid_parameter_set_excluding_slice(slice_parameters, 
-                                                                         constraints=constraints)
+        to_colocalize = CaseColocalization(cases, slice_parameters, constraints=constraints)
+        co_localized = to_colocalize.valid_parameter_set()
         return co_localized
         
         
@@ -432,8 +431,8 @@ class DesignSpace(GMASystem):
                     continue
                 if current_set in sets:
                     continue
-                case_int = CaseIntersection([self(case_numbers[k]) for k in current_set]) 
-                pvals=case_int.valid_parameter_set_excluding_slice(slice_variables)                
+                case_int = CaseColocalization([self(case_numbers[k]) for k in current_set], slice_variables) 
+                pvals=case_int.valid_parameter_set()
                 if pvals is not None:
                     if new is True:
                         intersections = []
