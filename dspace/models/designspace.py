@@ -388,7 +388,7 @@ class DesignSpace(GMASystem):
         return co_localized
         
         
-    def maximum_co_localized_cases(self, slice_variables, case_numbers, p_bounds=None):
+    def maximum_co_localized_cases(self, case_numbers, slice_variables, p_bounds=None):
         new = False        
         if len(case_numbers) == 0:
             return None
