@@ -161,7 +161,10 @@ def data_2D_log_gain_repertoire(self, xaxis, yaxis, zaxis, p_bounds=None):
                              case.ssystem.log_gain(zaxis, yaxis)]
             )
     sets = []
-    for K in [stable, unstable]:            
+    for K in [stable, unstable]:     
+        if len(K) == 0:
+            sets.append([])
+            continue       
         K = np.array(K)
         ko = np.unique(np.append(K[:,1], K[:,2]))
         combinations = itertools.permutations(ko, 2)
