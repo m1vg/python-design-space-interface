@@ -184,55 +184,57 @@ def draw_2D_log_gain_repertoire(self, ax, x_variable, y_variable, z_variable,
                                          y_variable, 
                                          z_variable)
     X = sets[0]
-    C=list()
-    for i in xrange(len(X[:,2])):
-        if X[i,2] == 0.0:
-            continue
-        if X[i, 0] < 0.0 and X[i, 1] < 0.0:
-            C.append((X[i, 0], X[i, 1], color_dict['<,<']))
-        elif X[i, 0] < 0.0 and X[i, 1] > 0.0:
-            C.append((X[i, 0], X[i, 1], color_dict['<,>']))
-        elif X[i, 0] > 0.0 and X[i, 1] == 0.0:
-            C.append((X[i, 0], X[i, 1], color_dict['>,0']))
-        elif X[i, 0] < 0.0 and X[i, 1] == 0.0:
-            C.append((X[i, 0], X[i, 1], color_dict['<,0']))
-        elif X[i, 0] > 0.0 and X[i, 1] < 0.0:
-            C.append((X[i, 0], X[i, 1], color_dict['>,<']))
-        elif X[i, 0] == 0.0 and X[i, 1] > 0.0:
-            C.append((X[i, 0], X[i, 1], color_dict['0,>']))
-        elif X[i, 0] == 0.0 and X[i, 1] < 0.0:
-            C.append((X[i, 0], X[i, 1], color_dict['0,<']))
-        elif X[i, 0] > 0.0 and X[i, 1] > 0.0:
-            C.append((X[i, 0], X[i, 1], color_dict['>,>']))
-    for i in C:
-        ax.plot(i[0], i[1], '.', marker='o', mfc=i[2], mec='k', lw=0.3, ms=5)
+    if len(X) != 0:
+        C=list()
+        for i in xrange(len(X[:,2])):
+            if X[i,2] == 0.0:
+                continue
+            if X[i, 0] < 0.0 and X[i, 1] < 0.0:
+                C.append((X[i, 0], X[i, 1], color_dict['<,<']))
+            elif X[i, 0] < 0.0 and X[i, 1] > 0.0:
+                C.append((X[i, 0], X[i, 1], color_dict['<,>']))
+            elif X[i, 0] > 0.0 and X[i, 1] == 0.0:
+                C.append((X[i, 0], X[i, 1], color_dict['>,0']))
+            elif X[i, 0] < 0.0 and X[i, 1] == 0.0:
+                C.append((X[i, 0], X[i, 1], color_dict['<,0']))
+            elif X[i, 0] > 0.0 and X[i, 1] < 0.0:
+                C.append((X[i, 0], X[i, 1], color_dict['>,<']))
+            elif X[i, 0] == 0.0 and X[i, 1] > 0.0:
+                C.append((X[i, 0], X[i, 1], color_dict['0,>']))
+            elif X[i, 0] == 0.0 and X[i, 1] < 0.0:
+                C.append((X[i, 0], X[i, 1], color_dict['0,<']))
+            elif X[i, 0] > 0.0 and X[i, 1] > 0.0:
+                C.append((X[i, 0], X[i, 1], color_dict['>,>']))
+        for i in C:
+            ax.plot(i[0], i[1], '.', marker='o', mfc=i[2], mec='k', lw=0.3, ms=5)
     X = sets[1]
-    C=list()
-    for i in xrange(len(X[:,2])):
-        if X[i,2] == 0.0:
-            continue
-        if X[i, 0] < 0.0 and X[i, 1] < 0.0:
-            C.append((X[i, 0], X[i, 1], color_dict['<,<']))
-        elif X[i, 0] < 0.0 and X[i, 1] > 0.0:
-            C.append((X[i, 0], X[i, 1], color_dict['<,>']))
-        elif X[i, 0] > 0.0 and X[i, 1] == 0.0:
-            C.append((X[i, 0], X[i, 1], color_dict['>,0']))
-        elif X[i, 0] < 0.0 and X[i, 1] == 0.0:
-            C.append((X[i, 0], X[i, 1], color_dict['<,0']))
-        elif X[i, 0] > 0.0 and X[i, 1] < 0.0:
-            C.append((X[i, 0], X[i, 1], color_dict['>,<']))
-        elif X[i, 0] == 0.0 and X[i, 1] > 0.0:
-            C.append((X[i, 0], X[i, 1], color_dict['0,>']))
-        elif X[i, 0] == 0.0 and X[i, 1] < 0.0:
-            C.append((X[i, 0], X[i, 1], color_dict['0,<']))
-        elif X[i, 0] > 0.0 and X[i, 1] > 0.0:
-            C.append((X[i, 0], X[i, 1], color_dict['>,>']))
+    if len(X) != 0:
+        C=list()
+        for i in xrange(len(X[:,2])):
+            if X[i,2] == 0.0:
+                continue
+            if X[i, 0] < 0.0 and X[i, 1] < 0.0:
+                C.append((X[i, 0], X[i, 1], color_dict['<,<']))
+            elif X[i, 0] < 0.0 and X[i, 1] > 0.0:
+                C.append((X[i, 0], X[i, 1], color_dict['<,>']))
+            elif X[i, 0] > 0.0 and X[i, 1] == 0.0:
+                C.append((X[i, 0], X[i, 1], color_dict['>,0']))
+            elif X[i, 0] < 0.0 and X[i, 1] == 0.0:
+                C.append((X[i, 0], X[i, 1], color_dict['<,0']))
+            elif X[i, 0] > 0.0 and X[i, 1] < 0.0:
+                C.append((X[i, 0], X[i, 1], color_dict['>,<']))
+            elif X[i, 0] == 0.0 and X[i, 1] > 0.0:
+                C.append((X[i, 0], X[i, 1], color_dict['0,>']))
+            elif X[i, 0] == 0.0 and X[i, 1] < 0.0:
+                C.append((X[i, 0], X[i, 1], color_dict['0,<']))
+            elif X[i, 0] > 0.0 and X[i, 1] > 0.0:
+                C.append((X[i, 0], X[i, 1], color_dict['>,>']))
+        for i in C:
+            ax.plot(i[0], i[1], '.', marker='p', mfc=i[2], mec='k', lw=0.3, ms=5)
     ax.plot([0, 0], [0, -8.5], ls='-', c='gray', lw=0.5)
     ax.plot([0,-8.5], [0, 0], ls='-', c='gray', lw=0.5)
     ax.plot([0, 0], [0, 8.5], ls='-', c='gray', lw=0.5)
     ax.plot([0, 8.5], [0, 0], ls='-', c='gray', lw=0.5)
-    for i in C:
-        ax.plot(i[0], i[1], '.', marker='p', mfc=i[2], mec='k', lw=0.3, ms=5)
     ax.set_xticks([-8, -4, 0, 4, 8])
     ax.set_yticks([-8, -4, 0, 4, 8])
     ax.set_xlim([-9, 9])
