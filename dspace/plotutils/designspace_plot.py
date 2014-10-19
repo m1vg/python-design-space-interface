@@ -143,94 +143,46 @@ def draw_function_colorbar(self, ax, zlim, cmap, **kwargs):
 @monkeypatch_method(dspace.models.designspace.DesignSpace)
 def data_2D_log_gain_repertoire(self, xaxis, yaxis, zaxis, p_bounds=None):
     C=self.valid_cases(p_bounds=p_bounds)
-    K = list()
+    behavior_set = set()
     stable = list()
     unstable = list()
     for i in C:
         case = self(i)
         p = case.valid_parameter_set()
+        x = case.ssystem.log_gain(zaxis, xaxis)
+        y = case.ssystem.log_gain(zaxis, yaxis)
         eigen = case.positive_roots(p)
-        if eigen == 0:
-            stable.append([int(case.case_number),
-                           case.ssystem.log_gain(zaxis, xaxis), 
-                           case.ssystem.log_gain(zaxis, yaxis)]
-            )
-        else:
-            unstable.append([int(case.case_number),
-                             case.ssystem.log_gain(zaxis, xaxis), 
-                             case.ssystem.log_gain(zaxis, yaxis)]
-            )
-    sets = []
-    for K in [stable, unstable]:     
-        if len(K) == 0:
-            sets.append([])
-            continue       
-        K = np.array(K)
-        ko = np.unique(np.append(K[:,1], K[:,2]))
-        combinations = itertools.permutations(ko, 2)
-        X = [(k[0], k[1], sum((K[:,1]==k[0])*(K[:,2]==k[1]))) for k in combinations]
-        for k in ko:
-            if abs(k) > 1E-10:
-                X.append((k, k, sum((K[:,1]==k)*(K[:,2]==k))))
-        X = np.array(X)
-        X[:,2] *= 100./max(X[:,2])
-        sets.append(X)
-    return sets
+        if (x, y, eigen) in behavior_set:
+            continue
+        behavior_set.add((x, y, eigen))
+    return behavior_set
 
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
 def draw_2D_log_gain_repertoire(self, ax, x_variable, y_variable, z_variable, 
                                 color_dict=lb_plot_colors):
-    sets = self.data_2D_log_gain_repertoire(x_variable, 
-                                         y_variable, 
-                                         z_variable)
-    X = sets[0]
-    if len(X) != 0:
-        C=list()
-        for i in xrange(len(X[:,2])):
-            if X[i,2] == 0.0:
-                continue
-            if X[i, 0] < 0.0 and X[i, 1] < 0.0:
-                C.append((X[i, 0], X[i, 1], color_dict['<,<']))
-            elif X[i, 0] < 0.0 and X[i, 1] > 0.0:
-                C.append((X[i, 0], X[i, 1], color_dict['<,>']))
-            elif X[i, 0] > 0.0 and X[i, 1] == 0.0:
-                C.append((X[i, 0], X[i, 1], color_dict['>,0']))
-            elif X[i, 0] < 0.0 and X[i, 1] == 0.0:
-                C.append((X[i, 0], X[i, 1], color_dict['<,0']))
-            elif X[i, 0] > 0.0 and X[i, 1] < 0.0:
-                C.append((X[i, 0], X[i, 1], color_dict['>,<']))
-            elif X[i, 0] == 0.0 and X[i, 1] > 0.0:
-                C.append((X[i, 0], X[i, 1], color_dict['0,>']))
-            elif X[i, 0] == 0.0 and X[i, 1] < 0.0:
-                C.append((X[i, 0], X[i, 1], color_dict['0,<']))
-            elif X[i, 0] > 0.0 and X[i, 1] > 0.0:
-                C.append((X[i, 0], X[i, 1], color_dict['>,>']))
-        for i in C:
-            ax.plot(i[0], i[1], '.', marker='o', mfc=i[2], mec='k', lw=0.3, ms=5)
-    X = sets[1]
-    if len(X) != 0:
-        C=list()
-        for i in xrange(len(X[:,2])):
-            if X[i,2] == 0.0:
-                continue
-            if X[i, 0] < 0.0 and X[i, 1] < 0.0:
-                C.append((X[i, 0], X[i, 1], color_dict['<,<']))
-            elif X[i, 0] < 0.0 and X[i, 1] > 0.0:
-                C.append((X[i, 0], X[i, 1], color_dict['<,>']))
-            elif X[i, 0] > 0.0 and X[i, 1] == 0.0:
-                C.append((X[i, 0], X[i, 1], color_dict['>,0']))
-            elif X[i, 0] < 0.0 and X[i, 1] == 0.0:
-                C.append((X[i, 0], X[i, 1], color_dict['<,0']))
-            elif X[i, 0] > 0.0 and X[i, 1] < 0.0:
-                C.append((X[i, 0], X[i, 1], color_dict['>,<']))
-            elif X[i, 0] == 0.0 and X[i, 1] > 0.0:
-                C.append((X[i, 0], X[i, 1], color_dict['0,>']))
-            elif X[i, 0] == 0.0 and X[i, 1] < 0.0:
-                C.append((X[i, 0], X[i, 1], color_dict['0,<']))
-            elif X[i, 0] > 0.0 and X[i, 1] > 0.0:
-                C.append((X[i, 0], X[i, 1], color_dict['>,>']))
-        for i in C:
-            ax.plot(i[0], i[1], '.', marker='p', mfc=i[2], mec='k', lw=0.3, ms=5)
+    behavior_set = self.data_2D_log_gain_repertoire(x_variable, 
+                                                    y_variable, 
+                                                    z_variable)
+    for X in behavior_set:
+        key = ''
+        if X[0] < 0.0:
+            key += '<,'
+        elif X[0] == 0.0:
+            key += '0,'
+        elif X[0] > 0.0:
+            key += '>,'
+        if X[1] < 0.0:
+            key += '<'
+        elif X[1] == 0.0:
+            key += '0'
+        elif X[1] > 0.0:
+            key += '>'
+        C = color_dict[key]
+        if X[2] == 0:
+            symbol='o'
+        else:
+            symbol='p'
+        ax.plot(X[0], X[1], '.', marker=symbol, mfc=C, mec='k', lw=0.3, ms=5)
     ax.plot([0, 0], [0, -8.5], ls='-', c='gray', lw=0.5)
     ax.plot([0,-8.5], [0, 0], ls='-', c='gray', lw=0.5)
     ax.plot([0, 0], [0, 8.5], ls='-', c='gray', lw=0.5)
