@@ -577,8 +577,7 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
         if case in valid_nonstrict:
             vertices = self(case).vertices_2D_slice(p_vals, x_variable, y_variable,
                                                     range_x=range_x, range_y=range_y)
-            count = sum([vertices[i] in vertices[i+1:] for i in xrange(len(vertices))])
-            if count < len(vertices):
+            if len(vertices) <= 2:
                 continue
         pc = self(case).draw_2D_ss_function(ax, expr, p_vals, x_variable, y_variable,
                                             range_x, range_y, resolution=resolution,

@@ -399,7 +399,13 @@ class Case(Model):
         for vertex in log_vertices:
             vertices.append([10**coordinate for coordinate in vertex])
         if log_out is True:
-            return log_vertices
+            vertices=log_vertices
+        ## new_vertices = list()  
+        ## for i in xrange(1, len(vertices)):
+        ##     if vertices[i-1] == vertices[i]:
+        ##         continue
+        ##     new_vertices.append(vertices[i])
+        ## vertices = new_vertices
         return vertices
 
     def vertices_3D_slice(self, p_vals, x_variable, y_variable, z_variable, 
