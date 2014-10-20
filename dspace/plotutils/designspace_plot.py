@@ -389,7 +389,6 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
         valid_cases = self.valid_cases(p_bounds=p_bounds)
         valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
         valid_nonstrict = [i for i in valid_nonstrict if i not in valid_cases]
-    print valid_nonstrict
     if len(valid_cases)+len(valid_nonstrict) == 0:
         # fill black
         return
@@ -578,7 +577,8 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
         if case in valid_nonstrict:
             vertices = self(case).vertices_2D_slice(p_vals, x_variable, y_variable,
                                                     range_x=range_x, range_y=range_y)
-            if len(vertices) == 2:
+            count = sum([vertices[i] in vertices[i+1:] for i in xrange(len(vertices))])
+            if count < len(vertices):
                 continue
         pc = self(case).draw_2D_ss_function(ax, expr, p_vals, x_variable, y_variable,
                                             range_x, range_y, resolution=resolution,
