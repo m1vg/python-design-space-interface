@@ -214,7 +214,7 @@ class DesignSpace(GMASystem):
             signature.append(DSUIntegerAtIndexOfIntegerArray(signature_internal, i))
         return signature
 
-    def _valid_cases_bounded(self, p_bounds):
+    def _valid_cases_bounded(self, p_bounds, strict):
         lower = VariablePool(names=self.independent_variables)
         upper = VariablePool(names=self.independent_variables)
         for i in lower:
@@ -230,9 +230,14 @@ class DesignSpace(GMASystem):
                 raise ValueError, 'parameter slice bounds are inverted: min is larger than max'
             lower[key] = min_value
             upper[key] = max_value
-        valid_cases = DSDesignSpaceCalculateAllValidCasesForSlice(self._swigwrapper,
-                                                                  lower._swigwrapper,
-                                                                  upper._swigwrapper)
+        if strict is True:
+            valid_cases = DSDesignSpaceCalculateAllValidCasesForSlice(self._swigwrapper,
+                                                                      lower._swigwrapper,
+                                                                      upper._swigwrapper)
+        else:
+            valid_cases = DSDesignSpaceCalculateAllValidCasesForSliceNonStrict(self._swigwrapper,
+                                                                               lower._swigwrapper,
+                                                                               upper._swigwrapper)
         number_of_cases = DSDictionaryCount(valid_cases)
         cases = list()
         keys = [DSDictionaryKeyAtIndex(valid_cases, i) for i in xrange(0, number_of_cases)]
@@ -292,13 +297,13 @@ class DesignSpace(GMASystem):
         cases.sort(cmp=sort_cases)
         return cases
     
-    def valid_cases(self, p_bounds=None, expand_cycles=True):
+    def valid_cases(self, p_bounds=None, expand_cycles=True, strict = True):
         if self._resolve_cycles is False:
             expand_cycles = False
         if expand_cycles is True:
             return self._valid_cases_expand_cycles(p_bounds)
         if p_bounds is not None:
-            return self._valid_cases_bounded(p_bounds)            
+            return self._valid_cases_bounded(p_bounds, strict)
         all_cases = DSDesignSpaceCalculateAllValidCases(self._swigwrapper)
         number_valid = DSDesignSpaceNumberOfValidCases(self._swigwrapper)
         cases = list()
@@ -330,7 +335,7 @@ class DesignSpace(GMASystem):
             case_numbers = self._cyclical_case_as_subcases(i, case_numbers)
         return case_numbers
         
-    def valid_intersecting_cases(self, intersects, case_numbers, p_bounds=None):
+    def valid_intersecting_cases(self, intersects, case_numbers, p_bounds=None, strict=True):
         if isinstance(intersects, list) is False:
             intersects = [intersects]
         if len(case_numbers) == 0:
@@ -359,7 +364,7 @@ class DesignSpace(GMASystem):
                         lower[key] = min_value
                         upper[key] = max_value
         if 1 in intersects:
-            [intersections.append(i) for i in case_numbers if self(i).is_valid(p_bounds=p_bounds) is True]
+            [intersections.append(i) for i in case_numbers if self(i).is_valid(p_bounds=p_bounds, strict=strict) is True]
         sets = [set([i]) for i in valid_cases]
         for i in xrange(2, max(intersects)+1):
             sets_to_check = sets
@@ -448,8 +453,8 @@ class DesignSpace(GMASystem):
                     sets.append(current_set)
         return intersections
     
-    def intersecting_cases(self, intersects, case_numbers, p_bounds=None):
-         valid_ints = self.valid_intersecting_cases(intersects, case_numbers, p_bounds=p_bounds)
+    def intersecting_cases(self, intersects, case_numbers, p_bounds=None, strict=True):
+         valid_ints = self.valid_intersecting_cases(intersects, case_numbers, p_bounds=p_bounds, strict=strict)
          if valid_ints is None:
              return None
          case_ints = [CaseIntersection(self(i)) for i in valid_ints]

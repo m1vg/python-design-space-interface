@@ -131,7 +131,7 @@ class Case(Model):
         pvals.set_swigwrapper(variablepool)
         return pvals
     
-    def valid_parameter_set(self, p_bounds=None, optimize=None, minimize=True):
+    def valid_parameter_set(self, p_bounds=None, optimize=None, minimize=True, strict=True):
         if p_bounds is not None:
             pvals = self._valid_parameter_set_bounded(p_bounds, 
                                                       optimize=optimize,
@@ -220,7 +220,7 @@ class Case(Model):
     def is_cyclical(self):
         return False
     
-    def _is_valid_slice(self, p_bounds):
+    def _is_valid_slice(self, p_bounds, strict=True):
 
         lower = VariablePool(names=self.independent_variables)
         upper = VariablePool(names=self.independent_variables)
@@ -239,7 +239,8 @@ class Case(Model):
             upper[key] = max_value
         return DSCaseIsValidAtSlice(self._swigwrapper,
                                     lower._swigwrapper,
-                                    upper._swigwrapper)
+                                    upper._swigwrapper,
+                                    strict)
     
     def steady_state(self, parameter_values):
         return self.ssystem.steady_state(parameter_values)
@@ -258,12 +259,12 @@ class Case(Model):
             #do something
         return DSCaseConditionsAreValid(self._swigwrapper)
  
-    def is_valid(self, p_bounds=None):
+    def is_valid(self, p_bounds=None, strict=True):
         
         if p_bounds is not None:
-            return self._is_valid_slice(p_bounds)
+            return self._is_valid_slice(p_bounds, strict=strict)
             #do something
-        return DSCaseIsValid(self._swigwrapper)
+        return DSCaseIsValid(self._swigwrapper, strict)
         
     def _is_valid_point_in_statespace(self, v_bounds, p_bounds):
 

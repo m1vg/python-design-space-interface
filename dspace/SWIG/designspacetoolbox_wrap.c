@@ -12092,18 +12092,27 @@ fail:
 SWIGINTERN PyObject *_wrap_DSCaseIsValid(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSCase *arg1 = (DSCase *) 0 ;
+  bool arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:DSCaseIsValid",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSCaseIsValid",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseIsValid" "', argument " "1"" of type '" "DSCase const *""'"); 
   }
   arg1 = (DSCase *)(argp1);
-  result = (bool)DSCaseIsValid((DSCase const *)arg1);
+  ecode2 = SWIG_AsVal_bool(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DSCaseIsValid" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = (bool)(val2);
+  result = (bool)DSCaseIsValid((DSCase const *)arg1,arg2);
   resultobj = SWIG_From_bool((bool)(result));
   return resultobj;
 fail:
@@ -12209,18 +12218,22 @@ SWIGINTERN PyObject *_wrap_DSCaseIsValidAtSlice(PyObject *SWIGUNUSEDPARM(self), 
   DSCase *arg1 = (DSCase *) 0 ;
   DSVariablePool *arg2 = (DSVariablePool *) 0 ;
   DSVariablePool *arg3 = (DSVariablePool *) 0 ;
+  bool arg4 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
   void *argp3 = 0 ;
   int res3 = 0 ;
+  bool val4 ;
+  int ecode4 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOO:DSCaseIsValidAtSlice",&obj0,&obj1,&obj2)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:DSCaseIsValidAtSlice",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseIsValidAtSlice" "', argument " "1"" of type '" "DSCase const *""'"); 
@@ -12236,7 +12249,12 @@ SWIGINTERN PyObject *_wrap_DSCaseIsValidAtSlice(PyObject *SWIGUNUSEDPARM(self), 
     SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DSCaseIsValidAtSlice" "', argument " "3"" of type '" "DSVariablePool const *""'"); 
   }
   arg3 = (DSVariablePool *)(argp3);
-  result = (bool)DSCaseIsValidAtSlice((DSCase const *)arg1,(DSVariablePool const *)arg2,(DSVariablePool const *)arg3);
+  ecode4 = SWIG_AsVal_bool(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "DSCaseIsValidAtSlice" "', argument " "4"" of type '" "bool""'");
+  } 
+  arg4 = (bool)(val4);
+  result = (bool)DSCaseIsValidAtSlice((DSCase const *)arg1,(DSVariablePool const *)arg2,(DSVariablePool const *)arg3,arg4);
   resultobj = SWIG_From_bool((bool)(result));
   return resultobj;
 fail:
@@ -15647,6 +15665,46 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSDesignSpaceCalculateAllValidCasesForSliceNonStrict(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  DSVariablePool *arg2 = (DSVariablePool *) 0 ;
+  DSVariablePool *arg3 = (DSVariablePool *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  DSDictionary *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DSDesignSpaceCalculateAllValidCasesForSliceNonStrict",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceCalculateAllValidCasesForSliceNonStrict" "', argument " "1"" of type '" "DSDesignSpace *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSDesignSpaceCalculateAllValidCasesForSliceNonStrict" "', argument " "2"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg2 = (DSVariablePool *)(argp2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DSDesignSpaceCalculateAllValidCasesForSliceNonStrict" "', argument " "3"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg3 = (DSVariablePool *)(argp3);
+  result = (DSDictionary *)DSDesignSpaceCalculateAllValidCasesForSliceNonStrict(arg1,(DSVariablePool const *)arg2,(DSVariablePool const *)arg3);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSDictionary, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSDesignSpaceNumberOfCyclicalCases(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
@@ -17324,18 +17382,27 @@ fail:
 SWIGINTERN PyObject *_wrap_DSCyclicalCaseIsValid(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSCyclicalCase *arg1 = (DSCyclicalCase *) 0 ;
+  bool arg2 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:DSCyclicalCaseIsValid",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSCyclicalCaseIsValid",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCyclicalCase, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCyclicalCaseIsValid" "', argument " "1"" of type '" "DSCyclicalCase const *""'"); 
   }
   arg1 = (DSCyclicalCase *)(argp1);
-  result = (bool)DSCyclicalCaseIsValid((DSCyclicalCase const *)arg1);
+  ecode2 = SWIG_AsVal_bool(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DSCyclicalCaseIsValid" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = (bool)(val2);
+  result = (bool)DSCyclicalCaseIsValid((DSCyclicalCase const *)arg1,arg2);
   resultobj = SWIG_From_bool((bool)(result));
   return resultobj;
 fail:
@@ -17348,18 +17415,22 @@ SWIGINTERN PyObject *_wrap_DSCyclicalCaseIsValidAtSlice(PyObject *SWIGUNUSEDPARM
   DSCyclicalCase *arg1 = (DSCyclicalCase *) 0 ;
   DSVariablePool *arg2 = (DSVariablePool *) 0 ;
   DSVariablePool *arg3 = (DSVariablePool *) 0 ;
+  bool arg4 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
   void *argp3 = 0 ;
   int res3 = 0 ;
+  bool val4 ;
+  int ecode4 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
   bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOO:DSCyclicalCaseIsValidAtSlice",&obj0,&obj1,&obj2)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:DSCyclicalCaseIsValidAtSlice",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCyclicalCase, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCyclicalCaseIsValidAtSlice" "', argument " "1"" of type '" "DSCyclicalCase const *""'"); 
@@ -17375,7 +17446,12 @@ SWIGINTERN PyObject *_wrap_DSCyclicalCaseIsValidAtSlice(PyObject *SWIGUNUSEDPARM
     SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DSCyclicalCaseIsValidAtSlice" "', argument " "3"" of type '" "DSVariablePool const *""'"); 
   }
   arg3 = (DSVariablePool *)(argp3);
-  result = (bool)DSCyclicalCaseIsValidAtSlice((DSCyclicalCase const *)arg1,(DSVariablePool const *)arg2,(DSVariablePool const *)arg3);
+  ecode4 = SWIG_AsVal_bool(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "DSCyclicalCaseIsValidAtSlice" "', argument " "4"" of type '" "bool""'");
+  } 
+  arg4 = (bool)(val4);
+  result = (bool)DSCyclicalCaseIsValidAtSlice((DSCyclicalCase const *)arg1,(DSVariablePool const *)arg2,(DSVariablePool const *)arg3,arg4);
   resultobj = SWIG_From_bool((bool)(result));
   return resultobj;
 fail:
@@ -18722,6 +18798,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSDesignSpaceCalculateAllValidCasesForSliceByResolvingCyclicalCases", _wrap_DSDesignSpaceCalculateAllValidCasesForSliceByResolvingCyclicalCases, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCalculateAllValidCasesByResolvingCyclicalCases", _wrap_DSDesignSpaceCalculateAllValidCasesByResolvingCyclicalCases, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCalculateAllValidCasesForSlice", _wrap_DSDesignSpaceCalculateAllValidCasesForSlice, METH_VARARGS, NULL},
+	 { (char *)"DSDesignSpaceCalculateAllValidCasesForSliceNonStrict", _wrap_DSDesignSpaceCalculateAllValidCasesForSliceNonStrict, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceNumberOfCyclicalCases", _wrap_DSDesignSpaceNumberOfCyclicalCases, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCyclicalCaseWithCaseNumber", _wrap_DSDesignSpaceCyclicalCaseWithCaseNumber, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCyclicalCaseWithCaseIdentifier", _wrap_DSDesignSpaceCyclicalCaseWithCaseIdentifier, METH_VARARGS, NULL},

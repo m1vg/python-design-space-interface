@@ -1416,6 +1416,10 @@ def DSDesignSpaceCalculateAllValidCasesForSlice(*args):
   return _dspace_interface.DSDesignSpaceCalculateAllValidCasesForSlice(*args)
 DSDesignSpaceCalculateAllValidCasesForSlice = _dspace_interface.DSDesignSpaceCalculateAllValidCasesForSlice
 
+def DSDesignSpaceCalculateAllValidCasesForSliceNonStrict(*args):
+  return _dspace_interface.DSDesignSpaceCalculateAllValidCasesForSliceNonStrict(*args)
+DSDesignSpaceCalculateAllValidCasesForSliceNonStrict = _dspace_interface.DSDesignSpaceCalculateAllValidCasesForSliceNonStrict
+
 def DSDesignSpaceNumberOfCyclicalCases(*args):
   return _dspace_interface.DSDesignSpaceNumberOfCyclicalCases(*args)
 DSDesignSpaceNumberOfCyclicalCases = _dspace_interface.DSDesignSpaceNumberOfCyclicalCases

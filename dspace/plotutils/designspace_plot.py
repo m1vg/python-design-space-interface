@@ -378,25 +378,29 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
         included_cases = [i.case_number for i in self(included_cases)]
         if self.number_of_cases < 1e5:
             valid_cases = self.valid_cases(p_bounds=p_bounds)
+            valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
             hatched_cases = [i for i in valid_cases if i not in included_cases]
+            valid_nonstrict = [i for i in valid_cases if i in included_cases]
             valid_cases = [i for i in valid_cases if i in included_cases]
+            valid_nonstrict = [i for i in valid_cases if i not in valid_cases]
         else:
             valid_cases = [i for i in included_cases if self(i).is_valid(p_bounds=p_bounds)]
     else:
         valid_cases = self.valid_cases(p_bounds=p_bounds)
-    ## valid_cases = self.valid_cases(p_bounds=p_bounds)
-    ## valid_cases = self.cycles_to_subcases(valid_cases)
-    ## if included_cases is not None:
-    ##     included_cases = [str(i) for i in included_cases]
-    ##     hatched_cases = [i for i in valid_cases if str(i) not in included_cases]
-    ##     valid_cases = [i for i in valid_cases if str(i) in included_cases]
-    case_int_list = self.intersecting_cases(intersections, valid_cases, p_bounds=p_bounds)
+        valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
+        valid_nonstrict = [i for i in valid_nonstrict if i not in valid_cases]
+    print valid_nonstrict
+    if len(valid_cases)+len(valid_nonstrict) == 0:
+        # fill black
+        return
+    case_int_list = self.intersecting_cases(intersections, valid_cases+valid_nonstrict, 
+                                            p_bounds=p_bounds, strict=False)
     colors = dict()
     if color_dict is None:
         color_dict = dict()
     if 'ec' not in kwargs:
         kwargs['ec']='none'
-    hatched_cases = self.cycles_to_subcases(hatched_cases)
+    ## hatched_cases = self.cycles_to_subcases(hatched_cases)
     for case_num in hatched_cases:
         case = self(case_num)
         case.draw_2D_slice(ax, p_vals, x_variable, y_variable,
@@ -404,6 +408,11 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
                            ec=(0.8, 0.8, 0.8, 1.), hatch='/', lw=0.5)
     for case_int in case_int_list:
         key = str(case_int)
+        case_nums = key.split(', ')
+        for i in xrange(len(case_nums)):
+            if case_nums[i] in valid_nonstrict:
+                case_nums[i] = str(case_nums[i])+'*'
+        key = ', '.join(case_nums)
         if key not in color_dict:
             color_dict[key] = cmap((1.*case_int_list.index(case_int))/len(case_int_list))
         V = case_int.draw_2D_slice(ax, p_vals, x_variable, y_variable,
@@ -555,6 +564,8 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
             valid_cases = [i for i in included_cases if self(i).is_valid(p_bounds=p_bounds)]
     else:
         valid_cases = self.valid_cases(p_bounds=p_bounds)
+        valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
+        valid_nonstrict = [i for i in valid_nonstrict if i not in valid_cases]
     min_lim = 1e20
     max_lim = -1e20
     constant_vars = dict(p_vals)
@@ -563,7 +574,12 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
     expr = Expression(function)
     expr = expr.subst(**constant_vars)
     patches = list()
-    for case in valid_cases:
+    for case in valid_cases+valid_nonstrict:
+        if case in valid_nonstrict:
+            vertices = self(case).vertices_2D_slice(p_vals, x_variable, y_variable,
+                                                    range_x=range_x, range_y=range_y)
+            if len(vertices) == 2:
+                continue
         pc = self(case).draw_2D_ss_function(ax, expr, p_vals, x_variable, y_variable,
                                             range_x, range_y, resolution=resolution,
                                             log_linear=log_linear, cmap=cmap, **kwargs)
