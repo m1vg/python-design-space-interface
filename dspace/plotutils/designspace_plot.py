@@ -140,23 +140,6 @@ def draw_function_colorbar(self, ax, zlim, cmap, **kwargs):
     ax.set_yticks([round(zlim[0]+i*zrange, ndigits+2) for i in [0., 0.25, 0.5, 0.75, 1.]])
     ax.set_ylim(zlim[0], zlim[1])
 
-@monkeypatch_method(dspace.models.designspace.DesignSpace)
-def data_2D_log_gain_repertoire(self, xaxis, yaxis, zaxis, p_bounds=None):
-    C=self.valid_cases(p_bounds=p_bounds)
-    behavior_set = set()
-    stable = list()
-    unstable = list()
-    for i in C:
-        case = self(i)
-        p = case.valid_parameter_set()
-        x = case.ssystem.log_gain(zaxis, xaxis)
-        y = case.ssystem.log_gain(zaxis, yaxis)
-        eigen = case.positive_roots(p)
-        if (x, y, eigen) in behavior_set:
-            continue
-        behavior_set.add((x, y, eigen))
-    return behavior_set
-
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
 def draw_2D_log_gain_repertoire(self, ax, x_variable, y_variable, z_variable, 
                                 color_dict=lb_plot_colors):

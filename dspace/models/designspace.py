@@ -509,4 +509,42 @@ class DesignSpace(GMASystem):
                     lines.append((x, y, j))
         return lines
                 
-                
+    def data_2D_log_gain_repertoire(self, xaxis, yaxis, zaxis, p_bounds=None, cases=False):
+        C=self.valid_cases(p_bounds=p_bounds)
+        case_dict = {}
+        behavior_set = set()
+        stable = list()
+        unstable = list()
+        for i in C:
+            case = self(i)
+            key = ''
+            p = case.valid_parameter_set()
+            x = case.ssystem.log_gain(zaxis, xaxis)
+            if x < 0:
+                key = '<,'
+            elif x == 0:
+                key = '0,'
+            else:
+                key = '>,'
+            y = case.ssystem.log_gain(zaxis, yaxis)
+            if y < 0:
+                key+= '<'
+            elif y == 0:
+                key += '0'
+            else:
+                key += '>'
+            eigen = case.positive_roots(p)
+            if eigen == 0:
+                key += ':-'
+            else:
+                key += ':+'
+            if key in case_dict:
+                case_dict[key].append(i)
+            else:
+                case_dict[key] = [i]
+            if (x, y, eigen) in behavior_set:
+                continue
+            behavior_set.add((x, y, eigen))
+        if cases is True:
+            return case_dict
+        return behavior_set              
