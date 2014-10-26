@@ -400,6 +400,11 @@ extern DSSSystem * DSSWIGSSystemParseWrapper(char ** const strings, const DSUInt
         return ssys;
 }
 
+extern DSExpression ** DSExpressionArrayFromVoid(void * pointer)
+{
+        return pointer;
+}
+        
 extern DSExpression * DSExpressionAtIndexOfExpressionArray(DSExpression ** expressions, DSUInteger index)
 {
         DSExpression * expression = NULL;

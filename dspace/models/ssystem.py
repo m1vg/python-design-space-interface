@@ -50,6 +50,8 @@ class SSystem(GMASystem):
     
     @property
     def solution(self):
+        if DSSSystemHasSolution(self._swigwrapper) is False:
+            return None
         sol = DSSSystemSolution(self._swigwrapper)
         solution = list()
         for i in xrange(0, len(self.equations)):
@@ -61,6 +63,8 @@ class SSystem(GMASystem):
     
     @property
     def solution_log(self):
+        if DSSSystemHasSolution(self._swigwrapper) is False:
+            return None
         sol = DSSSystemLogarithmicSolution(self._swigwrapper)
         solution = list()
         for i in xrange(0, len(self.equations)):
@@ -88,6 +92,8 @@ class SSystem(GMASystem):
                        latex_symbols=self._latex)
         
     def steady_state(self, parameter_values, log_out=False):
+        if DSSSystemHasSolution(self._swigwrapper) is False:
+            return None
         Xd = VariablePool()
         Xd.set_swigwrapper(DSSSystemXd(self._swigwrapper))
         steady_states = DSSSystemSteadyStateValues(self._swigwrapper, parameter_values._swigwrapper)

@@ -617,6 +617,10 @@ DSExpressionPrint = _dspace_interface.DSExpressionPrint
 def DSExpressionFromPowerlawInMatrixForm(*args):
   return _dspace_interface.DSExpressionFromPowerlawInMatrixForm(*args)
 DSExpressionFromPowerlawInMatrixForm = _dspace_interface.DSExpressionFromPowerlawInMatrixForm
+
+def DSExpressionFromLogPowerlawInMatrixForm(*args):
+  return _dspace_interface.DSExpressionFromLogPowerlawInMatrixForm(*args)
+DSExpressionFromLogPowerlawInMatrixForm = _dspace_interface.DSExpressionFromLogPowerlawInMatrixForm
 M_DS_GMA_NULL = _dspace_interface.M_DS_GMA_NULL
 
 def DSGMASystemCopy(*args):
@@ -1091,6 +1095,10 @@ def DSCaseAddConstraints(*args):
   return _dspace_interface.DSCaseAddConstraints(*args)
 DSCaseAddConstraints = _dspace_interface.DSCaseAddConstraints
 
+def DSCaseRemoveRedundantBoundaries(*args):
+  return _dspace_interface.DSCaseRemoveRedundantBoundaries(*args)
+DSCaseRemoveRedundantBoundaries = _dspace_interface.DSCaseRemoveRedundantBoundaries
+
 def DSCaseConditionsAreValid(*args):
   return _dspace_interface.DSCaseConditionsAreValid(*args)
 DSCaseConditionsAreValid = _dspace_interface.DSCaseConditionsAreValid
@@ -1134,6 +1142,10 @@ DSCaseVerticesFor1DSlice = _dspace_interface.DSCaseVerticesFor1DSlice
 def DSCaseVerticesFor2DSlice(*args):
   return _dspace_interface.DSCaseVerticesFor2DSlice(*args)
 DSCaseVerticesFor2DSlice = _dspace_interface.DSCaseVerticesFor2DSlice
+
+def DSCaseVertexEquationsFor2DSlice(*args):
+  return _dspace_interface.DSCaseVertexEquationsFor2DSlice(*args)
+DSCaseVertexEquationsFor2DSlice = _dspace_interface.DSCaseVertexEquationsFor2DSlice
 
 def DSCaseFacesFor3DSliceAndConnectivity(*args):
   return _dspace_interface.DSCaseFacesFor3DSliceAndConnectivity(*args)
@@ -1775,6 +1787,10 @@ DSSWIGGMASystemParseWrapper = _dspace_interface.DSSWIGGMASystemParseWrapper
 def DSSWIGSSystemParseWrapper(*args):
   return _dspace_interface.DSSWIGSSystemParseWrapper(*args)
 DSSWIGSSystemParseWrapper = _dspace_interface.DSSWIGSSystemParseWrapper
+
+def DSExpressionArrayFromVoid(*args):
+  return _dspace_interface.DSExpressionArrayFromVoid(*args)
+DSExpressionArrayFromVoid = _dspace_interface.DSExpressionArrayFromVoid
 
 def DSExpressionAtIndexOfExpressionArray(*args):
   return _dspace_interface.DSExpressionAtIndexOfExpressionArray(*args)

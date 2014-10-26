@@ -9,6 +9,7 @@ from dspace.variables import VariablePool
 from dspace.models.base import Equations,Model
 from dspace.models.gma import GMASystem
 from dspace.models.ssystem import SSystem
+from dspace.expressions import Expression
 from math import *
 
 
@@ -180,6 +181,8 @@ class Case(Model):
     def conditions(self):
         conditions = list()
         eqs_expr = DSCaseConditions(self._swigwrapper)
+        if eqs_expr is None:
+            return
         for i in xrange(0, DSCaseNumberOfConditions(self._swigwrapper)):
             conditions.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
@@ -190,6 +193,8 @@ class Case(Model):
     def conditions_log(self):
         conditions = list()
         eqs_expr = DSCaseLogarithmicConditions(self._swigwrapper)
+        if eqs_expr is None:
+            return
         for i in xrange(0, DSCaseNumberOfConditions(self._swigwrapper)):
             conditions.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
@@ -200,7 +205,9 @@ class Case(Model):
     def boundaries(self):
         boundaries = list()
         eqs_expr = DSCaseBoundaries(self._swigwrapper)
-        for i in xrange(0, DSCaseNumberOfConditions(self._swigwrapper)):
+        if eqs_expr is None:
+            return
+        for i in xrange(0, DSCaseNumberOfBoundaries(self._swigwrapper)):
             boundaries.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
@@ -210,6 +217,8 @@ class Case(Model):
     def boundaries_log(self):
         boundaries = list()
         eqs_expr = DSCaseLogarithmicBoundaries(self._swigwrapper)
+        if eqs_expr is None:
+            return
         for i in xrange(0, DSCaseNumberOfBoundaries(self._swigwrapper)):
             boundaries.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
@@ -400,14 +409,47 @@ class Case(Model):
             vertices.append([10**coordinate for coordinate in vertex])
         if log_out is True:
             vertices=log_vertices
-        ## new_vertices = list()  
-        ## for i in xrange(1, len(vertices)):
-        ##     if vertices[i-1] == vertices[i]:
-        ##         continue
-        ##     new_vertices.append(vertices[i])
-        ## vertices = new_vertices
         return vertices
 
+    def vertex_equations_2D_slice(self, p_vals, x_variable, y_variable, range_x=None, range_y=None,
+                                  log_out=False):
+        lower = p_vals.copy()
+        upper = p_vals.copy()
+        if range_x is None:
+            lower[x_variable] = 1E-20
+            upper[x_variable] = 1E20
+        else:
+            lower[x_variable] = min(range_x)
+            upper[x_variable] = max(range_x)
+        if range_y is None:
+            lower[y_variable] = 1E-20
+            upper[y_variable] = 1E20
+        else:
+            lower[y_variable] = min(range_y)
+            upper[y_variable] = max(range_y)
+        stack = DSCaseVertexEquationsFor2DSlice(self._swigwrapper, 
+                                                lower._swigwrapper,
+                                                upper._swigwrapper,
+                                                x_variable,
+                                                y_variable,
+                                                log_out)
+        vertices = []
+        for i in xrange(DSStackCount(stack)):
+            expressions = DSExpressionArrayFromVoid(DSStackPop(stack))
+            expr0 = Expression(None)
+            expr0._swigwrapper = DSExpressionAtIndexOfExpressionArray(expressions, 0)
+            expr1 = Expression(None)
+            expr1._swigwrapper = DSExpressionAtIndexOfExpressionArray(expressions, 1)
+            vertices.append(Equations([str(expr0), str(expr1)], latex_symbols=self._latex))
+            DSSecureFree(expressions)
+        DSStackFree(stack)
+        ## vertices = list()
+        ## for vertex in log_vertices:
+        ##     vertices.append([10**coordinate for coordinate in vertex])
+        ## if log_out is True:
+        ##     vertices=log_vertices
+        return vertices
+        
     def vertices_3D_slice(self, p_vals, x_variable, y_variable, z_variable, 
                           range_x=None, range_y=None, range_z=None,
                           log_out=False):
