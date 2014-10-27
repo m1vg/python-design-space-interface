@@ -177,7 +177,7 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable, range_x, range_y,
             ax.text(log10(vertices[i][0][0]),
                     log10(vertices[i][0][1]),
                     '$'+vertices[i][1][0].latex(self._latex)+'$'+'\n$'+vertices[i][1][1].latex(self._latex)+'$', 
-                    fontsize=12, rotation=30,
+                    fontsize=10, rotation=30,
                     horizontalalignment='center',verticalalignment='center')
 
 @monkeypatch_method([dspace.models.case.Case, dspace.models.case.CaseIntersection])   
