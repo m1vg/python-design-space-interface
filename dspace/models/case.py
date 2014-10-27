@@ -383,8 +383,8 @@ class Case(Model):
                 roots.append(ssys.positive_roots(params))
             return (X, f_val, roots)
             
-    def vertices_2D_slice(self, p_vals, x_variable, y_variable, range_x=None, range_y=None,
-                       log_out=False):
+    def vertices_2D_slice(self, p_vals, x_variable, y_variable, range_x=None,
+                          range_y=None, log_out=False, vtype='numerical'):
         lower = p_vals.copy()
         upper = p_vals.copy()
         if range_x is None:
@@ -399,34 +399,35 @@ class Case(Model):
         else:
             lower[y_variable] = min(range_y)
             upper[y_variable] = max(range_y)
-        log_vertices=DSCaseVerticesFor2DSlice(self._swigwrapper, 
-                                              lower._swigwrapper,
-                                              upper._swigwrapper,
-                                              x_variable,
-                                              y_variable)
-        vertices = list()
-        for vertex in log_vertices:
-            vertices.append([10**coordinate for coordinate in vertex])
-        if log_out is True:
-            vertices=log_vertices
+        if vtype.lower() in ['numerical', 'both'] or vtype.lower() in ['n', 'b']:
+            log_vertices=DSCaseVerticesFor2DSlice(self._swigwrapper, 
+                                                  lower._swigwrapper,
+                                                  upper._swigwrapper,
+                                                  x_variable,
+                                                  y_variable)
+            vertices = list()
+            for vertex in log_vertices:
+                vertices.append([10**coordinate for coordinate in vertex])
+            if log_out is True:
+                vertices=log_vertices
+        if vtype.lower() == 'analytical' or vtype.lower() == 'a':
+            vertices=self._vertex_equations_2D_slice(p_vals, x_variable, y_variable,
+                                            range_x, range_y, log_out)
+        if vtype.lower() == 'both' or vtype.lower() == 'b':
+            
+            eqs=self._vertex_equations_2D_slice(p_vals, x_variable, y_variable,
+                                                range_x, range_y, log_out)
+            vertices=[(vertices[i],eqs[i]) for i in xrange(len(vertices))]
         return vertices
 
-    def vertex_equations_2D_slice(self, p_vals, x_variable, y_variable, range_x=None, range_y=None,
-                                  log_out=False):
+    def _vertex_equations_2D_slice(self, p_vals, x_variable, y_variable, range_x, range_y,
+                                  log_out):
         lower = p_vals.copy()
         upper = p_vals.copy()
-        if range_x is None:
-            lower[x_variable] = 1E-20
-            upper[x_variable] = 1E20
-        else:
-            lower[x_variable] = min(range_x)
-            upper[x_variable] = max(range_x)
-        if range_y is None:
-            lower[y_variable] = 1E-20
-            upper[y_variable] = 1E20
-        else:
-            lower[y_variable] = min(range_y)
-            upper[y_variable] = max(range_y)
+        lower[x_variable] = min(range_x)
+        upper[x_variable] = max(range_x)
+        lower[y_variable] = min(range_y)
+        upper[y_variable] = max(range_y)
         stack = DSCaseVertexEquationsFor2DSlice(self._swigwrapper, 
                                                 lower._swigwrapper,
                                                 upper._swigwrapper,
@@ -443,11 +444,7 @@ class Case(Model):
             vertices.append(Equations([str(expr0), str(expr1)], latex_symbols=self._latex))
             DSSecureFree(expressions)
         DSStackFree(stack)
-        ## vertices = list()
-        ## for vertex in log_vertices:
-        ##     vertices.append([10**coordinate for coordinate in vertex])
-        ## if log_out is True:
-        ##     vertices=log_vertices
+        vertices.reverse()
         return vertices
         
     def vertices_3D_slice(self, p_vals, x_variable, y_variable, z_variable, 
