@@ -572,11 +572,13 @@ class CaseIntersection(Case):
         
         setattr(self, '_name', 'Unnamed')
         setattr(self, '_cases', list())
+        setattr(self, '_latex', {})
         if isinstance(cases, list) is False:
             cases= [cases]
         for case in cases:
             if isinstance(case, Case) is False:
                 raise TypeError, 'must be an instance of the Case class'
+        self._latex = case._latex
         cases_swig = [DSCaseCopy(i._swigwrapper) for i in cases]
         new_cases = []
         if constraints is not None:
@@ -625,6 +627,7 @@ class CaseColocalization(CaseIntersection):
         
         setattr(self, '_name', 'Unnamed')
         setattr(self, '_cases', list())
+        setattr(self, '_latex', {})
         slice_constraints = []
         case_constraints = []
         if isinstance(cases, list) is False:
@@ -634,6 +637,7 @@ class CaseColocalization(CaseIntersection):
         for case in cases:
             if isinstance(case, Case) is False:
                 raise TypeError, 'must be an instance of the Case class'
+        self._latex = case._latex
         cases_swig = [DSCaseCopy(i._swigwrapper) for i in cases]
         new_cases = []
         if constraints is not None:
