@@ -157,7 +157,7 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
 
 @monkeypatch_method([dspace.models.case.Case, dspace.models.case.CaseIntersection])   
 def draw_2D_slice(self, ax, p_vals, x_variable, y_variable, range_x, range_y,
-                  show_equations=False, **kwargs):
+                  show_equations=False, rotation=30, fontsize=8, **kwargs):
     
     if show_equations is False:
         V = self.vertices_2D_slice(p_vals, x_variable, y_variable,
@@ -179,7 +179,7 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable, range_x, range_y,
             s = '\n'.join(['$'+j.latex(self._latex)+'$' for j in vertices[i][1]])
             ax.plot(x, y, 'k.', mfc='none', mec='k', ms=1.)
                     
-            ax.text(x, y, s, fontsize=8, rotation=30, 
+            ax.text(x, y, s, fontsize=fontsize, rotation=rotation, 
                     horizontalalignment='center', verticalalignment='center')
 
 @monkeypatch_method([dspace.models.case.Case, dspace.models.case.CaseIntersection])   
