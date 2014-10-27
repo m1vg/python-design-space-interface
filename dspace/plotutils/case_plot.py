@@ -177,7 +177,7 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable, range_x, range_y,
             x = log10(vertices[i][0][0])
             y = log10(vertices[i][0][1])
             s = '\n'.join(['$'+j.latex(self._latex)+'$' for j in vertices[i][1]])
-            ax.plot(x, y, 'k.')
+            ax.plot(x, y, 'k.', mfc='none', mec='k', ms=1.)
                     
             ax.text(x, y, s, fontsize=8, rotation=30, 
                     horizontalalignment='center', verticalalignment='center')
