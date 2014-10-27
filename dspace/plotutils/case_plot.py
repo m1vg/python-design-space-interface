@@ -174,11 +174,13 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable, range_x, range_y,
     ax.set_ylim(np.log10(range_y))
     if show_equations is True:
         for i in xrange(len(vertices)):
-            ax.text(log10(vertices[i][0][0]),
-                    log10(vertices[i][0][1]),
-                    '$'+vertices[i][1][0].latex(self._latex)+'$'+'\n$'+vertices[i][1][1].latex(self._latex)+'$', 
-                    fontsize=8, rotation=30,
-                    horizontalalignment='center',verticalalignment='center')
+            x = log10(vertices[i][0][0])
+            y = log10(vertices[i][0][1])
+            s = '\n'.join(['$'+j.latex(self._latex)+'$' for j in vertices[i][1]])
+            ax.plot(x, y, 'k.')
+                    
+            ax.text(x, y, s, fontsize=8, rotation=30, 
+                    horizontalalignment='center', verticalalignment='center')
 
 @monkeypatch_method([dspace.models.case.Case, dspace.models.case.CaseIntersection])   
 def draw_3D_slice(self, ax, p_vals, x_variable, y_variable, z_variable, range_x, range_y, range_z,
