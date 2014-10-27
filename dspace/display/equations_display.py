@@ -10,11 +10,11 @@ from IPython.display import display, Math
 def _repr_latex_(self):
     if len(self) == 1:
         eq = self._eq[0]
-        string = eq.__latex_str__(substitution_dictionary=self._latex)
+        string = eq.latex(substitution_dictionary=self._latex)
         return string
     string = r'\begin{array}{l}'
     for eq in self._eq:
-        string += eq.__latex_str__(substitution_dictionary=self._latex)
+        string += eq.latex(substitution_dictionary=self._latex)
         string += r'\\'
     string += r'\end{array}'
     return string

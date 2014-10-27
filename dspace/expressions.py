@@ -18,7 +18,7 @@ class Expression(object):
         
         return DSExpressionAsString(self._swigwrapper)
         
-    def __latex_str__(self, substitution_dictionary=None):
+    def latex(self, substitution_dictionary=None):
         
         subs=dict(log=r'\log',
                   log10=r'\log_{10}',

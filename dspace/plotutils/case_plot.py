@@ -157,15 +157,28 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
 
 @monkeypatch_method([dspace.models.case.Case, dspace.models.case.CaseIntersection])   
 def draw_2D_slice(self, ax, p_vals, x_variable, y_variable, range_x, range_y,
-                  **kwargs):
+                  show_equations=False, **kwargs):
     
-    V = self.vertices_2D_slice(p_vals, x_variable, y_variable,
-                               range_x=range_x, range_y=range_y,
-                               log_out=True)
+    if show_equations is False:
+        V = self.vertices_2D_slice(p_vals, x_variable, y_variable,
+                                   range_x=range_x, range_y=range_y,
+                                   log_out=True)
+    else:
+        vertices = self.vertices_2D_slice(p_vals, x_variable, y_variable,
+                                          range_x=range_x, range_y=range_y,
+                                          log_out=False, vtype='both')
+        V = [(log10(i[0][0]), log10(i[0][1])) for i in vertices]
     V = zip(*V)
     ax.fill(V[0], V[1], **kwargs)
     ax.set_xlim(np.log10(range_x))
     ax.set_ylim(np.log10(range_y))
+    if show_equations is True:
+        for i in xrange(len(vertices)):
+            ax.text(log10(vertices[i][0][0]),
+                    log10(vertices[i][0][1]),
+                    '$'+vertices[i][1][0].latex(self._latex)+'$'+'\n$'+vertices[i][1][1].latex(self._latex)+'$', 
+                    fontsize=12, rotation=30,
+                    horizontalalignment='center',verticalalignment='center')
 
 @monkeypatch_method([dspace.models.case.Case, dspace.models.case.CaseIntersection])   
 def draw_3D_slice(self, ax, p_vals, x_variable, y_variable, z_variable, range_x, range_y, range_z,
