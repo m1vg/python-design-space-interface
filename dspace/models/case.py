@@ -579,15 +579,17 @@ class CaseIntersection(Case):
             if isinstance(case, Case) is False:
                 raise TypeError, 'must be an instance of the Case class'
         self._latex = case._latex
-        cases_swig = [DSCaseCopy(i._swigwrapper) for i in cases]
         new_cases = []
         if constraints is not None:
             if isinstance(constraints, list) is False:
                 constraints = [constraints]
-        for i in range(len(cases_swig)):
-            if constraints is not None:
+        if constraints is not None:
+            cases_swig = [DSCaseCopy(i._swigwrapper) for i in cases]
+            for i in range(len(cases_swig)):
                 DSCaseAddConstraints(cases_swig[i], constraints, len(constraints))
-            new_cases.append(Case(cases[i], cases_swig[i], name=cases[i].name))
+                new_cases.append(Case(cases[i], cases_swig[i], name=cases[i].name))
+        else:
+            new_cases = cases
         swigwrapper = DSPseudoCaseFromIntersectionOfCases(len(cases), [i._swigwrapper for i in new_cases])
         super(CaseIntersection, self).__init__(cases[0],
                                                swigwrapper,
@@ -638,7 +640,6 @@ class CaseColocalization(CaseIntersection):
             if isinstance(case, Case) is False:
                 raise TypeError, 'must be an instance of the Case class'
         self._latex = case._latex
-        cases_swig = [DSCaseCopy(i._swigwrapper) for i in cases]
         new_cases = []
         if constraints is not None:
             if isinstance(constraints, list) is False:
@@ -648,10 +649,13 @@ class CaseColocalization(CaseIntersection):
                     slice_constraints.append(i)
                 else:
                     case_constraints.append(i)
-        for i in range(len(cases_swig)):
-            if len(case_constraints) > 0:
+        if len(case_constraints) > 0:
+            cases_swig = [DSCaseCopy(i._swigwrapper) for i in cases]
+            for i in range(len(cases_swig)):
                 DSCaseAddConstraints(cases_swig[i], case_constraints, len(case_constraints))
-            new_cases.append(Case(cases[i], cases_swig[i], name=cases[i].name))
+                new_cases.append(Case(cases[i], cases_swig[i], name=cases[i].name))
+        else:
+            new_cases = cases
         swigwrapper = DSPseudoCaseFromIntersectionOfCasesExcludingSlice(len(cases),
                                                                         [i._swigwrapper for i in new_cases],
                                                                         len(slice_variables),
