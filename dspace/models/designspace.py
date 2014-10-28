@@ -342,10 +342,10 @@ class DesignSpace(GMASystem):
             return None
         intersections = list()        
         Cases = self(case_numbers)
-        for i in xrange(len(Cases)):
-            case = Cases[i]
-            case_num = case.case_number
-            case_numbers = self._cyclical_case_as_subcases(case_num, case_numbers)
+        ## for i in xrange(len(Cases)):
+        ##     case = Cases[i]
+        ##     case_num = case.case_number
+        ##     case_numbers = self._cyclical_case_as_subcases(case_num, case_numbers)
         valid_cases=set(range(len(case_numbers)))
         if p_bounds is not None:
             lower = VariablePool(names=self.independent_variables)
