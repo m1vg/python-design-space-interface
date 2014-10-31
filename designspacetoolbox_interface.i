@@ -140,6 +140,26 @@
         DSMatrixFree(matrix);
 }
 
+%typemap(out) const DSMatrix * {
+        DSUInteger i, j;
+        PyObject *tuple = NULL;
+        DSMatrix *matrix = $1;
+        if (matrix == NULL) {
+                Py_RETURN_NONE;
+                //                $result = NULL;
+                //                return NULL;
+        }
+        $result = PyList_New(DSMatrixRows(matrix));
+        for (i = 0; i < DSMatrixRows(matrix); i++) {
+                tuple = PyTuple_New(DSMatrixColumns(matrix));
+                for (j = 0; j < DSMatrixColumns(matrix); j++) {
+                        PyTuple_SetItem(tuple, j, PyFloat_FromDouble(DSMatrixDoubleValue(matrix, i, j)));
+                }
+                PyList_SetItem($result, i, tuple);
+        }
+        DSMatrixFree(matrix);
+}
+
 %typemap(in) const DSCase ** {
         /* Check if is a list */
         if (PyList_Check($input)) {
