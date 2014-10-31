@@ -8767,7 +8767,7 @@ SWIGINTERN PyObject *_wrap_DSGMASystemAlpha(PyObject *SWIGUNUSEDPARM(self), PyOb
       }
       PyList_SetItem(resultobj, i, tuple);
     }
-    DSMatrixFree(matrix);
+    //        DSMatrixFree(matrix);
   }
   return resultobj;
 fail:
@@ -8807,7 +8807,7 @@ SWIGINTERN PyObject *_wrap_DSGMASystemBeta(PyObject *SWIGUNUSEDPARM(self), PyObj
       }
       PyList_SetItem(resultobj, i, tuple);
     }
-    DSMatrixFree(matrix);
+    //        DSMatrixFree(matrix);
   }
   return resultobj;
 fail:
@@ -10371,7 +10371,7 @@ SWIGINTERN PyObject *_wrap_DSSSystemAlpha(PyObject *SWIGUNUSEDPARM(self), PyObje
       }
       PyList_SetItem(resultobj, i, tuple);
     }
-    DSMatrixFree(matrix);
+    //        DSMatrixFree(matrix);
   }
   return resultobj;
 fail:
@@ -10411,7 +10411,7 @@ SWIGINTERN PyObject *_wrap_DSSSystemBeta(PyObject *SWIGUNUSEDPARM(self), PyObjec
       }
       PyList_SetItem(resultobj, i, tuple);
     }
-    DSMatrixFree(matrix);
+    //        DSMatrixFree(matrix);
   }
   return resultobj;
 fail:
@@ -10451,7 +10451,7 @@ SWIGINTERN PyObject *_wrap_DSSSystemGd(PyObject *SWIGUNUSEDPARM(self), PyObject 
       }
       PyList_SetItem(resultobj, i, tuple);
     }
-    DSMatrixFree(matrix);
+    //        DSMatrixFree(matrix);
   }
   return resultobj;
 fail:
@@ -10491,7 +10491,7 @@ SWIGINTERN PyObject *_wrap_DSSSystemGi(PyObject *SWIGUNUSEDPARM(self), PyObject 
       }
       PyList_SetItem(resultobj, i, tuple);
     }
-    DSMatrixFree(matrix);
+    //        DSMatrixFree(matrix);
   }
   return resultobj;
 fail:
@@ -10531,7 +10531,7 @@ SWIGINTERN PyObject *_wrap_DSSSystemHd(PyObject *SWIGUNUSEDPARM(self), PyObject 
       }
       PyList_SetItem(resultobj, i, tuple);
     }
-    DSMatrixFree(matrix);
+    //        DSMatrixFree(matrix);
   }
   return resultobj;
 fail:
@@ -10571,7 +10571,7 @@ SWIGINTERN PyObject *_wrap_DSSSystemHi(PyObject *SWIGUNUSEDPARM(self), PyObject 
       }
       PyList_SetItem(resultobj, i, tuple);
     }
-    DSMatrixFree(matrix);
+    //        DSMatrixFree(matrix);
   }
   return resultobj;
 fail:
@@ -10611,7 +10611,7 @@ SWIGINTERN PyObject *_wrap_DSSSystemM(PyObject *SWIGUNUSEDPARM(self), PyObject *
       }
       PyList_SetItem(resultobj, i, tuple);
     }
-    DSMatrixFree(matrix);
+    //        DSMatrixFree(matrix);
   }
   return resultobj;
 fail:

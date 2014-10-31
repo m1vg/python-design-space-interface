@@ -49,6 +49,42 @@ class SSystem(GMASystem):
         return Equations(solution, latex_symbols=self._latex)
     
     @property
+    def m(self):
+        return DSSSystemM(self._swigwrapper)
+    
+    @property
+    def Ad(self):
+        return DSSSystemAd(self._swigwrapper)
+    
+    @property
+    def Ai(self):
+        return DSSSystemAi(self._swigwrapper)
+    
+    @property
+    def Gd(self):
+        return DSSSystemGd(self._swigwrapper)
+
+    @property
+    def Hd(self):
+        return DSSSystemHd(self._swigwrapper)
+
+    @property
+    def alpha(self):
+        return DSSSystemAlpha(self._swigwrapper)
+
+    @property
+    def beta(self):
+        return DSSSystemBeta(self._swigwrapper)
+
+    @property
+    def Gi(self):
+        return DSSSystemGi(self._swigwrapper)
+
+    @property
+    def Hi(self):
+        return DSSSystemHi(self._swigwrapper)
+
+    @property
     def solution(self):
         if DSSSystemHasSolution(self._swigwrapper) is False:
             return None
