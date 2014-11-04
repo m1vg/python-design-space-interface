@@ -41,6 +41,7 @@ class VariablePool(dict):
         '''
         super(VariablePool, self).__init__()
         setattr(self, '_swigwrapper', None)
+        setattr(self, '_keys', list())
         if isinstance(names, list) is True:
             names = OrderedDict([(key,1.) for key in names])
         self.update(names=names, **kwargs)
@@ -91,12 +92,16 @@ class VariablePool(dict):
             raise TypeError, 'VariablePool keys must be strings'
         if DSVariablePoolHasVariableWithName(self._swigwrapper, name) == False:
             DSVariablePoolAddVariableWithName(self._swigwrapper, name)
+            self._keys.append(name)
         value = float(value)
         DSVariablePoolSetValueForVariableWithName(self._swigwrapper,
                                                   name,
                                                   value)
         super(VariablePool, self).__setitem__(name, value)
-
+    
+    def names(self):
+        return (i for i in self._names)
+        
     def copy(self):
         newPool = VariablePool()
         for i in self.keys():
