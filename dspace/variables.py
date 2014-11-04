@@ -99,7 +99,7 @@ class VariablePool(dict):
                                                   value)
         super(VariablePool, self).__setitem__(name, value)
     
-    def names(self):
+    def keys(self):
         return (i for i in self._names)
         
     def copy(self):
