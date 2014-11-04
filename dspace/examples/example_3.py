@@ -32,8 +32,8 @@ matplotlib.interactive(True)
 #
 # The equations and dependent variables are entered as strings.
 
-f = ['X1. = 1000*X1^2*X2^-1 + 1000*X2^-1 - X1*X3*X4',
-     'X2. =      X1^2 + 10000 - X2']
+f = ['X1. = alpha*X1^2*X2^-1 + alpha*X2^-1 - X1*X3*X4',
+     'X2. =      X1^2 + alpha - X2']
 # The next step is to construct an Equations object using this list of strings
 # and specifying which variables are auxiliary and thus dependent. These are 
 # specified by a list of variables names passed by the 'auxiliary_variables'
@@ -71,6 +71,7 @@ ivar_names = ds.independent_variables
 # the object.
 
 pvals = dspace.VariablePool(names=ivar_names)
+pvals['alpha'] = 100000
 pvals['X3'] = 1  # Will be a variable on an axis, value wont be affect plot
 pvals['X4'] = 1  # Will be a variable on an axis, value wont be affect plot
 
@@ -223,3 +224,4 @@ ds.draw_2D_positive_roots(ax3,
                           )
 ax3.set_title('Stability of Case 3:' + ds(3).signature)
 ax3.grid(True)
+

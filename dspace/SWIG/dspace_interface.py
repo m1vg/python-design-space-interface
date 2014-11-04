@@ -1163,6 +1163,10 @@ def DSCaseVerticesForNDSlice(*args):
   return _dspace_interface.DSCaseVerticesForNDSlice(*args)
 DSCaseVerticesForNDSlice = _dspace_interface.DSCaseVerticesForNDSlice
 
+def DSCaseValidParameterAndStateSet(*args):
+  return _dspace_interface.DSCaseValidParameterAndStateSet(*args)
+DSCaseValidParameterAndStateSet = _dspace_interface.DSCaseValidParameterAndStateSet
+
 def DSCaseValidParameterSet(*args):
   return _dspace_interface.DSCaseValidParameterSet(*args)
 DSCaseValidParameterSet = _dspace_interface.DSCaseValidParameterSet

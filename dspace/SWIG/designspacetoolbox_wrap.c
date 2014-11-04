@@ -13065,6 +13065,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSCaseValidParameterAndStateSet(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  DSVariablePool *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSCaseValidParameterAndStateSet",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseValidParameterAndStateSet" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  result = (DSVariablePool *)DSCaseValidParameterAndStateSet((DSCase const *)arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSCaseValidParameterSet(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSCase *arg1 = (DSCase *) 0 ;
@@ -18917,6 +18939,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCaseVerticesFor3DSliceAndConnectivity", _wrap_DSCaseVerticesFor3DSliceAndConnectivity, METH_VARARGS, NULL},
 	 { (char *)"DSCaseVerticesFor3DSlice", _wrap_DSCaseVerticesFor3DSlice, METH_VARARGS, NULL},
 	 { (char *)"DSCaseVerticesForNDSlice", _wrap_DSCaseVerticesForNDSlice, METH_VARARGS, NULL},
+	 { (char *)"DSCaseValidParameterAndStateSet", _wrap_DSCaseValidParameterAndStateSet, METH_VARARGS, NULL},
 	 { (char *)"DSCaseValidParameterSet", _wrap_DSCaseValidParameterSet, METH_VARARGS, NULL},
 	 { (char *)"DSCaseValidParameterSetByOptimizingFunction", _wrap_DSCaseValidParameterSetByOptimizingFunction, METH_VARARGS, NULL},
 	 { (char *)"DSCaseValidParameterSetAtSlice", _wrap_DSCaseValidParameterSetAtSlice, METH_VARARGS, NULL},

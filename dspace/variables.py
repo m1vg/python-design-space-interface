@@ -25,7 +25,7 @@ module = __import__('dspace.SWIG.dspace_interface', fromlist=SWIG_REQUIREMENTS)
 for function in SWIG_REQUIREMENTS:
     globals()[function] = getattr(module,function)
 
-class VariablePool(OrderedDict):
+class VariablePool(dict):
     ''' A python class that serves as a wrapper to the DSVariablePool object
         in the designspace C library. The Variable Pool object is a subclass of
         dict and is used to reference dependent and independent variables, as 
@@ -72,9 +72,19 @@ class VariablePool(OrderedDict):
         ''' Restricts the attribute modification. The VariablePool can only have a
             _swigwrapper attribute, which is immutable once assigned. '''
         super(VariablePool, self).__setattr__(name, value)
-
-
+    
+    def __getstate__(self):
+        odict = [(i,self[i]) for i in self.keys()]
+        return odict
+    
+    def __setstate__(self, state):
+        setattr(self, '_swigwrapper', None)
+        for key, value in state:
+            self[key] = value
+        
     def __setitem__(self, name, value):
+        if hasattr(self, '_swigwrapper') is False:
+            setattr(self, '_swigwrapper', None)
         if self._swigwrapper == None:
             self._swigwrapper = DSVariablePoolAlloc()
         if isinstance(name, str) is False:

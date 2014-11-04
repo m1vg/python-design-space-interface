@@ -165,7 +165,13 @@ class Case(Model):
                     slice_range = [x[0] for x in slice_range]
                     pvals[i] = 10**(slice_range[0] + (slice_range[1] - slice_range[0])/2)
         return pvals
-        
+    
+    def valid_parameter_and_state(self):
+        variablepool = DSCaseValidParameterAndStateSet(self._swigwrapper)
+        pstate = VariablePool()
+        pstate.set_swigwrapper(variablepool)
+        return pstate
+          
     @property
     def case_number(self):
         return DSCaseIdentifier(self._swigwrapper)
@@ -260,10 +266,18 @@ class Case(Model):
     def steady_state_function(self, function, parameter_values):
         return self.ssystem.steady_state_function(function, parameter_values)
     
-    def is_consistent(self, p_bounds=None):
+    def is_consistent(self, point=None):
         
-        if p_bounds is not None:
-            raise NotImplementedError, 'Needs to be implemented'
+        if point is not None:
+            p_vals_d = VariablePool(names=self.dependent_variables)
+            p_vals_i = VariablePool(names=self.independent_variables)
+            for i in p_vals_d:
+                p_vals_d[i] = point[i]
+            for i in p_vals_i:
+                p_vals_i[i] = point[i]
+            return DSCaseIsValidInStateSpaceAtPoint(self._swigwrapper,
+                                                    p_vals_d._swigwrapper,
+                                                    p_vals_i._swigwrapper)
             ## return self._is_valid_slice(p_bounds)
             #do something
         return DSCaseConditionsAreValid(self._swigwrapper)
@@ -693,7 +707,7 @@ class CaseColocalization(CaseIntersection):
         
     def __repr__(self):
         return 'CaseColocalization: Cases ' + str(self)
-    
+        
     def valid_parameter_set(self, p_bounds=None, optimize=None, minimize=True, project=True):
         psetHD = super(CaseIntersection, self).valid_parameter_set(
                                           p_bounds=p_bounds,
