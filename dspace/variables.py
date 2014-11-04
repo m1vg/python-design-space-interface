@@ -99,9 +99,8 @@ class VariablePool(dict):
 
     def copy(self):
         newPool = VariablePool()
-        if self._swigwrapper is not None:
-            for key,value in self.iteritems():
-                newPool[key] = value
+        for i in self.keys():
+            newPool[i] = self[i]
         return newPool
 
     def index(self, name):
