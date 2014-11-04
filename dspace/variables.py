@@ -86,12 +86,14 @@ class VariablePool(dict):
     def __setitem__(self, name, value):
         if hasattr(self, '_swigwrapper') is False:
             setattr(self, '_swigwrapper', None)
+            setattr(self, '_keys', list())
         if self._swigwrapper == None:
             self._swigwrapper = DSVariablePoolAlloc()
         if isinstance(name, str) is False:
             raise TypeError, 'VariablePool keys must be strings'
         if DSVariablePoolHasVariableWithName(self._swigwrapper, name) == False:
             DSVariablePoolAddVariableWithName(self._swigwrapper, name)
+        if name not in self._keys:
             self._keys.append(name)
         value = float(value)
         DSVariablePoolSetValueForVariableWithName(self._swigwrapper,
@@ -100,11 +102,18 @@ class VariablePool(dict):
         super(VariablePool, self).__setitem__(name, value)
     
     def keys(self):
-        return (i for i in self._names)
+        keys = list()
+        return keys+[i for i in self._keys]
+    
+    def iterkeys(self):
+        return iter(i for i in self.keys())
         
+    def viewkeys(self):
+        return self.iterkeys()
+                    
     def copy(self):
         newPool = VariablePool()
-        for i in self.keys():
+        for i in self._keys:
             newPool[i] = self[i]
         return newPool
 
