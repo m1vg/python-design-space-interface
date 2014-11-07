@@ -126,12 +126,11 @@ def sampled_data(case, function, p_vals, x_variable, y_variable, points, x, y, p
                     clim[0] = min(clim[0], Z[i,j])
                     clim[1] = max(clim[1], Z[i,j])
     return X,Y,Z,clim
-                     
+         
 @monkeypatch_method(dspace.models.case.Case)
-def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
+def draw_2D_ss_function_data(self, function, p_vals, x_variable, y_variable,
                         range_x, range_y, 
-                        resolution=100, log_linear=False, zlim=None, **kwargs):
-    
+                        resolution=100, log_linear=False): 
     points, x, y, path = generate_plot_lattice_bounds(self, p_vals,
                                                       x_variable, y_variable,
                                                       range_x, range_y, resolution)
@@ -144,6 +143,7 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
                              x_variable, y_variable,
                              points, x, y, path)
     patch = mt.patches.PathPatch(path, fc='none', ec='none', lw=.5)
+    return (X, Y, Z, clim, patch)
     pc = ax.pcolor(X, Y, Z, rasterized=True, **kwargs)
     ax.add_patch(patch)
     pc.set_clip_path(patch)
@@ -151,6 +151,37 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
         zlim=clim
     if zlim is not None:    
         pc.set_clim(zlim)
+    ax.set_xlim(np.log10(range_x))
+    ax.set_ylim(np.log10(range_y))
+    return pc
+        
+    
+@monkeypatch_method(dspace.models.case.Case)
+def draw_2D_ss_function_from_data(self, ax, X, Y, Z, clim, patch, zlim=None, **kwargs):
+    pc = ax.pcolor(X, Y, Z, rasterized=True, **kwargs)
+    ax.add_patch(patch)
+    pc.set_clip_path(patch)
+    if zlim is None:
+        zlim=clim
+    if zlim is not None:    
+        pc.set_clim(zlim)
+    return pc
+         
+@monkeypatch_method(dspace.models.case.Case)
+def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
+                        range_x, range_y, 
+                        resolution=100, log_linear=False, zlim=None, **kwargs):
+    
+    X, Y, Z, clim, patch = self.draw_2D_ss_function_data(function, 
+                                                         p_vals,
+                                                         x_variable,
+                                                         y_variable,
+                                                         range_x,
+                                                         range_y,
+                                                         resolution=resolution,
+                                                         log_linear=log_linear
+                                                         )
+    pc = self.draw_2D_ss_function_from_data(ax, X, Y, Z, clim, patch, zlim=zlim, **kwargs)
     ax.set_xlim(np.log10(range_x))
     ax.set_ylim(np.log10(range_y))
     return pc

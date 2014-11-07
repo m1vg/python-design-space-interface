@@ -525,13 +525,85 @@ def draw_3D_slice(self, ax, p_vals, x_variable, y_variable,z_variable, range_x,
         c_ax.set_aspect(15)
         self.draw_region_colorbar(c_ax, color_dict)
     return color_dict
-        
+
+def calculate_case_2D_function(case, function, p_vals, x_variable, y_variable, 
+                        range_x, range_y, resolution, log_linear):
+    X, Y, Z, clim, patch = case.draw_2D_ss_function_data(function, 
+                                                         p_vals, x_variable, y_variable,
+                                                         range_x, range_y, 
+                                                         resolution=resolution,
+                                                         log_linear=log_linear
+                                                         )
+    return case, X, Y, Z, clim, patch
+
+@monkeypatch_method(dspace.models.designspace.DesignSpace)   
+def _draw_2D_ss_function_parallel(self, ax, all_cases, function, p_vals, x_variable, y_variable, 
+                        range_x, range_y, resolution=100, log_linear=False, 
+                        zlim=None, included_cases=None, colorbar=True,
+                        cmap=mt.cm.jet, **kwargs):
+    try:
+        from joblib import Parallel, delayed, cpu_count
+    except:
+        return None
+    min_lim = 1e20
+    max_lim = -1e20
+    patches = []
+    cores = cpu_count()
+    results = Parallel(n_jobs=min(cores, len(all_cases)))(delayed(calculate_case_2D_function)(self(i), 
+                                                                      function,
+                                                                      p_vals, 
+                                                                      x_variable,
+                                                                      y_variable,
+                                                                      range_x,
+                                                                      range_y,
+                                                                      resolution,
+                                                                      log_linear)
+                                                                      for i in all_cases)
+    for i in results:
+        case, X, Y, Z, clim, patch = i
+        pc = case.draw_2D_ss_function_from_data(ax, X, Y, Z, clim, patch, zlim=zlim)
+        if isinstance(pc, list) is True:
+            for apc in pc:
+                lims = apc.get_clim()
+                min_lim = min(min_lim, lims[0])
+                max_lim = max(max_lim, lims[1])
+                patches.append(apc)
+        else:
+            lims = pc.get_clim()
+            min_lim = min(min_lim, lims[0])
+            max_lim = max(max_lim, lims[1])
+            patches.append(pc)
+    if zlim is None:
+        if min_lim == max_lim:
+            delta_z = 1e-3
+            min_lim = min_lim-delta_z
+            max_lim = max_lim+delta_z
+        ndigits = -int(floor(log10(max_lim - min_lim)))
+        zlim = [round(min_lim, ndigits), round(max_lim, ndigits)]
+    if zlim[0] == zlim[1]:
+        delta_z = 1e-3
+        zlim = [zlim[0]-delta_z, zlim[1]+delta_z]
+    for pc in patches:
+        pc.set_clim(zlim)
+    ax.set_xlim([log10(min(range_x)), log10(max(range_x))])
+    ax.set_ylim([log10(min(range_y)), log10(max(range_y))])
+    if x_variable in self._latex:
+        x_variable = '$'+self._latex[x_variable]+'$'
+    if y_variable in self._latex:
+        y_variable = '$'+self._latex[y_variable]+'$'
+    ax.set_xlabel(r'$\log_{10}$(' + x_variable + ')')
+    ax.set_ylabel(r'$\log_{10}$(' + y_variable + ')')
+    if colorbar is True:
+        c_ax,kw=mt.colorbar.make_axes(ax)
+        self.draw_function_colorbar(c_ax, zlim, cmap)
+        c_ax.set_aspect(15./(zlim[1]-zlim[0]))
+    return patches
+            
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
 def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable, 
                         range_x, range_y, resolution=100, log_linear=False, 
                         zlim=None, included_cases=None, colorbar=True,
-                        cmap=mt.cm.jet, **kwargs):
-    
+                        cmap=mt.cm.jet, parallel=False, **kwargs):                         
     p_bounds = dict(p_vals)
     p_bounds[x_variable] = range_x
     p_bounds[y_variable] = range_y
@@ -555,13 +627,37 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
     constant_vars.pop(y_variable)
     expr = Expression(function)
     expr = expr.subst(**constant_vars)
-    patches = list()
+    all_cases = list()
     for case in valid_cases+valid_nonstrict:
         if case in valid_nonstrict:
             vertices = self(case).vertices_2D_slice(p_vals, x_variable, y_variable,
                                                     range_x=range_x, range_y=range_y)
             if len(vertices) <= 2:
                 continue
+            all_cases.append(case)
+        else:
+            all_cases.append(case)
+    if parallel is False:
+        patches = None
+    else:  
+        patches = self._draw_2D_ss_function_parallel(ax,
+                                                     all_cases,
+                                                     function, 
+                                                     p_vals,
+                                                     x_variable, 
+                                                     y_variable,
+                                                     range_x,
+                                                     range_y,
+                                                     resolution=resolution,
+                                                     log_linear=log_linear,
+                                                     zlim=zlim,
+                                                     included_cases=included_cases,
+                                                     colorbar=colorbar,
+                                                     cmap=cmap, **kwargs)
+    if patches is not None:
+        return patches  
+    patches = list()
+    for case in all_cases:
         pc = self(case).draw_2D_ss_function(ax, expr, p_vals, x_variable, y_variable,
                                             range_x, range_y, resolution=resolution,
                                             log_linear=log_linear, cmap=cmap, **kwargs)

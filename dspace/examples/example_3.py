@@ -71,7 +71,7 @@ ivar_names = ds.independent_variables
 # the object.
 
 pvals = dspace.VariablePool(names=ivar_names)
-pvals['alpha'] = 100000
+pvals['alpha'] = 1000
 pvals['X3'] = 1  # Will be a variable on an axis, value wont be affect plot
 pvals['X4'] = 1  # Will be a variable on an axis, value wont be affect plot
 
