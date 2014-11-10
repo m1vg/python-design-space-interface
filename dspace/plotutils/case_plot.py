@@ -142,8 +142,8 @@ def draw_2D_ss_function_data(self, function, p_vals, x_variable, y_variable,
         X,Y,Z,clim = sampled_data(self, function, p_vals,
                              x_variable, y_variable,
                              points, x, y, path)
-    patch = mt.patches.PathPatch(path, fc='none', ec='none', lw=.5)
-    return (X, Y, Z, clim, patch)
+    ## patch = mt.patches.PathPatch(path, fc='none', ec='none', lw=.5)
+    return (X, Y, Z, clim, path)
     pc = ax.pcolor(X, Y, Z, rasterized=True, **kwargs)
     ax.add_patch(patch)
     pc.set_clip_path(patch)
@@ -172,7 +172,7 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
                         range_x, range_y, 
                         resolution=100, log_linear=False, zlim=None, **kwargs):
     
-    X, Y, Z, clim, patch = self.draw_2D_ss_function_data(function, 
+    X, Y, Z, clim, path = self.draw_2D_ss_function_data(function, 
                                                          p_vals,
                                                          x_variable,
                                                          y_variable,
@@ -181,6 +181,7 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
                                                          resolution=resolution,
                                                          log_linear=log_linear
                                                          )
+    patch = mt.patches.PathPatch(path, fc='none', ec='none', lw=.5)
     pc = self.draw_2D_ss_function_from_data(ax, X, Y, Z, clim, patch, zlim=zlim, **kwargs)
     ax.set_xlim(np.log10(range_x))
     ax.set_ylim(np.log10(range_y))
