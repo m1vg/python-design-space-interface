@@ -560,8 +560,8 @@ def _draw_2D_ss_function_parallel(self, ax, all_cases, function, p_vals, x_varia
                                                                       log_linear)
                                                                       for i in all_cases)
     for i in results:
-        case, X, Y, Z, clim, patch = i
-        pc = case.draw_2D_ss_function_from_data(ax, X, Y, Z, clim, patch, zlim=zlim)
+        case, X, Y, Z, clim, path = i
+        pc = case.draw_2D_ss_function_from_data(ax, X, Y, Z, clim, path, zlim=zlim)
         if isinstance(pc, list) is True:
             for apc in pc:
                 lims = apc.get_clim()
