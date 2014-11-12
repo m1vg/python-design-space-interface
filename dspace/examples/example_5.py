@@ -57,7 +57,17 @@ Input(['X1. = a1 + a2*X3 - b1*X1',
       plot_fluxes=['X1'],                # Fluxes to plot.
       plot_stability=True,               # Should draw stability plot.
       plot_functions=['log(V_X1/X2)'],   # Arbitrary functions to plot.
-      intersections=[1, 3]
+      intersections=[1, 3],
+      show_vertices=[2],                 # Show vertices for case 2
+      vertex_font_size=12,               # Set the font size for vertices
+      latex_symbols={'a1':r'\alpha_1',   
+                     'a2':r'\alpha_2',
+                     'a3':r'\alpha_3',
+                     'b1':r'\beta_1',
+                     'b2':r'\beta_2', 
+                     'X1':r'X_1',
+                     'X2':r'X_2',
+                     'X3':r'X_3'},       # latex representation for parameters and variables
       )  
 
 ## Specifying a subset of cases to draw.

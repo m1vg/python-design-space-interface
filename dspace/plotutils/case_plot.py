@@ -201,6 +201,8 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable, range_x, range_y,
                                           range_x=range_x, range_y=range_y,
                                           log_out=False, vtype='both')
         V = [(log10(i[0][0]), log10(i[0][1])) for i in vertices]
+    if len(V) == 0:
+        return
     V = zip(*V)
     ax.fill(V[0], V[1], **kwargs)
     ax.set_xlim(np.log10(range_x))
@@ -211,7 +213,6 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable, range_x, range_y,
             y = log10(vertices[i][0][1])
             s = '\n'.join(['$'+j.latex(self._latex)+'$' for j in vertices[i][1]])
             ax.plot(x, y, 'k.', mfc='none', mec='k', ms=1.)
-                    
             ax.text(x, y, s, fontsize=fontsize, rotation=rotation, 
                     horizontalalignment='center', verticalalignment='center')
 

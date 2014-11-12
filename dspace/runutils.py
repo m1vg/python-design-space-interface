@@ -110,11 +110,16 @@ class Input(object):
         f_str = options['equations']
         aux = []
         constraints = None
+        latex_symbols = dict()
         if 'auxiliary_variables' in options:
             aux = options['auxiliary_variables']
         if 'zlim' not in options:
             options['zlim'] = None
-        eq = dspace.Equations(f_str, auxiliary_variables=aux)
+        if 'latex_symbols' in options:
+            latex_symbols.update(options['latex_symbols'])
+        eq = dspace.Equations(f_str,
+                              auxiliary_variables=aux,
+                              latex_symbols=latex_symbols)
         options.pop('equations')
         ds = dspace.DesignSpace(eq, **options)
         setattr(self, '_ds', ds)
@@ -227,6 +232,8 @@ class Input(object):
         
     def _plot_designspace(self, options):
         
+        show_vertices = []
+        vertex_font_size=10
         if 'plot_designspace' not in options:
             return
         if options['plot_designspace'] is not True:
@@ -239,6 +246,12 @@ class Input(object):
             colorbar = options['colorbar']
         else:
             colorbar = 'auto'
+        if 'vertex_font_size' in options:
+            vertex_font_size = options['vertex_font_size']
+        if 'show_vertices' in options:
+            show_vertices = options['show_vertices']
+            if isinstance(show_vertices, list) is False:
+                show_vertices = [show_vertices]
         fig = plt.figure()
         plt.clf()
         ax = plt.gca()
@@ -249,6 +262,13 @@ class Input(object):
                                intersections=intersections,
                                colorbar=colorbar
                                )
+        for case_num in show_vertices:
+            case = self._ds(case_num)
+            case.draw_2D_slice(plt.gca(), self._pvals,
+                               self._xaxis, self._yaxis,
+                               self._xrange, self._yrange,
+                               show_equations=True, fontsize=vertex_font_size,
+                               fc='none', ec='none')
         ax.set_title('Design space plot')
         
     def _plot_stability(self, options):
