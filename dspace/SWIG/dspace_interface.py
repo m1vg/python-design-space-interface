@@ -1302,6 +1302,10 @@ DSCaseFromCaseMessage = _dspace_interface.DSCaseFromCaseMessage
 def DSCaseDecode(*args):
   return _dspace_interface.DSCaseDecode(*args)
 DSCaseDecode = _dspace_interface.DSCaseDecode
+
+def DSCaseEigenSubspaces(*args):
+  return _dspace_interface.DSCaseEigenSubspaces(*args)
+DSCaseEigenSubspaces = _dspace_interface.DSCaseEigenSubspaces
 M_DS_DESIGN_SPACE_NULL = _dspace_interface.M_DS_DESIGN_SPACE_NULL
 
 def DSDesignSpaceAlloc():

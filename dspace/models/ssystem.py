@@ -184,6 +184,9 @@ class SSystem(GMASystem):
         p_vals = parameter_values.copy()
         p_vals.update(self.steady_state(parameter_values, log_out=False))
         p_vals.update(self.steady_state_flux(parameter_values, log_out=False))
+        for i in self.dependent_variables:
+            for j in self.independent_variables:
+                p_vals['$L_'+i+'_'+j] = self.log_gain(i,j)
         value = expr.eval_with_values(p_vals=p_vals)
         return value
 

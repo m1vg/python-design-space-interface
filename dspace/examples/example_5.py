@@ -30,7 +30,7 @@ help(Input)
 # most of the plotting and printing utilities are incorporated as
 # arguments to the Input class.
 
-Input(['X1. = a1 + a2*X3 - b1*X1',
+Input(['X1. = a1^n + a2*X3 - b1*X1',
        'X2. = a3*X1 + a2*X3^2 - b2*X2'], # Specify the system of equations.
       auxiliary_variables=[],            # Identify auxiliary variables.
       xaxis='X3',                        # Specify the x-axis.
@@ -51,12 +51,15 @@ Input(['X1. = a1 + a2*X3 - b1*X1',
                         'b2':[1e-10, 1e10],
                         'b1':[1e-10, 1e10], 
                         'a3':[1e-5, 1e5]},
-      
+      parameter_dict={'n':1},
       plot_designspace=True,             # Should draw design space plot.
       plot_steady_states=['X1'],         # Concentrations to plot.
+      plot_log_gains=[('X1','X3'),
+                      ('X2','X3')],      # Log gain/sensitivity plot.
       plot_fluxes=['X1'],                # Fluxes to plot.
       plot_stability=True,               # Should draw stability plot.
-      plot_functions=['log(V_X1/X2)'],   # Arbitrary functions to plot.
+      plot_functions=['log(V_X1/X2)',    # Arbitrary functions to plot.
+                      '$L_X1_X3'],       # Log gains by using this notation: $L_<dependent>_<independent>.
       intersections=[1, 3],
       show_vertices=[2],                 # Show vertices for case 2
       vertex_font_size=12,               # Set the font size for vertices
@@ -68,6 +71,7 @@ Input(['X1. = a1 + a2*X3 - b1*X1',
                      'X1':r'X_1',
                      'X2':r'X_2',
                      'X3':r'X_3'},       # latex representation for parameters and variables
+      resolution=50,
       )  
 
 ## Specifying a subset of cases to draw.

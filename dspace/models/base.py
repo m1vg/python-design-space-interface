@@ -122,6 +122,7 @@ class Model(object):
             description = ''
         setattr(self, '_description', description)
         setattr(self, '_latex', dict())
+        ## setattr(self, '_dependent_variables', self._equations.dependent_variables)
         if latex_symbols is not None:
             self._latex.update(latex_symbols)
         else:
@@ -142,7 +143,7 @@ class Model(object):
     
     @property
     def dependent_variables(self):
-        return self._equations.dependent_variables
+        return self._equations.dependent_variables()
     
     def __repr__(self):
         string = 'Model: ' + self.name 

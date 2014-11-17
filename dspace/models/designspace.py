@@ -189,15 +189,20 @@ class DesignSpace(GMASystem):
         
         Xd = VariablePool()
         Xd.set_swigwrapper(DSGMASystemXd(DSDesignSpaceGMASystem(ds_swigwrapper)))
-        for i in VariablePool():
-            if i not in self.dependent_variables:
-                raise NameError, 'Dependent Variables are inconsistent'
+        ## for i in VariablePool():
+        ##     if i not in self.dependent_variables:
+        ##         raise NameError, 'Dependent Variables are inconsistent'
+        self._dependent_variables = Xd.copy()
         Xd.set_swigwrapper(None)
         Xi = VariablePool()
         Xi.set_swigwrapper(DSDesignSpaceXi(ds_swigwrapper))
         self._independent_variables = Xi.copy()
         Xi.set_swigwrapper(None)
-    
+        
+    @property
+    def dependent_variables(self):
+        return self._dependent_variables.keys()
+            
     @property
     def number_of_cases(self):
         return DSDesignSpaceNumberOfCases(self._swigwrapper)

@@ -10,6 +10,7 @@ from dspace.models.base import Equations,Model
 from dspace.models.gma import GMASystem
 from dspace.models.ssystem import SSystem
 from dspace.expressions import Expression
+
 from math import *
 
 
@@ -70,6 +71,7 @@ class Case(Model):
         for i in VariablePool():
             if i not in self.dependent_variables:
                 raise NameError, 'Dependent Variables are inconsistent'
+        self._dependent_variables = Xd
         Xi = VariablePool()
         Xi.set_swigwrapper(DSVariablePoolCopy(DSSSystemXi(DSCaseSSystem(case_swigwrapper))))
         self._independent_variables = Xi
@@ -83,7 +85,11 @@ class Case(Model):
                                 name=self.name,
                                 swigwrapper=DSCaseSSystem(case_swigwrapper),
                                 latex_symbols=self._latex)
-
+    
+    @property
+    def dependent_variables(self):
+        return self._dependent_variables.keys()
+        
     @property
     def equations(self):
         eqs = DSCaseEquations(self._swigwrapper)
@@ -303,9 +309,10 @@ class Case(Model):
             value = float(v_bounds[key])
             Xd_t[key] = value      
         dependent = VariablePool(names=self.dependent_variables)
-        aux = ssys.value_for_auxiliary_variables(Xd_t, independent)
         dependent.update(v_bounds)
-        dependent.update(aux)
+        if len(ssys.auxiliary_variables) > 0:
+            aux = ssys.value_for_auxiliary_variables(Xd_t, independent)
+            dependent.update(aux)
         return DSCaseIsValidInStateSpaceAtPoint(self._swigwrapper,
                                                 dependent._swigwrapper,
                                                 independent._swigwrapper)
@@ -578,6 +585,21 @@ class Case(Model):
         ssys = self.ssystem.remove_algebraic_constraints()
         roots = ssys.positive_roots(parameter_values)
         return roots
+    
+    def eigen_spaces(self):
+        ds_swig = DSCaseEigenSubspaces(self._swigwrapper)
+        eqs = DSDesignSpaceEquations(ds_swig)
+        equations = list()
+        for i in xrange(0, DSDesignSpaceNumberOfEquations(ds_swig)):
+            expr = DSExpressionAtIndexOfExpressionArray(eqs, i)
+            equations.append(DSExpressionAsString(expr))
+            DSExpressionFree(expr)
+        DSSecureFree(eqs)
+        import dspace.models.designspace as designspace
+        ds = designspace.DesignSpace(Equations(equations),
+                                     swigwrapper=ds_swig)
+        return ds
+
 
 class CaseIntersection(Case):
     

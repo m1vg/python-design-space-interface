@@ -14805,6 +14805,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSCaseEigenSubspaces(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  DSDesignSpace *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSCaseEigenSubspaces",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseEigenSubspaces" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  result = (DSDesignSpace *)DSCaseEigenSubspaces((DSCase const *)arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSDesignSpaceAlloc(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSDesignSpace *result = 0 ;
@@ -18974,6 +18996,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCaseEncode", _wrap_DSCaseEncode, METH_VARARGS, NULL},
 	 { (char *)"DSCaseFromCaseMessage", _wrap_DSCaseFromCaseMessage, METH_VARARGS, NULL},
 	 { (char *)"DSCaseDecode", _wrap_DSCaseDecode, METH_VARARGS, NULL},
+	 { (char *)"DSCaseEigenSubspaces", _wrap_DSCaseEigenSubspaces, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceAlloc", _wrap_DSDesignSpaceAlloc, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceFree", _wrap_DSDesignSpaceFree, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceByParsingStringList", _wrap_DSDesignSpaceByParsingStringList, METH_VARARGS, NULL},

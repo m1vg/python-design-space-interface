@@ -174,8 +174,8 @@ def draw_2D_log_gain_repertoire(self, ax, x_variable, y_variable, z_variable,
     ax.set_yticks([-8, -4, 0, 4, 8])
     ax.set_xlim([-9, 9])
     ax.set_ylim([-9, 9])
-    
 
+    
 
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
 def draw_2D_routh_index(self, ax, p_vals, x_variable, y_variable, range_x, range_y, color_dict=None,
@@ -247,7 +247,7 @@ def draw_2D_routh_index(self, ax, p_vals, x_variable, y_variable, range_x, range
     ax.set_ylabel(r'$\log_{10}$(' + y_variable + ')')
     return cf, colors
 
-@monkeypatch_method(dspace.models.designspace.DesignSpace)   
+@monkeypatch_method(dspace.models.designspace.DesignSpace)
 def draw_2D_positive_roots(self, ax, p_vals, x_variable, y_variable, range_x, 
                            range_y, color_dict=None, colorbar=True, 
                            resolution=100, cmap=mt.cm.jet,
@@ -292,22 +292,22 @@ def draw_2D_positive_roots(self, ax, p_vals, x_variable, y_variable, range_x,
     Z = Z - 1
     values = dict()
     params = VariablePool(p_vals)
-    Zj = set()
     for i in xrange(len(y)):
         yi = y[i]
         params[y_variable] = 10**yi
         for j in xrange(len(x)):
             xj = x[j]
             params[x_variable] = 10**xj
-            Zj.clear()
+            Zj = []
             for path, system in ssystems:
                 if path.contains_point((xj, yi)):
                     roots = system.positive_roots(params)
                     if isinstance(roots, dict) is True:
                         for subcase in roots:
-                            Zj.add(roots[subcase])
+                            Zj.append(roots[subcase])
                     else:
-                        Zj.add(roots)
+                        Zj.append(roots)
+            Zj.sort()
             nums = [num for num in Zj]
             if len(nums) == 0:
                 continue
@@ -608,6 +608,7 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
     p_bounds[x_variable] = range_x
     p_bounds[y_variable] = range_y
     hatched_cases = []
+    valid_nonstrict=[]
     if included_cases is not None:
         included_cases = [i.case_number for i in self(included_cases)]
         if self.number_of_cases < 1e5:

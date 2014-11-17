@@ -81,9 +81,10 @@ def draw_2D_routh(self, ax, p_vals, x_variable, y_variable, range_x, range_y,
     return cf,levels
    
     
-def interpolated_data(case, function, p_vals, x_variable, y_variable, points, x, y, path):
+def interpolated_data(case, function, p_vals, x_variable, y_variable, points, x, y, path, alt_function=None):
 
     f_val = list()
+    alt_f_val = list()
     params = VariablePool(names=case.independent_variables)
     for key in params:
         params[key] = p_vals[key]
@@ -93,9 +94,14 @@ def interpolated_data(case, function, p_vals, x_variable, y_variable, points, x,
         params[y_variable] = 10**y_value
         value = case.ssystem.steady_state_function(function, params)        
         f_val.append(value)
+        if alt_function is not None:
+            alt_value = case.ssystem.steady_state_function(alt_function, params)
+            alt_f_val.append(alt_value)
     V = zip(*points)
     X,Y = np.meshgrid(x, y)
     Z = mt.mlab.griddata(V[0], V[1], f_val, X, Y, interp='linear')
+    if alt_function is not None:
+        Z_alt = mt.mlab.griddata(V[0], V[1], alt_f_val, X, Y, interp='linear')
     for (i, yi) in enumerate(y):
         for (j, xj) in enumerate(x):
             if path.contains_point((xj, yi)) == 1:
@@ -104,27 +110,36 @@ def interpolated_data(case, function, p_vals, x_variable, y_variable, points, x,
                 else:
                     clim[0] = min(clim[0], Z[i,j])
                     clim[1] = max(clim[1], Z[i,j])
+    if alt_function is not None:
+        Z = [Z, Z_alt]
     return X,Y,Z,clim
 
-def sampled_data(case, function, p_vals, x_variable, y_variable, points, x, y, path):
+def sampled_data(case, function, p_vals, x_variable, y_variable, points, x, y, path, alt_function=None):
 
     f_val = list()
+    alt_f_val = list()
     params = VariablePool(p_vals)
     V = zip(*points)    
     X,Y = np.meshgrid(x, y)
     Z = mt.mlab.griddata(V[0], V[1], np.repeat(1, len(V[0])), X, Y)
+    if alt_function is not None:
+        Z_alt = mt.mlab.griddata(V[0], V[1], np.repeat(1, len(V[0])), X, Y)
     clim = None
     for (i, yi) in enumerate(y):
         params[y_variable] = 10**y[i]
         for (j, xj) in enumerate(x):
             params[x_variable] = 10**x[j]
             Z[i,j] = case.ssystem.steady_state_function(function, params)
+            if alt_function is not None:
+                Z_alt[i,j] = case.ssystem.steady_state_function(alt_function, params)
             if path.contains_point((xj, yi)) == 1:
                 if clim is None:
                     clim = [Z[i,j], Z[i,j]]
                 else:
                     clim[0] = min(clim[0], Z[i,j])
                     clim[1] = max(clim[1], Z[i,j])
+    if alt_function is not None:
+        Z = [Z, Z_alt]
     return X,Y,Z,clim
          
 @monkeypatch_method(dspace.models.case.Case)
@@ -167,7 +182,8 @@ def draw_2D_ss_function_from_data(self, ax, X, Y, Z, clim, path, zlim=None, **kw
     if zlim is not None:    
         pc.set_clim(zlim)
     return pc
-         
+
+    
 @monkeypatch_method(dspace.models.case.Case)
 def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
                         range_x, range_y, 
@@ -187,6 +203,104 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
     ax.set_xlim(np.log10(range_x))
     ax.set_ylim(np.log10(range_y))
     return pc
+
+@monkeypatch_method(dspace.models.case.Case)
+def draw_2D_phase_portrait_data(self, p_vals, x_variable, y_variable,
+                                range_x, range_y, x_dynamic, y_dynamic, 
+                                resolution=100, log_linear=False): 
+    points, x, y, path = generate_plot_lattice_bounds(self, p_vals,
+                                                      x_variable, y_variable,
+                                                      range_x, range_y, resolution)
+    if x_dynamic == True:
+        function = 'log($e_'+x_variable+'_p) - log($e_'+x_variable+'_n)'
+    else:
+        function = '0'
+    if y_dynamic == True:
+        alt_function = 'log($e_'+y_variable+'_p) - log($e_'+y_variable+'_n)'
+    else:
+        alt_function = '0'
+    if log_linear is True:
+        X,Y,Z,clim = interpolated_data(self, function, p_vals,
+                                  x_variable, y_variable,
+                                  points, x, y, path, alt_function=alt_function)
+    else:
+        X,Y,Z,clim = sampled_data(self, function, p_vals,
+                             x_variable, y_variable,
+                             points, x, y, path, alt_function=alt_function)
+    ## patch = mt.patches.PathPatch(path, fc='none', ec='none', lw=.5)
+    Zx = Z[0]
+    Zy = Z[1]
+    return (X, Y, Zx, Zy, path)
+    pc = ax.pcolor(X, Y, Z, rasterized=True, **kwargs)
+    ax.add_patch(patch)
+    pc.set_clip_path(patch)
+    if zlim is None:
+        zlim=clim
+    if zlim is not None:    
+        pc.set_clim(zlim)
+    ax.set_xlim(np.log10(range_x))
+    ax.set_ylim(np.log10(range_y))
+    return pc
+
+@monkeypatch_method(dspace.models.case.Case)
+def draw_2D_phase_portrait_from_data(self, ax, X, Y, Zx, Zy, path, **kwargs):
+    patch = mt.patches.PathPatch(path, fc='none', ec='none', lw=.5)
+    q = ax.quiver(X, Y, Zx, Zy, angles='xy', scale_units='xy', 
+                  scale=5, 
+                  headwidth=2., 
+                  headlength=2.5, 
+                  headaxislength=2.25,
+                  pivot='mid', **kwargs)
+    ax.add_patch(patch)
+    q.set_clip_path(patch)
+    return q
+
+@monkeypatch_method(dspace.models.case.Case)
+def draw_2D_phase_portrait(self, ax, Xd_initial, p_vals, x_variable, y_variable,
+                        range_x, range_y, 
+                        resolution=100, log_linear=False, zlim=None, show_designspaces=False, color_dict=None, **kwargs):
+    x_dynamic = False
+    y_dynamic = False
+    if x_variable in self.dependent_variables:
+        x_dynamic = True
+    if y_variable in self.dependent_variables:
+        y_dynamic=True
+    if x_dynamic is False and y_dynamic is False:
+        return None
+    es = self.eigen_spaces()
+    p = VariablePool(names=es.independent_variables)
+    p.update(p_vals)
+    p.update(Xd_initial)
+    bounds = dict(p)
+    bounds[x_variable] = range_x
+    bounds[y_variable] = range_y
+    valid = es.valid_cases(p_bounds=bounds, strict=False)
+    Q = list()
+    if show_designspaces is True:
+        es.draw_2D_slice(gca(), p, 'X1', 'X2',
+                         [1e-3, 1e0], [1e-2, 1e1], 
+                         colorbar=False, color_dict=color_dict,
+                         alpha=0.2)
+    for i in valid:
+        space = es(i)
+        vertices = space.vertices_2D_slice(p, x_variable, y_variable,
+                                           range_x=range_x, range_y=range_y, log_out=True)
+        if len(vertices) <= 2:
+            continue
+        X, Y, Zx, Zy, path = space.draw_2D_phase_portrait_data(p, 
+                                                               x_variable,
+                                                               y_variable,
+                                                               range_x,
+                                                               range_y,
+                                                               x_dynamic,
+                                                               y_dynamic,
+                                                               resolution=resolution,
+                                                               log_linear=log_linear)
+        q = self.draw_2D_phase_portrait_from_data(ax, X, Y, Zx, Zy, path, **kwargs)
+        Q.append(q)
+    ax.set_xlim(np.log10(range_x))
+    ax.set_ylim(np.log10(range_y))
+    return Q
 
 @monkeypatch_method([dspace.models.case.Case, dspace.models.case.CaseIntersection])   
 def draw_2D_slice(self, ax, p_vals, x_variable, y_variable, range_x, range_y,
@@ -257,7 +371,6 @@ def draw_1D_ss_function(self, ax, function, p_vals, slice_variable, range_slice,
         f_val.append(self.ssystem.steady_state_function(function, params))
     pt = ax.plot(X, f_val, **kwargs)
     ax.set_xlim(np.log10(range_slice))
-    print self
     return pt
 
 @monkeypatch_method([dspace.models.case.Case, dspace.models.case.CaseIntersection])

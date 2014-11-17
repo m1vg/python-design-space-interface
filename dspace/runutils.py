@@ -97,6 +97,9 @@ class Input(object):
             plot_stability (bool): Specifies if the local stability will be 
                 plotted. Default is False.
                 
+            plot_log_gains (list): A list of tupples of string of the form 
+                `(<dependent variable>, <independent variable>).
+                
             draw_cases (list): A list of cases that will be the only ones
                 drawn.  If all cases should be drawn, value should be None.
             
@@ -127,6 +130,7 @@ class Input(object):
         self._process_state(options)
         self._interactive_plot(options)
         self._plot_designspace(options)
+        self._plot_log_gains(options)
         self._plot_steady_states(options)
         self._plot_fluxes(options)
         self._plot_stability(options)
@@ -309,7 +313,34 @@ class Input(object):
                                          log_linear=False,
                                          included_cases=self._included_cases,
                                          zlim=options['zlim'])
-            ax.set_title('[$'+dependent+'$] plot')
+            ax.set_title(r'[$\log_{10}('+dependent+')$] plot')
+            
+    def _plot_log_gains(self, options):
+        
+        if 'plot_log_gains' not in options:
+            return
+        resolution=100
+        try:
+            resolution = options['resolution']
+        except:
+            pass
+        for dependent, independent in options['plot_log_gains']: 
+            if dependent not in self._ds.dependent_variables:
+                raise NameError, 'No variable named: ' + dependent
+            if independent not in self._ds.independent_variables:
+                raise NameError, 'No variable named: ' + independent
+            fig = plt.figure()
+            plt.clf()
+            ax = plt.gca()
+            self._ds.draw_2D_ss_function(plt.gca(), '$L_'+dependent +'_'+independent,
+                                         self._pvals,
+                                         self._xaxis, self._yaxis,
+                                         self._xrange, self._yrange,
+                                         resolution=resolution,
+                                         log_linear=False,
+                                         included_cases=self._included_cases,
+                                         zlim=options['zlim'])
+            ax.set_title('[$L('+dependent+','+independent+')$] plot')
         
     def _plot_fluxes(self, options):
         
