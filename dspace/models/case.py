@@ -597,6 +597,7 @@ class Case(Model):
         DSSecureFree(eqs)
         import dspace.models.designspace as designspace
         ds = designspace.DesignSpace(Equations(equations),
+                                     latex_symbols=self._latex,
                                      swigwrapper=ds_swig)
         return ds
 

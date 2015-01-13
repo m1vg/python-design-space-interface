@@ -450,7 +450,7 @@ class DesignSpace(GMASystem):
                     continue
                 case_int = CaseColocalization([self(case_numbers[k]) for k in current_set], slice_variables) 
                 pvals=case_int.valid_parameter_set()
-                if pvals is not None:
+                if pvals > 0:
                     if new is True:
                         intersections = []
                     new = False

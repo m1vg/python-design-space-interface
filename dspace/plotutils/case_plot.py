@@ -27,10 +27,10 @@ def generate_plot_lattice_bounds(case, p_vals, x_variable, y_variable, range_x, 
     bbox=path.get_extents()
     fraction_x = (bbox.max[0]-bbox.min[0])/(log10(range_x[1])-log10(range_x[0]))
     fraction_y = (bbox.max[1]-bbox.min[1])/(log10(range_y[1])-log10(range_y[0]))
-    resolution_x = int(resolution*fraction_x)+5
-    resolution_y = int(resolution*fraction_y)+5
-    x=np.linspace(bbox.min[0], bbox.max[0], resolution_x+5)
-    y=np.linspace(bbox.min[1], bbox.max[1], resolution_y+5)
+    resolution_x = int(resolution*fraction_x)+2
+    resolution_y = int(resolution*fraction_y)+2
+    x=np.linspace(bbox.min[0], bbox.max[0], resolution_x+2)
+    y=np.linspace(bbox.min[1], bbox.max[1], resolution_y+2)
     points = [bbox.min, (bbox.min[0], bbox.max[1]), bbox.max, (bbox.max[0], bbox.min[1])]
     return (points,x,y,path)
                 
@@ -204,6 +204,7 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
     ax.set_ylim(np.log10(range_y))
     return pc
 
+
 @monkeypatch_method(dspace.models.case.Case)
 def draw_2D_phase_portrait_data(self, p_vals, x_variable, y_variable,
                                 range_x, range_y, x_dynamic, y_dynamic, 
@@ -212,11 +213,11 @@ def draw_2D_phase_portrait_data(self, p_vals, x_variable, y_variable,
                                                       x_variable, y_variable,
                                                       range_x, range_y, resolution)
     if x_dynamic == True:
-        function = 'log($e_'+x_variable+'_p) - log($e_'+x_variable+'_n)'
+        function = 'log($e_'+x_variable+'_p) - log($e_'+x_variable+'_n)'#*log(abs($e_'+x_variable+'_p - $e_'+x_variable+'_n))'
     else:
         function = '0'
     if y_dynamic == True:
-        alt_function = 'log($e_'+y_variable+'_p) - log($e_'+y_variable+'_n)'
+        alt_function = 'log($e_'+y_variable+'_p) - log($e_'+y_variable+'_n)'#*log(abs($e_'+y_variable+'_p - $e_'+y_variable+'_n))'
     else:
         alt_function = '0'
     if log_linear is True:
@@ -245,10 +246,11 @@ def draw_2D_phase_portrait_data(self, p_vals, x_variable, y_variable,
 @monkeypatch_method(dspace.models.case.Case)
 def draw_2D_phase_portrait_from_data(self, ax, X, Y, Zx, Zy, path, **kwargs):
     patch = mt.patches.PathPatch(path, fc='none', ec='none', lw=.5)
-    q = ax.quiver(X, Y, Zx, Zy, angles='xy', scale_units='xy', 
-                  scale=5, 
+    q = ax.quiver(X, Y, Zx, Zy, angles='xy',
+                  #scale_units='xy', 
+                  #scale=3, 
                   headwidth=2., 
-                  headlength=2.5, 
+                  headlength=2, 
                   headaxislength=2.25,
                   pivot='mid', **kwargs)
     ax.add_patch(patch)
