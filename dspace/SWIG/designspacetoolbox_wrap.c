@@ -3585,7 +3585,7 @@ extern DSPseudoCase * DSSWIGPseudoCaseFromIntersectionOfCases(const DSUInteger n
 }
 
 extern DSPseudoCase * DSSWIGPseudoCaseFromIntersectionOfCasesExcludingSlice(const DSUInteger numberOfCases, const DSCase ** cases, const DSUInteger numberOfExceptions, const char ** exceptionVarNames) {
-        DSPseudoCase * pseudoCase = DSSWIGPseudoCaseFromIntersectionOfCasesExcludingSlice(numberOfCases, cases, numberOfExceptions, exceptionVarNames);
+        DSPseudoCase * pseudoCase = DSPseudoCaseFromIntersectionOfCasesExcludingSlice(numberOfCases, cases, numberOfExceptions, exceptionVarNames);
         DSSecureFree (cases);
         DSSecureFree (exceptionVarNames);
         return pseudoCase;
