@@ -627,7 +627,7 @@ class CaseIntersection(Case):
                 new_cases.append(Case(cases[i], cases_swig[i], name=cases[i].name))
         else:
             new_cases = cases
-        swigwrapper = DSPseudoCaseFromIntersectionOfCases(len(cases), [i._swigwrapper for i in new_cases])
+        swigwrapper = DSSWIGPseudoCaseFromIntersectionOfCases(len(cases), [i._swigwrapper for i in new_cases])
         super(CaseIntersection, self).__init__(cases[0],
                                                swigwrapper,
                                                name=name,
@@ -693,10 +693,10 @@ class CaseColocalization(CaseIntersection):
                 new_cases.append(Case(cases[i], cases_swig[i], name=cases[i].name))
         else:
             new_cases = cases
-        swigwrapper = DSPseudoCaseFromIntersectionOfCasesExcludingSlice(len(cases),
-                                                                        [i._swigwrapper for i in new_cases],
-                                                                        len(slice_variables),
-                                                                        slice_variables)
+        swigwrapper = DSSWIGPseudoCaseFromIntersectionOfCasesExcludingSlice(len(cases),
+                                                                            [i._swigwrapper for i in new_cases],
+                                                                            len(slice_variables),
+                                                                            slice_variables)
         if len(slice_constraints) > 0:
             DSCaseAddConstraints(swigwrapper, slice_constraints, len(slice_constraints))
         super(CaseIntersection, self).__init__(cases[0],

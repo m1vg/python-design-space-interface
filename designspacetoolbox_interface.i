@@ -167,7 +167,7 @@
         if (PyList_Check($input)) {
                 int size = PyList_Size($input);
                 int i = 0;
-                $1 = (const DSCase **) malloc((size+1)*sizeof(char *));
+                $1 = (const DSCase **) malloc((size+1)*sizeof(DSCase *));
                 for (i = 0; i < size; i++) {
                         PyObject *o = PyList_GetItem($input,i);
                         if (SWIG_ConvertPtr(o, &($1[i]), $descriptor(DSCase *), SWIG_POINTER_EXCEPTION) == -1) {
@@ -366,6 +366,21 @@ extern DSExpression * DSSWIGVoidAsExpression(void * ptr)
 {
         return ptr;
 }
+        
+extern DSPseudoCase * DSSWIGPseudoCaseFromIntersectionOfCases(const DSUInteger numberOfCases, const DSCase ** cases)
+{
+        DSPseudoCase * pseudoCase = DSPseudoCaseFromIntersectionOfCases(numberOfCases, cases);
+        DSSecureFree ((DSCase **)cases);
+        return pseudoCase;
+}
+
+extern DSPseudoCase * DSSWIGPseudoCaseFromIntersectionOfCasesExcludingSlice(const DSUInteger numberOfCases, const DSCase ** cases, const DSUInteger numberOfExceptions, const char ** exceptionVarNames) {
+        DSPseudoCase * pseudoCase = DSSWIGPseudoCaseFromIntersectionOfCasesExcludingSlice(numberOfCases, cases, numberOfExceptions, exceptionVarNames);
+        DSSecureFree (cases);
+        DSSecureFree (exceptionVarNames);
+        return pseudoCase;
+}
+
         
 extern DSDesignSpace * DSSWIGDesignSpaceParseWrapper(char ** const strings, const DSUInteger numberOfEquations, char ** Xd_list, const DSUInteger numberOfXd)
 {

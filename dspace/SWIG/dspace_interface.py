@@ -772,6 +772,10 @@ def DSSSystemByParsingStrings(*args):
   return _dspace_interface.DSSSystemByParsingStrings(*args)
 DSSSystemByParsingStrings = _dspace_interface.DSSSystemByParsingStrings
 
+def DSSSystemSolvedAuxiliaryVariableMatrices(*args):
+  return _dspace_interface.DSSSystemSolvedAuxiliaryVariableMatrices(*args)
+DSSSystemSolvedAuxiliaryVariableMatrices = _dspace_interface.DSSSystemSolvedAuxiliaryVariableMatrices
+
 def DSSSystemByRemovingAlgebraicConstraints(*args):
   return _dspace_interface.DSSSystemByRemovingAlgebraicConstraints(*args)
 DSSSystemByRemovingAlgebraicConstraints = _dspace_interface.DSSSystemByRemovingAlgebraicConstraints
@@ -1779,6 +1783,14 @@ DSSWIGVoidAsVertices = _dspace_interface.DSSWIGVoidAsVertices
 def DSSWIGVoidAsExpression(*args):
   return _dspace_interface.DSSWIGVoidAsExpression(*args)
 DSSWIGVoidAsExpression = _dspace_interface.DSSWIGVoidAsExpression
+
+def DSSWIGPseudoCaseFromIntersectionOfCases(*args):
+  return _dspace_interface.DSSWIGPseudoCaseFromIntersectionOfCases(*args)
+DSSWIGPseudoCaseFromIntersectionOfCases = _dspace_interface.DSSWIGPseudoCaseFromIntersectionOfCases
+
+def DSSWIGPseudoCaseFromIntersectionOfCasesExcludingSlice(*args):
+  return _dspace_interface.DSSWIGPseudoCaseFromIntersectionOfCasesExcludingSlice(*args)
+DSSWIGPseudoCaseFromIntersectionOfCasesExcludingSlice = _dspace_interface.DSSWIGPseudoCaseFromIntersectionOfCasesExcludingSlice
 
 def DSSWIGDesignSpaceParseWrapper(*args):
   return _dspace_interface.DSSWIGDesignSpaceParseWrapper(*args)
