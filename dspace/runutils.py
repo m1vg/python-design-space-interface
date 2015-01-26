@@ -143,6 +143,7 @@ class Input(object):
         yaxis = None
         x_range = None
         y_range = None
+        is_colocalization = False
         setattr(self, '_pvals', pvals)
         setattr(self, '_xaxis', xaxis)
         setattr(self, '_yaxis', yaxis)
@@ -151,7 +152,17 @@ class Input(object):
         setattr(self, '_included_cases', None)
         if 'get_parameters' in options:
             case_id = options['get_parameters']
-            case = self._ds(case_id)
+            if isinstance(case_id, list):
+                if 'colocalize_cases' in options:
+                    if options['colocalize_cases'] is True:
+                        case = dspace.CaseColocalization(self._ds(case_id), [options['xaxis'], options['yaxis']])
+                        is_colocalization = True
+                    else:
+                        case = dspace.CaseIntersection(self._ds(case_id))
+                else:
+                    case = dspace.CaseIntersection(self._ds(case_id))
+            else:
+                case = self._ds(case_id)
             if 'objective_bounds' in options:
                 pbounds = options['objective_bounds']
             else:
@@ -166,6 +177,8 @@ class Input(object):
                                                       minimize=True)
             else:
                 parameters = case.valid_interior_parameter_set(distance=1e3)
+            if is_colocalization is True:
+                parameters = parameters[parameters.keys()[0]]
             options['parameters'] = parameters
             for i in pvals:
                 print str(i) + ': ' + str(parameters[i])

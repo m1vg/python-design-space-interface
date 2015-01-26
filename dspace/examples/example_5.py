@@ -83,10 +83,12 @@ Input(['X1. = a1 + a2*X3 - b1*X1',
       auxiliary_variables=[],
       xaxis='X3',
       yaxis='a2',
-      get_parameters=2,           # Automatically gets a parameter set for case 4.
-      #get_parameters=':1121',      # Automatically gets a parameter set for case with signature :2121. 
+      #get_parameters=':1121',     # Automatically gets a parameter set for case with signature :2121. 
+      #get_parameters=2,           # Automatically gets a parameter set for case number 2. 
+      get_parameters=[2, 3],       # Automatically gets a parameter set for cases 2 and 3 [intersection or co-localization].
+      colocalize_cases=True,       # Indicates get_parameters for multiple cases is case co-localization or intersection.
       #minimize_function='X1',     # Determined parameter set minimizes this objective function.
-      maximize_function='X2',      # Determined parameter set minimizes this objective function.
+      maximize_function='X4',      # Determined parameter set minimizes this objective function.
       objective_bounds={'a1':0.1, 
                         'a2':[1e-3, 1e0],
                         'a3':0.001,
@@ -100,10 +102,10 @@ Input(['X1. = a1 + a2*X3 - b1*X1',
       centered_axes=False,
       plot_designspace=True,
       plot_steady_states=['X2'],
+ 
       ## plot_fluxes=['X2'],
       ## plot_stability=True,
       ## plot_functions=['X1'],
       draw_cases=[':11*1', 3],    # Can use signature (w/ wildcards) to get specific sets of cases
       zlim=[-1.5, 1.5] # Explicitly sets z-lim of steady state, flux and function plots
       )
-
