@@ -71,7 +71,7 @@ Input(['X1. = a1^n + a2*X3 - b1*X1',
                      'X1':r'X_1',
                      'X2':r'X_2',
                      'X3':r'X_3'},       # latex representation for parameters and variables
-      resolution=50,
+      resolution=100,
       )  
 
 ## Specifying a subset of cases to draw.

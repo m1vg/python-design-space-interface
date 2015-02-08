@@ -323,7 +323,7 @@ class Input(object):
                                          self._xaxis, self._yaxis,
                                          self._xrange, self._yrange,
                                          resolution=resolution,
-                                         log_linear=False,
+                                         log_linear=True,
                                          included_cases=self._included_cases,
                                          zlim=options['zlim'])
             ax.set_title(r'[$\log_{10}('+dependent+')$] plot')
@@ -350,7 +350,7 @@ class Input(object):
                                          self._xaxis, self._yaxis,
                                          self._xrange, self._yrange,
                                          resolution=resolution,
-                                         log_linear=False,
+                                         log_linear=True,
                                          included_cases=self._included_cases,
                                          zlim=options['zlim'])
             ax.set_title('[$L('+dependent+','+independent+')$] plot')
@@ -375,7 +375,7 @@ class Input(object):
                                          self._xaxis, self._yaxis,
                                          self._xrange, self._yrange,
                                          resolution=resolution,
-                                         log_linear=False,
+                                         log_linear=True,
                                          included_cases=self._included_cases,
                                          zlim=options['zlim'])
             ax.set_title(r'$V_{'+dependent+'}$ plot')
