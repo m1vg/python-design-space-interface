@@ -38,10 +38,10 @@ matplotlib.interactive(True)
 # Here, the system is input, parsed, and analyzed.
 # The equations and dependent variables are entered as strings.
 
-f = ['X1. = alpha*X5 + 2*k41*X4 - 2*X1^2', 
- 'X2. = X1^2 + X3*X7 - k23*X2 - X2*X6',# - beta*X2^2
- 'X3. = k23*X2 - k34*X3 - X3*X7',
- 'X4. = k34*X3 + X2*X6 - k41*X4 - beta*X4^2']
+f = ['X1. = alpha*X5 + 2*k41*X4 + 4*beta*X2^2 - 2*X1^2', 
+     'X2. = X1^2 + X3*X7 - k23*X2 - X2*X6 - 2*beta*X2^2',
+     'X3. = k23*X2 - k34*X3 - X3*X7',
+     'X4. = k34*X3 + X2*X6 - k41*X4 - beta*X4^2']
 
 
 
@@ -176,15 +176,21 @@ valid_cycles = ds_cycles.valid_cases()
 pvals=dspace.VariablePool(names=ds_cycles.independent_variables)
 pvals['alpha'] = 10
 pvals['beta'] = 0.1
-pvals['X7'] = 1.5
-
+pvals['X7'] = 10
+## pvals['K41'] = 1.1
 
 ds_cycles.draw_2D_slice_interactive(pvals,             # Pass the reference parameter set.
                                     'X5',              # First, indicate the x-axis variable.
                                     'X6',              # Second, indicate the y-axis variable.
                                     [1e-3, 1e3],       # The range on the x-axis.
                                     [1e-3, 1e3],       # The range on the y-axis.
-                                    {'X7':[1e-5, 1e5]}
+                                    {'X7':[1e-5, 1e5],
+                                     'k41':[1e-5, 1e5],
+                                     'alpha':[1e-5, 1e5],
+                                     'beta':[1e-5, 1e5],
+                                     'k34':[1e-5, 1e5],
+                                     'k23':[1e-5, 1e5],
+                                     },
                                     )
 
 fig = figure(1)
@@ -211,22 +217,23 @@ ds_nocycles.draw_2D_slice(ax,
                       'X6',              # Second, indicate the y-axis variable.
                       [1e-3, 1e3],       # The range on the x-axis.
                       [1e-3, 1e3],       # The range on the y-axis.
-                      color_dict=colors
+                      color_dict=colors,
                       )
 ax.set_title(ds_nocycles.name)
 
 
-
-for i in ['X1', 'X2', 'X3', 'X4']:
-    fig=figure()
-    ds_cycles.draw_2D_ss_function(gca(),
-                                  'log(V_'+i+')',
-                                  pvals, 
-                                  'X5',              # First, indicate the x-axis variable.
-                                  'X6',              # Second, indicate the y-axis variable.
-                                  [1e-3, 1e3],       # The range on the x-axis.
-                                  [1e-3, 1e3],       # The range on the y-axis.
-                                  )
-
+## 
+## for i in ['X1', 'X2', 'X3', 'X4']:
+##     fig=figure()
+##     ds_cycles.draw_2D_ss_function(gca(),
+##                                   'log(V_'+i+')',
+##                                   pvals, 
+##                                   'X5',              # First, indicate the x-axis variable.
+##                                   'X6',              # Second, indicate the y-axis variable.
+##                                   [1e-3, 1e3],       # The range on the x-axis.
+##                                   [1e-3, 1e3],       # The range on the y-axis.
+##                                   log_linear=True
+##                                   )
+## 
 
 
