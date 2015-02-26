@@ -181,6 +181,11 @@ class CyclicalCase(Case):
     @property
     def number_of_subcases(self):
         return DSCyclicalCaseNumberOfSubcases(self._swigwrapper)
+        
+    @property
+    def original_case(self):
+        case = Case(self, DSCaseCopy(DSCyclicalCaseOriginalCase(self._swigwrapper)), self.name + ' [original]')
+        return case
 
     def set_swigwrapper(self, swigwrapper):
         self._swigwrapper = swigwrapper
