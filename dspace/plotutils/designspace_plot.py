@@ -471,8 +471,8 @@ def draw_2D_slice_interactive(self, p_vals, x_variable, y_variable,
         sliders[i].on_changed(update)
     plt.show()
     plt.interactive(previous)
-        
     
+ 
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
 def draw_3D_slice(self, ax, p_vals, x_variable, y_variable,z_variable, range_x,
                   range_y, range_z, color_dict=None,

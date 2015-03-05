@@ -8105,6 +8105,37 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSExpressionEvaluateComplexWithVariablePool(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpression *arg1 = (DSExpression *) 0 ;
+  DSVariablePool *arg2 = (DSVariablePool *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  double complex result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSExpressionEvaluateComplexWithVariablePool",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSExpression, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSExpressionEvaluateComplexWithVariablePool" "', argument " "1"" of type '" "DSExpression const *""'"); 
+  }
+  arg1 = (DSExpression *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSExpressionEvaluateComplexWithVariablePool" "', argument " "2"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg2 = (DSVariablePool *)(argp2);
+  result = (double complex)DSExpressionEvaluateComplexWithVariablePool((DSExpression const *)arg1,(DSVariablePool const *)arg2);
+  resultobj = SWIG_NewPointerObj((double complex *)memcpy((double complex *)malloc(sizeof(double complex)),&result,sizeof(double complex)), SWIGTYPE_p_double_complex, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSExpressionEquationLHSExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSExpression *arg1 = (DSExpression *) 0 ;
@@ -11268,6 +11299,78 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSSSystemRecalculateSolution(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSSSystem *arg1 = (DSSSystem *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSSSystemRecalculateSolution",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemRecalculateSolution" "', argument " "1"" of type '" "DSSSystem *""'"); 
+  }
+  arg1 = (DSSSystem *)(argp1);
+  DSSSystemRecalculateSolution(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSSSystemWithQuasiSteadyStates(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSSSystem *arg1 = (DSSSystem *) 0 ;
+  DSUInteger arg2 ;
+  char **arg3 = (char **) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  DSSSystem *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DSSSystemWithQuasiSteadyStates",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemWithQuasiSteadyStates" "', argument " "1"" of type '" "DSSSystem const *""'"); 
+  }
+  arg1 = (DSSSystem *)(argp1);
+  {
+    arg2 = (DSUInteger) PyLong_AsUnsignedLongMask(obj1);
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj2)) {
+      int size = PyList_Size(obj2);
+      int i = 0;
+      arg3 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj2,i);
+        if (PyString_Check(o))
+        arg3[i] = PyString_AsString(PyList_GetItem(obj2,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg3);
+          return NULL;
+        }
+      }
+      arg3[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  result = (DSSSystem *)DSSSystemWithQuasiSteadyStates((DSSSystem const *)arg1,arg2,(char const **)arg3);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSSSystem, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSSSystemPrint(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSSSystem *arg1 = (DSSSystem *) 0 ;
@@ -12073,6 +12176,27 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSCaseRecalculateBoundaryMatrices(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSCaseRecalculateBoundaryMatrices",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseRecalculateBoundaryMatrices" "', argument " "1"" of type '" "DSCase *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  DSCaseRecalculateBoundaryMatrices(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSCaseDoubleValueBoundariesAtPoint(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSCase *arg1 = (DSCase *) 0 ;
@@ -12246,6 +12370,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSCaseIsConsistent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSCaseIsConsistent",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseIsConsistent" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  result = (bool)DSCaseIsConsistent((DSCase const *)arg1);
+  resultobj = SWIG_From_bool((bool)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSCaseIsValidInStateSpace(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSCase *arg1 = (DSCase *) 0 ;
@@ -12292,6 +12438,46 @@ SWIGINTERN PyObject *_wrap_DSCaseIsValidAtPoint(PyObject *SWIGUNUSEDPARM(self), 
   }
   arg2 = (DSVariablePool *)(argp2);
   result = (bool)DSCaseIsValidAtPoint((DSCase const *)arg1,(DSVariablePool const *)arg2);
+  resultobj = SWIG_From_bool((bool)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseIsConsistentAtPoint(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  DSVariablePool *arg2 = (DSVariablePool *) 0 ;
+  DSVariablePool *arg3 = (DSVariablePool *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DSCaseIsConsistentAtPoint",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseIsConsistentAtPoint" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSCaseIsConsistentAtPoint" "', argument " "2"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg2 = (DSVariablePool *)(argp2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DSCaseIsConsistentAtPoint" "', argument " "3"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg3 = (DSVariablePool *)(argp3);
+  result = (bool)DSCaseIsConsistentAtPoint((DSCase const *)arg1,(DSVariablePool const *)arg2,(DSVariablePool const *)arg3);
   resultobj = SWIG_From_bool((bool)(result));
   return resultobj;
 fail:
@@ -12381,6 +12567,55 @@ SWIGINTERN PyObject *_wrap_DSCaseIsValidAtSlice(PyObject *SWIGUNUSEDPARM(self), 
   } 
   arg4 = (bool)(val4);
   result = (bool)DSCaseIsValidAtSlice((DSCase const *)arg1,(DSVariablePool const *)arg2,(DSVariablePool const *)arg3,arg4);
+  resultobj = SWIG_From_bool((bool)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseIsConsistentAtSlice(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  DSVariablePool *arg2 = (DSVariablePool *) 0 ;
+  DSVariablePool *arg3 = (DSVariablePool *) 0 ;
+  bool arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  bool val4 ;
+  int ecode4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:DSCaseIsConsistentAtSlice",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseIsConsistentAtSlice" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSCaseIsConsistentAtSlice" "', argument " "2"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg2 = (DSVariablePool *)(argp2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DSCaseIsConsistentAtSlice" "', argument " "3"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg3 = (DSVariablePool *)(argp3);
+  ecode4 = SWIG_AsVal_bool(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "DSCaseIsConsistentAtSlice" "', argument " "4"" of type '" "bool""'");
+  } 
+  arg4 = (bool)(val4);
+  result = (bool)DSCaseIsConsistentAtSlice((DSCase const *)arg1,(DSVariablePool const *)arg2,(DSVariablePool const *)arg3,arg4);
   resultobj = SWIG_From_bool((bool)(result));
   return resultobj;
 fail:
@@ -15130,6 +15365,110 @@ SWIGINTERN PyObject *_wrap_DSDesignSpaceAddConditions(PyObject *SWIGUNUSEDPARM(s
   arg4 = (DSMatrix *)(argp4);
   DSDesignSpaceAddConditions(arg1,(DSMatrix const *)arg2,(DSMatrix const *)arg3,(DSMatrix const *)arg4);
   resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceSetSerial(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSDesignSpaceSetSerial",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceSetSerial" "', argument " "1"" of type '" "DSDesignSpace *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  ecode2 = SWIG_AsVal_bool(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DSDesignSpaceSetSerial" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = (bool)(val2);
+  DSDesignSpaceSetSerial(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceSetCyclical(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSDesignSpaceSetCyclical",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceSetCyclical" "', argument " "1"" of type '" "DSDesignSpace *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  ecode2 = SWIG_AsVal_bool(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DSDesignSpaceSetCyclical" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = (bool)(val2);
+  DSDesignSpaceSetCyclical(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceSerial(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSDesignSpaceSerial",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceSerial" "', argument " "1"" of type '" "DSDesignSpace const *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  result = (bool)DSDesignSpaceSerial((DSDesignSpace const *)arg1);
+  resultobj = SWIG_From_bool((bool)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceCyclical(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSDesignSpaceCyclical",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceCyclical" "', argument " "1"" of type '" "DSDesignSpace const *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  result = (bool)DSDesignSpaceCyclical((DSDesignSpace const *)arg1);
+  resultobj = SWIG_From_bool((bool)(result));
   return resultobj;
 fail:
   return NULL;
@@ -18965,6 +19304,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSExpressionMultiplyExpressionByConstant", _wrap_DSExpressionMultiplyExpressionByConstant, METH_VARARGS, NULL},
 	 { (char *)"DSExpressionByCompressingConstantVariables", _wrap_DSExpressionByCompressingConstantVariables, METH_VARARGS, NULL},
 	 { (char *)"DSExpressionEvaluateWithVariablePool", _wrap_DSExpressionEvaluateWithVariablePool, METH_VARARGS, NULL},
+	 { (char *)"DSExpressionEvaluateComplexWithVariablePool", _wrap_DSExpressionEvaluateComplexWithVariablePool, METH_VARARGS, NULL},
 	 { (char *)"DSExpressionEquationLHSExpression", _wrap_DSExpressionEquationLHSExpression, METH_VARARGS, NULL},
 	 { (char *)"DSExpressionEquationRHSExpression", _wrap_DSExpressionEquationRHSExpression, METH_VARARGS, NULL},
 	 { (char *)"DSExpressionVariablesInExpression", _wrap_DSExpressionVariablesInExpression, METH_VARARGS, NULL},
@@ -19057,6 +19397,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSSSystemXi", _wrap_DSSSystemXi, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemHasSolution", _wrap_DSSSystemHasSolution, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemIsSingular", _wrap_DSSSystemIsSingular, METH_VARARGS, NULL},
+	 { (char *)"DSSSystemRecalculateSolution", _wrap_DSSSystemRecalculateSolution, METH_VARARGS, NULL},
+	 { (char *)"DSSSystemWithQuasiSteadyStates", _wrap_DSSSystemWithQuasiSteadyStates, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemPrint", _wrap_DSSSystemPrint, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemPrintEquations", _wrap_DSSSystemPrintEquations, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemPrintSolution", _wrap_DSSSystemPrintSolution, METH_VARARGS, NULL},
@@ -19089,15 +19431,19 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCaseXd", _wrap_DSCaseXd, METH_VARARGS, NULL},
 	 { (char *)"DSCaseXd_a", _wrap_DSCaseXd_a, METH_VARARGS, NULL},
 	 { (char *)"DSCaseXi", _wrap_DSCaseXi, METH_VARARGS, NULL},
+	 { (char *)"DSCaseRecalculateBoundaryMatrices", _wrap_DSCaseRecalculateBoundaryMatrices, METH_VARARGS, NULL},
 	 { (char *)"DSCaseDoubleValueBoundariesAtPoint", _wrap_DSCaseDoubleValueBoundariesAtPoint, METH_VARARGS, NULL},
 	 { (char *)"DSCaseAddConstraints", _wrap_DSCaseAddConstraints, METH_VARARGS, NULL},
 	 { (char *)"DSCaseRemoveRedundantBoundaries", _wrap_DSCaseRemoveRedundantBoundaries, METH_VARARGS, NULL},
 	 { (char *)"DSCaseConditionsAreValid", _wrap_DSCaseConditionsAreValid, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIsValid", _wrap_DSCaseIsValid, METH_VARARGS, NULL},
+	 { (char *)"DSCaseIsConsistent", _wrap_DSCaseIsConsistent, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIsValidInStateSpace", _wrap_DSCaseIsValidInStateSpace, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIsValidAtPoint", _wrap_DSCaseIsValidAtPoint, METH_VARARGS, NULL},
+	 { (char *)"DSCaseIsConsistentAtPoint", _wrap_DSCaseIsConsistentAtPoint, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIsValidInStateSpaceAtPoint", _wrap_DSCaseIsValidInStateSpaceAtPoint, METH_VARARGS, NULL},
 	 { (char *)"DSCaseIsValidAtSlice", _wrap_DSCaseIsValidAtSlice, METH_VARARGS, NULL},
+	 { (char *)"DSCaseIsConsistentAtSlice", _wrap_DSCaseIsConsistentAtSlice, METH_VARARGS, NULL},
 	 { (char *)"DSCaseVerticesForSlice", _wrap_DSCaseVerticesForSlice, METH_VARARGS, NULL},
 	 { (char *)"DSCaseBoundingRangeForVariableWithConstraints", _wrap_DSCaseBoundingRangeForVariableWithConstraints, METH_VARARGS, NULL},
 	 { (char *)"DSCaseBoundingRangeForVariable", _wrap_DSCaseBoundingRangeForVariable, METH_VARARGS, NULL},
@@ -19151,6 +19497,10 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSDesignSpaceByParsingStringsWithXi", _wrap_DSDesignSpaceByParsingStringsWithXi, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceSetGMA", _wrap_DSDesignSpaceSetGMA, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceAddConditions", _wrap_DSDesignSpaceAddConditions, METH_VARARGS, NULL},
+	 { (char *)"DSDesignSpaceSetSerial", _wrap_DSDesignSpaceSetSerial, METH_VARARGS, NULL},
+	 { (char *)"DSDesignSpaceSetCyclical", _wrap_DSDesignSpaceSetCyclical, METH_VARARGS, NULL},
+	 { (char *)"DSDesignSpaceSerial", _wrap_DSDesignSpaceSerial, METH_VARARGS, NULL},
+	 { (char *)"DSDesignSpaceCyclical", _wrap_DSDesignSpaceCyclical, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceXi", _wrap_DSDesignSpaceXi, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceNumberOfEquations", _wrap_DSDesignSpaceNumberOfEquations, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceEquations", _wrap_DSDesignSpaceEquations, METH_VARARGS, NULL},
@@ -20125,12 +20475,15 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "DS_EXPRESSION_TYPE_CONSTANT",SWIG_From_int((int)(2)));
   SWIG_Python_SetConstant(d, "DS_EXPRESSION_TYPE_VARIABLE",SWIG_From_int((int)(3)));
   SWIG_Python_SetConstant(d, "DS_EXPRESSION_TYPE_FUNCTION",SWIG_From_int((int)(4)));
+  SWIG_Python_SetConstant(d, "DSExpressionImaginaryNumber",SWIG_FromCharPtr("&i"));
   SWIG_Python_SetConstant(d, "M_DS_GMA_NULL",SWIG_FromCharPtr("NULL pointer: GMA System is NULL"));
   SWIG_Python_SetConstant(d, "M_DS_SSYS_NULL",SWIG_FromCharPtr("NULL pointer: S-System is NULL"));
   SWIG_Python_SetConstant(d, "M_DS_CASE_NULL",SWIG_FromCharPtr("NULL pointer: Case is NULL"));
   SWIG_Python_SetConstant(d, "DS_CASE_NUMBER_BIG_ENDIAN",SWIG_From_int((int)(0)));
   SWIG_Python_SetConstant(d, "DS_CASE_NUMBER_SMALL_ENDIAN",SWIG_From_int((int)(1)));
   SWIG_Python_SetConstant(d, "M_DS_DESIGN_SPACE_NULL",SWIG_FromCharPtr("NULL pointer: Design Space is NULL"));
+  SWIG_Python_SetConstant(d, "DS_DESIGN_SPACE_FLAG_SERIAL",SWIG_From_int((int)(0x01)));
+  SWIG_Python_SetConstant(d, "DS_DESIGN_SPACE_FLAG_CYCLICAL",SWIG_From_int((int)(0x02)));
   SWIG_Python_SetConstant(d, "M_DS_VERTICES_NULL",SWIG_FromCharPtr("NULL pointer: Vertices object is NULL"));
   SWIG_Python_SetConstant(d, "M_DS_DICTIONARY_NULL",SWIG_FromCharPtr("NULL pointer: Dictionary is NULL"));
   SWIG_Python_SetConstant(d, "M_DS_STACK_NULL",SWIG_FromCharPtr("NULL pointer: stack is NULL"));

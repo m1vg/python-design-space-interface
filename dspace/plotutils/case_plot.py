@@ -378,11 +378,15 @@ def draw_2D_phase_portrait_data(self, p_vals, x_variable, y_variable,
                                                       x_variable, y_variable,
                                                       range_x, range_y, resolution)
     if x_dynamic == True:
-        function = 'log($e_'+x_variable+'_p) - log($e_'+x_variable+'_n)'#*log(abs($e_'+x_variable+'_p - $e_'+x_variable+'_n))'
+        function = 'log($e_'+x_variable+'_p) - log($e_'+x_variable+'_n)'
+        ## function = x_variable+'*(log($e_'+x_variable+'_p) - log($e_'+x_variable+'_n))'
+        ## function = '$e_'+x_variable+'_p - $e_'+x_variable+'_n'
     else:
         function = '0'
     if y_dynamic == True:
-        alt_function = 'log($e_'+y_variable+'_p) - log($e_'+y_variable+'_n)'#*log(abs($e_'+y_variable+'_p - $e_'+y_variable+'_n))'
+        alt_function = 'log($e_'+y_variable+'_p) - log($e_'+y_variable+'_n)'
+        ## alt_function = y_variable+'*(log($e_'+y_variable+'_p) - log($e_'+y_variable+'_n))'
+        ## alt_function = '$e_'+y_variable+'_p - $e_'+y_variable+'_n'
     else:
         alt_function = '0'
     if log_linear is True:
@@ -409,7 +413,7 @@ def draw_2D_phase_portrait_data(self, p_vals, x_variable, y_variable,
     return pc
 
 @monkeypatch_method(dspace.models.case.Case)
-def draw_2D_phase_portrait_from_data(self, ax, X, Y, Zx, Zy, path, **kwargs):
+def draw_2D_phase_portrait_from_data(self, ax, X, Y, Zx, Zy, path, log_linear=False, **kwargs):
     patch = mt.patches.PathPatch(path, fc='none', ec='none', lw=.5)
     q = ax.quiver(X, Y, Zx, Zy, angles='xy',
                   #scale_units='xy', 
@@ -436,16 +440,19 @@ def draw_2D_phase_portrait(self, ax, Xd_initial, p_vals, x_variable, y_variable,
         return None
     es = self.eigen_spaces()
     p = VariablePool(names=es.independent_variables)
-    p.update(p_vals)
-    p.update(Xd_initial)
+    for i in p:
+        if i in Xd_initial:
+            p[i] = Xd_initial[i]
+        elif i in p_vals:
+            p[i] = p_vals[i]
     bounds = dict(p)
     bounds[x_variable] = range_x
     bounds[y_variable] = range_y
     valid = es.valid_cases(p_bounds=bounds, strict=False)
     Q = list()
     if show_designspaces is True:
-        es.draw_2D_slice(gca(), p, 'X1', 'X2',
-                         [1e-3, 1e0], [1e-2, 1e1], 
+        es.draw_2D_slice(ax, p, x_variable, y_variable,
+                         range_x, range_y, 
                          colorbar=False, color_dict=color_dict,
                          alpha=0.2)
     for i in valid:

@@ -557,6 +557,7 @@ DS_EXPRESSION_TYPE_OPERATOR = _dspace_interface.DS_EXPRESSION_TYPE_OPERATOR
 DS_EXPRESSION_TYPE_CONSTANT = _dspace_interface.DS_EXPRESSION_TYPE_CONSTANT
 DS_EXPRESSION_TYPE_VARIABLE = _dspace_interface.DS_EXPRESSION_TYPE_VARIABLE
 DS_EXPRESSION_TYPE_FUNCTION = _dspace_interface.DS_EXPRESSION_TYPE_FUNCTION
+DSExpressionImaginaryNumber = _dspace_interface.DSExpressionImaginaryNumber
 
 def DSExpressionFree(*args):
   return _dspace_interface.DSExpressionFree(*args)
@@ -589,6 +590,10 @@ DSExpressionByCompressingConstantVariables = _dspace_interface.DSExpressionByCom
 def DSExpressionEvaluateWithVariablePool(*args):
   return _dspace_interface.DSExpressionEvaluateWithVariablePool(*args)
 DSExpressionEvaluateWithVariablePool = _dspace_interface.DSExpressionEvaluateWithVariablePool
+
+def DSExpressionEvaluateComplexWithVariablePool(*args):
+  return _dspace_interface.DSExpressionEvaluateComplexWithVariablePool(*args)
+DSExpressionEvaluateComplexWithVariablePool = _dspace_interface.DSExpressionEvaluateComplexWithVariablePool
 
 def DSExpressionEquationLHSExpression(*args):
   return _dspace_interface.DSExpressionEquationLHSExpression(*args)
@@ -960,6 +965,14 @@ def DSSSystemIsSingular(*args):
   return _dspace_interface.DSSSystemIsSingular(*args)
 DSSSystemIsSingular = _dspace_interface.DSSSystemIsSingular
 
+def DSSSystemRecalculateSolution(*args):
+  return _dspace_interface.DSSSystemRecalculateSolution(*args)
+DSSSystemRecalculateSolution = _dspace_interface.DSSSystemRecalculateSolution
+
+def DSSSystemWithQuasiSteadyStates(*args):
+  return _dspace_interface.DSSSystemWithQuasiSteadyStates(*args)
+DSSSystemWithQuasiSteadyStates = _dspace_interface.DSSSystemWithQuasiSteadyStates
+
 def DSSSystemPrint(*args):
   return _dspace_interface.DSSSystemPrint(*args)
 DSSSystemPrint = _dspace_interface.DSSSystemPrint
@@ -1091,6 +1104,10 @@ def DSCaseXi(*args):
   return _dspace_interface.DSCaseXi(*args)
 DSCaseXi = _dspace_interface.DSCaseXi
 
+def DSCaseRecalculateBoundaryMatrices(*args):
+  return _dspace_interface.DSCaseRecalculateBoundaryMatrices(*args)
+DSCaseRecalculateBoundaryMatrices = _dspace_interface.DSCaseRecalculateBoundaryMatrices
+
 def DSCaseDoubleValueBoundariesAtPoint(*args):
   return _dspace_interface.DSCaseDoubleValueBoundariesAtPoint(*args)
 DSCaseDoubleValueBoundariesAtPoint = _dspace_interface.DSCaseDoubleValueBoundariesAtPoint
@@ -1111,6 +1128,10 @@ def DSCaseIsValid(*args):
   return _dspace_interface.DSCaseIsValid(*args)
 DSCaseIsValid = _dspace_interface.DSCaseIsValid
 
+def DSCaseIsConsistent(*args):
+  return _dspace_interface.DSCaseIsConsistent(*args)
+DSCaseIsConsistent = _dspace_interface.DSCaseIsConsistent
+
 def DSCaseIsValidInStateSpace(*args):
   return _dspace_interface.DSCaseIsValidInStateSpace(*args)
 DSCaseIsValidInStateSpace = _dspace_interface.DSCaseIsValidInStateSpace
@@ -1119,6 +1140,10 @@ def DSCaseIsValidAtPoint(*args):
   return _dspace_interface.DSCaseIsValidAtPoint(*args)
 DSCaseIsValidAtPoint = _dspace_interface.DSCaseIsValidAtPoint
 
+def DSCaseIsConsistentAtPoint(*args):
+  return _dspace_interface.DSCaseIsConsistentAtPoint(*args)
+DSCaseIsConsistentAtPoint = _dspace_interface.DSCaseIsConsistentAtPoint
+
 def DSCaseIsValidInStateSpaceAtPoint(*args):
   return _dspace_interface.DSCaseIsValidInStateSpaceAtPoint(*args)
 DSCaseIsValidInStateSpaceAtPoint = _dspace_interface.DSCaseIsValidInStateSpaceAtPoint
@@ -1126,6 +1151,10 @@ DSCaseIsValidInStateSpaceAtPoint = _dspace_interface.DSCaseIsValidInStateSpaceAt
 def DSCaseIsValidAtSlice(*args):
   return _dspace_interface.DSCaseIsValidAtSlice(*args)
 DSCaseIsValidAtSlice = _dspace_interface.DSCaseIsValidAtSlice
+
+def DSCaseIsConsistentAtSlice(*args):
+  return _dspace_interface.DSCaseIsConsistentAtSlice(*args)
+DSCaseIsConsistentAtSlice = _dspace_interface.DSCaseIsConsistentAtSlice
 
 def DSCaseVerticesForSlice(*args):
   return _dspace_interface.DSCaseVerticesForSlice(*args)
@@ -1311,6 +1340,8 @@ def DSCaseEigenSubspaces(*args):
   return _dspace_interface.DSCaseEigenSubspaces(*args)
 DSCaseEigenSubspaces = _dspace_interface.DSCaseEigenSubspaces
 M_DS_DESIGN_SPACE_NULL = _dspace_interface.M_DS_DESIGN_SPACE_NULL
+DS_DESIGN_SPACE_FLAG_SERIAL = _dspace_interface.DS_DESIGN_SPACE_FLAG_SERIAL
+DS_DESIGN_SPACE_FLAG_CYCLICAL = _dspace_interface.DS_DESIGN_SPACE_FLAG_CYCLICAL
 
 def DSDesignSpaceAlloc():
   return _dspace_interface.DSDesignSpaceAlloc()
@@ -1339,6 +1370,22 @@ DSDesignSpaceSetGMA = _dspace_interface.DSDesignSpaceSetGMA
 def DSDesignSpaceAddConditions(*args):
   return _dspace_interface.DSDesignSpaceAddConditions(*args)
 DSDesignSpaceAddConditions = _dspace_interface.DSDesignSpaceAddConditions
+
+def DSDesignSpaceSetSerial(*args):
+  return _dspace_interface.DSDesignSpaceSetSerial(*args)
+DSDesignSpaceSetSerial = _dspace_interface.DSDesignSpaceSetSerial
+
+def DSDesignSpaceSetCyclical(*args):
+  return _dspace_interface.DSDesignSpaceSetCyclical(*args)
+DSDesignSpaceSetCyclical = _dspace_interface.DSDesignSpaceSetCyclical
+
+def DSDesignSpaceSerial(*args):
+  return _dspace_interface.DSDesignSpaceSerial(*args)
+DSDesignSpaceSerial = _dspace_interface.DSDesignSpaceSerial
+
+def DSDesignSpaceCyclical(*args):
+  return _dspace_interface.DSDesignSpaceCyclical(*args)
+DSDesignSpaceCyclical = _dspace_interface.DSDesignSpaceCyclical
 
 def DSDesignSpaceXi(*args):
   return _dspace_interface.DSDesignSpaceXi(*args)
