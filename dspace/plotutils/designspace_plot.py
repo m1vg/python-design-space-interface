@@ -345,8 +345,9 @@ def draw_2D_positive_roots(self, ax, p_vals, x_variable, y_variable, range_x,
     
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
 def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
-                   range_x, range_y, color_dict=None,
+                  range_x, range_y, color_dict=None,
                   intersections=[1,2,3,4,5], included_cases=None, 
+                  expand_cycles=True,
                   colorbar=True, cmap=mt.cm.gist_rainbow, **kwargs):
     pvals = dspace.VariablePool(names=self.independent_variables)
     if set(pvals.keys()) != set(p_vals.keys()):
@@ -392,6 +393,8 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
         key = str(case_int)
         case_nums = key.split(', ')
         for i in xrange(len(case_nums)):
+            if expand_cycles is False:
+                case_nums[i] = str(case_nums[i]).split('_')[0]
             if case_nums[i] in valid_nonstrict:
                 case_nums[i] = str(case_nums[i])+'*'
         key = ', '.join(case_nums)

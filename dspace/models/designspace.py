@@ -432,7 +432,7 @@ class DesignSpace(GMASystem):
                         raise ValueError, 'parameter slice bounds are inverted: min is larger than max'
                         lower[key] = min_value
                         upper[key] = max_value
-        [intersections.append(i) for i in case_numbers if self(i).is_valid()is True]
+        ## [intersections.append(i) for i in case_numbers if self(i).is_valid()is True]
         sets = [set([i]) for i in valid_cases]
         for i in xrange(2, len(case_numbers)+1):
             new = True

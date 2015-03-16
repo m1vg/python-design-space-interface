@@ -39,20 +39,41 @@ matplotlib.interactive(False)
 # The equations and dependent variables are entered as strings.
 
 system_sets = [['X1. = alpha*X5 + 2*k41*X4 + 4*gamma*X2^2 - 2*X1^2', 
-                'X2. = X1^2 + X3*X7 - k23*X2 - X2*X6 - 2*gamma*X2^2',
-                'X3. = k23*X2 - k34*X3 - X3*X7',
-                'X4. = k34*X3 + X2*X6 - k41*X4 - beta*X4^2'
+                'X2. = X1^2 + k32*X3 - X2*X8 - X2*X7 - 2*gamma*X2^2',
+                'X3. = X2*X8 - k34*X3*X6 - k32*X3',
+                'X4. = k34*X3*X6 + X2*X7 - k41*X4 - 2*beta*X4^2',
+                'X6 = 1 + X3',
                 ],
-               ['X1. = a1 + 2*k21*X2 - 2*k12*X1^2 - b1*X1',
-                'X2. = X5 + k12*X1^2 + k32*X3 - k21*X2 - k23*X2 - b2*X2',
-                'X3. = X6 + k23*X2 + k43*X4^2 - k32*X3 - k34*X3 - b3*X3',
-                'X4. = a4 + 2*k34*X3 - 2*k43*X4^2 - b4*X4'
+               ['X1. = X5 + 2*k21*X2 - 2*k12*X1^2 - b1*X1',
+                'X2. = X6 + k12*X1^2 + k32*X3 - k21*X2 - k23*X2 - b2*X2',
+                'X3. = X7 + k23*X2 + k43*X4^2 - k32*X3 - k34*X3 - b3*X3',
+                'X4. = X8 + 2*k34*X3 - 2*k43*X4^2 - b4*X4'
                 ],
                ['X1. = 2*k21*X2 - 2*k12*X1^2*X3^-1 - b1*X1',
-                'X2. = X5 + k12*X1^2*X3^-1 + k32*X3 + k42*X4 - k21*X2 - k23*X2 - k24*X2',
-                'X3. = k23*X2 + k43*X3 - k32*X3 - k34*X3',
-                'X4. = X6 + k24*X2 + k34*X3 + k74*X7*X3^-1 - k42*X4 - k43*X4 - k47*X4',
-                'X7. = k47*X4 - k74*X7*X3^-1 - b7*X7'
+                'X2. = X6 + k12*X1^2*X3^-1 + k32*X3 + k42*X4 - k21*X2 - k23*X2 - k24*X2',
+                'X3. = k23*X2 + k43*X4 - k32*X3 - k34*X3',
+                'X4. = X7 + k24*X2 + k34*X3 + k54*X5*X3^-1 - k42*X4 - k43*X4 - k45*X4',
+                'X5. = k45*X4 - k54*X5*X3^-1 - b5*X5'
+                ],
+               ['X1. = a1 + 2*k21*X2 - 2*k12*X1^2',
+                'X2. = k12*X1^2 + X3*X7 + X4*X6 - k21*X2 - X2*X6 - X2*X7',
+                'X3. = X2*X6 + X4*X7 - X3*X6 - X3*X7',
+                'X4. = X2*X7 + X3*X6 + k54*X5 - X4*X6 - X4*X7 - k45*X4',
+                'X5. = k45*X4 - k54*X5 - b5*X5'
+                ],
+               ['X1. = a1 + 2*k21*X2 - 2*k12*X1^2',
+                'X2. = k12*X1^2 + X3*X8 + X5*X7 - k21*X2 - X2*X7 - X2*X8',
+                'X3. = X2*X7 + X4*X8 - X3*X7 - X3*X8',
+                'X4. = X5*X8 + X3*X7 - X4*X7 - X4*X8 ',
+                'X5. = X2*X8 + X4*X7 + k65*X6 - X5*X7 - X5*X8 - k56*X5',
+                'X6. = k56*X5 - k65*X6 - b6*X6'
+                ],
+               ['X1. = a1 - k12*X1',
+                'X2. = k12*X1 + X3*X8 + X5*X7 - X2*X7 - X2*X8',
+                'X3. = X2*X7 + X4*X8 - X3*X7 - X3*X8',
+                'X4. = X5*X8 + X3*X7 - X4*X7 - X4*X8 ',
+                'X5. = X2*X8 + X4*X7 - X5*X7 - X5*X8 - k56*X5',
+                'X6. = k56*X5 - b6*X6'
                 ]
                ]
 
@@ -89,12 +110,13 @@ for f in system_sets:
         if '_' in i:
             break
     pvals=c.valid_interior_parameter_set()
+
     ds_cycles.draw_2D_slice_interactive(pvals,
-                                        'X5',
-                                        'X6',
+                                        'X7',
+                                        'X8',
                                         [1e-3, 1e3],
                                         [1e-3, 1e3],
-                                        {i:[1e-5, 1e5] for i in ds_cycles.independent_variables if i not in ['X5', 'X6']},
+                                        {i:[1e-5, 1e5] for i in ds_cycles.independent_variables if i not in ['X6', 'X7']},
                                         )
     
     fig = figure(1)
@@ -107,18 +129,19 @@ for f in system_sets:
     ax = fig.add_subplot('122')       # We define the plot axes.
     colors = ds_cycles.draw_2D_slice(ax,
                              pvals,             # Pass the reference parameter set.
-                             'X5',              # First, indicate the x-axis variable.
-                             'X6',              # Second, indicate the y-axis variable.
+                             'X7',              # First, indicate the x-axis variable.
+                             'X8',              # Second, indicate the y-axis variable.
                              [1e-3, 1e3],       # The range on the x-axis.
                              [1e-3, 1e3],       # The range on the y-axis.
+                             expand_cycles=False
                              )
     ax.set_title(ds_cycles.name)
 
     ax = fig.add_subplot('121')       # We define the plot axes.
     ds_nocycles.draw_2D_slice(ax,
                       pvals,             # Pass the reference parameter set.
-                      'X5',              # First, indicate the x-axis variable.
-                      'X6',              # Second, indicate the y-axis variable.
+                      'X7',              # First, indicate the x-axis variable.
+                      'X8',              # Second, indicate the y-axis variable.
                       [1e-3, 1e3],       # The range on the x-axis.
                       [1e-3, 1e3],       # The range on the y-axis.
                       color_dict=colors,
