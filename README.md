@@ -24,6 +24,7 @@ The Design Space Toolbox V2 Python Interface is a standard Python package. The c
 These examples are found in the `dspace.examples` sub-package, and can be imported directly into an interactive python shell. There are a total of 5 examples that highlight the following aspects of the software package.
 
 Examples:
+
 1. Demonstrates the basic steps and functions to construct, analyze and explore a design space object using a very simple system.
 
 2. Reiterates basic steps and demonstrates more advanced functions of the Design Space Toolbox.
