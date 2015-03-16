@@ -39,12 +39,11 @@ To run an example, simply start the python interpreter and import the example.
 
 E.g., for example 1:
 
-`import dspace.examples.example_1`
+    import dspace.examples.example_1
 
 Once imported, you can obtain the path for the example's source by typing
 
-'dspace.examples.example_1'
-
+    dspace.examples.example_1
 at the command prompt.	
 
 
