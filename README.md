@@ -16,6 +16,35 @@ To use the Design Space Toolbox V2 from Python, you must have Python 2.7.x, as w
 
 The preferred installation process is using the Design Space Toolbox V2 update and installation script (see https://bitbucket.org/jglomnitz/toolbox-update-script for detailed instructions). This script manages the Git repositories associated with the C Library, Python Interface, as well as a modified version of the GNU Linear Programming Kit (GLPK) library used by the Design Space Toolbox Project.
 
+Examples of System Analysis Using the Design Space Toolbox
+------------------------------------------------------------------------------------
+
+The Design Space Toolbox V2 Python Interface is a standard Python package. The current version of the interface lacks most of the documentation; however, there are examples available that highlight the array of objects and methods for the analysis of non-linear systems.
+
+These examples are found in the `dspace.examples` sub-package, and can be imported directly into an interactive python shell. There are a total of 5 examples that highlight the following aspects of the software package.
+
+Examples:
+1. Demonstrates the basic steps and functions to construct, analyze and explore a design space object using a very simple system.
+
+2. Reiterates basic steps and demonstrates more advanced functions of the Design Space Toolbox.
+
+3. Demonstrates the analysis of intersecting, or overlapping, cases, indicative of multiple steady states with potential for multiple dynamic behaviors.
+
+4. Emphasizes the analysis of dominant sub-systems.
+
+5. Demonstrates a higher-level api for analyzing systems in the design space framework.
+
+To run an example, simply start the python interpreter and import the example.
+
+E.g., for example 1:
+
+`import dspace.examples.example_1`
+
+Once imported, you can obtain the path for the example's source by typing
+
+'dspace.examples.example_1'
+
+at the command prompt.	
 
 
 References
@@ -27,6 +56,6 @@ References
 
 4. Fasani RA, and Savageau MA (2010) Automated construction and analysis of the design space for biochemical systems. _Bioinformatics_ 26:2601–2609.
 
-5. Lomnitz, JG, and Savageau, MA (2013) Phenotypic deconstruction of gene circuitry. _Chaos_ 23, 025108.
+5. Lomnitz JG, and Savageau, MA (2013) Phenotypic deconstruction of gene circuitry. _Chaos_ 23, 025108.
 
 6. Lomnitz JG, and Savageau MA (2014) Strategy Revealing Phenotypic Differences among Synthetic Oscillator Designs. _ACS Synth Biol_ 3(9):686–701.
