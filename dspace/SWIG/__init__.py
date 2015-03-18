@@ -1,7 +1,7 @@
 from distutils.version import StrictVersion
 from dspace.SWIG.dspace_interface import DSDesignSpaceToolboxVersionString
 
-__supported_versions__ = ['0.3.0a1', '-']
+__supported_versions__ = ['0.3.0a3', '-']
 __version__ = DSDesignSpaceToolboxVersionString()
 
 if StrictVersion(__version__) < StrictVersion(__supported_versions__[0]):

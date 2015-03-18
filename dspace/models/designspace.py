@@ -33,6 +33,7 @@ class DesignSpace(GMASystem):
                  resolve_cycles=False,
                  constraints=None, match_Xi=None,
                  latex_symbols=None,
+                 resolve_codominance=False,
                  **kwargs):
         ''' Initializes a new object with the input parameters for a routine
             analysis.
@@ -63,7 +64,9 @@ class DesignSpace(GMASystem):
         if resolve_cycles == True:
             setattr(self, '_resolve_cycles', True)
             DSDesignSpaceCalculateCyclicalCases(self._swigwrapper)
-    
+        if resolve_codominance is True:
+            DSDesignSpaceSetResolveCoDominance(self._swigwrapper, True)    
+        
     def __del__(self):
         if self._swigwrapper is not None:
             DSDesignSpaceFree(self._swigwrapper)

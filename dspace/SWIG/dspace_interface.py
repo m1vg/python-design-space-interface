@@ -756,6 +756,9 @@ def DSGMASystemDecode(*args):
   return _dspace_interface.DSGMASystemDecode(*args)
 DSGMASystemDecode = _dspace_interface.DSGMASystemDecode
 M_DS_SSYS_NULL = _dspace_interface.M_DS_SSYS_NULL
+DS_SSYSTEM_FLAG_SINGULAR = _dspace_interface.DS_SSYSTEM_FLAG_SINGULAR
+DS_SSYSTEM_FLAG_FREE_XD = _dspace_interface.DS_SSYSTEM_FLAG_FREE_XD
+DS_SSYSTEM_FLAG_FREE_XI = _dspace_interface.DS_SSYSTEM_FLAG_FREE_XI
 
 def DSSSystemCopy(*args):
   return _dspace_interface.DSSSystemCopy(*args)
@@ -964,6 +967,26 @@ DSSSystemHasSolution = _dspace_interface.DSSSystemHasSolution
 def DSSSystemIsSingular(*args):
   return _dspace_interface.DSSSystemIsSingular(*args)
 DSSSystemIsSingular = _dspace_interface.DSSSystemIsSingular
+
+def DSSSystemShouldFreeXd(*args):
+  return _dspace_interface.DSSSystemShouldFreeXd(*args)
+DSSSystemShouldFreeXd = _dspace_interface.DSSSystemShouldFreeXd
+
+def DSSSystemShouldFreeXi(*args):
+  return _dspace_interface.DSSSystemShouldFreeXi(*args)
+DSSSystemShouldFreeXi = _dspace_interface.DSSSystemShouldFreeXi
+
+def DSSSystemSetIsSingular(*args):
+  return _dspace_interface.DSSSystemSetIsSingular(*args)
+DSSSystemSetIsSingular = _dspace_interface.DSSSystemSetIsSingular
+
+def DSSSystemSetShouldFreeXd(*args):
+  return _dspace_interface.DSSSystemSetShouldFreeXd(*args)
+DSSSystemSetShouldFreeXd = _dspace_interface.DSSSystemSetShouldFreeXd
+
+def DSSSystemSetShouldFreeXi(*args):
+  return _dspace_interface.DSSSystemSetShouldFreeXi(*args)
+DSSSystemSetShouldFreeXi = _dspace_interface.DSSSystemSetShouldFreeXi
 
 def DSSSystemRecalculateSolution(*args):
   return _dspace_interface.DSSSystemRecalculateSolution(*args)
@@ -1342,6 +1365,7 @@ DSCaseEigenSubspaces = _dspace_interface.DSCaseEigenSubspaces
 M_DS_DESIGN_SPACE_NULL = _dspace_interface.M_DS_DESIGN_SPACE_NULL
 DS_DESIGN_SPACE_FLAG_SERIAL = _dspace_interface.DS_DESIGN_SPACE_FLAG_SERIAL
 DS_DESIGN_SPACE_FLAG_CYCLICAL = _dspace_interface.DS_DESIGN_SPACE_FLAG_CYCLICAL
+DS_DESIGN_SPACE_FLAG_RESOLVE_CO_DOMINANCE = _dspace_interface.DS_DESIGN_SPACE_FLAG_RESOLVE_CO_DOMINANCE
 
 def DSDesignSpaceAlloc():
   return _dspace_interface.DSDesignSpaceAlloc()
@@ -1379,6 +1403,10 @@ def DSDesignSpaceSetCyclical(*args):
   return _dspace_interface.DSDesignSpaceSetCyclical(*args)
 DSDesignSpaceSetCyclical = _dspace_interface.DSDesignSpaceSetCyclical
 
+def DSDesignSpaceSetResolveCoDominance(*args):
+  return _dspace_interface.DSDesignSpaceSetResolveCoDominance(*args)
+DSDesignSpaceSetResolveCoDominance = _dspace_interface.DSDesignSpaceSetResolveCoDominance
+
 def DSDesignSpaceSerial(*args):
   return _dspace_interface.DSDesignSpaceSerial(*args)
 DSDesignSpaceSerial = _dspace_interface.DSDesignSpaceSerial
@@ -1386,6 +1414,10 @@ DSDesignSpaceSerial = _dspace_interface.DSDesignSpaceSerial
 def DSDesignSpaceCyclical(*args):
   return _dspace_interface.DSDesignSpaceCyclical(*args)
 DSDesignSpaceCyclical = _dspace_interface.DSDesignSpaceCyclical
+
+def DSDesignSpaceResolveCoDominance(*args):
+  return _dspace_interface.DSDesignSpaceResolveCoDominance(*args)
+DSDesignSpaceResolveCoDominance = _dspace_interface.DSDesignSpaceResolveCoDominance
 
 def DSDesignSpaceXi(*args):
   return _dspace_interface.DSDesignSpaceXi(*args)

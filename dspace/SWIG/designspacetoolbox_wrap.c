@@ -11299,6 +11299,140 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSSSystemShouldFreeXd(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSSSystem *arg1 = (DSSSystem *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSSSystemShouldFreeXd",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemShouldFreeXd" "', argument " "1"" of type '" "DSSSystem const *""'"); 
+  }
+  arg1 = (DSSSystem *)(argp1);
+  result = (bool)DSSSystemShouldFreeXd((DSSSystem const *)arg1);
+  resultobj = SWIG_From_bool((bool)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSSSystemShouldFreeXi(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSSSystem *arg1 = (DSSSystem *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSSSystemShouldFreeXi",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemShouldFreeXi" "', argument " "1"" of type '" "DSSSystem const *""'"); 
+  }
+  arg1 = (DSSSystem *)(argp1);
+  result = (bool)DSSSystemShouldFreeXi((DSSSystem const *)arg1);
+  resultobj = SWIG_From_bool((bool)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSSSystemSetIsSingular(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSSSystem *arg1 = (DSSSystem *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSSSystemSetIsSingular",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemSetIsSingular" "', argument " "1"" of type '" "DSSSystem *""'"); 
+  }
+  arg1 = (DSSSystem *)(argp1);
+  ecode2 = SWIG_AsVal_bool(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DSSSystemSetIsSingular" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = (bool)(val2);
+  DSSSystemSetIsSingular(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSSSystemSetShouldFreeXd(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSSSystem *arg1 = (DSSSystem *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSSSystemSetShouldFreeXd",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemSetShouldFreeXd" "', argument " "1"" of type '" "DSSSystem *""'"); 
+  }
+  arg1 = (DSSSystem *)(argp1);
+  ecode2 = SWIG_AsVal_bool(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DSSSystemSetShouldFreeXd" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = (bool)(val2);
+  DSSSystemSetShouldFreeXd(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSSSystemSetShouldFreeXi(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSSSystem *arg1 = (DSSSystem *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSSSystemSetShouldFreeXi",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemSetShouldFreeXi" "', argument " "1"" of type '" "DSSSystem *""'"); 
+  }
+  arg1 = (DSSSystem *)(argp1);
+  ecode2 = SWIG_AsVal_bool(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DSSSystemSetShouldFreeXi" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = (bool)(val2);
+  DSSSystemSetShouldFreeXi(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSSSystemRecalculateSolution(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSSSystem *arg1 = (DSSSystem *) 0 ;
@@ -15431,6 +15565,36 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSDesignSpaceSetResolveCoDominance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSDesignSpaceSetResolveCoDominance",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceSetResolveCoDominance" "', argument " "1"" of type '" "DSDesignSpace *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  ecode2 = SWIG_AsVal_bool(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DSDesignSpaceSetResolveCoDominance" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = (bool)(val2);
+  DSDesignSpaceSetResolveCoDominance(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSDesignSpaceSerial(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
@@ -15468,6 +15632,28 @@ SWIGINTERN PyObject *_wrap_DSDesignSpaceCyclical(PyObject *SWIGUNUSEDPARM(self),
   }
   arg1 = (DSDesignSpace *)(argp1);
   result = (bool)DSDesignSpaceCyclical((DSDesignSpace const *)arg1);
+  resultobj = SWIG_From_bool((bool)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceResolveCoDominance(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSDesignSpaceResolveCoDominance",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceResolveCoDominance" "', argument " "1"" of type '" "DSDesignSpace const *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  result = (bool)DSDesignSpaceResolveCoDominance((DSDesignSpace const *)arg1);
   resultobj = SWIG_From_bool((bool)(result));
   return resultobj;
 fail:
@@ -19397,6 +19583,11 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSSSystemXi", _wrap_DSSSystemXi, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemHasSolution", _wrap_DSSSystemHasSolution, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemIsSingular", _wrap_DSSSystemIsSingular, METH_VARARGS, NULL},
+	 { (char *)"DSSSystemShouldFreeXd", _wrap_DSSSystemShouldFreeXd, METH_VARARGS, NULL},
+	 { (char *)"DSSSystemShouldFreeXi", _wrap_DSSSystemShouldFreeXi, METH_VARARGS, NULL},
+	 { (char *)"DSSSystemSetIsSingular", _wrap_DSSSystemSetIsSingular, METH_VARARGS, NULL},
+	 { (char *)"DSSSystemSetShouldFreeXd", _wrap_DSSSystemSetShouldFreeXd, METH_VARARGS, NULL},
+	 { (char *)"DSSSystemSetShouldFreeXi", _wrap_DSSSystemSetShouldFreeXi, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemRecalculateSolution", _wrap_DSSSystemRecalculateSolution, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemWithQuasiSteadyStates", _wrap_DSSSystemWithQuasiSteadyStates, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemPrint", _wrap_DSSSystemPrint, METH_VARARGS, NULL},
@@ -19499,8 +19690,10 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSDesignSpaceAddConditions", _wrap_DSDesignSpaceAddConditions, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceSetSerial", _wrap_DSDesignSpaceSetSerial, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceSetCyclical", _wrap_DSDesignSpaceSetCyclical, METH_VARARGS, NULL},
+	 { (char *)"DSDesignSpaceSetResolveCoDominance", _wrap_DSDesignSpaceSetResolveCoDominance, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceSerial", _wrap_DSDesignSpaceSerial, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceCyclical", _wrap_DSDesignSpaceCyclical, METH_VARARGS, NULL},
+	 { (char *)"DSDesignSpaceResolveCoDominance", _wrap_DSDesignSpaceResolveCoDominance, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceXi", _wrap_DSDesignSpaceXi, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceNumberOfEquations", _wrap_DSDesignSpaceNumberOfEquations, METH_VARARGS, NULL},
 	 { (char *)"DSDesignSpaceEquations", _wrap_DSDesignSpaceEquations, METH_VARARGS, NULL},
@@ -20478,12 +20671,16 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "DSExpressionImaginaryNumber",SWIG_FromCharPtr("&i"));
   SWIG_Python_SetConstant(d, "M_DS_GMA_NULL",SWIG_FromCharPtr("NULL pointer: GMA System is NULL"));
   SWIG_Python_SetConstant(d, "M_DS_SSYS_NULL",SWIG_FromCharPtr("NULL pointer: S-System is NULL"));
+  SWIG_Python_SetConstant(d, "DS_SSYSTEM_FLAG_SINGULAR",SWIG_From_int((int)(0x01)));
+  SWIG_Python_SetConstant(d, "DS_SSYSTEM_FLAG_FREE_XD",SWIG_From_int((int)(0x02)));
+  SWIG_Python_SetConstant(d, "DS_SSYSTEM_FLAG_FREE_XI",SWIG_From_int((int)(0x04)));
   SWIG_Python_SetConstant(d, "M_DS_CASE_NULL",SWIG_FromCharPtr("NULL pointer: Case is NULL"));
   SWIG_Python_SetConstant(d, "DS_CASE_NUMBER_BIG_ENDIAN",SWIG_From_int((int)(0)));
   SWIG_Python_SetConstant(d, "DS_CASE_NUMBER_SMALL_ENDIAN",SWIG_From_int((int)(1)));
   SWIG_Python_SetConstant(d, "M_DS_DESIGN_SPACE_NULL",SWIG_FromCharPtr("NULL pointer: Design Space is NULL"));
   SWIG_Python_SetConstant(d, "DS_DESIGN_SPACE_FLAG_SERIAL",SWIG_From_int((int)(0x01)));
   SWIG_Python_SetConstant(d, "DS_DESIGN_SPACE_FLAG_CYCLICAL",SWIG_From_int((int)(0x02)));
+  SWIG_Python_SetConstant(d, "DS_DESIGN_SPACE_FLAG_RESOLVE_CO_DOMINANCE",SWIG_From_int((int)(0x04)));
   SWIG_Python_SetConstant(d, "M_DS_VERTICES_NULL",SWIG_FromCharPtr("NULL pointer: Vertices object is NULL"));
   SWIG_Python_SetConstant(d, "M_DS_DICTIONARY_NULL",SWIG_FromCharPtr("NULL pointer: Dictionary is NULL"));
   SWIG_Python_SetConstant(d, "M_DS_STACK_NULL",SWIG_FromCharPtr("NULL pointer: stack is NULL"));
