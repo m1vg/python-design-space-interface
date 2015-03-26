@@ -94,7 +94,7 @@ for f in system_sets:
     # cycles, the design space is constructed with the 'resolve_cycles=true' 
     # keyword argument.
     
-    ds_cycles = dspace.DesignSpace(eq, resolve_cycles=True, name='With Cycles')#,constraints=constraints)
+    ds_cycles = dspace.DesignSpace(eq, resolve_cycles=True, resolve_codominance=True, name='With Cycles')#,constraints=constraints)
     
     ## Test for Validity
     # We calculate the valid cases without and with resolving cycles. As we can see

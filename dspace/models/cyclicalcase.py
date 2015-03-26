@@ -104,7 +104,7 @@ class CyclicalCase(Case):
             equations.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
         DSSecureFree(eqs)
-        return Equations(equations)
+        return Equations(equations, latex_symbols=self._latex)
     
     @property
     def augmented_equations(self):
