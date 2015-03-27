@@ -86,6 +86,7 @@ class VariablePool(dict):
     def __setitem__(self, name, value):
         if hasattr(self, '_swigwrapper') is False:
             setattr(self, '_swigwrapper', None)
+        if hasattr(self, '_keys') is False:
             setattr(self, '_keys', list())
         if self._swigwrapper == None:
             self._swigwrapper = DSVariablePoolAlloc()
