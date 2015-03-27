@@ -61,11 +61,11 @@ class DesignSpace(GMASystem):
             if isinstance(constraints, list) is False:
                 constraints = [constraints]
             DSDesignSpaceAddConstraints(self._swigwrapper, constraints, len(constraints))
+        if resolve_codominance is True:
+            DSDesignSpaceSetResolveCoDominance(self._swigwrapper, True)    
         if resolve_cycles == True:
             setattr(self, '_resolve_cycles', True)
             DSDesignSpaceCalculateCyclicalCases(self._swigwrapper)
-        if resolve_codominance is True:
-            DSDesignSpaceSetResolveCoDominance(self._swigwrapper, True)    
         
     def __del__(self):
         if self._swigwrapper is not None:
