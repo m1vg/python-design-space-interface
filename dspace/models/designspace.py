@@ -138,7 +138,8 @@ class DesignSpace(GMASystem):
                 name = self.name + ': Case ' + index
                 case = Case(self,
                             case_swig,
-                            name)
+                            name, 
+                            constraints=constraints)
                 eq=Equations(case.equations.system,
                               case.auxiliary_variables)
                 cyclical_swig = DSDesignSpaceCyclicalCaseWithCaseIdentifier(self._swigwrapper, index)
