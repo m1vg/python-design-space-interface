@@ -38,15 +38,14 @@ def make_2D_slice(ds=None, p_vals=None, x_variable=None, y_variable=None,
     ax = plt.gca()
     ds.draw_2D_slice(ax, p_vals, str(x_variable), str(y_variable),
                              x_range, y_range)
-    ax.plot(log10(pvals[x_variable]), log10(pvals[y_variable]), 'k.')
+    ax.plot(log10(p_vals[x_variable]), log10(p_vals[y_variable]), 'k.')
 
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
 def draw_2D_slice_notebook(self, p_vals, x_variable, y_variable,
                            range_x, range_y, slider_ranges,
                            **kwargs):
     plot_widget = interact(make_2D_slice, ds=fixed(self), 
-                           p_vals=fixed(p_vals), 
-                           x_variable=fixed(x_variable),
+                           p_vals=fixed(p_vals)p_                        x_variable=fixed(x_variable),
                            y_variable=fixed(y_variable), 
                            range_x=fixed(range_x),
                            range_y=fixed(range_y),

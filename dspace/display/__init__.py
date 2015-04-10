@@ -1,1 +1,2 @@
 import equations_display
+import interactive_plot
