@@ -29,7 +29,7 @@ from IPython.display import clear_output, display, HTML
 
 
 def make_2D_slice(ds=None, p_vals=None, x_variable=None, y_variable=None,
-                  range_x=None, range_y=None, **kwargs):
+                  range_x=None, range_y=None, intersections, **kwargs):
     for i in kwargs:
 #         display(str(i))
         p_vals[str(i)] = 10**kwargs[str(i)]
@@ -37,7 +37,8 @@ def make_2D_slice(ds=None, p_vals=None, x_variable=None, y_variable=None,
     y_range = range_y
     ax = plt.gca()
     ds.draw_2D_slice(ax, p_vals, str(x_variable), str(y_variable),
-                             x_range, y_range)
+                             x_range, y_range,
+                     intersections=intersections)
     ax.plot(log10(p_vals[x_variable]), log10(p_vals[y_variable]), 'k.')
 
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
@@ -50,6 +51,9 @@ def draw_2D_slice_notebook(self, p_vals, x_variable, y_variable,
                            y_variable=fixed(y_variable), 
                            range_x=fixed(range_x),
                            range_y=fixed(range_y),
+                           intersections={'Single':[1],
+                                          'Single and Triple':[1,3],
+                                          'All':range(1, 100)},
                            **{i:widgets.FloatSliderWidget(min=log10(slider_ranges[i][0]),
                                                           max=log10(slider_ranges[i][1]),
                                                           step=log10(slider_ranges[i][1]/slider_ranges[i][0])/20,
