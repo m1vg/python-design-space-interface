@@ -29,7 +29,7 @@ from IPython.display import clear_output, display, HTML
 
 
 def make_2D_slice(ds=None, p_vals=None, x_variable=None, y_variable=None,
-                  range_x=None, range_y=None, intersections, **kwargs):
+                  range_x=None, range_y=None, intersections=None, **kwargs):
     for i in kwargs:
 #         display(str(i))
         p_vals[str(i)] = 10**kwargs[str(i)]
