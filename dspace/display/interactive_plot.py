@@ -45,18 +45,21 @@ def make_2D_slice(ds=None, p_vals=None, x_variable=None, y_variable=None,
 def draw_2D_slice_notebook(self, p_vals, x_variable, y_variable,
                            range_x, range_y, slider_ranges,
                            **kwargs):
-    plot_widget = interact(make_2D_slice, ds=fixed(self), 
-                           p_vals=fixed(p_vals),
-                           x_variable=fixed(x_variable),
-                           y_variable=fixed(y_variable), 
-                           range_x=fixed(range_x),
-                           range_y=fixed(range_y),
-                           intersections={'Single':[1],
-                                          'Single and Triple':[1,3],
-                                          'All':range(1, 100)},
-                           **{i:widgets.FloatSliderWidget(min=log10(slider_ranges[i][0]),
-                                                          max=log10(slider_ranges[i][1]),
-                                                          step=log10(slider_ranges[i][1]/slider_ranges[i][0])/20,
+    plot_widget = interactive(make_2D_slice, ds=fixed(self), 
+                              p_vals=fixed(p_vals),
+                              x_variable=fixed(x_variable),
+                              y_variable=fixed(y_variable), 
+                              range_x=fixed(range_x),
+                              range_y=fixed(range_y),
+                              intersections={'Single':[1],
+                                             'Single and Triple':[1,3],
+                                             'All':range(1, 100)},
+                              **{i:widgets.FloatSliderWidget(min=log10(slider_ranges[i][0]),
+                                                             max=log10(slider_ranges[i][1]),
+                                                             step=log10(slider_ranges[i][1]/slider_ranges[i][0])/20,
                                                           value=log10(p_vals[i]))
-                              for i in slider_ranges})
+                                                          for i in slider_ranges
+                                                          }
+                              )
+    return plot_widget
     
