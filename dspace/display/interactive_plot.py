@@ -40,7 +40,7 @@ def make_2D_slice(ds=None, p_vals=None, x_variable=None, y_variable=None,
                              x_range, y_range,
                      intersections=intersections)
     ax.plot(log10(p_vals[x_variable]), log10(p_vals[y_variable]), 'k.')
-
+    
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
 def draw_2D_slice_notebook(self, p_vals, x_variable, y_variable,
                            range_x, range_y, slider_ranges,

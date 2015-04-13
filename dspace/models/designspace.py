@@ -185,9 +185,28 @@ class DesignSpace(GMASystem):
         DSSecureFree(eqs)
         Xda = VariablePool()
         Xda.set_swigwrapper(DSVariablePoolCopy(DSGMASystemXd_a(gma)))
-        equations = Equations(equation_list, auxiliary_variables=Xda.keys(), latex_symbols=self._latex)
+        equations = Equations(equation_list, 
+                              auxiliary_variables=Xda.keys(), 
+                              latex_symbols=self._latex)
         self._equations = equations
     
+    def update_latex_symbols(self, symbols):
+        self._latex.update(symbols)
+        gma = DSDesignSpaceGMASystem(self._swigwrapper)
+        eqs = DSGMASystemEquations(gma)
+        equation_list = list()
+        for i in xrange(0, DSGMASystemNumberOfEquations(gma)):
+            expr = DSExpressionAtIndexOfExpressionArray(eqs, i)
+            equation_list.append(DSExpressionAsString(expr))
+            DSExpressionFree(expr)
+        DSSecureFree(eqs)
+        Xda = VariablePool()
+        Xda.set_swigwrapper(DSVariablePoolCopy(DSGMASystemXd_a(gma)))
+        equations = Equations(equation_list, 
+                              auxiliary_variables=Xda.keys(), 
+                              latex_symbols=self._latex)
+        self._equations = equations
+                
     def set_swigwrapper(self, ds_swigwrapper):
         self._swigwrapper = ds_swigwrapper
         
