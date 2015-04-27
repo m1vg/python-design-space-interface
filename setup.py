@@ -27,4 +27,5 @@ setup(name = 'dspace',
                 'dspace.plotutils',
                 'dspace.graphs',
                 'dspace.display', 
+                'dspace.display.UI',
                 'dspace.examples'])
