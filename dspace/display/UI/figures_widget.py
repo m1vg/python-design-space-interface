@@ -2,6 +2,7 @@ import dspace
 import dspace.plotutils
 import dspace.display
 
+import numpy as np
 from IPython.html.widgets import interact, interactive, fixed
 from IPython.html import widgets
 from IPython.display import clear_output, display, HTML, Latex
@@ -156,7 +157,7 @@ class MakePlot(object):
         controller = self.controller
         button = widgets.ButtonWidget(description='Stop interactive plot')
         button.on_click(self.remove_plot)
-        button.name = 'Interactive Plot (' + str(randint(0, 1000)) + ')'
+        button.name = 'Interactive Plot (' + str(np.random.randint(0, 1000)) + ')'
         image_widget = widgets.ImageWidget()
         rangex, rangey = self.axes_ranges(b)
         controller.figures.add_figure(image_widget, title=b.title.value, caption=b.caption.value)
