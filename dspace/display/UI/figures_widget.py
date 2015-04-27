@@ -170,7 +170,7 @@ class MakePlot(object):
         
     def make_static_plot(self, b):
         controller = self.controller
-        fig = plt.figure(figsize=[6, 4], dpi=600)
+        fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
         ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
         ax.set_title('Design Space plot')
         plot_data = self.plot_data.children[0]

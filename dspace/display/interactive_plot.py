@@ -37,7 +37,7 @@ def make_2D_slice(ds=None, p_vals=None, x_variable=None, y_variable=None,
         p_vals[str(i)] = 10**kwargs[str(i)]
     x_range = range_x
     y_range = range_y
-    fig = plt.Figure(figsize=[6, 4], dpi=600)
+    fig = plt.Figure(figsize=[6, 4], dpi=600, facecolor='w')
     fig=plt.gcf()
     ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
     ax = plt.gca()
