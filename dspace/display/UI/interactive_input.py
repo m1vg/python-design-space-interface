@@ -32,7 +32,8 @@ class InteractiveInput(object):
         setattr(self, 'constraints', [])
         setattr(self, 'symbols', symbols)
         setattr(self, 'widget', widgets.TabWidget())
-        setattr(self, 'figures', widgets.ContainerWidget())
+        setattr(self, 'figures', None)
+        setattr(self, 'figure_data', [])
         
         if equations is not None:
             self.equations = equations
@@ -60,6 +61,8 @@ class InteractiveInput(object):
         self.widget = widgets.TabWidget()
         display(self.widget)
         self.update_child('System', self.edit_equations_widget())
+        self.update_widgets()
+        self.figures.load_widgets()
         
     def child_with_name(self, name):
         children = self.widget.children
@@ -89,6 +92,11 @@ class InteractiveInput(object):
     def update_widgets(self):
         cases_table = CasesTable(self)
         cases_table.cases_table_widget()
+        plot = MakePlot(self)
+        plot.create_plot_widget()
+        self.figures = DisplayFigures(self)
+        self.figures.create_figures_widget()
+
         
     def edit_equations_widget(self):
         name = widgets.TextWidget(description='Name', value=self.name)
@@ -105,7 +113,8 @@ class InteractiveInput(object):
                                           value = self.cyclical)
         codominance = widgets.CheckboxWidget(description='Check for Co-dominance',
                                              value = self.codominance)
-        wi = widgets.ContainerWidget(children=[name, equations, aux, constraints, cyclical, codominance])
+        wi = widgets.ContainerWidget(children=[name, equations,
+                                               aux, constraints, cyclical, codominance])
         if self.ds is None:
             description = 'Create Design Space'
         else:
@@ -125,13 +134,17 @@ class InteractiveInput(object):
         edit_parameters.on_click(self.create_edit_parameters)
         button.edit_symbols = edit_symbols
         button.edit_parameters = edit_parameters
-        edit_equations = widgets.ContainerWidget(description='Edit Equations', children=[wi, 
-                                                                                         edit_symbols,
-                                                                                         edit_parameters,
-                                                                                         button])
+        edit_equations = widgets.ContainerWidget(description='Edit Equations', 
+                                                 children=[wi, 
+                                                           edit_symbols,
+                                                           edit_parameters,
+                                                           button])
         wi.visible = False
         edit_symbols.visible = False
         edit_parameters.visible = False
+        if self.ds is not None:
+            edit_symbols.visible = True
+            edit_parameters.visible = True    
         return edit_equations
     
     def make_design_space(self, b):
@@ -144,12 +157,16 @@ class InteractiveInput(object):
         self.constraints = [i.strip() for i in str(b.constraints.value).split(',') if len(i.strip()) > 0] 
         self.cyclical = b.cyclical.value
         self.codominance = b.codominance.value
-        eq = dspace.Equations(self.equations, auxiliary_variables=self.auxiliary, latex_symbols=self.symbols)
+        eq = dspace.Equations(self.equations,
+                              auxiliary_variables=self.auxiliary, 
+                              latex_symbols=self.symbols)
+        self.name = b.name.value
         constraints = self.constraints
         if len(constraints) == 0:
             constraints = None
         self.ds = dspace.DesignSpace(eq, name=b.name.value, constraints=constraints,
-                                     resolve_cycles=self.cyclical, resolve_codominance=self.codominance)
+                                     resolve_cycles=self.cyclical, 
+                                     resolve_codominance=self.codominance)
         if self.pvals == None:
             self.pvals = dspace.VariablePool(names=self.ds.independent_variables)
         else:
@@ -159,10 +176,6 @@ class InteractiveInput(object):
                     pvals[i] = self.pvals[i]
             self.pvals = pvals
         self.update_widgets()
-        plot = MakePlot(self)
-        plot.create_plot_widget()
-        self.figures = DisplayFigures(self)
-        self.figures.create_figures_widget()
         b.wi.visible = False
         b.description = 'Edit Design Space'
         b.edit_symbols.visible = True

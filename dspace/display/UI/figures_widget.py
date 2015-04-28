@@ -160,12 +160,18 @@ class MakePlot(object):
         button.name = 'Interactive Plot (' + str(np.random.randint(0, 1000)) + ')'
         image_widget = widgets.ImageWidget()
         rangex, rangey = self.axes_ranges(b)
-        controller.figures.add_figure(image_widget, title=b.title.value, caption=b.caption.value)
-        interactive_plot = controller.ds.draw_2D_slice_notebook(controller.pvals, str(b.xlabel.value), str(b.ylabel.value),
-                                                              rangex, rangey,
-                                                              {i:[1e-5, 1e5] for i in controller.pvals}, intersections=[1],
-                                                              image_container=image_widget)
-        wi = widgets.ContainerWidget(description=button.name, children=[interactive_plot, button])
+        ## controller.figures.add_figure(image_widget, title=b.title.value, caption=b.caption.value)
+        interactive_plot = controller.ds.draw_2D_slice_notebook(controller.pvals, str(b.xlabel.value),
+                                                                str(b.ylabel.value),
+                                                                rangex, rangey,
+                                                                {i:[1e-5, 1e5] for i in
+                                                                 controller.pvals},
+                                                                intersections=[1],
+                                                                image_container=image_widget)
+        wi = widgets.ContainerWidget(description=button.name,
+                                     children=[interactive_plot, 
+                                               button,
+                                               image_widget])
         controller.update_child(button.name, wi)
         
     def make_static_plot(self, b):
@@ -182,18 +188,16 @@ class MakePlot(object):
         controller.ds.draw_2D_slice(ax, controller.pvals, str(b.xlabel.value), str(b.ylabel.value),
                                     rangex, rangey,
                                     intersections=intersections_dict[intersects])
-        image_widget = widgets.ImageWidget()
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
-        image_widget.value = data
-        controller.figures.add_figure(image_widget, title=b.title.value, caption=b.caption.value)
+        controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value)
         fig=plt.clf()
         
     def make_stability_plot(self, b):
         controller = self.controller
-        fig = plt.figure(figsize=[6, 4], dpi=600)
+        fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
         ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
         ax.set_title('Stability plot')
         plot_data = self.plot_data.children[0]
@@ -202,13 +206,11 @@ class MakePlot(object):
         controller.ds.draw_2D_positive_roots(ax, controller.pvals, str(b.xlabel.value), str(b.ylabel.value),
                                              rangex, rangey,
                                              resolution=resolution)
-        image_widget = widgets.ImageWidget()
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
-        image_widget.value = data
-        controller.figures.add_figure(image_widget, title=b.title.value, caption=b.caption.value)
+        controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value)
         fig=plt.clf()
     
     def make_function_plot(self, b):
@@ -221,21 +223,22 @@ class MakePlot(object):
         zlim = None
         if plot_data.zlim.value == False:
             zlim = [plot_data.zmin.value, plot_data.zmax.value]
-        fig = plt.figure(figsize=[6, 4], dpi=600)
+        fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
         ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
         fn = dspace.Expression(function)
         rangex, rangey = self.axes_ranges(b)
         ax.set_title('$' + fn.latex(substitution_dictionary=controller.symbols) + '$')
-        controller.ds.draw_2D_ss_function(ax, function, controller.pvals, str(b.xlabel.value), str(b.ylabel.value),
+        controller.ds.draw_2D_ss_function(ax, function, controller.pvals, 
+                                          str(b.xlabel.value),
+                                          str(b.ylabel.value),
                                           rangex, rangey, zlim=zlim,
-                                          log_linear=log_linear, resolution=resolution, parallel=parallel)
-        image_widget = widgets.ImageWidget()
+                                          log_linear=log_linear, resolution=resolution, 
+                                          parallel=parallel)
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
-        image_widget.value = data
-        controller.figures.add_figure(image_widget, title=b.title.value, caption=b.caption.value)
+        controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value)
         fig=plt.clf()
         
     def remove_plot(self, b):
@@ -255,7 +258,15 @@ class DisplayFigures(object):
         self.figures_widget = widgets.ContainerWidget()
         controller.update_child('Figures', self.figures_widget)
         
-    def add_figure(self, image_widget, title='', caption = ''):
+    def add_figure(self, image_data, title='', caption = ''):
+        controller = self.controller
+        figures = controller.figure_data
+        figures.append((image_data, title, caption))
+        self.add_figure_widget(image_data, title=title, caption = caption)
+        
+    def add_figure_widget(self, image_data, title='', caption = ''):
+        image_widget = widgets.ImageWidget()
+        image_widget.value = image_data
         children = [i for i in self.figures_widget.children]      
         if len(title) > 0:
             title = title + '.'
@@ -266,4 +277,10 @@ class DisplayFigures(object):
         wi = widgets.PopupWidget(children=[image_widget, html_widget])
         children.append(wi)
         self.figures_widget.children = children
+        
+    def load_widgets(self):
+        controller = self.controller
+        for data in controller.figure_data:
+            self.add_figure_widget(data[0], title=data[1], caption=data[2])
+        
         
