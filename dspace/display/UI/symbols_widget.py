@@ -46,3 +46,4 @@ class EditSymbols(object):
         controller.symbols.update({str(i.description):str(i.value) for i in symbols})
         controller.ds.update_latex_symbols(self.symbols)
         controller.update_child('Edit Symbols', None)
+        controller.display_system.update_display()

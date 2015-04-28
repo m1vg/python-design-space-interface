@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import cStringIO
 from matplotlib.backends.backend_agg import FigureCanvasAgg  
 
+from system_widget import DisplaySystem
 from symbols_widget import EditSymbols
 from cases_widget import CasesTable
 from figures_widget import MakePlot, DisplayFigures
@@ -34,6 +35,7 @@ class InteractiveInput(object):
         setattr(self, 'widget', widgets.TabWidget())
         setattr(self, 'figures', None)
         setattr(self, 'figure_data', [])
+        setattr(self, 'display_system', None)
         
         if equations is not None:
             self.equations = equations
@@ -92,13 +94,14 @@ class InteractiveInput(object):
         self.widget.children = children
         
     def update_widgets(self):
+        self.display_system = DisplaySystem(self)
+        self.display_system.create_system_widget()
         cases_table = CasesTable(self)
         cases_table.cases_table_widget()
         plot = MakePlot(self)
         plot.create_plot_widget()
         self.figures = DisplayFigures(self)
         self.figures.create_figures_widget()
-
         
     def edit_equations_widget(self):
         name = widgets.TextWidget(description='Name', value=self.name)
