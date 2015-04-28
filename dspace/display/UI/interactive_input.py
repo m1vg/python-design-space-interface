@@ -53,14 +53,16 @@ class InteractiveInput(object):
         if parameters is not None:
             self.pvals = dspace.VariablePool(names = parameters.keys())
             self.pvals.update(parameters)
-        
-        display(self.widget)
-        self.update_child('System', self.edit_equations_widget())
+           
+        display(self.widget)   
+        self.update_child('Options', self.edit_equations_widget())
         
     def reload_widgets(self):
         self.widget = widgets.TabWidget()
         display(self.widget)
-        self.update_child('System', self.edit_equations_widget())
+        self.update_child('Options', self.edit_equations_widget())
+        if self.ds is None:
+            return
         self.update_widgets()
         self.figures.load_widgets()
         
