@@ -19,8 +19,13 @@ from parameters_widget import EditParameters
 
 class InteractiveInput(object):
     
-    def __init__(self, name='', equations=None, parameters=None, auxiliary_variables=[], constraints=[], symbols={}, 
-                 resolve_cycles=False, resolve_codominance=False, **kwargs):
+    def __init__(self, name='', equations=None, parameters=None, 
+                 auxiliary_variables=[], constraints=[], symbols={}, 
+                 resolve_cycles=False, resolve_codominance=False,
+                 center_axes=False, xaxis=None, yaxis=None,
+                 range_x=[1e-3, 1e3], range_y=[1e-3, 1e3],
+                 zlim=None, by_signature=False,
+                 **kwargs):
         ''' 
         '''
         setattr(self, 'ds', None)
@@ -36,7 +41,10 @@ class InteractiveInput(object):
         setattr(self, 'figures', None)
         setattr(self, 'figure_data', [])
         setattr(self, 'display_system', None)
-        
+        setattr(self, 'options', dict(kwargs))
+        self.options.update(center_axes=center_axes, xaxis=xaxis, yaxis=yaxis,
+                            range_x=range_x, range_y=range_y, zlim=zlim, 
+                            by_signature=by_signature)
         if equations is not None:
             self.equations = equations
             if isinstance(equations, list) is False:
@@ -58,6 +66,12 @@ class InteractiveInput(object):
            
         display(self.widget)   
         self.update_child('Options', self.edit_equations_widget())
+        
+    def defaults(self, key):
+        if key in self.options:
+            return self.options[key]
+        else:
+            return None        
         
     def reload_widgets(self):
         self.widget = widgets.TabWidget()
@@ -81,17 +95,20 @@ class InteractiveInput(object):
         for i in xrange(len(children)):
             if children[i].description == name:
                 added = True
-                children.pop(i)
+                old = children.pop(i)
                 if child is not None:
                     child.description = name
                     children.insert(i, child)
-                    self.widget.set_title(i, name)
+                break
         if added is False:
             if child is not None:
                 child.description = name
                 children.append(child)
                 self.widget.set_title(len(children)-1, name)
+        for (i, child) in enumerate(children):
+            self.widget.set_title(i, child.description)
         self.widget.children = children
+        
         
     def update_widgets(self):
         self.display_system = DisplaySystem(self)
@@ -102,7 +119,7 @@ class InteractiveInput(object):
         plot.create_plot_widget()
         self.figures = DisplayFigures(self)
         self.figures.create_figures_widget()
-        
+                
     def edit_equations_widget(self):
         name = widgets.TextWidget(description='Name', value=self.name)
         equations=widgets.TextareaWidget(description='Equations',
@@ -188,8 +205,8 @@ class InteractiveInput(object):
     
     def create_edit_symbols(self, b):
         Edit = EditSymbols(self)
-        Edit.edit_symbols_widget()
-        
+        Edit.edit_symbols_widget() 
+               
     def create_edit_parameters(self, b):
         Edit = EditParameters(self)
         Edit.edit_parameters_widget()

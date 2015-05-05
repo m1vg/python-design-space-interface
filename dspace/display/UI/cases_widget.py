@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import cStringIO
 from matplotlib.backends.backend_agg import FigureCanvasAgg  
 
+from case_widget import DisplayCase
 
 class CasesTable(object):
     
@@ -20,9 +21,6 @@ class CasesTable(object):
     
     def cases_table_widget(self):
         controller = self.controller
-#         html_widget = widgets.HTMLWidget(value='')
-#         table = widgets.ContainerWidget(children=[html_widget])
-#         table.visible = False
         options = widgets.RadioButtonsWidget(values = ['None',
                                                        'All',
                                                        'Valid',
@@ -34,21 +32,34 @@ class CasesTable(object):
         extra_columns = widgets.ContainerWidget(children=[])
         add_column.on_click(self.add_cases_column)
         add_column.column_block = extra_columns
-        cases.placeholder='Insert cases by signature, seperated by commas, for user specified cases.  Wildcards are allowed.'
+        case_id = widgets.TextWidget(description='Display Case')
+        ## by_signature = widgets.CheckboxWidget(description='By signature', value=True)
+        display_case = widgets.ButtonWidget(description='Display Case')
+        display_case.by_signature = by_signature
+        display_case.case_id = case_id
+        show_cases = widgets.ContainerWidget(children = [case_id, by_signature, display_case])
+        display_case.on_click(self.display_case)
         wi = widgets.ContainerWidget(children=[options, cases, by_signature, add_column, extra_columns])
         button = widgets.ButtonWidget(value=False, description='Show Cases Options')
         button.on_click(self.show_cases)
-#         button.html = html_widget
         button.wi = wi
-#         button.table = table
+        button.display_cases = show_cases
         button.options = options
         button.cases = cases
         button.by_signature = by_signature
         button.extra_columns = extra_columns
-        cases_table = widgets.ContainerWidget(description='Cases Table', children=[wi, button, self.table])
+        cases_table = widgets.ContainerWidget(description='Cases Table', children=[show_cases, wi, button, self.table])
         controller.update_child('Cases', cases_table)
         wi.visible = False
     
+    def display_case(self, b):
+        controller = self.controller
+        by_signature = b.by_signature.value
+        case_id = str(b.case_id.value)
+        display_case = DisplayCase(controller, case_id, by_signature=by_signature)
+        display_case.create_case_widget()
+
+        
     def add_cases_column(self, b):
         controller = self.controller
         children = [i for i in b.column_block.children]
@@ -72,16 +83,19 @@ class CasesTable(object):
         controller = self.controller
         if controller.ds == None:
             b.wi.visible = False
+            b.display_cases.visible = True
             self.table.children = []
             b.description = 'Show Cases Options'
             return
         if b.wi.visible == False:
             self.table.children = []
             b.wi.visible = True
+            b.display_cases.visible = False
             b.description = 'Done'
             return 
         self.create_case_table(b, mode=str(b.options.value))
         b.wi.visible = False
+        b.display_cases.visible = True
         b.description = 'Show Cases Options'
     
     def create_case_table(self, b, mode='All'):

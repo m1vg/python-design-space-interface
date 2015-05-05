@@ -115,7 +115,7 @@ class CyclicalCase(Case):
             equations.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
         DSSecureFree(eqs)
-        return Equations(equations)
+        return Equations(equations, latex_symbols=self._latex)
     
     @property
     def ssystem(self):
@@ -158,7 +158,7 @@ class CyclicalCase(Case):
             conditions.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
-        return Equations(conditions)
+        return Equations(conditions, latex_symbols=self._latex)
         
     @property
     def conditions_log(self):
@@ -168,7 +168,7 @@ class CyclicalCase(Case):
             conditions.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
-        return Equations(conditions)
+        return Equations(conditions, latex_symbols=self._latex)
     
     @property
     def boundaries(self):
@@ -268,6 +268,12 @@ class CyclicalCase(Case):
         cases.sort()
         return cases
     
+    def is_valid(self, p_bounds=None, strict=True):
+        valid_subcases = self.valid_subcases(p_bounds=p_bounds)
+        if len(valid_subcases) > 0:
+            return True
+        return False
+
     def vertices_2D_slice(self, p_vals, x_variable, y_variable, range_x=None, range_y=None,
                           log_out=False):
         lower = p_vals.copy()

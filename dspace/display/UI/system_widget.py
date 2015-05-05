@@ -33,8 +33,8 @@ class DisplaySystem(object):
         controller = self.controller 
         html_string = '<b>Name:</b> ' + controller.name + '<br>'
         html_string += '<b>Number of Cases:</b> ' + str(controller.ds.number_of_cases) + '<br>'
-        html_string += '<b>System Signature:</b> ' + controller.ds.signature + '<br><hr>'
-        html_string += '<b>Equations:</b><br>'
+        html_string += '<b>System Signature:</b> [' + controller.ds.signature + ']<br><hr>'
+        html_string += '<b>Equations:</b><br><br>'
         latex_string = controller.ds.equations._repr_latex_()
         self.latex.value = latex_string
         self.html.value = html_string

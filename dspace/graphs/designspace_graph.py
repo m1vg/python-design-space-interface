@@ -17,19 +17,18 @@ class GraphGenerator(object):
         setattr(self, '_included_variables', included_variables)
         setattr(self, '_flux_nodes', dict())
         variables = list()
-        for i in design_space.dependent_variables:
-            variables.append(i)
-        for i in design_space.independent_variables:
-            variables.append(i)
+        variables += design_space.dependent_variables + design_space.independent_variables
         setattr(self, '_variables', variables)
         
-    def graph_description(self, included_independent_variables=None):
+    def graph_description(self, graph_type='neato', included_independent_variables=None):
         ds= self._design_space
         gma = DSDesignSpaceGMASystem(ds._swigwrapper)
         connectivity = DSGMASystemNetworkConnectivity(gma)
         influences = list()
         gv_string = ''
         signature = ds._signature
+        exclude_variables = self._design_space.independent_variables
+        exclude_variables += self._design_space.auxiliary_variables
         for i in xrange(len(connectivity)):
             k = i
             term = connectivity[i]
@@ -43,15 +42,20 @@ class GraphGenerator(object):
             influences.append((key,[j for j in xrange(len(term)) if term[j] > 0])) 
         flux_data = dict()
         for i in xrange(len(influences)):
+            variable = self._variables[influences[i][0][0]//2]
+            if variable in exclude_variables:
+                if variable not in self._included_variables:
+                        continue
             if influences[i][0][0] % 2 == 1:
                 data = [self._variables[influences[i][0][0]//2], '->']
             else:
                 data = ['->', self._variables[influences[i][0][0]//2]]
             influence = list()
             for j in influences[i][1]:
-                if j >= len(self._design_space.equations): 
-                    if self._variables[j] not in self._included_variables:
-                       continue
+                variable = self._variables[j]
+                if variable in exclude_variables:
+                    if variable not in self._included_variables:
+                        continue
                 influence.append(self._variables[j])
             flux_data[i] = [[data], influence]
         pp_sets = list()
@@ -82,37 +86,39 @@ class GraphGenerator(object):
                 if first_index is None:
                     first_index = j
                     continue
+                if j not in flux_data:
+                    break
                 flux_data[first_index][0] += flux_data[j][0]
                 flux_data[first_index][1] += flux_data[j][1]
                 flux_data.pop(j)
-        print 'digraph {\n    graph[layout=neato,normalize=true];\n    node[shape=plaintext];\n    edge[weight=2]'
+        gv_string += 'digraph {\n    graph[layout='+graph_type + ',normalize=true];\n    node[shape=plaintext];\n    edge[weight=2]'
         for i in flux_data:
-            print '    ' + str(i) + '[shape=circle,width=.0,height=.0,label=""];'
+            gv_string += '    ' + str(i) + '[shape=circle,width=.0,height=.0,label=""];'
             data = flux_data[i][0]
             external = set(flux_data[i][1])
             for j in data:
                 ## print external, j[0], j[1]
                 if j[0] == '->':
                     if len(data) == 1:
-                        print '    start' + str(i) + ' -> ' + str(i) + '[arrowhead=none];'
-                        print '    start' + str(i) + ' [shape=circle,width=.01,height=.01,label=""];'
-                    print '    ' + str(i) + j[0] + j[1] + ';'
+                        gv_string +=  '    start' + str(i) + ' -> ' + str(i) + '[arrowhead=none];'
+                        gv_string += '    start' + str(i) + ' [shape=circle,width=.01,height=.01,label=""];'
+                    gv_string += '    ' + str(i) + j[0] + j[1] + ';'
                     if external.issuperset([j[1]]):
                         external.remove(j[1])
                 else:
-                    print '    ' + j[0] + j[1] + str(i) + '[arrowhead=none];'
+                    gv_string += '    ' + j[0] + j[1] + str(i) + '[arrowhead=none];'
                     if len(data) == 1:
-                        print '    ' + str(i) + ' -> end' + str(i) + ';'
-                        print '     end' + str(i)+ ' [shape=circle,width=.01,height=.01,label=""];'
+                        gv_string += '    ' + str(i) + ' -> end' + str(i) + ';'
+                        gv_string += '     end' + str(i)+ ' [shape=circle,width=.01,height=.01,label=""];'
                     if external.issuperset([j[0]]):
                         external.remove(j[0])
             for k in external:
                 if k in self._design_space.dependent_variables:
-                    print '    ' + k + '->' + str(i) + '[weight=1];'
+                    gv_string += '    ' + k + '->' + str(i) + '[weight=1];'
                 elif k in self._included_variables:
-                    print '    ' + k + '->' + str(i) + '[weight=1];'                        
-        print '};'
-        return flux_data
+                    gv_string += '    ' + k + '->' + str(i) + '[weight=1];'                        
+        gv_string += '}\n'
+        return gv_string, flux_data
         
     def connectivity(self):
         ds= self._design_space

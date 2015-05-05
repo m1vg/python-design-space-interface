@@ -37,13 +37,9 @@ class EditSymbols(object):
     def update_symbols(self, b):
         symbols = b.symbols
         controller = self.controller 
-        if b.wi.visible == False:
-            for i in symbols:
-                i.value = self.symbols[str(i.description)]
-            b.wi.visible = True
-            b.description = 'Done'
-            return 
         controller.symbols.update({str(i.description):str(i.value) for i in symbols})
-        controller.ds.update_latex_symbols(self.symbols)
+        controller.ds.update_latex_symbols(controller.symbols)
         controller.update_child('Edit Symbols', None)
         controller.display_system.update_display()
+        
+        

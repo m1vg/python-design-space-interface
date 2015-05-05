@@ -23,19 +23,29 @@ class MakePlot(object):
 
     def create_plot_widget(self):
         controller = self.controller
+        options = self.controller.options
         if controller.ds is None:
             return
+        xaxis = controller.defaults('xaxis')
+        if xaxis is None:
+            xaxis = controller.ds.independent_variables[0]
+        yaxis = controller.defaults('yaxis')
+        if yaxis is None:
+            yaxis = controller.ds.independent_variables[1]
+        center = controller.defaults('center_axes')
+        range_x = controller.defaults('range_x')
+        range_y = controller.defaults('range_y') 
         xlabel = widgets.DropdownWidget(description='X-Axis',
                                         values=controller.ds.independent_variables, 
-                                        value=controller.ds.independent_variables[0])
+                                        value=xaxis)
         ylabel = widgets.DropdownWidget(description='Y-Axis',
                                         values=controller.ds.independent_variables,
-                                        value=controller.ds.independent_variables[1])
-        xmin = widgets.FloatTextWidget(description='X-Min',value=1e-3)
-        xmax = widgets.FloatTextWidget(description='X-Max',value=1e3)
-        ymin = widgets.FloatTextWidget(description='Y-Min',value=1e-3)
-        ymax = widgets.FloatTextWidget(description='Y-Max',value=1e3)
-        center_axes = widgets.CheckboxWidget(description='Center Axes', value=False)
+                                        value=yaxis)
+        xmin = widgets.FloatTextWidget(description='X-Min',value=range_x[0])
+        xmax = widgets.FloatTextWidget(description='X-Max',value=range_x[1])
+        ymin = widgets.FloatTextWidget(description='Y-Min',value=range_y[0])
+        ymax = widgets.FloatTextWidget(description='Y-Max',value=range_y[1])
+        center_axes = widgets.CheckboxWidget(description='Center Axes', value=center)
         plot_type = widgets.DropdownWidget(description='Plot Type',
                                            values=['Design Space (interactive)',
                                                    'Design Space',
@@ -71,6 +81,7 @@ class MakePlot(object):
         
     def update_plot_widget(self, name, value):
         controller = self.controller
+        zlim = controller.defaults('zlim')
         if value == 'Design Space (interactive)':
             wi = widgets.ContainerWidget(children=[])
             self.plot_data.children = [wi]
@@ -111,9 +122,12 @@ class MakePlot(object):
                 self.caption.value = 'Steady state concentration shown as a heat map on the z-axis.'
             resolution_widget = widgets.FloatTextWidget(description='Resolution', value=100)
             parallel_widget = widgets.CheckboxWidget(description='Compute in Parallel', value=False)
-            zlim_widget = widgets.CheckboxWidget(description='Automatic Z-Lim', value=True)
-            zmin_widget = widgets.FloatTextWidget(description='Z-Min', value=0.)
-            zmax_widget = widgets.FloatTextWidget(description='Z-Max', value=0.)
+            zlim_auto = (zlim is None)
+            zlim_widget = widgets.CheckboxWidget(description='Automatic Z-Lim', value=zlim_auto)
+            if zlim_auto is True:
+                zlim = [0., 0.]
+            zmin_widget = widgets.FloatTextWidget(description='Z-Min', value=zlim[0])
+            zmax_widget = widgets.FloatTextWidget(description='Z-Max', value=zlim[1])
             wi = widgets.ContainerWidget(children=[function_widget, resolution_widget,
                                                    zlim_widget, zmin_widget, zmax_widget,
                                                    parallel_widget, log_linear_widget])
