@@ -22,9 +22,9 @@ class InteractiveInput(object):
     def __init__(self, name='', equations=None, parameters=None, 
                  auxiliary_variables=[], constraints=[], symbols={}, 
                  resolve_cycles=False, resolve_codominance=False,
-                 center_axes=False, xaxis=None, yaxis=None,
-                 range_x=[1e-3, 1e3], range_y=[1e-3, 1e3],
-                 zlim=None, by_signature=False,
+                 centered_axes=False, xaxis=None, yaxis=None,
+                 x_range=[1e-3, 1e3], y_range=[1e-3, 1e3],
+                 zlim=None, by_signature=False, parameter_dict=None,
                  **kwargs):
         ''' 
         '''
@@ -42,9 +42,9 @@ class InteractiveInput(object):
         setattr(self, 'figure_data', [])
         setattr(self, 'display_system', None)
         setattr(self, 'options', dict(kwargs))
-        self.options.update(center_axes=center_axes, xaxis=xaxis, yaxis=yaxis,
-                            range_x=range_x, range_y=range_y, zlim=zlim, 
-                            by_signature=by_signature)
+        self.options.update(center_axes=centered_axes, xaxis=xaxis, yaxis=yaxis,
+                            range_x=x_range, range_y=y_range, zlim=zlim, 
+                            by_signature=by_signature, parameter_dict=parameter_dict)
         if equations is not None:
             self.equations = equations
             if isinstance(equations, list) is False:
@@ -188,7 +188,8 @@ class InteractiveInput(object):
             constraints = None
         self.ds = dspace.DesignSpace(eq, name=b.name.value, constraints=constraints,
                                      resolve_cycles=self.cyclical, 
-                                     resolve_codominance=self.codominance)
+                                     resolve_codominance=self.codominance,
+                                     parameter_dict=self.options['parameter_dict'])
         if self.pvals == None:
             self.pvals = dspace.VariablePool(names=self.ds.independent_variables)
         else:
