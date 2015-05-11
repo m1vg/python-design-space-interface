@@ -187,7 +187,6 @@ def sampled_data(case, function, p_vals, x_variable, y_variable, points, x, y, p
 def interpolated_data_new(case, function, p_vals, x_variable, y_variable,
                           range_x, range_y, x_indices, y_indices, path,
                           resolution, alt_function=None):
-
     f_val = list()
     alt_f_val = list()
     params = VariablePool(names=case.independent_variables)
@@ -251,10 +250,13 @@ def sample_data_new(case, function, p_vals, x_variable, y_variable,
     params = VariablePool(p_vals)  
     delta_x = (range_x[1]-range_x[0])/resolution
     delta_y = (range_y[1]-range_y[0])/resolution
-    x = np.linspace(range_x[0] + delta_x*x_indices[0], range_x[0] + delta_x * x_indices[1], 1+x_indices[1] - x_indices[0])
-    y = np.linspace(range_y[0] + delta_y*y_indices[0], range_y[0] + delta_y * y_indices[1], 1+y_indices[1] - y_indices[0])
+    x = np.linspace(range_x[0] + delta_x*x_indices[0], 
+                    range_x[0] + delta_x * x_indices[1], 
+                    1+x_indices[1] - x_indices[0])
+    y = np.linspace(range_y[0] + delta_y*y_indices[0], 
+                    range_y[0] + delta_y * y_indices[1], 
+                    1+y_indices[1] - y_indices[0])
     X,Y = np.meshgrid(x, y)
-    ## Z = np.ma.array(np.zeros((len(x), len(y))), mask=np.nan)#mt.mlab.griddata(x, y, np.repeat(0, len(x)), X, Y)
     Z = np.zeros((len(y), len(x)))
     if alt_function is not None:
         Z = np.zeros((len(x), len(y))) #mt.mlab.griddata(x, y, np.repeat(0, len(x)), X, Y)
@@ -294,11 +296,96 @@ def sample_data_new(case, function, p_vals, x_variable, y_variable,
         Z = [Z, Z_alt]
     return X,Y,Z,clim
     
+
+@monkeypatch_method(dspace.models.case.Case)
+def draw_2D_dominant_eigenvalue_data(self, p_vals, x_variable, y_variable,
+                                     range_x, range_y, 
+                                     resolution=100, component='real'): 
+    params = VariablePool(p_vals)
+    clim = None  
+    x_indices, y_indices, path = generate_plot_lattice_bounds_new(self, p_vals,
+                                                  x_variable, y_variable,
+                                                  range_x, range_y, resolution)
+    range_x = np.log10(range_x)
+    range_y = np.log10(range_y)
+    delta_x = (range_x[1]-range_x[0])/resolution
+    delta_y = (range_y[1]-range_y[0])/resolution
+    x = np.linspace(range_x[0] + delta_x*x_indices[0], 
+                    range_x[0] + delta_x * x_indices[1], 
+                    1+x_indices[1] - x_indices[0])
+    y = np.linspace(range_y[0] + delta_y*y_indices[0], 
+                    range_y[0] + delta_y * y_indices[1], 
+                    1+y_indices[1] - y_indices[0])
+    x = np.round(x, 10)
+    y = np.round(y, 10)
+    X,Y = np.meshgrid(x, y)
+    Z = np.zeros((len(y), len(x)))
+    ssys = self.ssystem.remove_algebraic_constraints()
+    for (i, yi) in enumerate(y):
+        params[y_variable] = 10**yi
+        for (j, xj) in enumerate(x):
+            if path.contains_point((xj, yi)) == False:
+                Z[i,j] = np.nan
+                continue
+            params[x_variable] = 10**xj
+            eigen_values = ssys.eigenvalues(params)
+            if component == 'real':
+                Z[i,j] = max(eigen_values.real)
+            else:
+                Z[i,j] = max(eigen_values.imag)
+            if clim is None:
+                clim = [Z[i,j], Z[i,j]]
+            else:
+                clim[0] = min(clim[0], Z[i,j])
+                clim[1] = max(clim[1], Z[i,j])
+    Z = np.ma.array(Z, mask=np.isnan(Z))
+    interpolated_path = path.interpolated((len(path.vertices)-1)*resolution)
+    for (xj, yi) in interpolated_path.vertices:
+        j = np.argmin(abs(x-xj))
+        i = np.argmin(abs(y-yi))
+        params[x_variable] = 10**x[j]
+        params[y_variable] = 10**y[i]
+        eigen_values = ssys.eigenvalues(params)
+        if component == 'real':
+            Z[i,j] = max(eigen_values.real)
+        else:
+            Z[i,j] = max(eigen_values.imag)
+        if clim is None:
+            clim = [Z[i,j], Z[i,j]]
+        else:
+            clim[0] = min(clim[0], Z[i,j])
+            clim[1] = max(clim[1], Z[i,j])
+    return (X, Y, Z, clim, path)
+        
+@monkeypatch_method(dspace.models.case.Case)
+def draw_2D_dominant_eigenvalue(self, ax, p_vals, x_variable, y_variable,
+                                range_x, range_y, resolution=100,
+                                zlim=None, component='real', **kwargs):
     
+    X, Y, Z, clim, path = self.draw_2D_dominant_eigenvalue_data(p_vals,
+                                                                x_variable,
+                                                                y_variable,
+                                                                range_x,
+                                                                range_y,
+                                                                resolution=resolution,
+                                                                component=component
+                                                                )
+    if 'cmap' in kwargs:
+        cmap = kwargs.pop('cmap') 
+        cmap.set_bad((0, 0, 0, 0))
+    else:
+        cmap = mt.cm.jet
+        cmap.set_bad((0., 0., 0., 0.))
+    pc = self.draw_2D_ss_function_from_data(ax, X, Y, Z, clim, path,
+                                            zlim=zlim, cmap=cmap, **kwargs)
+    ax.set_xlim(np.log10(range_x))
+    ax.set_ylim(np.log10(range_y))
+    return pc
+
 @monkeypatch_method(dspace.models.case.Case)
 def draw_2D_ss_function_data(self, function, p_vals, x_variable, y_variable,
-                        range_x, range_y, 
-                        resolution=100, log_linear=False): 
+                             range_x, range_y, 
+                             resolution=100, log_linear=False): 
     ## points, x, y, path = generate_plot_lattice_bounds(self, p_vals,
     ##                                                   x_variable, y_variable,
     ##                                                   range_x, range_y, resolution)
@@ -318,18 +405,7 @@ def draw_2D_ss_function_data(self, function, p_vals, x_variable, y_variable,
                                      [log10(i) for i in range_y],
                                      x, y, path, resolution)
     ## patch = mt.patches.PathPatch(path, fc='none', ec='none', lw=.5)
-    return (X, Y, Z, clim, path)
-    pc = ax.pcolor(X, Y, Z, rasterized=True, **kwargs)
-    ax.add_patch(patch)
-    pc.set_clip_path(patch)
-    if zlim is None:
-        zlim=clim
-    if zlim is not None:    
-        pc.set_clim(zlim)
-    ax.set_xlim(np.log10(range_x))
-    ax.set_ylim(np.log10(range_y))
-    return pc
-        
+    return (X, Y, Z, clim, path)        
     
 @monkeypatch_method(dspace.models.case.Case)
 def draw_2D_ss_function_from_data(self, ax, X, Y, Z, clim, path, zlim=None, **kwargs):

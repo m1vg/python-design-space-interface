@@ -9,6 +9,7 @@ from dspace.models.base import Equations,Model
 from dspace.models.gma import GMASystem
 from dspace.expressions import Expression
 
+import numpy as np
         
 class SSystem(GMASystem):
 
@@ -199,6 +200,17 @@ class SSystem(GMASystem):
         if has_marginal > 0:
             positive_roots = str(positive_roots) + '*'
         return positive_roots
+        
+    def eigenvalues(self, parameter_values):
+        
+        if DSVariablePoolNumberOfVariables(DSSSystemXd_a(self._swigwrapper)) > 0:
+            raise TypeError, 'S-System must be reduced to ODE-only system'
+        ss = self.steady_state(parameter_values)
+        fluxes = self.steady_state_flux(parameter_values)
+        turnover = np.array(zip([fluxes['V_'+i]/ss[i] for i in self.dependent_variables]))
+        FAd = turnover * np.array(self.Ad)
+        eigenvalues = np.linalg.eig(FAd)[0]
+        return eigenvalues
     
     def routh_index(self, parameter_values):
         
