@@ -53,6 +53,7 @@ class MakePlot(object):
                                                    'Steady State Flux',
                                                    'Steady State Function',
                                                    'Stability',
+                                                   'Dominant Eigenvalue'
                                                    ],
                                            value='Design Space (interactive)')
         title_widget = widgets.TextWidget(description='Title')
@@ -105,6 +106,33 @@ class MakePlot(object):
             self.plot_data.children = [wi]
             self.title.value = 'System design space showing stability of the fixed points'
             self.caption.value = 'Number of eigenvalues with positive real part represented as a heat map on the z-axis.'
+        elif value == 'Dominant Eigenvalue':
+            component_widget = widgets.DropdownWidget(description='Complex component',
+                                                      values=['Real', 'Imaginary'],
+                                                      value='Real')
+            resolution_widget = widgets.FloatTextWidget(description='Resolution', value=100)
+            zlim_auto = (zlim is None)
+            zlim_widget = widgets.CheckboxWidget(description='Automatic Z-Lim', value=zlim_auto)
+            if zlim_auto is True:
+                zlim = [0., 0.]
+            zmin_widget = widgets.FloatTextWidget(description='Z-Min', value=zlim[0])
+            zmax_widget = widgets.FloatTextWidget(description='Z-Max', value=zlim[1])
+            parallel_widget = widgets.CheckboxWidget(description='Compute in Parallel', value=False)
+            wi = widgets.ContainerWidget(children=[component_widget, 
+                                                   resolution_widget,
+                                                   zlim_widget,
+                                                   zmin_widget,
+                                                   zmax_widget,
+                                                   parallel_widget])
+            wi.component = component_widget
+            wi.resolution = resolution_widget
+            wi.parallel = parallel_widget
+            wi.zlim = zlim_widget
+            wi.zmin = zmin_widget
+            wi.zmax = zmax_widget
+            self.plot_data.children = [wi]
+            self.title.value = 'System design space showing the dominant eigenvalue of the fixed points'
+            self.caption.value = 'Dominant eigenvalue represented as a heat map on the z-axis.'
         elif value in ['Steady State Concentration', 'Steady State Flux', 'Steady State Function']:
             log_linear_widget = widgets.CheckboxWidget(description='Function is log linear', value=True)
             if value == 'Steady State Flux':
@@ -153,6 +181,8 @@ class MakePlot(object):
             self.make_static_plot(b)
         elif b.plot_type.value == 'Stability':
             self.make_stability_plot(b)
+        elif b.plot_type.value == 'Dominant Eigenvalue':
+            self.make_eigenvalue_plot(b)
         else:
             self.make_function_plot(b)
         b.description = 'Add Plot'
@@ -174,7 +204,6 @@ class MakePlot(object):
         button.name = 'Interactive Plot (' + str(np.random.randint(0, 1000)) + ')'
         image_widget = widgets.ImageWidget()
         rangex, rangey = self.axes_ranges(b)
-        ## controller.figures.add_figure(image_widget, title=b.title.value, caption=b.caption.value)
         interactive_plot = controller.ds.draw_2D_slice_notebook(controller.pvals, str(b.xlabel.value),
                                                                 str(b.ylabel.value),
                                                                 rangex, rangey,
@@ -248,6 +277,33 @@ class MakePlot(object):
                                           rangex, rangey, zlim=zlim,
                                           log_linear=log_linear, resolution=resolution, 
                                           parallel=parallel)
+        canvas = FigureCanvasAgg(fig) 
+        buf = cStringIO.StringIO()
+        canvas.print_png(buf)
+        data = buf.getvalue()
+        controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value)
+        fig=plt.clf()
+        
+    def make_eigenvalue_plot(self, b):
+        controller = self.controller
+        plot_data = self.plot_data.children[0]
+        component = str(plot_data.component.value)
+        resolution = plot_data.resolution.value
+        parallel = plot_data.parallel.value
+        zlim = None
+        if plot_data.zlim.value == False:
+            zlim = [plot_data.zmin.value, plot_data.zmax.value]
+        fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
+        ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
+        rangex, rangey = self.axes_ranges(b)
+        ax.set_title('Dominant Eigenvalue ('+component+')')
+        controller.ds.draw_2D_dominant_eigenvalues(ax, controller.pvals, 
+                                                   str(b.xlabel.value),
+                                                   str(b.ylabel.value),
+                                                   rangex, rangey, zlim=zlim,
+                                                   component=component.lower(),
+                                                   resolution=resolution, 
+                                                   parallel=parallel)
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
