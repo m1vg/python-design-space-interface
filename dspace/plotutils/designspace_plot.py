@@ -708,7 +708,7 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
 def draw_2D_dominant_eigenvalues(self, ax, p_vals, x_variable, y_variable, 
                                  range_x, range_y, resolution=100, component='real', 
                                  zlim=None, included_cases=None, colorbar=True,
-                                 cmap=mt.cm.jet, parallel=False, **kwargs):                         
+                                 cmap=mt.cm.jet, parallel=False, cmp=None, **kwargs):                         
     p_bounds = dict(p_vals)
     p_bounds[x_variable] = range_x
     p_bounds[y_variable] = range_y
@@ -765,7 +765,8 @@ def draw_2D_dominant_eigenvalues(self, ax, p_vals, x_variable, y_variable,
                                                     range_x, range_y,
                                                     resolution=resolution,
                                                     component=component,
-                                                    cmap=cmap, **kwargs)
+                                                    cmap=cmap, cmp=cmp,
+                                                    **kwargs)
         if isinstance(pc, list) is True:
             for apc in pc:
                 lims = apc.get_clim()

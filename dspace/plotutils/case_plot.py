@@ -299,7 +299,7 @@ def sample_data_new(case, function, p_vals, x_variable, y_variable,
 
 @monkeypatch_method(dspace.models.case.Case)
 def draw_2D_dominant_eigenvalue_data(self, p_vals, x_variable, y_variable,
-                                     range_x, range_y, 
+                                     range_x, range_y, cmp=None,
                                      resolution=100, component='real'): 
     params = VariablePool(p_vals)
     clim = None  
@@ -329,10 +329,13 @@ def draw_2D_dominant_eigenvalue_data(self, p_vals, x_variable, y_variable,
                 continue
             params[x_variable] = 10**xj
             eigen_values = ssys.eigenvalues(params)
-            if component == 'real':
-                Z[i,j] = max(eigen_values.real)
+            if cmp is None:
+                if component == 'real':
+                    Z[i,j] = max(eigen_values.real)
+                else:
+                    Z[i,j] = max(eigen_values.imag)
             else:
-                Z[i,j] = max(eigen_values.imag)
+                Z[i,j] = cmp(eigen_values)
             if clim is None:
                 clim = [Z[i,j], Z[i,j]]
             else:
@@ -346,10 +349,13 @@ def draw_2D_dominant_eigenvalue_data(self, p_vals, x_variable, y_variable,
         params[x_variable] = 10**x[j]
         params[y_variable] = 10**y[i]
         eigen_values = ssys.eigenvalues(params)
-        if component == 'real':
-            Z[i,j] = max(eigen_values.real)
+        if cmp is None:
+            if component == 'real':
+                Z[i,j] = max(eigen_values.real)
+            else:
+                Z[i,j] = max(eigen_values.imag)
         else:
-            Z[i,j] = max(eigen_values.imag)
+            Z[i,j] = cmp(eigen_values)
         if clim is None:
             clim = [Z[i,j], Z[i,j]]
         else:
@@ -360,7 +366,8 @@ def draw_2D_dominant_eigenvalue_data(self, p_vals, x_variable, y_variable,
 @monkeypatch_method(dspace.models.case.Case)
 def draw_2D_dominant_eigenvalue(self, ax, p_vals, x_variable, y_variable,
                                 range_x, range_y, resolution=100,
-                                zlim=None, component='real', **kwargs):
+                                zlim=None, component='real', cmp=None,
+                                **kwargs):
     
     X, Y, Z, clim, path = self.draw_2D_dominant_eigenvalue_data(p_vals,
                                                                 x_variable,
@@ -368,7 +375,8 @@ def draw_2D_dominant_eigenvalue(self, ax, p_vals, x_variable, y_variable,
                                                                 range_x,
                                                                 range_y,
                                                                 resolution=resolution,
-                                                                component=component
+                                                                component=component,
+                                                                cmp=cmp,
                                                                 )
     if 'cmap' in kwargs:
         cmap = kwargs.pop('cmap') 
