@@ -744,6 +744,10 @@ def DSGMASystemPrecursorProductRelationships(*args):
   return _dspace_interface.DSGMASystemPrecursorProductRelationships(*args)
 DSGMASystemPrecursorProductRelationships = _dspace_interface.DSGMASystemPrecursorProductRelationships
 
+def DSGMASystemEquivalentFluxes(*args):
+  return _dspace_interface.DSGMASystemEquivalentFluxes(*args)
+DSGMASystemEquivalentFluxes = _dspace_interface.DSGMASystemEquivalentFluxes
+
 def DSGMASystemEncode(*args):
   return _dspace_interface.DSGMASystemEncode(*args)
 DSGMASystemEncode = _dspace_interface.DSGMASystemEncode

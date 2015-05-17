@@ -58,7 +58,17 @@ class MakePlot(object):
                                            value='Design Space (interactive)')
         title_widget = widgets.TextWidget(description='Title')
         caption_widget = widgets.TextareaWidget(description='Caption')
-        wi = widgets.ContainerWidget(children=[xlabel, ylabel, plot_type, xmin, xmax, ymin, ymax, center_axes, title_widget, caption_widget])
+        included = controller.defaults('included_cases')
+        if included is None:
+            included = []
+        if isinstance(included, list) is False:
+            included = [included]
+        included_widget = widgets.TextareaWidget(description='Only Cases',
+                                                 value=', '.join(included))
+        wi = widgets.ContainerWidget(children=[xlabel, ylabel, plot_type, 
+                                               xmin, xmax, ymin, ymax,
+                                               center_axes, title_widget, 
+                                               caption_widget, included_widget])
         plot_type.widget_container = wi
         plot_type.on_trait_change(self.update_plot_widget, 'value')
         button = widgets.ButtonWidget(value=False, description='Add Plot')
@@ -73,6 +83,7 @@ class MakePlot(object):
         button.plot_type = plot_type
         button.title = title_widget
         button.caption = caption_widget
+        button.included = included_widget
         button.wi = wi
         self.title = title_widget
         self.caption = caption_widget
@@ -196,6 +207,13 @@ class MakePlot(object):
         ranges = [[pvals[str(b.xlabel.value)]*i for i in ranges[0]],
                   [pvals[str(b.ylabel.value)]*i for i in ranges[1]]]
         return ranges
+    
+    def included_cases(self, b):
+        included = str(b.included.value).strip()
+        if len(included) == 0:
+            return None
+        included = [i.strip() for i in included.split(',')]
+        return included
         
     def make_interactive_plot(self, b):
         controller = self.controller
@@ -230,7 +248,8 @@ class MakePlot(object):
         rangex, rangey = self.axes_ranges(b)
         controller.ds.draw_2D_slice(ax, controller.pvals, str(b.xlabel.value), str(b.ylabel.value),
                                     rangex, rangey,
-                                    intersections=intersections_dict[intersects])
+                                    intersections=intersections_dict[intersects],
+                                    included_cases=self.included_cases(b))
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
@@ -248,7 +267,8 @@ class MakePlot(object):
         rangex, rangey = self.axes_ranges(b)
         controller.ds.draw_2D_positive_roots(ax, controller.pvals, str(b.xlabel.value), str(b.ylabel.value),
                                              rangex, rangey,
-                                             resolution=resolution)
+                                             resolution=resolution,
+                                             included_cases=self.included_cases(b))
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
@@ -276,7 +296,8 @@ class MakePlot(object):
                                           str(b.ylabel.value),
                                           rangex, rangey, zlim=zlim,
                                           log_linear=log_linear, resolution=resolution, 
-                                          parallel=parallel)
+                                          parallel=parallel,
+                                          included_cases=self.included_cases(b))
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
@@ -303,7 +324,8 @@ class MakePlot(object):
                                                    rangex, rangey, zlim=zlim,
                                                    component=component.lower(),
                                                    resolution=resolution, 
-                                                   parallel=parallel)
+                                                   parallel=parallel,
+                                                   included_cases=self.included_cases(b))
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)

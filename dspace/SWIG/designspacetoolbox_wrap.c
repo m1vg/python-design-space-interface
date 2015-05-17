@@ -9264,6 +9264,46 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSGMASystemEquivalentFluxes(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSGMASystem *arg1 = (DSGMASystem *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  DSMatrix *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSGMASystemEquivalentFluxes",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSGMASystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSGMASystemEquivalentFluxes" "', argument " "1"" of type '" "DSGMASystem const *""'"); 
+  }
+  arg1 = (DSGMASystem *)(argp1);
+  result = (DSMatrix *)DSGMASystemEquivalentFluxes((DSGMASystem const *)arg1);
+  {
+    DSUInteger i, j;
+    PyObject *tuple = NULL;
+    DSMatrix *matrix = result;
+    if (matrix == NULL) {
+      Py_RETURN_NONE;
+      //                resultobj = NULL;
+      //                return NULL;
+    }
+    resultobj = PyList_New(DSMatrixRows(matrix));
+    for (i = 0; i < DSMatrixRows(matrix); i++) {
+      tuple = PyTuple_New(DSMatrixColumns(matrix));
+      for (j = 0; j < DSMatrixColumns(matrix); j++) {
+        PyTuple_SetItem(tuple, j, PyFloat_FromDouble(DSMatrixDoubleValue(matrix, i, j)));
+      }
+      PyList_SetItem(resultobj, i, tuple);
+    }
+    DSMatrixFree(matrix);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSGMASystemEncode(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSGMASystem *arg1 = (DSGMASystem *) 0 ;
@@ -19528,6 +19568,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSGMASystemNetworkConnectivity", _wrap_DSGMASystemNetworkConnectivity, METH_VARARGS, NULL},
 	 { (char *)"DSGMASystemFluxDictionary", _wrap_DSGMASystemFluxDictionary, METH_VARARGS, NULL},
 	 { (char *)"DSGMASystemPrecursorProductRelationships", _wrap_DSGMASystemPrecursorProductRelationships, METH_VARARGS, NULL},
+	 { (char *)"DSGMASystemEquivalentFluxes", _wrap_DSGMASystemEquivalentFluxes, METH_VARARGS, NULL},
 	 { (char *)"DSGMASystemEncode", _wrap_DSGMASystemEncode, METH_VARARGS, NULL},
 	 { (char *)"DSGMASystemFromGMASystemMessage", _wrap_DSGMASystemFromGMASystemMessage, METH_VARARGS, NULL},
 	 { (char *)"DSGMASystemDecode", _wrap_DSGMASystemDecode, METH_VARARGS, NULL},

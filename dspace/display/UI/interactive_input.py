@@ -19,13 +19,13 @@ from parameters_widget import EditParameters
 
 class InteractiveInput(object):
     
-    def __init__(self, name='', equations=None, parameters=None, 
-                 auxiliary_variables=[], constraints=[], symbols={}, 
-                 resolve_cycles=False, resolve_codominance=False,
+    def __init__(self, name='', equations=None, parameters=None,
+                 get_parameters=None, auxiliary_variables=[], constraints=[],
+                 symbols={}, resolve_cycles=False, resolve_codominance=False,
                  centered_axes=False, xaxis=None, yaxis=None,
                  x_range=[1e-3, 1e3], y_range=[1e-3, 1e3],
                  zlim=None, by_signature=False, parameter_dict=None,
-                 **kwargs):
+                 included_cases=None, **kwargs):
         ''' 
         '''
         setattr(self, 'ds', None)
@@ -44,7 +44,10 @@ class InteractiveInput(object):
         setattr(self, 'options', dict(kwargs))
         self.options.update(center_axes=centered_axes, xaxis=xaxis, yaxis=yaxis,
                             range_x=x_range, range_y=y_range, zlim=zlim, 
-                            by_signature=by_signature, parameter_dict=parameter_dict)
+                            by_signature=by_signature, 
+                            parameter_dict=parameter_dict, 
+                            get_parameters=get_parameters,
+                            included_cases=included_cases)
         if equations is not None:
             self.equations = equations
             if isinstance(equations, list) is False:
@@ -121,22 +124,28 @@ class InteractiveInput(object):
         self.figures.create_figures_widget()
                 
     def edit_equations_widget(self):
+        parameter_dict = self.options['parameter_dict']
+        if parameter_dict is None:
+            parameter_dict = {} 
         name = widgets.TextWidget(description='Name', value=self.name)
         equations=widgets.TextareaWidget(description='Equations',
                                          value='\n'.join(self.equations))
-        equations.placeholder='Insert equations, one per line.'
         aux=widgets.TextareaWidget(description='Auxiliary Variables',
                                                    value=', '.join(self.auxiliary))
-        aux.placeholder='Insert names of auxiliary variables, if any, seperated by commas.'
         constraints=widgets.TextareaWidget(description='Constraints',
                                            value=', '.join(self.constraints))
-        constraints.placeholder='Insert constraint inequalities, if any, seperated by commas.'
         cyclical = widgets.CheckboxWidget(description='Check for Cycles',
                                           value = self.cyclical)
         codominance = widgets.CheckboxWidget(description='Check for Co-dominance',
                                              value = self.codominance)
+        replacements=widgets.TextareaWidget(description='Replace expression',
+                                            value=', '.join(
+                                             [key + '=' + value for (key,value) in
+                                             parameter_dict.iteritems()]))
         wi = widgets.ContainerWidget(children=[name, equations,
-                                               aux, constraints, cyclical, codominance])
+                                               aux, constraints, 
+                                               cyclical, codominance,
+                                               replacements])
         if self.ds is None:
             description = 'Create Design Space'
         else:
@@ -148,6 +157,7 @@ class InteractiveInput(object):
         button.constraints = constraints
         button.cyclical = cyclical
         button.codominance = codominance
+        button.replacements = replacements
         button.wi = wi
         button.name = name
         edit_symbols = widgets.ButtonWidget(value=False, description='Edit Symbols')
@@ -184,12 +194,19 @@ class InteractiveInput(object):
                               latex_symbols=self.symbols)
         self.name = b.name.value
         constraints = self.constraints
+        replacements = str(b.replacements.value).strip()
+        if len(replacements) > 0:
+            replacements = str(b.replacements.value).split(',')
+            replacements = [[j.strip() for j in i.split('=')] for i in replacements] 
+            parameter_dict = {i:j for i,j in replacements}
+        else:
+            parameter_dict = {}
         if len(constraints) == 0:
             constraints = None
         self.ds = dspace.DesignSpace(eq, name=b.name.value, constraints=constraints,
                                      resolve_cycles=self.cyclical, 
                                      resolve_codominance=self.codominance,
-                                     parameter_dict=self.options['parameter_dict'])
+                                     parameter_dict=parameter_dict)
         if self.pvals == None:
             self.pvals = dspace.VariablePool(names=self.ds.independent_variables)
         else:
@@ -198,6 +215,10 @@ class InteractiveInput(object):
                 if i in self.pvals:
                     pvals[i] = self.pvals[i]
             self.pvals = pvals
+        get_parameters = self.defaults('get_parameters')
+        if get_parameters is not None:
+             case = self.ds(get_parameters)
+             self.pvals = case.valid_interior_parameter_set()
         self.update_widgets()
         b.wi.visible = False
         b.description = 'Edit Design Space'

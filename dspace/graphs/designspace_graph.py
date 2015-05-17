@@ -20,106 +20,128 @@ class GraphGenerator(object):
         variables += design_space.dependent_variables + design_space.independent_variables
         setattr(self, '_variables', variables)
         
-    def graph_description(self, graph_type='neato', included_independent_variables=None):
-        ds= self._design_space
+    def flux_identifiers(self):
+        ds = self._design_space
         gma = DSDesignSpaceGMASystem(ds._swigwrapper)
-        connectivity = DSGMASystemNetworkConnectivity(gma)
-        influences = list()
-        gv_string = ''
-        signature = ds._signature
-        exclude_variables = self._design_space.independent_variables
-        exclude_variables += self._design_space.auxiliary_variables
-        for i in xrange(len(connectivity)):
-            k = i
-            term = connectivity[i]
-            for j in xrange(len(signature)):
-                if (k // signature[j]) > 0:
-                    k -= signature[j]
-                else:
-                    k = k % signature[j]
-                    key = (j, k)
-                    break
-            influences.append((key,[j for j in xrange(len(term)) if term[j] > 0])) 
-        flux_data = dict()
-        for i in xrange(len(influences)):
-            variable = self._variables[influences[i][0][0]//2]
-            if variable in exclude_variables:
-                if variable not in self._included_variables:
-                        continue
-            if influences[i][0][0] % 2 == 1:
-                data = [self._variables[influences[i][0][0]//2], '->']
-            else:
-                data = ['->', self._variables[influences[i][0][0]//2]]
-            influence = list()
-            for j in influences[i][1]:
-                variable = self._variables[j]
-                if variable in exclude_variables:
-                    if variable not in self._included_variables:
-                        continue
-                influence.append(self._variables[j])
-            flux_data[i] = [[data], influence]
-        pp_sets = list()
-        for i in xrange(len(self._design_space.equations)):
-            for j in xrange(i, len(self._design_space.equations)):
-                ppr1 = DSGMASystemPrecursorProductRelationships(gma, i, j)
-                ppr2 = DSGMASystemPrecursorProductRelationships(gma, j, i)
-                if ppr1 is None:
-                    ppr1 = []
-                if ppr2 is None:
-                    ppr2 = []
-                ppr1 = zip(*ppr1)
-                ppr2 = zip(*ppr2)
-                for p1,p2 in ppr1+ppr2:
-                    in_set = False
-                    p1 = int(p1)
-                    p2 = int(p2)
-                    for a_set in pp_sets:
-                        if len(a_set.intersection([p1,p2])) > 0:
-                            a_set.update([p1,p2])
-                            in_set = True
+        connectivity = self.connectivity()
+        fluxes = self.all_fluxes()
+        flux_identifiers = {i:i for i in fluxes}
+        equivalence = DSGMASystemEquivalentFluxes(gma)
+        if equivalence is None:
+            return flux_identifiers
+        for i in xrange(len(equivalence)):
+            for j in xrange(len(equivalence[i])):
+                if equivalence[i][j] != 0.0:
+                    for k in xrange(i):
+                        if equivalence[k][j] != 0.0:
+                            flux_identifiers[i] = k
                             break
-                    if in_set is False:
-                        pp_sets.append(set([p1,p2]))
-        for i in pp_sets:
-            first_index = None
-            for j in i:
-                if first_index is None:
-                    first_index = j
-                    continue
-                if j not in flux_data:
                     break
-                flux_data[first_index][0] += flux_data[j][0]
-                flux_data[first_index][1] += flux_data[j][1]
-                flux_data.pop(j)
-        gv_string += 'digraph {\n    graph[layout='+graph_type + ',normalize=true];\n    node[shape=plaintext];\n    edge[weight=2]'
-        for i in flux_data:
-            gv_string += '    ' + str(i) + '[shape=circle,width=.0,height=.0,label=""];'
-            data = flux_data[i][0]
-            external = set(flux_data[i][1])
-            for j in data:
-                ## print external, j[0], j[1]
-                if j[0] == '->':
-                    if len(data) == 1:
-                        gv_string +=  '    start' + str(i) + ' -> ' + str(i) + '[arrowhead=none];'
-                        gv_string += '    start' + str(i) + ' [shape=circle,width=.01,height=.01,label=""];'
-                    gv_string += '    ' + str(i) + j[0] + j[1] + ';'
-                    if external.issuperset([j[1]]):
-                        external.remove(j[1])
-                else:
-                    gv_string += '    ' + j[0] + j[1] + str(i) + '[arrowhead=none];'
-                    if len(data) == 1:
-                        gv_string += '    ' + str(i) + ' -> end' + str(i) + ';'
-                        gv_string += '     end' + str(i)+ ' [shape=circle,width=.01,height=.01,label=""];'
-                    if external.issuperset([j[0]]):
-                        external.remove(j[0])
-            for k in external:
-                if k in self._design_space.dependent_variables:
-                    gv_string += '    ' + k + '->' + str(i) + '[weight=1];'
-                elif k in self._included_variables:
-                    gv_string += '    ' + k + '->' + str(i) + '[weight=1];'                        
-        gv_string += '}\n'
-        return gv_string, flux_data
+        return flux_identifiers
         
+    def network_data(self):
+        ds = self._design_space
+        gma = DSDesignSpaceGMASystem(ds._swigwrapper)       
+        connectivity = self.connectivity()
+        flux_identifiers = self.flux_identifiers()
+        network_data = {}
+        variables = {}
+        index = 0
+        internal_arrow = '[arrowhead=none]'
+        for i,variable in enumerate(ds.dependent_variables):
+            if variable in ds.auxiliary_variables:
+                continue
+            for positive in xrange(ds._signature[2*i]):
+                key = flux_identifiers[index+positive]
+                link = str(key) + ' -> ' + variable
+                if key in network_data:
+                    network_data[key]['positive'].append(link)
+                else:
+                    variables[key] = []
+                    network_data[key] = {'positive':[link],
+                                         'negative':[]}
+            index += ds._signature[2*i]
+            for negative in xrange(ds._signature[2*i+1]):
+                key = flux_identifiers[index+negative]
+                link = variable + ' -> ' + str(key)+internal_arrow
+                if key in network_data:
+                    variables[key].append(variable)
+                    network_data[key]['negative'].append(link)
+                else:
+                    variables[key] = [variable]
+                    network_data[key] = {'positive':[],
+                                         'negative':[link]}
+            index += ds._signature[2*i+1]
+        for key in network_data:
+            if len(network_data[key]['negative']) == 0:
+                network_data[key]['negative'].append('start_'+str(key)+' -> ' + str(key)+internal_arrow)
+            if len(network_data[key]['positive']) == 0:
+                network_data[key]['positive'].append(str(key)+' -> end_'+ str(key))
+            network_data[key] = network_data[key]['positive'] + network_data[key]['negative']
+        return network_data, variables
+        
+    def graph_regulation(self, included_variables):
+        ds = self._design_space
+        gma = DSDesignSpaceGMASystem(ds._swigwrapper)       
+        all_variables = ds.dependent_variables + ds.independent_variables
+        show_variables = [i for i in ds.dependent_variables if i not in ds.auxiliary_variables]
+        show_variables += included_variables
+        network_data,variable_links = self.network_data()
+        connectivity = self.connectivity()
+        flux_identifiers = self.flux_identifiers()
+        regulation = []
+        positive_r = '[arrowhead=vee]'
+        negative_r = '[arrowhead=onormal]'
+        for flux in xrange(len(flux_identifiers)):
+            key = flux_identifiers[flux]
+            for j in xrange(len(connectivity[flux])):
+                variable = all_variables[j]
+                if variable in variable_links[key]:
+                    continue
+                if variable not in show_variables:
+                    continue
+                if connectivity[flux][j] > 0.0:
+                    link = variable + ' -> ' + str(key) + positive_r
+                elif connectivity[flux][j] < 0.0:
+                    link = variable + ' -> ' + str(key) + negative_r
+                else:
+                    continue
+                if link not in regulation:
+                    regulation.append(link)
+        return regulation            
+        
+    def graph_properties(self, graph_type):
+        properties =  'graph[layout='+graph_type + ',normalize=true];'
+        properties += 'node[shape=plaintext];'
+        ## properties += 'rankdir=LR;'
+        return properties
+        
+    def subgraph_properties(self, key):
+        properties = 'rank=same;'
+        properties += 'color=none;'
+        properties += 'edge[weight=10];'
+        terminal_node_p = '[style=invis,shape=point,label=""];'#shape=circle,width=.01,height=.01,label=""];'
+        inner_node_p = '[shape=circle,width=.01,height=.01,label=""];'
+        properties += 'start_'+str(key) + terminal_node_p
+        properties += 'end_'+str(key) + terminal_node_p
+        properties += str(key) + inner_node_p
+        return properties
+        
+    def graph_description(self, graph_type='dot', included_variables=[]):
+        network_data,variable_links = self.network_data()
+        regulation = self.graph_regulation(included_variables)
+        graph_string = 'digraph {'
+        graph_string += self.graph_properties(graph_type)
+        for key in network_data:
+            graph_string += 'subgraph cluster_'+ str(key) + ' {'
+            graph_string += self.subgraph_properties(key)
+            graph_string += ';'.join(network_data[key])
+            graph_string += '}'
+        graph_string += 'subgraph {rankdir=LR;'#constraint=false;concentrate=true;'
+        graph_string += ';'.join(regulation)
+        graph_string += '}}'
+        return graph_string
+               
     def connectivity(self):
         ds= self._design_space
         gma = DSDesignSpaceGMASystem(ds._swigwrapper)
