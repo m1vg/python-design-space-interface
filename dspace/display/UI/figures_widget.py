@@ -16,7 +16,14 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 from subprocess import call, Popen, PIPE
 from dspace.graphs.designspace_graph import GraphGenerator
 
-
+def eigenvalue_compare(eigenvalues, component='real', rank=1):
+    if component == 'real':
+        eig = eigenvalues.real
+    else:
+        eig = eigenvalues.imag
+    value = sorted(eig)
+    rank = min(rank, len(eig))
+    return value[-rank]
 
 class MakePlot(object):
     
@@ -34,7 +41,7 @@ class MakePlot(object):
                         'Steady State Flux',
                         'Steady State Function',
                         'Stability',
-                        'Dominant Eigenvalue'
+                        'Eigenvalues'
                         ]
         cmd = Popen(['dot'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
         out, err = cmd.communicate(input='')        
@@ -131,7 +138,7 @@ class MakePlot(object):
             self.plot_data.children = [wi]
             self.title.value = 'System design space showing stability of the fixed points'
             self.caption.value = 'Number of eigenvalues with positive real part represented as a heat map on the z-axis.'
-        elif value == 'Dominant Eigenvalue':
+        elif value == 'Eigenvalues':
             component_widget = widgets.DropdownWidget(description='Complex component',
                                                       values=['Real', 'Imaginary'],
                                                       value='Real')
@@ -143,13 +150,20 @@ class MakePlot(object):
             zmin_widget = widgets.FloatTextWidget(description='Z-Min', value=zlim[0])
             zmax_widget = widgets.FloatTextWidget(description='Z-Max', value=zlim[1])
             parallel_widget = widgets.CheckboxWidget(description='Compute in Parallel', value=False)
+            number_dynamic = len(controller.ds.dependent_variables)
+            number_dynamic -= len(controller.ds.auxiliary_variables)
+            select_widget = widgets.DropdownWidget(description='Rank to Plot',
+                                                   values = [str(i+1) for i in range(number_dynamic)],
+                                                   value=str(1))
             wi = widgets.ContainerWidget(children=[component_widget, 
+                                                   select_widget,
                                                    resolution_widget,
                                                    zlim_widget,
                                                    zmin_widget,
                                                    zmax_widget,
                                                    parallel_widget])
             wi.component = component_widget
+            wi.select = select_widget
             wi.resolution = resolution_widget
             wi.parallel = parallel_widget
             wi.zlim = zlim_widget
@@ -230,7 +244,7 @@ class MakePlot(object):
             self.make_static_plot(b)
         elif b.plot_type.value == 'Stability':
             self.make_stability_plot(b)
-        elif b.plot_type.value == 'Dominant Eigenvalue':
+        elif b.plot_type.value == 'Eigenvalues':
             self.make_eigenvalue_plot(b)
         elif b.plot_type.value == 'Network Graph':
             self.make_network_graph(b)
@@ -351,6 +365,7 @@ class MakePlot(object):
         component = str(plot_data.component.value)
         resolution = plot_data.resolution.value
         parallel = plot_data.parallel.value
+        rank = int(plot_data.select.value)
         zlim = None
         if plot_data.zlim.value == False:
             zlim = [plot_data.zmin.value, plot_data.zmax.value]
@@ -365,7 +380,11 @@ class MakePlot(object):
                                                    component=component.lower(),
                                                    resolution=resolution, 
                                                    parallel=parallel,
-                                                   included_cases=self.included_cases(b))
+                                                   included_cases=self.included_cases(b),
+                                                   cmp=lambda eig : 
+                                                       eigenvalue_compare(eig,
+                                                                          component=component.lower(),
+                                                                          rank=rank))
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)

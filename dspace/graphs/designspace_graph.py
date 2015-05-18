@@ -77,6 +77,8 @@ class GraphGenerator(object):
         index = 0
         external_arrow = '[color={0}]'
         internal_arrow = '[arrowhead=none,color={0}]'
+        terminal_node_p = '[style=invis,shape=point,label=""]'
+        inner_node_p = '[shape=circle,width=.01,height=.01,label="",color={0}]'
         if p_vals is not None and cmap is not None:
             concentrations, [vmin, vmax] = self.flux_concentrations(p_vals)
             colors={}
@@ -114,11 +116,15 @@ class GraphGenerator(object):
             index += ds._signature[2*i+1]
         for key in network_data:
             if len(network_data[key]['negative']) == 0:
+                node = 'start_'+str(key)+terminal_node_p
                 link = 'start_'+str(key)+' -> ' + str(key)+internal_arrow.format(colors[key])
-                network_data[key]['negative'].append(link)
+                network_data[key]['negative'] += [link, node]
             if len(network_data[key]['positive']) == 0:
+                node = 'end_'+str(key)+terminal_node_p
                 link = str(key)+' -> end_'+ str(key)+external_arrow.format(colors[key])
-                network_data[key]['positive'].append(link)
+                network_data[key]['positive'] += [link, node]
+            node = str(key) + inner_node_p.format(colors[key])
+            network_data[key]['positive'].append(node)
             network_data[key] = network_data[key]['positive'] + network_data[key]['negative']
         return network_data, variables
             
@@ -152,8 +158,8 @@ class GraphGenerator(object):
                     regulation.append(link)
         return regulation
         
-    def graph_properties(self, graph_type):
-        properties =  'graph[layout='+graph_type + ',normalize=true];'
+    def graph_properties(self, graph_type, size):
+        properties =  'graph[ratio="fill",layout='+graph_type + ',normalize=true,size="{0},{1}"];'.format(size[0], size[1])
         properties += 'node[shape=plaintext];'
         ## properties += 'rankdir=LR;'
         return properties
@@ -161,20 +167,16 @@ class GraphGenerator(object):
     def subgraph_properties(self, key):
         properties = 'rank=same;'
         properties += 'color=none;'
-        properties += 'edge[weight=10];'
-        terminal_node_p = '[style=invis,shape=point,label=""];'
-        inner_node_p = '[shape=circle,width=.01,height=.01,label=""];'
-        properties += 'start_'+str(key) + terminal_node_p
-        properties += 'end_'+str(key) + terminal_node_p
-        properties += str(key) + inner_node_p
+        properties += 'edge[weight=100];'
         return properties
         
     def graph_description(self, graph_type='dot', included_variables=[],
-                          p_vals=None, cmap=None, show_regulation=True):
+                          p_vals=None, cmap=None, show_regulation=True,
+                          size=[3.33, 2.]):
         network_data,variable_links = self.network_data(p_vals, cmap=cmap)
         regulation = self.graph_regulation(included_variables, p_vals)
         graph_string = 'digraph {'
-        graph_string += self.graph_properties(graph_type)
+        graph_string += self.graph_properties(graph_type, size)
         graph_string += 'subgraph {'
         for key in network_data:
             graph_string += 'subgraph cluster_'+ str(key) + ' {'
@@ -190,12 +192,14 @@ class GraphGenerator(object):
         return graph_string
     
     def graph(self, graph_type='dot', included_variables=[], 
-              p_vals=None, cmap=None, show_regulation=True):
+              p_vals=None, cmap=None, show_regulation=True,
+              size=[3.33,3]):
         data = {}
         graph_string = self.graph_description(graph_type=graph_type,
                                               included_variables=included_variables,
                                               p_vals=p_vals, cmap=cmap,
-                                              show_regulation=show_regulation)
+                                              show_regulation=show_regulation,
+                                              size=size)
         data['description'] = graph_string
         if p_vals is not None:
             concentrations, [vmin, vmax] = self.flux_concentrations(p_vals)

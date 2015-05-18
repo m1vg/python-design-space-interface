@@ -889,7 +889,8 @@ def draw_1D_positive_roots(self, ax, function, p_vals, slice_variable,
     return lines
 
 @monkeypatch_method(dspace.models.designspace.DesignSpace) 
-def draw_network_graph(self, ax, graph_type='dot', p_vals=None, included_variables=None, 
+def draw_network_graph(self, ax, graph_type='dot', p_vals=None, 
+                       included_variables=[], size=[3.33, 2],
                        resolution=100, cmap=mt.cm.jet, colorbar=True,
                        show_regulation=True,
                        **kwargs):

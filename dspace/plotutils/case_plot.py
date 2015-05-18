@@ -17,7 +17,6 @@ import dspace.models.case
 from dspace.plotutils.monkey_patching import monkeypatch_method
 from dspace.models.case import Case, CaseIntersection
 
-
 def generate_plot_lattice_bounds(case, p_vals, x_variable, y_variable, range_x, range_y, resolution):
     
     V = case.vertices_2D_slice(p_vals, x_variable, y_variable, 
