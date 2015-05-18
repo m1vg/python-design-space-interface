@@ -32,7 +32,7 @@ class GraphGenerator(object):
         equivalence = DSGMASystemEquivalentFluxes(gma)
         if equivalence is None:
             return flux_identifiers
-        for i in xrange(len(equivalence)):
+        for i in xrange(1, len(fluxes)):
             for j in xrange(len(equivalence[i])):
                 if equivalence[i][j] != 0.0:
                     for k in xrange(i):
