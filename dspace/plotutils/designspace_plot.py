@@ -26,6 +26,11 @@ from dspace.models.designspace import DesignSpace
 import dspace.plotutils.case_plot
 from dspace.models.designspace import sort_cases
 
+import StringIO
+from subprocess import call, Popen, PIPE
+from dspace.graphs.designspace_graph import GraphGenerator
+
+
 
 lb_plot_colors = {'>,>':(0.75/255, 137/255, 208/255),
                   '0,>':(1., 0.5, 0.),
@@ -882,3 +887,35 @@ def draw_1D_positive_roots(self, ax, function, p_vals, slice_variable,
         r = i[2]
         ax.plot(x, y, **line_dict[r])
     return lines
+
+@monkeypatch_method(dspace.models.designspace.DesignSpace) 
+def draw_network_graph(self, ax, graph_type='dot', p_vals=None, included_variables=None, 
+                       resolution=100, cmap=mt.cm.jet, colorbar=True,
+                       show_regulation=True,
+                       **kwargs):
+    g = GraphGenerator(self)
+    dot_data = g.graph(graph_type=graph_type,
+                       p_vals=p_vals,
+                       cmap=cmap,
+                       included_variables=included_variables,
+                       show_regulation=show_regulation)
+    dot_string = dot_data['description']
+    cmd = Popen(['dot', '-Tpng', '-Gdpi='+str(resolution)],
+                stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    data, err = cmd.communicate(input=dot_string)
+    if len(err) > 0:
+        raise OSError, err
+    if 'limits' in dot_data:
+        if colorbar is True:
+            c_ax,kw=mt.colorbar.make_axes(ax)
+            zlim = dot_data['limits']
+            self.draw_function_colorbar(c_ax, zlim, cmap)
+            c_ax.set_aspect(15./(zlim[1]-zlim[0]))
+    f=StringIO.StringIO(data)
+    cax=ax.imshow(mt.image.imread(f))
+    ax.xaxis.visible=False
+    ax.yaxis.visible=False
+    ax.set_xticks([])
+    ax.set_yticks([])
+    plt.box(False)
+    f.close()

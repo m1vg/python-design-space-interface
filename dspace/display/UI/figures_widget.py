@@ -7,10 +7,15 @@ from IPython.html.widgets import interact, interactive, fixed
 from IPython.html import widgets
 from IPython.display import clear_output, display, HTML, Latex
 
+import matplotlib as mt
 import matplotlib.pyplot as plt
 
 import cStringIO
 from matplotlib.backends.backend_agg import FigureCanvasAgg  
+
+from subprocess import call, Popen, PIPE
+from dspace.graphs.designspace_graph import GraphGenerator
+
 
 
 class MakePlot(object):
@@ -20,7 +25,23 @@ class MakePlot(object):
         setattr(self, 'plot_data', widgets.ContainerWidget())
         setattr(self, 'title', None)
         setattr(self, 'caption', None)
-
+    
+    @property
+    def widget_types(self):
+        widget_types = ['Design Space (interactive)',
+                        'Design Space',
+                        'Steady State Concentration',
+                        'Steady State Flux',
+                        'Steady State Function',
+                        'Stability',
+                        'Dominant Eigenvalue'
+                        ]
+        cmd = Popen(['dot'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        out, err = cmd.communicate(input='')        
+        if len(err) == 0:
+            widget_types.append('Network Graph')
+        return widget_types
+        
     def create_plot_widget(self):
         controller = self.controller
         options = self.controller.options
@@ -47,14 +68,7 @@ class MakePlot(object):
         ymax = widgets.FloatTextWidget(description='Y-Max',value=range_y[1])
         center_axes = widgets.CheckboxWidget(description='Center Axes', value=center)
         plot_type = widgets.DropdownWidget(description='Plot Type',
-                                           values=['Design Space (interactive)',
-                                                   'Design Space',
-                                                   'Steady State Concentration',
-                                                   'Steady State Flux',
-                                                   'Steady State Function',
-                                                   'Stability',
-                                                   'Dominant Eigenvalue'
-                                                   ],
+                                           values=self.widget_types,
                                            value='Design Space (interactive)')
         title_widget = widgets.TextWidget(description='Title')
         caption_widget = widgets.TextareaWidget(description='Caption')
@@ -145,9 +159,11 @@ class MakePlot(object):
             self.title.value = 'System design space showing the dominant eigenvalue of the fixed points'
             self.caption.value = 'Dominant eigenvalue represented as a heat map on the z-axis.'
         elif value in ['Steady State Concentration', 'Steady State Flux', 'Steady State Function']:
-            log_linear_widget = widgets.CheckboxWidget(description='Function is log linear', value=True)
+            log_linear_widget = widgets.CheckboxWidget(description='Function is log linear',
+                                                       value=True)
             if value == 'Steady State Flux':
-                function_widget = widgets.DropdownWidget(values=['log(V_'+ i + ')' for i in controller.ds.dependent_variables])
+                flux_options = ['log(V_'+ i + ')' for i in controller.ds.dependent_variables]
+                function_widget = widgets.DropdownWidget(values=flux_options)
                 self.title.value = 'System design space showing a steady state flux'
                 self.caption.value = 'Steady state flux shown as a heat map on the z-axis.'
             elif value == 'Steady State Function':
@@ -156,7 +172,8 @@ class MakePlot(object):
                 self.title.value = 'System design space showing a function at steady state'
                 self.caption.value = 'Steady state function shown as a heat map on the z-axis.'
             else:
-                function_widget = widgets.DropdownWidget(values=['log('+ i + ')' for i in controller.ds.dependent_variables])
+                ss_options = ['log('+ i + ')' for i in controller.ds.dependent_variables]
+                function_widget = widgets.DropdownWidget(values=ss_options)
                 self.title.value = 'System Design Space showing a steady state concentration'
                 self.caption.value = 'Steady state concentration shown as a heat map on the z-axis.'
             resolution_widget = widgets.FloatTextWidget(description='Resolution', value=100)
@@ -178,9 +195,30 @@ class MakePlot(object):
             wi.zmin = zmin_widget
             wi.zmax = zmax_widget
             self.plot_data.children = [wi]
+        elif value =='Network Graph':
+            type_widget = widgets.DropdownWidget(description='Layout Type',
+                                                 values=['Hierarchical',
+                                                         'Radial',
+                                                         'Circular'],
+                                                 value='Hierarchical')
+            variables_widget = widgets.TextareaWidget(description='Include Variables',
+                                                      value='')
+            using_pvals = widgets.CheckboxWidget(description='Using Parameters',
+                                                 value=False)
+            show_r = widgets.CheckboxWidget(description='Show Regulation',
+                                            value=True)
+            wi = widgets.ContainerWidget(children=[type_widget, variables_widget,
+                                                   using_pvals, show_r])
+            wi.type_w = type_widget
+            wi.variables = variables_widget
+            wi.using_pvals = using_pvals
+            wi.show = show_r
+            self.plot_data.children = [wi]
+            self.title.value = 'Automatically generated network architecture showing mass flow and regulatory interactions'
+            self.caption.value = 'Network of interactions within the system. Mass flow between species (black arrows); information flow affecting processes (gray arrows).'
         if controller.name != '':
-            self.title.value = 'Analysis of the ' + controller.name + ' by ' + self.title.value.lower()
-
+            title = 'Analysis of the ' + controller.name + ' by ' + self.title.value.lower()
+            self.title.value = title
             
     def make_plot(self, b):
         controller = self.controller
@@ -194,6 +232,8 @@ class MakePlot(object):
             self.make_stability_plot(b)
         elif b.plot_type.value == 'Dominant Eigenvalue':
             self.make_eigenvalue_plot(b)
+        elif b.plot_type.value == 'Network Graph':
+            self.make_network_graph(b)
         else:
             self.make_function_plot(b)
         b.description = 'Add Plot'
@@ -326,6 +366,38 @@ class MakePlot(object):
                                                    resolution=resolution, 
                                                    parallel=parallel,
                                                    included_cases=self.included_cases(b))
+        canvas = FigureCanvasAgg(fig) 
+        buf = cStringIO.StringIO()
+        canvas.print_png(buf)
+        data = buf.getvalue()
+        controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value)
+        fig=plt.clf()
+        
+    def make_network_graph(self, b):
+        controller = self.controller
+        plot_data = self.plot_data.children[0]
+        graph_type = {'Hierarchical':'dot',
+                      'Radial':'twopi',
+                      'Circular':'circo'}
+        g=GraphGenerator(controller.ds)
+        variables = str(plot_data.variables.value)
+        variables = [i.strip() for i in variables.split(',')]
+        variables = [i for i in variables if i in controller.ds.independent_variables]
+        use_pvals = plot_data.using_pvals.value
+        if use_pvals is True:
+            pvals = controller.pvals
+        else:
+            pvals = None
+        fig = plt.figure(dpi=600, facecolor='w')
+        ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
+        rangex, rangey = self.axes_ranges(b)
+        ax.set_title('Network Graph')
+        controller.ds.draw_network_graph(ax,
+                                         p_vals=pvals,
+                                         graph_type=graph_type[str(plot_data.type_w.value)],
+                                         included_variables=variables,
+                                         cmap=mt.cm.hot_r,
+                                         show_regulation=plot_data.show.value)
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
