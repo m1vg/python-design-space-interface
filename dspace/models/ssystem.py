@@ -196,7 +196,7 @@ class SSystem(GMASystem):
         if DSVariablePoolNumberOfVariables(DSSSystemXd_a(self._swigwrapper)) > 0:
             raise TypeError, 'S-System must be reduced to ODE-only system'
         [positive_roots, has_marginal] = DSSSystemPositiveRootsSWIG(self._swigwrapper,
-                                                                   parameter_values._swigwrapper)
+                                                                    parameter_values._swigwrapper)
         if has_marginal > 0:
             positive_roots = str(positive_roots) + '*'
         return positive_roots

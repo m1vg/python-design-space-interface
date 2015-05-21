@@ -550,7 +550,7 @@ def calculate_case_2D_function(case, function, p_vals, x_variable, y_variable,
 def _draw_2D_ss_function_parallel(self, ax, all_cases, function, p_vals, x_variable, y_variable, 
                         range_x, range_y, resolution=100, log_linear=False, 
                         zlim=None, included_cases=None, colorbar=True,
-                        cmap=mt.cm.jet, **kwargs):
+                        cmap=mt.cm.jet, surface=False, **kwargs):
     try:
         from joblib import Parallel, delayed, cpu_count
     except:
@@ -571,7 +571,10 @@ def _draw_2D_ss_function_parallel(self, ax, all_cases, function, p_vals, x_varia
                                                                       for i in all_cases)
     for i in results:
         case, X, Y, Z, clim, path = i
-        pc = case.draw_2D_ss_function_from_data(ax, X, Y, Z, clim, path, zlim=zlim)
+        pc = case.draw_2D_ss_function_from_data(ax, X, Y, Z, clim, path, 
+                                                cmap=cmap, 
+                                                zlim=zlim, surface=surface,
+                                                **kwargs)
         if isinstance(pc, list) is True:
             for apc in pc:
                 lims = apc.get_clim()
@@ -613,7 +616,7 @@ def _draw_2D_ss_function_parallel(self, ax, all_cases, function, p_vals, x_varia
 def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable, 
                         range_x, range_y, resolution=100, log_linear=False, 
                         zlim=None, included_cases=None, colorbar=True,
-                        cmap=mt.cm.jet, parallel=False, **kwargs):                         
+                        cmap=mt.cm.jet, parallel=False, surface=False, **kwargs):                         
     p_bounds = dict(p_vals)
     p_bounds[x_variable] = range_x
     p_bounds[y_variable] = range_y
@@ -664,14 +667,16 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
                                                      zlim=zlim,
                                                      included_cases=included_cases,
                                                      colorbar=colorbar,
-                                                     cmap=cmap, **kwargs)
+                                                     cmap=cmap, surface=surface,
+                                                     **kwargs)
     if patches is not None:
         return patches  
     patches = list()
     for case in all_cases:
         pc = self(case).draw_2D_ss_function(ax, expr, p_vals, x_variable, y_variable,
                                             range_x, range_y, resolution=resolution,
-                                            log_linear=log_linear, cmap=cmap, **kwargs)
+                                            log_linear=log_linear, cmap=cmap, 
+                                            surface=surface, **kwargs)
         if isinstance(pc, list) is True:
             for apc in pc:
                 lims = apc.get_clim()

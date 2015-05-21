@@ -415,9 +415,12 @@ def draw_2D_ss_function_data(self, function, p_vals, x_variable, y_variable,
     return (X, Y, Z, clim, path)        
     
 @monkeypatch_method(dspace.models.case.Case)
-def draw_2D_ss_function_from_data(self, ax, X, Y, Z, clim, path, zlim=None, **kwargs):
+def draw_2D_ss_function_from_data(self, ax, X, Y, Z, clim, path, zlim=None, surface=False, **kwargs):
     patch = mt.patches.PathPatch(path, fc='none', ec='none', lw=0.)
-    pc = ax.pcolormesh(X, Y, Z, rasterized=True, **kwargs)
+    if surface is True:
+        pc = ax.plot_surface(X, Y, Z, edgecolor='none')
+    else:
+        pc = ax.pcolormesh(X, Y, Z, rasterized=True, **kwargs)
     ## ax.add_patch(patch)
     ## pc.set_clip_path(patch)
     if zlim is None:
