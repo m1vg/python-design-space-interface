@@ -2931,20 +2931,24 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 #define SWIGTYPE_p_DSVariable swig_types[18]
 #define SWIGTYPE_p_DSVariablePool swig_types[19]
 #define SWIGTYPE_p_DSVertices swig_types[20]
-#define SWIGTYPE_p_bool swig_types[21]
-#define SWIGTYPE_p_char swig_types[22]
-#define SWIGTYPE_p_double swig_types[23]
-#define SWIGTYPE_p_double_complex swig_types[24]
-#define SWIGTYPE_p_f_double__double swig_types[25]
-#define SWIGTYPE_p_int swig_types[26]
-#define SWIGTYPE_p_p_DSCase swig_types[27]
-#define SWIGTYPE_p_p_DSExpression swig_types[28]
-#define SWIGTYPE_p_p_DSVariable swig_types[29]
-#define SWIGTYPE_p_p_char swig_types[30]
-#define SWIGTYPE_p_p_void swig_types[31]
-#define SWIGTYPE_p_void swig_types[32]
-static swig_type_info *swig_types[34];
-static swig_module_info swig_module = {swig_types, 33, 0, 0, 0, 0};
+#define SWIGTYPE_p_FILE swig_types[21]
+#define SWIGTYPE_p_bool swig_types[22]
+#define SWIGTYPE_p_char swig_types[23]
+#define SWIGTYPE_p_double swig_types[24]
+#define SWIGTYPE_p_double_complex swig_types[25]
+#define SWIGTYPE_p_f_double__double swig_types[26]
+#define SWIGTYPE_p_f_p_q_const__char__void swig_types[27]
+#define SWIGTYPE_p_f_p_q_const__char_v_______int swig_types[28]
+#define SWIGTYPE_p_int swig_types[29]
+#define SWIGTYPE_p_p_DSCase swig_types[30]
+#define SWIGTYPE_p_p_DSExpression swig_types[31]
+#define SWIGTYPE_p_p_DSVariable swig_types[32]
+#define SWIGTYPE_p_p_char swig_types[33]
+#define SWIGTYPE_p_p_void swig_types[34]
+#define SWIGTYPE_p_size_t swig_types[35]
+#define SWIGTYPE_p_void swig_types[36]
+static swig_type_info *swig_types[38];
+static swig_module_info swig_module = {swig_types, 37, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3690,6 +3694,30 @@ extern PyObject * DSSSystemPositiveRootsSWIG(const DSSSystem *ssys, const DSVari
         PyList_SetItem(list, 1, PyInt_FromLong((long int)isMarginal));
         return list;
 }
+
+        
+extern void DSSWIGPythonPostWarning(const char * errorString) {
+        if (PyErr_Occurred() != NULL)
+                goto bail;
+        PyErr_WarnEx(PyExc_Warning, errorString, 1);
+bail:
+        return;
+}
+
+
+extern void DSSWIGPythonPostError(const char * errorString) {
+        if (PyErr_Occurred() != NULL)
+                goto bail;
+        PyErr_SetString(PyExc_RuntimeError, errorString);
+bail:
+        return;
+}
+        
+extern void DSSWIGAssignErrorFunctions(void) {
+        DSIOSetPostWarningFunction(DSSWIGPythonPostWarning);
+        DSIOSetPostErrorFunction(DSSWIGPythonPostError);
+}
+
         
 
 #ifdef __cplusplus
@@ -3775,6 +3803,462 @@ fail:
   if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
   if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
   if (alloc5 == SWIG_NEWOBJ) free((char*)buf5);
+  return NULL;
+}
+
+
+SWIGINTERN int Swig_var_DSPrintf_set(PyObject *_val) {
+  {
+    int res = SWIG_ConvertFunctionPtr(_val, (void**)(&DSPrintf), SWIGTYPE_p_f_p_q_const__char_v_______int);
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""DSPrintf""' of type '""int (*)(char const *,...)""'"); 
+    }
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_DSPrintf_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_NewFunctionPtrObj((void *)(DSPrintf), SWIGTYPE_p_f_p_q_const__char_v_______int);
+  return pyobj;
+}
+
+
+SWIGINTERN int Swig_var_DSPostWarning_set(PyObject *_val) {
+  {
+    int res = SWIG_ConvertFunctionPtr(_val, (void**)(&DSPostWarning), SWIGTYPE_p_f_p_q_const__char__void);
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""DSPostWarning""' of type '""void (*)(char const *)""'"); 
+    }
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_DSPostWarning_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_NewFunctionPtrObj((void *)(DSPostWarning), SWIGTYPE_p_f_p_q_const__char__void);
+  return pyobj;
+}
+
+
+SWIGINTERN int Swig_var_DSPostError_set(PyObject *_val) {
+  {
+    int res = SWIG_ConvertFunctionPtr(_val, (void**)(&DSPostError), SWIGTYPE_p_f_p_q_const__char__void);
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""DSPostError""' of type '""void (*)(char const *)""'"); 
+    }
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_DSPostError_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_NewFunctionPtrObj((void *)(DSPostError), SWIGTYPE_p_f_p_q_const__char__void);
+  return pyobj;
+}
+
+
+SWIGINTERN int Swig_var_DSPostFatalError_set(PyObject *_val) {
+  {
+    int res = SWIG_ConvertFunctionPtr(_val, (void**)(&DSPostFatalError), SWIGTYPE_p_f_p_q_const__char__void);
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""DSPostFatalError""' of type '""void (*)(char const *)""'"); 
+    }
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_DSPostFatalError_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_NewFunctionPtrObj((void *)(DSPostFatalError), SWIGTYPE_p_f_p_q_const__char__void);
+  return pyobj;
+}
+
+
+SWIGINTERN int Swig_var_DSIOErrorFile_set(PyObject *_val) {
+  {
+    void *argp = 0;
+    int res = SWIG_ConvertPtr(_val, &argp, SWIGTYPE_p_FILE,  0 );  
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in variable '""DSIOErrorFile""' of type '""FILE *""'");
+    }
+    DSIOErrorFile = (FILE *)(argp);
+  }
+  return 0;
+fail:
+  return 1;
+}
+
+
+SWIGINTERN PyObject *Swig_var_DSIOErrorFile_get(void) {
+  PyObject *pyobj = 0;
+  
+  pyobj = SWIG_NewPointerObj(SWIG_as_voidptr(DSIOErrorFile), SWIGTYPE_p_FILE,  0 );
+  return pyobj;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSIOSetErrorFile(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FILE *arg1 = (FILE *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSIOSetErrorFile",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_FILE, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSIOSetErrorFile" "', argument " "1"" of type '" "FILE *""'"); 
+  }
+  arg1 = (FILE *)(argp1);
+  DSIOSetErrorFile(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSIOSetPrintFunction(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int (*arg1)(char const *,...) = (int (*)(char const *,...)) 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSIOSetPrintFunction",&obj0)) SWIG_fail;
+  {
+    int res = SWIG_ConvertFunctionPtr(obj0, (void**)(&arg1), SWIGTYPE_p_f_p_q_const__char_v_______int);
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in method '" "DSIOSetPrintFunction" "', argument " "1"" of type '" "int (*)(char const *,...)""'"); 
+    }
+  }
+  DSIOSetPrintFunction(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSIOSetPostWarningFunction(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  void (*arg1)(char const *) = (void (*)(char const *)) 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSIOSetPostWarningFunction",&obj0)) SWIG_fail;
+  {
+    int res = SWIG_ConvertFunctionPtr(obj0, (void**)(&arg1), SWIGTYPE_p_f_p_q_const__char__void);
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in method '" "DSIOSetPostWarningFunction" "', argument " "1"" of type '" "void (*)(char const *)""'"); 
+    }
+  }
+  DSIOSetPostWarningFunction(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSIOSetPostErrorFunction(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  void (*arg1)(char const *) = (void (*)(char const *)) 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSIOSetPostErrorFunction",&obj0)) SWIG_fail;
+  {
+    int res = SWIG_ConvertFunctionPtr(obj0, (void**)(&arg1), SWIGTYPE_p_f_p_q_const__char__void);
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in method '" "DSIOSetPostErrorFunction" "', argument " "1"" of type '" "void (*)(char const *)""'"); 
+    }
+  }
+  DSIOSetPostErrorFunction(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSIOSetPostFatalErrorFunction(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  void (*arg1)(char const *) = (void (*)(char const *)) 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSIOSetPostFatalErrorFunction",&obj0)) SWIG_fail;
+  {
+    int res = SWIG_ConvertFunctionPtr(obj0, (void**)(&arg1), SWIGTYPE_p_f_p_q_const__char__void);
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in method '" "DSIOSetPostFatalErrorFunction" "', argument " "1"" of type '" "void (*)(char const *)""'"); 
+    }
+  }
+  DSIOSetPostFatalErrorFunction(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSIOSetCaseJSONOptions(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSUInteger arg1 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSIOSetCaseJSONOptions",&obj0)) SWIG_fail;
+  {
+    arg1 = (DSUInteger) PyLong_AsUnsignedLongMask(obj0);
+  }
+  DSIOSetCaseJSONOptions(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSIOSetSSystemJSONOptions(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSUInteger arg1 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSIOSetSSystemJSONOptions",&obj0)) SWIG_fail;
+  {
+    arg1 = (DSUInteger) PyLong_AsUnsignedLongMask(obj0);
+  }
+  DSIOSetSSystemJSONOptions(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSVariablePoolStringInJSONFormat(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSVariablePool *arg1 = (DSVariablePool *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSVariablePoolStringInJSONFormat",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSVariablePoolStringInJSONFormat" "', argument " "1"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg1 = (DSVariablePool *)(argp1);
+  result = (char *)DSVariablePoolStringInJSONFormat((DSVariablePool const *)arg1);
+  {
+    if (result == NULL) {
+      return NULL;
+    }
+    resultobj = PyString_FromFormat("%s", result);
+    DSSecureFree(result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSMatrixStringInJSONFormat(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSMatrix *arg1 = (DSMatrix *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSMatrixStringInJSONFormat",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSMatrix, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSMatrixStringInJSONFormat" "', argument " "1"" of type '" "DSMatrix const *""'"); 
+  }
+  arg1 = (DSMatrix *)(argp1);
+  result = (char *)DSMatrixStringInJSONFormat((DSMatrix const *)arg1);
+  {
+    if (result == NULL) {
+      return NULL;
+    }
+    resultobj = PyString_FromFormat("%s", result);
+    DSSecureFree(result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSMatrixArrayStringInJSONFormat(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSMatrixArray *arg1 = (DSMatrixArray *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSMatrixArrayStringInJSONFormat",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSMatrixArray, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSMatrixArrayStringInJSONFormat" "', argument " "1"" of type '" "DSMatrixArray const *""'"); 
+  }
+  arg1 = (DSMatrixArray *)(argp1);
+  result = (char *)DSMatrixArrayStringInJSONFormat((DSMatrixArray const *)arg1);
+  {
+    if (result == NULL) {
+      return NULL;
+    }
+    resultobj = PyString_FromFormat("%s", result);
+    DSSecureFree(result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSSSystemStringInJSONFormat(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSSSystem *arg1 = (DSSSystem *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSSSystemStringInJSONFormat",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemStringInJSONFormat" "', argument " "1"" of type '" "DSSSystem const *""'"); 
+  }
+  arg1 = (DSSSystem *)(argp1);
+  result = (char *)DSSSystemStringInJSONFormat((DSSSystem const *)arg1);
+  {
+    if (result == NULL) {
+      return NULL;
+    }
+    resultobj = PyString_FromFormat("%s", result);
+    DSSecureFree(result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseStringInJSONFormat(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSCaseStringInJSONFormat",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseStringInJSONFormat" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  result = (char *)DSCaseStringInJSONFormat((DSCase const *)arg1);
+  {
+    if (result == NULL) {
+      return NULL;
+    }
+    resultobj = PyString_FromFormat("%s", result);
+    DSSecureFree(result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSIOReadBinaryData(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  char *arg1 = (char *) 0 ;
+  size_t *arg2 = (size_t *) 0 ;
+  int res1 ;
+  char *buf1 = 0 ;
+  int alloc1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  void *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSIOReadBinaryData",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_AsCharPtrAndSize(obj0, &buf1, NULL, &alloc1);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSIOReadBinaryData" "', argument " "1"" of type '" "char const *""'");
+  }
+  arg1 = (char *)(buf1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_size_t, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSIOReadBinaryData" "', argument " "2"" of type '" "size_t *""'"); 
+  }
+  arg2 = (size_t *)(argp2);
+  result = (void *)DSIOReadBinaryData((char const *)arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_void, 0 |  0 );
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  return resultobj;
+fail:
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSIOWriteBinaryData(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  char *arg1 = (char *) 0 ;
+  size_t arg2 ;
+  void *arg3 = (void *) 0 ;
+  int res1 ;
+  char *buf1 = 0 ;
+  int alloc1 = 0 ;
+  size_t val2 ;
+  int ecode2 = 0 ;
+  int res3 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DSIOWriteBinaryData",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_AsCharPtrAndSize(obj0, &buf1, NULL, &alloc1);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSIOWriteBinaryData" "', argument " "1"" of type '" "char const *""'");
+  }
+  arg1 = (char *)(buf1);
+  ecode2 = SWIG_AsVal_size_t(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DSIOWriteBinaryData" "', argument " "2"" of type '" "size_t""'");
+  } 
+  arg2 = (size_t)(val2);
+  res3 = SWIG_ConvertPtr(obj2,SWIG_as_voidptrptr(&arg3), 0, 0);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DSIOWriteBinaryData" "', argument " "3"" of type '" "void *""'"); 
+  }
+  DSIOWriteBinaryData((char const *)arg1,arg2,arg3);
+  resultobj = SWIG_Py_Void();
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  return resultobj;
+fail:
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
   return NULL;
 }
 
@@ -19404,10 +19888,84 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSSWIGPythonPostWarning(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  char *arg1 = (char *) 0 ;
+  int res1 ;
+  char *buf1 = 0 ;
+  int alloc1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSSWIGPythonPostWarning",&obj0)) SWIG_fail;
+  res1 = SWIG_AsCharPtrAndSize(obj0, &buf1, NULL, &alloc1);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSWIGPythonPostWarning" "', argument " "1"" of type '" "char const *""'");
+  }
+  arg1 = (char *)(buf1);
+  DSSWIGPythonPostWarning((char const *)arg1);
+  resultobj = SWIG_Py_Void();
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  return resultobj;
+fail:
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSSWIGPythonPostError(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  char *arg1 = (char *) 0 ;
+  int res1 ;
+  char *buf1 = 0 ;
+  int alloc1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSSWIGPythonPostError",&obj0)) SWIG_fail;
+  res1 = SWIG_AsCharPtrAndSize(obj0, &buf1, NULL, &alloc1);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSWIGPythonPostError" "', argument " "1"" of type '" "char const *""'");
+  }
+  arg1 = (char *)(buf1);
+  DSSWIGPythonPostError((char const *)arg1);
+  resultobj = SWIG_Py_Void();
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  return resultobj;
+fail:
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSSWIGAssignErrorFunctions(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  
+  if (!PyArg_ParseTuple(args,(char *)":DSSWIGAssignErrorFunctions")) SWIG_fail;
+  DSSWIGAssignErrorFunctions();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
 	 { (char *)"DSDesignSpaceToolboxVersionString", _wrap_DSDesignSpaceToolboxVersionString, METH_VARARGS, NULL},
 	 { (char *)"DSErrorFunction", _wrap_DSErrorFunction, METH_VARARGS, NULL},
+	 { (char *)"DSIOSetErrorFile", _wrap_DSIOSetErrorFile, METH_VARARGS, NULL},
+	 { (char *)"DSIOSetPrintFunction", _wrap_DSIOSetPrintFunction, METH_VARARGS, NULL},
+	 { (char *)"DSIOSetPostWarningFunction", _wrap_DSIOSetPostWarningFunction, METH_VARARGS, NULL},
+	 { (char *)"DSIOSetPostErrorFunction", _wrap_DSIOSetPostErrorFunction, METH_VARARGS, NULL},
+	 { (char *)"DSIOSetPostFatalErrorFunction", _wrap_DSIOSetPostFatalErrorFunction, METH_VARARGS, NULL},
+	 { (char *)"DSIOSetCaseJSONOptions", _wrap_DSIOSetCaseJSONOptions, METH_VARARGS, NULL},
+	 { (char *)"DSIOSetSSystemJSONOptions", _wrap_DSIOSetSSystemJSONOptions, METH_VARARGS, NULL},
+	 { (char *)"DSVariablePoolStringInJSONFormat", _wrap_DSVariablePoolStringInJSONFormat, METH_VARARGS, NULL},
+	 { (char *)"DSMatrixStringInJSONFormat", _wrap_DSMatrixStringInJSONFormat, METH_VARARGS, NULL},
+	 { (char *)"DSMatrixArrayStringInJSONFormat", _wrap_DSMatrixArrayStringInJSONFormat, METH_VARARGS, NULL},
+	 { (char *)"DSSSystemStringInJSONFormat", _wrap_DSSSystemStringInJSONFormat, METH_VARARGS, NULL},
+	 { (char *)"DSCaseStringInJSONFormat", _wrap_DSCaseStringInJSONFormat, METH_VARARGS, NULL},
+	 { (char *)"DSIOReadBinaryData", _wrap_DSIOReadBinaryData, METH_VARARGS, NULL},
+	 { (char *)"DSIOWriteBinaryData", _wrap_DSIOWriteBinaryData, METH_VARARGS, NULL},
 	 { (char *)"DSSecureMalloc", _wrap_DSSecureMalloc, METH_VARARGS, NULL},
 	 { (char *)"DSSecureCalloc", _wrap_DSSecureCalloc, METH_VARARGS, NULL},
 	 { (char *)"DSSecureRealloc", _wrap_DSSecureRealloc, METH_VARARGS, NULL},
@@ -19857,6 +20415,9 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCaseAtIndexOfArray", _wrap_DSCaseAtIndexOfArray, METH_VARARGS, NULL},
 	 { (char *)"DSDictionaryKeyAtIndex", _wrap_DSDictionaryKeyAtIndex, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemPositiveRootsSWIG", _wrap_DSSSystemPositiveRootsSWIG, METH_VARARGS, NULL},
+	 { (char *)"DSSWIGPythonPostWarning", _wrap_DSSWIGPythonPostWarning, METH_VARARGS, NULL},
+	 { (char *)"DSSWIGPythonPostError", _wrap_DSSWIGPythonPostError, METH_VARARGS, NULL},
+	 { (char *)"DSSWIGAssignErrorFunctions", _wrap_DSSWIGAssignErrorFunctions, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
@@ -19884,17 +20445,21 @@ static swig_type_info _swigt__p_DSUInteger = {"_p_DSUInteger", "DSUInteger *", 0
 static swig_type_info _swigt__p_DSVariable = {"_p_DSVariable", "DSVariable *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSVariablePool = {"_p_DSVariablePool", "DSVariablePool *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSVertices = {"_p_DSVertices", "DSVertices *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_FILE = {"_p_FILE", "FILE *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_bool = {"_p_bool", "bool *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_double = {"_p_double", "double *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_double_complex = {"_p_double_complex", "double complex *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_f_double__double = {"_p_f_double__double", "double (*)(double)", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_f_p_q_const__char__void = {"_p_f_p_q_const__char__void", "void (*)(char const *)", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_f_p_q_const__char_v_______int = {"_p_f_p_q_const__char_v_______int", "int (*)(char const *,...)", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_int = {"_p_int", "int *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_p_DSCase = {"_p_p_DSCase", "DSCase **", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_p_DSExpression = {"_p_p_DSExpression", "DSExpression **", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_p_DSVariable = {"_p_p_DSVariable", "DSVariable **", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_p_char = {"_p_p_char", "char **", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_p_void = {"_p_p_void", "void **", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_size_t = {"_p_size_t", "size_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_void = {"_p_void", "void *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
@@ -19919,17 +20484,21 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_DSVariable,
   &_swigt__p_DSVariablePool,
   &_swigt__p_DSVertices,
+  &_swigt__p_FILE,
   &_swigt__p_bool,
   &_swigt__p_char,
   &_swigt__p_double,
   &_swigt__p_double_complex,
   &_swigt__p_f_double__double,
+  &_swigt__p_f_p_q_const__char__void,
+  &_swigt__p_f_p_q_const__char_v_______int,
   &_swigt__p_int,
   &_swigt__p_p_DSCase,
   &_swigt__p_p_DSExpression,
   &_swigt__p_p_DSVariable,
   &_swigt__p_p_char,
   &_swigt__p_p_void,
+  &_swigt__p_size_t,
   &_swigt__p_void,
 };
 
@@ -19954,17 +20523,21 @@ static swig_cast_info _swigc__p_DSUInteger[] = {  {&_swigt__p_DSUInteger, 0, 0, 
 static swig_cast_info _swigc__p_DSVariable[] = {  {&_swigt__p_DSVariable, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DSVariablePool[] = {  {&_swigt__p_DSVariablePool, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DSVertices[] = {  {&_swigt__p_DSVertices, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_FILE[] = {  {&_swigt__p_FILE, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_bool[] = {  {&_swigt__p_bool, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_double[] = {  {&_swigt__p_double, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_double_complex[] = {  {&_swigt__p_double_complex, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_f_double__double[] = {  {&_swigt__p_f_double__double, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_f_p_q_const__char__void[] = {  {&_swigt__p_f_p_q_const__char__void, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_f_p_q_const__char_v_______int[] = {  {&_swigt__p_f_p_q_const__char_v_______int, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_int[] = {  {&_swigt__p_int, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_p_DSCase[] = {  {&_swigt__p_p_DSCase, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_p_DSExpression[] = {  {&_swigt__p_p_DSExpression, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_p_DSVariable[] = {  {&_swigt__p_p_DSVariable, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_p_char[] = {  {&_swigt__p_p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_p_void[] = {  {&_swigt__p_p_void, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_size_t[] = {  {&_swigt__p_size_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_void[] = {  {&_swigt__p_void, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
@@ -19989,17 +20562,21 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_DSVariable,
   _swigc__p_DSVariablePool,
   _swigc__p_DSVertices,
+  _swigc__p_FILE,
   _swigc__p_bool,
   _swigc__p_char,
   _swigc__p_double,
   _swigc__p_double_complex,
   _swigc__p_f_double__double,
+  _swigc__p_f_p_q_const__char__void,
+  _swigc__p_f_p_q_const__char_v_______int,
   _swigc__p_int,
   _swigc__p_p_DSCase,
   _swigc__p_p_DSExpression,
   _swigc__p_p_DSVariable,
   _swigc__p_p_char,
   _swigc__p_p_void,
+  _swigc__p_size_t,
   _swigc__p_void,
 };
 
@@ -20699,6 +21276,17 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "A_DS_ERROR",SWIG_From_int((int)(-2)));
   SWIG_Python_SetConstant(d, "A_DS_FATAL",SWIG_From_int((int)(-3)));
   SWIG_Python_SetConstant(d, "A_DS_KILLNOW",SWIG_From_int((int)(-3)));
+  SWIG_Python_SetConstant(d, "DS_CASE_JSON_NO_SSYSTEM",SWIG_From_int((int)(1)));
+  SWIG_Python_SetConstant(d, "DS_CASE_JSON_NO_CASE_SIGNATURE",SWIG_From_int((int)(2)));
+  SWIG_Python_SetConstant(d, "DS_CASE_JSON_NO_CONDITIONS",SWIG_From_int((int)(4)));
+  SWIG_Python_SetConstant(d, "DS_SSYSTEM_JSON_NO_SOLUTION",SWIG_From_int((int)(1)));
+  SWIG_Python_SetConstant(d, "DS_SSYSTEM_JSON_NO_SINGULAR",SWIG_From_int((int)(2)));
+  PyDict_SetItemString(md,(char*)"cvar", SWIG_globals());
+  SWIG_addvarlink(SWIG_globals(),(char*)"DSPrintf",Swig_var_DSPrintf_get, Swig_var_DSPrintf_set);
+  SWIG_addvarlink(SWIG_globals(),(char*)"DSPostWarning",Swig_var_DSPostWarning_get, Swig_var_DSPostWarning_set);
+  SWIG_addvarlink(SWIG_globals(),(char*)"DSPostError",Swig_var_DSPostError_get, Swig_var_DSPostError_set);
+  SWIG_addvarlink(SWIG_globals(),(char*)"DSPostFatalError",Swig_var_DSPostFatalError_get, Swig_var_DSPostFatalError_set);
+  SWIG_addvarlink(SWIG_globals(),(char*)"DSIOErrorFile",Swig_var_DSIOErrorFile_get, Swig_var_DSIOErrorFile_set);
   SWIG_Python_SetConstant(d, "M_DS_VAR_NULL",SWIG_FromCharPtr("NULL pointer: Variable Pool is NULL"));
   SWIG_Python_SetConstant(d, "M_DS_VAR_LOCKED",SWIG_FromCharPtr(" DSVariablePool: Insufficient priviliges"));
   SWIG_Python_SetConstant(d, "M_DS_MAT_NULL",SWIG_FromCharPtr("Pointer to matrix is NULL"));

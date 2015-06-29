@@ -91,6 +91,67 @@ A_DS_KILLNOW = _dspace_interface.A_DS_KILLNOW
 def DSErrorFunction(*args):
   return _dspace_interface.DSErrorFunction(*args)
 DSErrorFunction = _dspace_interface.DSErrorFunction
+DS_CASE_JSON_NO_SSYSTEM = _dspace_interface.DS_CASE_JSON_NO_SSYSTEM
+DS_CASE_JSON_NO_CASE_SIGNATURE = _dspace_interface.DS_CASE_JSON_NO_CASE_SIGNATURE
+DS_CASE_JSON_NO_CONDITIONS = _dspace_interface.DS_CASE_JSON_NO_CONDITIONS
+DS_SSYSTEM_JSON_NO_SOLUTION = _dspace_interface.DS_SSYSTEM_JSON_NO_SOLUTION
+DS_SSYSTEM_JSON_NO_SINGULAR = _dspace_interface.DS_SSYSTEM_JSON_NO_SINGULAR
+
+def DSIOSetErrorFile(*args):
+  return _dspace_interface.DSIOSetErrorFile(*args)
+DSIOSetErrorFile = _dspace_interface.DSIOSetErrorFile
+
+def DSIOSetPrintFunction(*args):
+  return _dspace_interface.DSIOSetPrintFunction(*args)
+DSIOSetPrintFunction = _dspace_interface.DSIOSetPrintFunction
+
+def DSIOSetPostWarningFunction(*args):
+  return _dspace_interface.DSIOSetPostWarningFunction(*args)
+DSIOSetPostWarningFunction = _dspace_interface.DSIOSetPostWarningFunction
+
+def DSIOSetPostErrorFunction(*args):
+  return _dspace_interface.DSIOSetPostErrorFunction(*args)
+DSIOSetPostErrorFunction = _dspace_interface.DSIOSetPostErrorFunction
+
+def DSIOSetPostFatalErrorFunction(*args):
+  return _dspace_interface.DSIOSetPostFatalErrorFunction(*args)
+DSIOSetPostFatalErrorFunction = _dspace_interface.DSIOSetPostFatalErrorFunction
+
+def DSIOSetCaseJSONOptions(*args):
+  return _dspace_interface.DSIOSetCaseJSONOptions(*args)
+DSIOSetCaseJSONOptions = _dspace_interface.DSIOSetCaseJSONOptions
+
+def DSIOSetSSystemJSONOptions(*args):
+  return _dspace_interface.DSIOSetSSystemJSONOptions(*args)
+DSIOSetSSystemJSONOptions = _dspace_interface.DSIOSetSSystemJSONOptions
+
+def DSVariablePoolStringInJSONFormat(*args):
+  return _dspace_interface.DSVariablePoolStringInJSONFormat(*args)
+DSVariablePoolStringInJSONFormat = _dspace_interface.DSVariablePoolStringInJSONFormat
+
+def DSMatrixStringInJSONFormat(*args):
+  return _dspace_interface.DSMatrixStringInJSONFormat(*args)
+DSMatrixStringInJSONFormat = _dspace_interface.DSMatrixStringInJSONFormat
+
+def DSMatrixArrayStringInJSONFormat(*args):
+  return _dspace_interface.DSMatrixArrayStringInJSONFormat(*args)
+DSMatrixArrayStringInJSONFormat = _dspace_interface.DSMatrixArrayStringInJSONFormat
+
+def DSSSystemStringInJSONFormat(*args):
+  return _dspace_interface.DSSSystemStringInJSONFormat(*args)
+DSSSystemStringInJSONFormat = _dspace_interface.DSSSystemStringInJSONFormat
+
+def DSCaseStringInJSONFormat(*args):
+  return _dspace_interface.DSCaseStringInJSONFormat(*args)
+DSCaseStringInJSONFormat = _dspace_interface.DSCaseStringInJSONFormat
+
+def DSIOReadBinaryData(*args):
+  return _dspace_interface.DSIOReadBinaryData(*args)
+DSIOReadBinaryData = _dspace_interface.DSIOReadBinaryData
+
+def DSIOWriteBinaryData(*args):
+  return _dspace_interface.DSIOWriteBinaryData(*args)
+DSIOWriteBinaryData = _dspace_interface.DSIOWriteBinaryData
 
 def DSSecureMalloc(*args):
   return _dspace_interface.DSSecureMalloc(*args)
@@ -1914,7 +1975,20 @@ DSDictionaryKeyAtIndex = _dspace_interface.DSDictionaryKeyAtIndex
 def DSSSystemPositiveRootsSWIG(*args):
   return _dspace_interface.DSSSystemPositiveRootsSWIG(*args)
 DSSSystemPositiveRootsSWIG = _dspace_interface.DSSSystemPositiveRootsSWIG
+
+def DSSWIGPythonPostWarning(*args):
+  return _dspace_interface.DSSWIGPythonPostWarning(*args)
+DSSWIGPythonPostWarning = _dspace_interface.DSSWIGPythonPostWarning
+
+def DSSWIGPythonPostError(*args):
+  return _dspace_interface.DSSWIGPythonPostError(*args)
+DSSWIGPythonPostError = _dspace_interface.DSSWIGPythonPostError
+
+def DSSWIGAssignErrorFunctions():
+  return _dspace_interface.DSSWIGAssignErrorFunctions()
+DSSWIGAssignErrorFunctions = _dspace_interface.DSSWIGAssignErrorFunctions
 VERSION = _dspace_interface.VERSION
 # This file is compatible with both classic and new-style classes.
 
+cvar = _dspace_interface.cvar
 

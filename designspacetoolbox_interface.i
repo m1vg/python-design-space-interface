@@ -185,6 +185,7 @@
 
 %include "/usr/local/include/designspace/DSStd.h"
 %include "/usr/local/include/designspace/DSErrors.h"
+%include "/usr/local/include/designspace/DSIO.h"
 %include "/usr/local/include/designspace/DSMemoryManager.h"
 %include "/usr/local/include/designspace/DSVariable.h"
 %include "/usr/local/include/designspace/DSMatrix.h"
@@ -480,6 +481,30 @@ extern PyObject * DSSSystemPositiveRootsSWIG(const DSSSystem *ssys, const DSVari
         PyList_SetItem(list, 1, PyInt_FromLong((long int)isMarginal));
         return list;
 }
+
+        
+extern void DSSWIGPythonPostWarning(const char * errorString) {
+        if (PyErr_Occurred() != NULL)
+                goto bail;
+        PyErr_WarnEx(PyExc_Warning, errorString, 1);
+bail:
+        return;
+}
+
+
+extern void DSSWIGPythonPostError(const char * errorString) {
+        if (PyErr_Occurred() != NULL)
+                goto bail;
+        PyErr_SetString(PyExc_RuntimeError, errorString);
+bail:
+        return;
+}
+        
+extern void DSSWIGAssignErrorFunctions(void) {
+        DSIOSetPostWarningFunction(DSSWIGPythonPostWarning);
+        DSIOSetPostErrorFunction(DSSWIGPythonPostError);
+}
+
         
 %}
 
