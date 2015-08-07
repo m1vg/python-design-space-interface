@@ -27,39 +27,38 @@ class CasesTable(object):
                                                        'User Specified'],
                                              value='None')
         cases = widgets.TextareaWidget(description='User specified cases')
-        by_signature = widgets.CheckboxWidget(description='Specify cases by signature', value=True)
+        by_signature = widgets.CheckboxWidget(description='Cases indicated by signature?', value=True)
+        constraints = widgets.TextareaWidget(description='Biological constraints:')
         add_column = widgets.ButtonWidget(description='Add column')
+        remove_column = widgets.ButtonWidget(description='Remove column')
+        remove_column.visible = False
+        add_column.remove_column = remove_column
         extra_columns = widgets.ContainerWidget(children=[])
         add_column.on_click(self.add_cases_column)
         add_column.column_block = extra_columns
-        case_id = widgets.TextWidget(description='Display Case')
-        ## by_signature = widgets.CheckboxWidget(description='By signature', value=True)
-        display_case = widgets.ButtonWidget(description='Display Case')
-        display_case.by_signature = by_signature
-        display_case.case_id = case_id
-        show_cases = widgets.ContainerWidget(children = [case_id, by_signature, display_case])
-        display_case.on_click(self.display_case)
-        wi = widgets.ContainerWidget(children=[options, cases, by_signature, add_column, extra_columns])
-        button = widgets.ButtonWidget(value=False, description='Show Cases Options')
+        remove_column.on_click(self.remove_cases_column)
+        remove_column.column_block = extra_columns
+        case_id = widgets.TextWidget(description='Report for case:')
+        wi = widgets.ContainerWidget(children=[options,
+                                               cases,
+                                               by_signature,
+                                               constraints, 
+                                               add_column,
+                                               extra_columns, 
+                                               remove_column
+                                               ])
+        button = widgets.ButtonWidget(value=False, description='Create/modify cases table')
         button.on_click(self.show_cases)
         button.wi = wi
-        button.display_cases = show_cases
         button.options = options
         button.cases = cases
         button.by_signature = by_signature
         button.extra_columns = extra_columns
-        cases_table = widgets.ContainerWidget(description='Cases Table', children=[show_cases, wi, button, self.table])
-        controller.update_child('Cases', cases_table)
+        button.constraints = constraints
+        cases_table = widgets.ContainerWidget(description='Cases Table', children=[wi, button, self.table])
+        controller.update_child('Phenotypic Repertoire', cases_table)
         wi.visible = False
     
-    def display_case(self, b):
-        controller = self.controller
-        by_signature = b.by_signature.value
-        case_id = str(b.case_id.value)
-        display_case = DisplayCase(controller, case_id, by_signature=by_signature)
-        display_case.create_case_widget()
-
-        
     def add_cases_column(self, b):
         controller = self.controller
         children = [i for i in b.column_block.children]
@@ -78,28 +77,42 @@ class CasesTable(object):
         column.independent = new_column[2]
         children.append(column)
         b.column_block.children = children
+        b.remove_column.visible = True
+        
+    def remove_cases_column(self, b):
+        controller = self.controller
+        if len(b.column_block.children) == 0:
+            return
+        if len(b.column_block.children) == 1:
+            b.visible = False
+        children = [i for i in b.column_block.children[:-1]]
+        b.column_block.children = children
+
         
     def show_cases(self, b):
         controller = self.controller
         if controller.ds == None:
             b.wi.visible = False
-            b.display_cases.visible = True
             self.table.children = []
-            b.description = 'Show Cases Options'
+            b.description = 'Create/modify cases table'
             return
         if b.wi.visible == False:
             self.table.children = []
             b.wi.visible = True
-            b.display_cases.visible = False
             b.description = 'Done'
             return 
         self.create_case_table(b, mode=str(b.options.value))
         b.wi.visible = False
-        b.display_cases.visible = True
-        b.description = 'Show Cases Options'
+        b.description = 'Create/modify cases table'
     
     def create_case_table(self, b, mode='All'):
         controller = self.controller
+        constraints = str(b.constraints.value)
+        if constraints != '':
+            constraints = constraints.split(',')
+            constraints = [i.strip() for i in constraints]
+        else:
+            constraints = None
         if mode == 'None':
             self.table.children=[]
             return
@@ -112,18 +125,26 @@ class CasesTable(object):
             s += '<td><b>' + header + '</b></td>'
         s += '</tr>'
         if mode == 'Valid':    
-            cases = controller.ds(controller.ds.valid_cases())
+            cases = controller.ds(controller.ds.valid_cases(),
+                                  constraints=constraints)
         elif mode == 'All':
-            cases = controller.ds([i for i in xrange(1, controller.ds.number_of_cases+1)])
+            cases = controller.ds(
+                     [i for i in xrange(1, controller.ds.number_of_cases+1)],
+                     constraints=constraints)
         else:
             case_signatures = [i.strip() for i in str(b.cases.value).split(',') if len(i.strip()) > 0] 
-            cases = controller.ds([i for i in case_signatures], by_signature=b.by_signature.value)
+            cases = controller.ds([i for i in case_signatures], 
+                                  by_signature=b.by_signature.value,
+                                  constraints=constraints)
+            
         for c in cases:
             s += '<tr align=center><td style="padding:0 15px 0 15px;">{0}</td><td style="padding:0 15px 0 15px;">{1}</td>'.format(c.case_number,c.signature)
             for column in b.extra_columns.children:
                 s += self.html_for_extra_column(c, column)
             s += '</tr>\n'
-        s += '</table></div>'
+        s += '</table><caption>'
+        s += 'Note: # of eigenvalues w/ positive real part is calculated using a representative set of parameter values, and may not be reflective of all potential behaviors.'
+        s += '</caption></div>'
         html_widget = widgets.HTMLWidget(value = s)
         table_container = widgets.PopupWidget(children=[html_widget])
         table_container.set_css('height', '300px')

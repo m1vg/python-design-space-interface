@@ -14,6 +14,8 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 from system_widget import DisplaySystem
 from symbols_widget import EditSymbols
 from cases_widget import CasesTable
+from case_widget import CaseReport
+from co_localize_widget import CaseColocalization
 from figures_widget import MakePlot, DisplayFigures
 from parameters_widget import EditParameters
 
@@ -42,7 +44,8 @@ class InteractiveInput(object):
         setattr(self, 'figure_data', [])
         setattr(self, 'display_system', None)
         setattr(self, 'options', dict(kwargs))
-        self.options.update(center_axes=centered_axes, xaxis=xaxis, yaxis=yaxis,
+        self.options.update(center_axes=centered_axes, 
+                            xaxis=xaxis, yaxis=yaxis,
                             range_x=x_range, range_y=y_range, zlim=zlim, 
                             by_signature=by_signature, 
                             parameter_dict=parameter_dict, 
@@ -99,9 +102,10 @@ class InteractiveInput(object):
             if children[i].description == name:
                 added = True
                 old = children.pop(i)
-                if child is not None:
-                    child.description = name
-                    children.insert(i, child)
+                ## if child is not None:
+                ##     child.description = name
+                ##     children.insert(i, child)
+                    
                 break
         if added is False:
             if child is not None:
@@ -111,15 +115,56 @@ class InteractiveInput(object):
         for (i, child) in enumerate(children):
             self.widget.set_title(i, child.description)
         self.widget.children = children
+    
+    def enumerate_phenotypes_menu(self, b):
+        cases_table = CasesTable(self)
+        cases_table.cases_table_widget()
         
+    def case_report_menu(self, b):
+        case_report = CaseReport(self, 
+                                 self.defaults('by_signature'))
+        case_report.create_case_widget()
+
+    def co_localize_menu(self, b):
+        case_report = CaseColocalization(self, 
+                                         self.defaults('by_signature'))
+        case_report.colocalization_widget()
+    
+    def create_plot_menu(self, b):
+        plot = MakePlot(self)
+        plot.create_plot_widget()
+        
+    def make_options_menu(self, b):
+        wi = b.wi
+        b.visible = False
+        actions = [('Enumerate Phenotypes', self.enumerate_phenotypes_menu),
+                   ('Analyze Case', self.case_report_menu),
+                   ('Co-localize Phenotypes', self.co_localize_menu),
+                   ('Create Plot', self.create_plot_menu)]
+        actions_h = widgets.HTMLWidget(value='<b>Actions</b>')
+        options_h = widgets.HTMLWidget(value='<b>Options</b>')
+        options = [('Edit Symbols', self.create_edit_symbols),
+                   ('Edit Parameters', self.create_edit_parameters),
+                   ('Save widget', None)]
+        actions_w = []
+        for name, method in actions:
+            button = widgets.ButtonWidget(description=name)
+            button.on_click(method)
+            if method is None:
+                button.disabled = True
+            actions_w.append(button)
+        options_w = []
+        for name, method in options:
+            button = widgets.ButtonWidget(description=name)
+            button.on_click(method)
+            if method is None:
+                button.disabled = True
+            options_w.append(button)
+        wi.children = [actions_h] + actions_w + [options_h] + options_w 
         
     def update_widgets(self):
         self.display_system = DisplaySystem(self)
         self.display_system.create_system_widget()
-        cases_table = CasesTable(self)
-        cases_table.cases_table_widget()
-        plot = MakePlot(self)
-        plot.create_plot_widget()
         self.figures = DisplayFigures(self)
         self.figures.create_figures_widget()
                 
@@ -127,25 +172,30 @@ class InteractiveInput(object):
         parameter_dict = self.options['parameter_dict']
         if parameter_dict is None:
             parameter_dict = {} 
-        name = widgets.TextWidget(description='Name', value=self.name)
-        equations=widgets.TextareaWidget(description='Equations',
+        name = widgets.TextWidget(description='* Name', value=self.name)
+        equations=widgets.TextareaWidget(description='* Equations',
                                          value='\n'.join(self.equations))
         aux=widgets.TextareaWidget(description='Auxiliary Variables',
-                                                   value=', '.join(self.auxiliary))
-        constraints=widgets.TextareaWidget(description='Constraints',
-                                           value=', '.join(self.constraints))
+                                   value=', '.join(self.auxiliary))
+        html = widgets.HTMLWidget(value='<b>Architectural Constraints</b>')
+        constraints=widgets.TextareaWidget(description='Parameters',
+                                           value=', '.join(self.constraints)
+                                           )
+        options_html = widgets.HTMLWidget(value='<b>Additional Options</b>')
         cyclical = widgets.CheckboxWidget(description='Check for Cycles',
                                           value = self.cyclical)
         codominance = widgets.CheckboxWidget(description='Check for Co-dominance',
                                              value = self.codominance)
-        replacements=widgets.TextareaWidget(description='Replace expression',
+        replacements=widgets.TextareaWidget(description='Kinetic Orders',
                                             value=', '.join(
                                              [key + '=' + value for (key,value) in
                                              parameter_dict.iteritems()]))
-        wi = widgets.ContainerWidget(children=[name, equations,
-                                               aux, constraints, 
-                                               cyclical, codominance,
-                                               replacements])
+        wi = widgets.ContainerWidget(children=[name, equations, 
+                                               aux, html,
+                                               constraints, replacements,
+                                               options_html, cyclical,
+                                               codominance,
+                                               ])
         if self.ds is None:
             description = 'Create Design Space'
         else:
@@ -177,8 +227,8 @@ class InteractiveInput(object):
         if self.ds is not None:
             edit_symbols.visible = True
             edit_parameters.visible = True    
-        return edit_equations
-    
+        return edit_equations  
+        
     def make_design_space(self, b):
         if b.wi.visible == False:
             b.wi.visible = True
@@ -203,14 +253,19 @@ class InteractiveInput(object):
             parameter_dict = {}
         if len(constraints) == 0:
             constraints = None
-        self.ds = dspace.DesignSpace(eq, name=b.name.value, constraints=constraints,
+        self.ds = dspace.DesignSpace(eq, name=b.name.value, 
+                                     constraints=constraints,
                                      resolve_cycles=self.cyclical, 
                                      resolve_codominance=self.codominance,
                                      parameter_dict=parameter_dict)
         if self.pvals == None:
-            self.pvals = dspace.VariablePool(names=self.ds.independent_variables)
+            self.pvals = dspace.VariablePool(
+                          names=self.ds.independent_variables
+                          )
         else:
-            pvals = dspace.VariablePool(names=self.ds.independent_variables)
+            pvals = dspace.VariablePool(
+                     names=self.ds.independent_variables
+                     )
             for i in pvals:
                 if i in self.pvals:
                     pvals[i] = self.pvals[i]
@@ -219,11 +274,10 @@ class InteractiveInput(object):
         if get_parameters is not None:
              case = self.ds(get_parameters)
              self.pvals = case.valid_interior_parameter_set()
+        self.symbols.update({i:i for i in self.ds.dependent_variables + self.ds.independent_variables if i not in self.symbols})
+        self.ds.update_latex_symbols(self.symbols)
         self.update_widgets()
-        b.wi.visible = False
-        b.description = 'Edit Design Space'
-        b.edit_symbols.visible = True
-        b.edit_parameters.visible = True
+        self.make_options_menu(b)
     
     def create_edit_symbols(self, b):
         Edit = EditSymbols(self)

@@ -16,6 +16,8 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 from subprocess import call, Popen, PIPE
 from dspace.graphs.designspace_graph import GraphGenerator
 
+import base64
+
 def eigenvalue_compare(eigenvalues, component='real', rank=1):
     if component == 'real':
         eig = eigenvalues.real
@@ -63,18 +65,25 @@ class MakePlot(object):
         center = controller.defaults('center_axes')
         range_x = controller.defaults('range_x')
         range_y = controller.defaults('range_y') 
-        xlabel = widgets.DropdownWidget(description='X-Axis',
-                                        values=controller.ds.independent_variables, 
-                                        value=xaxis)
-        ylabel = widgets.DropdownWidget(description='Y-Axis',
-                                        values=controller.ds.independent_variables,
-                                        value=yaxis)
-        xmin = widgets.FloatTextWidget(description='X-Min',value=range_x[0])
-        xmax = widgets.FloatTextWidget(description='X-Max',value=range_x[1])
-        ymin = widgets.FloatTextWidget(description='Y-Min',value=range_y[0])
-        ymax = widgets.FloatTextWidget(description='Y-Max',value=range_y[1])
-        center_axes = widgets.CheckboxWidget(description='Center Axes', value=center)
-        plot_type = widgets.DropdownWidget(description='Plot Type',
+        xlabel = widgets.DropdownWidget(
+                  description='* X-Axis',
+                  values=controller.ds.independent_variables, 
+                  value=xaxis)
+        ylabel = widgets.DropdownWidget(
+                  description='* Y-Axis',
+                  values=controller.ds.independent_variables,
+                  value=yaxis)
+        xmin = widgets.FloatTextWidget(description='* X-Min',
+                                       value=range_x[0])
+        xmax = widgets.FloatTextWidget(description='* X-Max',
+                                       value=range_x[1])
+        ymin = widgets.FloatTextWidget(description='* Y-Min',
+                                       value=range_y[0])
+        ymax = widgets.FloatTextWidget(description='* Y-Max',
+                                       value=range_y[1])
+        center_axes = widgets.CheckboxWidget(description='Center Axes',
+                                             value=center)
+        plot_type = widgets.DropdownWidget(description='* Plot Type',
                                            values=self.widget_types,
                                            value='Design Space (interactive)')
         title_widget = widgets.TextWidget(description='Title')

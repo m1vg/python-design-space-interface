@@ -843,17 +843,27 @@ def draw_1D_slice(self, ax, p_vals, slice_variable, range_slice, color_dict=None
     return color_dict
     
 @monkeypatch_method(dspace.models.designspace.DesignSpace)
-def draw_1D_ss_function(self, ax, function, p_vals, slice_variable, range_slice,
-                        resolution=100, **kwargs):
+def draw_1D_ss_function(self, ax, function, p_vals, 
+                        slice_variable, range_slice, 
+                        resolution=100, colors=None, **kwargs):
     p_bounds = dict(p_vals)
     p_bounds[slice_variable] = range_slice
     valid_cases = self.valid_cases(p_bounds=p_bounds)
     lines = list()
     ylim = None
     for case in valid_cases:
-        pt = self(case).draw_1D_ss_function(ax, function, p_vals,
-                                            slice_variable, range_slice,
-                                            resolution=resolution, **kwargs)
+        if colors is not None:
+            if case in colors:
+                kwargs['c'] = colors[case]
+            else:
+                kwargs.pop('c')
+        pt = self(case).draw_1D_ss_function(ax, 
+                                            function,
+                                            p_vals,
+                                            slice_variable, 
+                                            range_slice,
+                                            resolution=resolution,
+                                            **kwargs)
         lines.append(pt)
         ydata = pt[0].get_ydata()
         miny = min(ydata)

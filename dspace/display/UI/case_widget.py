@@ -12,29 +12,85 @@ import cStringIO
 from matplotlib.backends.backend_agg import FigureCanvasAgg 
 
 
+class CaseReport(object):
+    
+    def __init__(self, controller, by_signature=False):
+        setattr(self, 'controller', controller)
+        setattr(self, 'by_signature', by_signature)
+        
+    def create_case_widget(self):
+        controller = self.controller 
+        if controller.ds is None:
+            return
+        by_signature = widgets.CheckboxWidget(
+                        description='Cases indicated by signature?', 
+                        value=self.by_signature
+                        )
+        case_id = widgets.TextWidget(description='* Analysis for case:')        
+        constraints = widgets.TextareaWidget(description='Biological constraints:')
+        button = widgets.ButtonWidget(description='Create Analysis')
+        button.on_click(self.create_report)
+        button.case_id = case_id
+        button.by_signature = by_signature
+        button.constraints = constraints
+        wi = widgets.ContainerWidget(children=[by_signature,
+                                               case_id,
+                                               constraints,
+                                               button])
+        controller.update_child('Analyze Case', wi)
+    
+    def create_report(self, b):
+        controller = self.controller
+        by_signature = b.by_signature.value
+        case_id = str(b.case_id.value)
+        constraints = str(b.constraints.value)
+        if constraints != '':
+            constraints = constraints.split(',')
+            constraints = [i.strip() for i in constraints]
+        else:
+            constraints = None
+        display_case = DisplayCase(controller, case_id, by_signature=by_signature, constraints=constraints)
+        display_case.create_case_widget()
+        
 class DisplayCase(object):
     
-    def __init__(self, controller, case_id, by_signature=False):
+    def __init__(self, controller, case_id, by_signature=False, pvals=None, constraints=None):
         setattr(self, 'controller', controller)
-        setattr(self, 'case', controller.ds(case_id, by_signature=by_signature))
+        setattr(self, 'pvals', pvals)
+        setattr(self, 'case', controller.ds(case_id, 
+                                            by_signature=by_signature,
+                                            constraints=constraints))
         setattr(self, 'info', None)
         setattr(self, 'equations', None)
         setattr(self, 'log_gains', None)
+        setattr(self, 'parameter_table', None)
         setattr(self, 'log_coordinates', False)
         
     def create_case_widget(self):
         controller = self.controller 
         if controller.ds is None:
             return
+        case = self.case
         self.info = widgets.ContainerWidget()
         self.equations = widgets.ContainerWidget()
         self.log_gains = widgets.ContainerWidget()
+        self.parameter_table = widgets.ContainerWidget() 
+        save_button = widgets.ButtonWidget(description='Save Parameters')
+        save_button.on_click(self.save_parameters)
+        if case.is_valid() is True:
+            if self.pvals is None:
+                self.pvals = case.valid_interior_parameter_set()
+        else:
+            save_button.visible = False
+            self.parameter_table.visible = False
         close_button = widgets.ButtonWidget(description='Close Tab')
         close_button.on_click(self.close_widget)
         wi = widgets.PopupWidget(children=[self.info, 
-                                               self.equations,
-                                               self.log_gains,
-                                               close_button])
+                                           self.equations,
+                                           self.log_gains,
+                                           self.parameter_table,
+                                           save_button,
+                                           close_button])
         wi.set_css('height', '400px')
         self.update_display()
         controller.update_child('Case ' + self.case.case_number, wi)
@@ -43,10 +99,15 @@ class DisplayCase(object):
         controller = self.controller 
         controller.update_child('Case ' + self.case.case_number, None)
         
+    def save_parameters(self, b):
+        controller = self.controller
+        controller.pvals.update(self.pvals)
+
     def update_display(self):
         self.update_info()
         self.update_equations()
         self.update_log_gains()
+        self.update_parameter_table()
         
     def update_info(self):
         controller = self.controller 
@@ -100,9 +161,9 @@ class DisplayCase(object):
             self.log_gains.children = []
             return
         table = widgets.HTMLWidget()
-        html_str = '<br><div><table>\n<caption>Table 2. Logarithmic gains and parameter sensitivities for Case ' + case.case_number + ' (' + case.signature + '). </caption>\n'
+        html_str = '<br><div><table>\n<caption>Table 1. Logarithmic gains and parameter sensitivities for Case ' + case.case_number + ' (' + case.signature + '). </caption>\n'
         html_str += '<tr ><th rowspan="2" align=center  style="padding:0 15px 0 15px;"> Dependent<br> Variables </th>'
-        html_str += '<th colspan="' + str(len(case.independent_variables)) + '" align=center  style="padding:0 15px 0 15px;"> Inependent Variables and Parameters</th></tr><tr align=center>'
+        html_str += '<th colspan="' + str(len(case.independent_variables)) + '" align=center  style="padding:0 15px 0 15px;"> Independent Variables and Parameters</th></tr><tr align=center>'
         for xi in case.independent_variables:
                 html_str += '<td><b>{0}</b></td>'.format(xi)
         html_str += '</tr>\n'
@@ -114,6 +175,25 @@ class DisplayCase(object):
         html_str += '</table></div>'
         table.value = html_str
         self.log_gains.children = [table]
+        return
+    
+    def update_parameter_table(self):
+        controller = self.controller 
+        case = self.case
+        pvals = self.pvals
+        if pvals is None:
+            self.parameter_table.children = []
+            return
+        table = widgets.HTMLWidget()
+        html_str = '<br><div><table>\n<caption>Table 2. Value for the parameters automatically determined for Case ' + case.case_number + ' (' + case.signature + '). </caption>\n'
+        html_str += '<tr ><th align=center  style="padding:0 15px 0 15px;"> Parameters </th><th> Value </th>'
+        for xi in sorted(pvals.keys()):
+                html_str += '<tr><td><b>{0}</b></td><td>{1}</td></tr>'.format(
+                             xi,
+                             pvals[xi])
+        html_str += '</table></div>'
+        table.value = html_str
+        self.parameter_table.children = [table]
         return
         
     def change_logarithmic(self, name, value):
