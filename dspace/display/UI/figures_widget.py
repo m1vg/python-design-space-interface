@@ -467,6 +467,8 @@ class DisplayFigures(object):
         html_str = '<b>Figure '+str(len(children)+1)+'.  '+title+'</b>' + caption
         html_widget = widgets.HTMLWidget(value=html_str)
         wi = widgets.PopupWidget(children=[image_widget, html_widget])
+        wi.set_css('height', '360px')
+        wi.set_css('width', '360px')
         children.append(wi)
         self.figures_widget.children = children
         
