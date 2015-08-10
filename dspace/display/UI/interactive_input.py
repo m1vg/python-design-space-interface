@@ -28,7 +28,7 @@ class WidgetSavedData(object):
     @staticmethod
     def load_widget_data(interactive):
         
-        f = open(interactive.name, 'r')
+        f = open(interactive.name+'.dsipy', 'r')
         saved_data = pickle.load(f)
         f.close()
         figure_data = saved_data.saved['figure_data']
@@ -56,7 +56,7 @@ class WidgetSavedData(object):
         
     def save_data(self):
         
-        f = open(self.saved['name'], 'w')
+        f = open(self.saved['name']+'.dsipy', 'w')
         pickle.dump(self, f)
         f.close() 
         
