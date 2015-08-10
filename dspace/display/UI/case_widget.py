@@ -37,7 +37,8 @@ class CaseReport(object):
                                                case_id,
                                                constraints,
                                                button])
-        controller.update_child('Analyze Case', wi)
+        return ('Analyze Case', wi)
+        ## controller.update_child('Analyze Case', wi)
     
     def create_report(self, b):
         controller = self.controller
@@ -161,7 +162,7 @@ class DisplayCase(object):
             self.log_gains.children = []
             return
         table = widgets.HTMLWidget()
-        html_str = '<br><div><table>\n<caption>Table 1. Logarithmic gains and parameter sensitivities for Case ' + case.case_number + ' (' + case.signature + '). </caption>\n'
+        html_str = '<br><div><table>\n<caption>Logarithmic gains and parameter sensitivities for Case ' + case.case_number + ' (' + case.signature + '). </caption>\n'
         html_str += '<tr ><th rowspan="2" align=center  style="padding:0 15px 0 15px;"> Dependent<br> Variables </th>'
         html_str += '<th colspan="' + str(len(case.independent_variables)) + '" align=center  style="padding:0 15px 0 15px;"> Independent Variables and Parameters</th></tr><tr align=center>'
         for xi in case.independent_variables:
@@ -173,8 +174,11 @@ class DisplayCase(object):
                 html_str += '<td align=center  style="padding:0 15px 0 15px;">{0}</td>'.format(str(case.ssystem.log_gain(xd, xi)))
             html_str += '</tr>\n'
         html_str += '</table></div>'
+        save_button = widgets.ButtonWidget(description='Save Table')
+        save_button.table_data = html_str
+        save_button.on_click(self.save_table)
         table.value = html_str
-        self.log_gains.children = [table]
+        self.log_gains.children = [table, save_button]
         return
     
     def update_parameter_table(self):
@@ -185,7 +189,7 @@ class DisplayCase(object):
             self.parameter_table.children = []
             return
         table = widgets.HTMLWidget()
-        html_str = '<br><div><table>\n<caption>Table 2. Value for the parameters automatically determined for Case ' + case.case_number + ' (' + case.signature + '). </caption>\n'
+        html_str = '<br><div><table>\n<caption>Value for the parameters automatically determined for Case ' + case.case_number + ' (' + case.signature + '). </caption>\n'
         html_str += '<tr ><th align=center  style="padding:0 15px 0 15px;"> Parameters </th><th> Value </th>'
         for xi in sorted(pvals.keys()):
                 html_str += '<tr><td><b>{0}</b></td><td>{1}</td></tr>'.format(
@@ -193,11 +197,21 @@ class DisplayCase(object):
                              pvals[xi])
         html_str += '</table></div>'
         table.value = html_str
-        self.parameter_table.children = [table]
+        save_button = widgets.ButtonWidget(description='Save Table')
+        save_button.table_data = html_str
+        save_button.on_click(self.save_table)
+        self.parameter_table.children = [save_button, table]
         return
         
     def change_logarithmic(self, name, value):
         self.log_coordinates = value
         self.update_equations()
         
+    def save_table(self, b):
+        controller = self.controller
+        html_string = b.table_data
+        controller.tables.add_table(html_string)
+ 
+       
+       
         

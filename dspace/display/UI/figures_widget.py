@@ -16,8 +16,6 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 from subprocess import call, Popen, PIPE
 from dspace.graphs.designspace_graph import GraphGenerator
 
-import base64
-
 def eigenvalue_compare(eigenvalues, component='real', rank=1):
     if component == 'real':
         eig = eigenvalues.real
@@ -117,9 +115,12 @@ class MakePlot(object):
         button.wi = wi
         self.title = title_widget
         self.caption = caption_widget
-        add_plot = widgets.ContainerWidget(description='Add Plot', children=[wi, self.plot_data, button])
-        controller.update_child('Create Plot', add_plot)
+        add_plot = widgets.ContainerWidget(description='Add Plot',
+                                           children=[wi,
+                                                     self.plot_data, 
+                                                     button])
         self.update_plot_widget('value', 'Design Space (Interactive)')
+        return ('Create Plot', add_plot)
         
     def update_plot_widget(self, name, value):
         controller = self.controller
@@ -161,8 +162,9 @@ class MakePlot(object):
             parallel_widget = widgets.CheckboxWidget(description='Compute in Parallel', value=False)
             number_dynamic = len(controller.ds.dependent_variables)
             number_dynamic -= len(controller.ds.auxiliary_variables)
-            select_widget = widgets.DropdownWidget(description='Rank to Plot',
-                                                   values = [str(i+1) for i in range(number_dynamic)],
+            select_widget = widgets.DropdownWidget(
+                             description='Rank to Plot',
+                             values = [str(i+1) for i in range(number_dynamic)],
                                                    value=str(1))
             wi = widgets.ContainerWidget(children=[component_widget, 
                                                    select_widget,
@@ -242,6 +244,7 @@ class MakePlot(object):
         if controller.name != '':
             title = 'Analysis of the ' + controller.name + ' by ' + self.title.value.lower()
             self.title.value = title
+        self.caption.value += ' Figure generated with the following parameter values:' + '; '.join([i + ' = ' + str(controller.pvals[i]) for i in sorted(controller.pvals.keys())]) + '.'
             
     def make_plot(self, b):
         controller = self.controller
@@ -317,7 +320,9 @@ class MakePlot(object):
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
-        controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value)
+        controller.figures.add_figure(data, 
+                                      title=b.title.value,
+                                      caption=b.caption.value)
         fig=plt.clf()
         
     def make_stability_plot(self, b):

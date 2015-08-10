@@ -56,8 +56,8 @@ class CasesTable(object):
         button.extra_columns = extra_columns
         button.constraints = constraints
         cases_table = widgets.ContainerWidget(description='Cases Table', children=[wi, button, self.table])
-        controller.update_child('Phenotypic Repertoire', cases_table)
         wi.visible = False
+        return ('Phenotypic Repertoire', cases_table)
     
     def add_cases_column(self, b):
         controller = self.controller
@@ -116,7 +116,7 @@ class CasesTable(object):
         if mode == 'None':
             self.table.children=[]
             return
-        s = '<div><table>\n<caption>Table 1. Cases in the system design space. </caption>\n'
+        s = '<div><table>\n<caption>Cases in the system design space. </caption>\n'
         s += '<tr align=center><td style="padding:0 15px 0 15px;"><b>{0}</b></td><td style="padding:0 15px 0 15px;"><b>{1}</b></td>'.format('  Case Number  ', '  Case Signature  ')
         for column in b.extra_columns.children:
             header = str(column.header.value)
@@ -146,9 +146,19 @@ class CasesTable(object):
         s += 'Note: # of eigenvalues w/ positive real part is calculated using a representative set of parameter values, and may not be reflective of all potential behaviors.'
         s += '</caption></div>'
         html_widget = widgets.HTMLWidget(value = s)
-        table_container = widgets.PopupWidget(children=[html_widget])
+        save_table = widgets.ButtonWidget(description='Save Table')
+        save_table.table_data = s
+        save_table.on_click(self.save_table)
+        table_container = widgets.ContainerWidget(children=[save_table, 
+                                                        html_widget])
         table_container.set_css('height', '300px')
         self.table.children = [table_container]
+        
+    def save_table(self, b):
+        
+        controller = self.controller
+        html_string = b.table_data
+        controller.tables.add_table(html_string)
         
         
     

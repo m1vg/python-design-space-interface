@@ -40,7 +40,7 @@ class CaseColocalization(object):
                                                by_signature,
                                                slice_variables,
                                                button])
-        controller.update_child('Co-localizations', wi)
+        return ('Co-localizations', wi)
         
     def make_colocalization(self, b):
         controller = self.controller

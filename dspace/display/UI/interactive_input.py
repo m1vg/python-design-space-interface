@@ -17,7 +17,50 @@ from cases_widget import CasesTable
 from case_widget import CaseReport
 from co_localize_widget import CaseColocalization
 from figures_widget import MakePlot, DisplayFigures
+from tables_widget import DisplayTables
 from parameters_widget import EditParameters
+
+import pickle
+import base64
+
+class WidgetSavedData(object):
+    
+    @staticmethod
+    def load_widget_data(interactive):
+        
+        f = open(interactive.name, 'r')
+        saved_data = pickle.load(f)
+        f.close()
+        figure_data = saved_data.saved['figure_data']
+        figure_data = [(base64.b64decode(i[0]), i[1], i[2]) for i in figure_data]
+        saved_data.saved['figure_data'] = figure_data
+        interactive.__dict__.update(saved_data.saved)
+    
+    def __init__(self, interactive):
+        setattr(self, 'saved', {})
+        save_fields = ['ds', 
+                       'equations',
+                       'name',
+                       'pvals',
+                       'cyclical',
+                       'codominance',
+                       'auxiliary',
+                       'constraints',
+                       'table_data',
+                       'symbols',
+                       'options',]
+        self.saved.update({i:interactive.__dict__[i] for i in save_fields})
+        figure_data = interactive.figure_data
+        figure_data = [(base64.b64encode(i[0]), i[1], i[2]) for i in figure_data]
+        self.saved['figure_data'] = figure_data
+        
+    def save_data(self):
+        
+        f = open(self.saved['name'], 'w')
+        pickle.dump(self, f)
+        f.close() 
+        
+                       
 
 class InteractiveInput(object):
     
@@ -42,8 +85,11 @@ class InteractiveInput(object):
         setattr(self, 'widget', widgets.TabWidget())
         setattr(self, 'figures', None)
         setattr(self, 'figure_data', [])
+        setattr(self, 'tables', None)
+        setattr(self, 'table_data', [])
         setattr(self, 'display_system', None)
         setattr(self, 'options', dict(kwargs))
+        setattr(self, 'actions', widgets.TabWidget())
         self.options.update(center_axes=centered_axes, 
                             xaxis=xaxis, yaxis=yaxis,
                             range_x=x_range, range_y=y_range, zlim=zlim, 
@@ -96,47 +142,62 @@ class InteractiveInput(object):
         return None
     
     def update_child(self, name, child, index=None):
+        previous_children = self.widget.children
         children = [i for i in self.widget.children]
         added = False
         for i in xrange(len(children)):
             if children[i].description == name:
                 added = True
-                old = children.pop(i)
-                ## if child is not None:
-                ##     child.description = name
-                ##     children.insert(i, child)
-                    
+                children[i].visible = not children[i].visible
+                ## self.widget._titles = {}
+                ## old = children.pop(i)
                 break
         if added is False:
             if child is not None:
                 child.description = name
                 children.append(child)
-                self.widget.set_title(len(children)-1, name)
+        self.widget.children = children
         for (i, child) in enumerate(children):
             self.widget.set_title(i, child.description)
-        self.widget.children = children
     
     def enumerate_phenotypes_menu(self, b):
         cases_table = CasesTable(self)
-        cases_table.cases_table_widget()
+        return cases_table.cases_table_widget()
+        
         
     def case_report_menu(self, b):
         case_report = CaseReport(self, 
                                  self.defaults('by_signature'))
-        case_report.create_case_widget()
+        return case_report.create_case_widget()
 
     def co_localize_menu(self, b):
         case_report = CaseColocalization(self, 
                                          self.defaults('by_signature'))
-        case_report.colocalization_widget()
+        return case_report.colocalization_widget()
     
     def create_plot_menu(self, b):
         plot = MakePlot(self)
-        plot.create_plot_widget()
+        return plot.create_plot_widget()
+        
+    def load_widget(self, b):
+        saved = WidgetSavedData.load_widget_data(self)
+        b.wi.visible = True
+        if self.ds is None:
+            return
+        self.make_options_menu(b.button)
+        self.update_widgets()
+        self.figures.load_widgets()       
+        self.tables.load_widgets()       
+
+    def save_widget_data(self, b):
+        save = WidgetSavedData(self)
+        save.save_data()
         
     def make_options_menu(self, b):
         wi = b.wi
         b.visible = False
+        b.name.visible = False
+        b.load.visible = False
         actions = [('Enumerate Phenotypes', self.enumerate_phenotypes_menu),
                    ('Analyze Case', self.case_report_menu),
                    ('Co-localize Phenotypes', self.co_localize_menu),
@@ -145,8 +206,9 @@ class InteractiveInput(object):
         options_h = widgets.HTMLWidget(value='<b>Options</b>')
         options = [('Edit Symbols', self.create_edit_symbols),
                    ('Edit Parameters', self.create_edit_parameters),
-                   ('Save widget', None)]
+                   ('Save widget', self.save_widget_data)]
         actions_w = []
+        
         for name, method in actions:
             button = widgets.ButtonWidget(description=name)
             button.on_click(method)
@@ -160,13 +222,26 @@ class InteractiveInput(object):
             if method is None:
                 button.disabled = True
             options_w.append(button)
-        wi.children = [actions_h] + actions_w + [options_h] + options_w 
+        wi.children = [actions_h, self.actions] + [options_h] + options_w 
+        for title, method in actions:
+            title, widget = method(self)
+            children = [i for i in self.actions.children] + [widget]
+            self.actions.children = children
+            self.actions.set_title(len(children)-1, title)
+        ##     
+        ## self.enumerate_phenotypes_menu(self)
+        ## self.case_report_menu(self)
+        ## self.co_localize_menu(self)
+        ## self.create_plot_menu(self)
+        
         
     def update_widgets(self):
         self.display_system = DisplaySystem(self)
         self.display_system.create_system_widget()
         self.figures = DisplayFigures(self)
         self.figures.create_figures_widget()
+        self.tables = DisplayTables(self)
+        self.tables.create_tables_widget()
                 
     def edit_equations_widget(self):
         parameter_dict = self.options['parameter_dict']
@@ -190,17 +265,13 @@ class InteractiveInput(object):
                                             value=', '.join(
                                              [key + '=' + value for (key,value) in
                                              parameter_dict.iteritems()]))
-        wi = widgets.ContainerWidget(children=[name, equations, 
+        wi = widgets.ContainerWidget(children=[equations, 
                                                aux, html,
                                                constraints, replacements,
                                                options_html, cyclical,
                                                codominance,
                                                ])
-        if self.ds is None:
-            description = 'Create Design Space'
-        else:
-            description = 'Edit Design Space'
-        button = widgets.ButtonWidget(value=False, description=description)
+        button = widgets.ButtonWidget(value=False, description='Create Design Space')
         button.on_click(self.make_design_space)
         button.equations = equations
         button.aux = aux
@@ -210,6 +281,18 @@ class InteractiveInput(object):
         button.replacements = replacements
         button.wi = wi
         button.name = name
+        load = widgets.ButtonWidget(value=False, description='Load Widget')
+        load.on_click(self.load_widget)
+        load.equations = equations
+        load.aux = aux
+        load.constraints = constraints
+        load.cyclical = cyclical
+        load.codominance = codominance
+        load.replacements = replacements
+        load.wi = wi
+        load.name = name
+        load.button = button
+        button.load = load
         edit_symbols = widgets.ButtonWidget(value=False, description='Edit Symbols')
         edit_symbols.on_click(self.create_edit_symbols)
         edit_parameters = widgets.ButtonWidget(value=False, description='Edit Parameters')
@@ -217,16 +300,18 @@ class InteractiveInput(object):
         button.edit_symbols = edit_symbols
         button.edit_parameters = edit_parameters
         edit_equations = widgets.ContainerWidget(description='Edit Equations', 
-                                                 children=[wi, 
+                                                 children=[name, wi, 
                                                            edit_symbols,
                                                            edit_parameters,
-                                                           button])
+                                                           button,
+                                                           load])
         wi.visible = False
         edit_symbols.visible = False
         edit_parameters.visible = False
         if self.ds is not None:
-            edit_symbols.visible = True
-            edit_parameters.visible = True    
+            wi.visible = True
+            self.update_widgets()
+            self.make_options_menu(button)
         return edit_equations  
         
     def make_design_space(self, b):
