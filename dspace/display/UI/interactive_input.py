@@ -178,6 +178,7 @@ class InteractiveInput(object):
         return plot.create_plot_widget()
         
     def load_widget(self, b):
+        self.name = str(b.name.value)
         saved = WidgetSavedData.load_widget_data(self)
         b.wi.visible = True
         if self.ds is None:
