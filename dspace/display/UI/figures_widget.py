@@ -244,7 +244,7 @@ class MakePlot(object):
         if controller.name != '':
             title = 'Analysis of the ' + controller.name + ' by ' + self.title.value.lower()
             self.title.value = title
-        self.caption.value += ' Figure generated with the following parameter values:' + '; '.join([i + ' = ' + str(controller.pvals[i]) for i in sorted(controller.pvals.keys())]) + '.'
+        self.caption.value += ' Figure generated with the following parameter values: ' + '; '.join([i + ' = ' + str(controller.pvals[i]) for i in sorted(controller.pvals.keys())]) + '.'
             
     def make_plot(self, b):
         controller = self.controller

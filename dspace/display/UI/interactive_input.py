@@ -147,10 +147,8 @@ class InteractiveInput(object):
         added = False
         for i in xrange(len(children)):
             if children[i].description == name:
-                added = True
-                children[i].visible = not children[i].visible
-                ## self.widget._titles = {}
-                ## old = children.pop(i)
+                self.widget._titles = {}
+                old = children.pop(i)
                 break
         if added is False:
             if child is not None:

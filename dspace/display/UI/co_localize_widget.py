@@ -97,9 +97,9 @@ class DisplayColocalization(object):
         title = widgets.HTMLWidget(value='<b> Cases to Co-localize </b>')
         buttons = []
         html_str = '<div><b>Is Valid: {0}</b></div>'.format(self.ci.is_valid())
-        html_str += '<br><div><table>'
+        html_str += '<br><div><table><caption> Auxiliary variables for co-localized cases.'
         html_str += '<tr ><th rowspan="2" align=center  style="padding:0 15px 0 15px;"> Slice<br> Variables </th>'
-        html_str += '<th colspan="' + str(len(self.cases)) + '" align=center  style="padding:0 15px 0 15px;"> Auxiliary Variables </th></tr><tr align=center>'
+        html_str += '<th colspan="' + str(len(self.cases)) + '" align=center  style="padding:0 15px 0 15px;"> Cases </th></tr><tr align=center>'
         for c in self.cases:
                 html_str += '<td><b>  {0}  </b></td>'.format(c.case_number)
         html_str += '</tr>\n'
