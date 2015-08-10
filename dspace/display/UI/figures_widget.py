@@ -43,10 +43,10 @@ class MakePlot(object):
                         'Stability',
                         'Eigenvalues'
                         ]
-        cmd = Popen(['dot'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        out, err = cmd.communicate(input='')        
-        if len(err) == 0:
-            widget_types.append('Network Graph')
+        ## cmd = Popen(['dot'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        ## out, err = cmd.communicate(input='')        
+        ## if len(err) == 0:
+        ##     widget_types.append('Network Graph')
         return widget_types
         
     def create_plot_widget(self):
