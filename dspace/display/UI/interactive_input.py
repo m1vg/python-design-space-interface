@@ -23,12 +23,29 @@ from parameters_widget import EditParameters
 import pickle
 import base64
 
+from os import listdir
+from os.path import isfile, join
+from distutils.version import LooseVersion
+
 class WidgetSavedData(object):
-    
+   
     @staticmethod
-    def load_widget_data(interactive):
+    def load_widget_data(interactive, version=''):
         
-        f = open(interactive.name+'.dsipy', 'r')
+        name = interactive.name
+        version = interactive.version
+        if version == '':
+            files = [f for f in listdir('.') if isfile(join('.',f))]
+            files = [f.split('-V') for f in files if f.startswith(interactive.name) and f.endswith('.dsipy')]
+            versions = [LooseVersion(f[1].strip('.dsipy')) for f in files if len(f) > 1]
+            if len(versions) == 0:
+                version = ''
+            else:
+                version = '-V'+str(max(versions))
+        else:
+            version = '-V' + version
+        file_name = name+version+'.dsipy'
+        f = open(file_name, 'r')
         saved_data = pickle.load(f)
         f.close()
         figure_data = saved_data.saved['figure_data']
@@ -41,6 +58,7 @@ class WidgetSavedData(object):
         save_fields = ['ds', 
                        'equations',
                        'name',
+                       'version',
                        'pvals',
                        'cyclical',
                        'codominance',
@@ -49,22 +67,23 @@ class WidgetSavedData(object):
                        'table_data',
                        'symbols',
                        'options',]
-        self.saved.update({i:interactive.__dict__[i] for i in save_fields})
+        self.saved.update({i:interactive.__dict__[i] for i in save_fields if i in interactive.__dict__})
         figure_data = interactive.figure_data
         figure_data = [(base64.b64encode(i[0]), i[1], i[2]) for i in figure_data]
         self.saved['figure_data'] = figure_data
         
     def save_data(self):
-        
-        f = open(self.saved['name']+'.dsipy', 'w')
+        version = self.saved['version']
+        if version != '':
+            version = '-V'+self.saved['version']
+        f = open(self.saved['name']+version+'.dsipy', 'w')
         pickle.dump(self, f)
         f.close() 
-        
                        
 
 class InteractiveInput(object):
     
-    def __init__(self, name='', equations=None, parameters=None,
+    def __init__(self, name='', version='', equations=None, parameters=None,
                  get_parameters=None, auxiliary_variables=[], constraints=[],
                  symbols={}, resolve_cycles=False, resolve_codominance=False,
                  centered_axes=False, xaxis=None, yaxis=None,
@@ -76,6 +95,7 @@ class InteractiveInput(object):
         setattr(self, 'ds', None)
         setattr(self, 'equations', [])
         setattr(self, 'name', name)
+        setattr(self, 'version', version)
         setattr(self, 'pvals', None)
         setattr(self, 'cyclical', resolve_cycles)
         setattr(self, 'codominance', resolve_codominance)
@@ -179,6 +199,7 @@ class InteractiveInput(object):
         
     def load_widget(self, b):
         self.name = str(b.name.value)
+        self.version = str(b.version.value)
         saved = WidgetSavedData.load_widget_data(self)
         b.wi.visible = True
         if self.ds is None:
@@ -187,10 +208,13 @@ class InteractiveInput(object):
         self.update_widgets()
         self.figures.load_widgets()       
         self.tables.load_widgets()       
-
+        b.version.value = self.version
+        
     def save_widget_data(self, b):
+        self.version = str(b.version.value)
         save = WidgetSavedData(self)
         save.save_data()
+        self.display_system.update_display()
         
     def make_options_menu(self, b):
         wi = b.wi
@@ -218,6 +242,7 @@ class InteractiveInput(object):
         for name, method in options:
             button = widgets.ButtonWidget(description=name)
             button.on_click(method)
+            button.version = b.version
             if method is None:
                 button.disabled = True
             options_w.append(button)
@@ -227,11 +252,6 @@ class InteractiveInput(object):
             children = [i for i in self.actions.children] + [widget]
             self.actions.children = children
             self.actions.set_title(len(children)-1, title)
-        ##     
-        ## self.enumerate_phenotypes_menu(self)
-        ## self.case_report_menu(self)
-        ## self.co_localize_menu(self)
-        ## self.create_plot_menu(self)
         
         
     def update_widgets(self):
@@ -247,6 +267,7 @@ class InteractiveInput(object):
         if parameter_dict is None:
             parameter_dict = {} 
         name = widgets.TextWidget(description='* Name', value=self.name)
+        version = widgets.TextWidget(description='Version', value=self.version)
         equations=widgets.TextareaWidget(description='* Equations',
                                          value='\n'.join(self.equations))
         aux=widgets.TextareaWidget(description='Auxiliary Variables',
@@ -280,9 +301,11 @@ class InteractiveInput(object):
         button.replacements = replacements
         button.wi = wi
         button.name = name
+        button.version = version
         load = widgets.ButtonWidget(value=False, description='Load Widget')
         load.on_click(self.load_widget)
         load.equations = equations
+        load.version = version
         load.aux = aux
         load.constraints = constraints
         load.cyclical = cyclical
@@ -299,7 +322,7 @@ class InteractiveInput(object):
         button.edit_symbols = edit_symbols
         button.edit_parameters = edit_parameters
         edit_equations = widgets.ContainerWidget(description='Edit Equations', 
-                                                 children=[name, wi, 
+                                                 children=[name, version, wi, 
                                                            edit_symbols,
                                                            edit_parameters,
                                                            button,

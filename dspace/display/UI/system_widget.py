@@ -31,7 +31,7 @@ class DisplaySystem(object):
         
     def update_display(self):
         controller = self.controller 
-        html_string = '<b>Name:</b> ' + controller.name + '<br>'
+        html_string = '<b>Name:</b> ' + ' '.join([controller.name, controller.version]) + '<br>'
         html_string += '<b>Number of Cases:</b> ' + str(controller.ds.number_of_cases) + '<br>'
         html_string += '<b>System Signature:</b> [' + controller.ds.signature + ']<br><hr>'
         html_string += '<b>Equations:</b><br><br>'
