@@ -66,6 +66,7 @@ class DisplayCase(object):
         setattr(self, 'log_gains', None)
         setattr(self, 'parameter_table', None)
         setattr(self, 'log_coordinates', False)
+        setattr(self, 'dynamic_only', False)
         
     def create_case_widget(self):
         controller = self.controller 
@@ -127,8 +128,17 @@ class DisplayCase(object):
     def update_equations(self):
         controller = self.controller 
         case = self.case
+        check_box = widgets.CheckboxWidget(description='Show only dynamical system?', 
+                                           value=self.dynamic_only)
+        check_box.on_trait_change(self.change_dynamic_only, 'value')
+        if self.case.ssystem.solution is None:
+            check_box.disables = True            
         equations = widgets.LatexWidget()
-        equations.value = case.equations._repr_latex_()
+        if self.dynamic_only is False:
+            equations.value = case.equations._repr_latex_()
+        else:
+            ssys = case.ssystem.remove_algebraic_constraints()
+            equations.value = ssys.equations._repr_latex_()
         solution = widgets.LatexWidget()
         conditions = widgets.LatexWidget() 
         boundaries = widgets.LatexWidget() 
@@ -146,7 +156,8 @@ class DisplayCase(object):
         else:
             solution.value = 'S-System has no solution.'
             boundaries.value = 'S-System has no solution.'
-        self.equations.children = [widgets.HTMLWidget(value='<b>Equations:</b><br>'),
+        self.equations.children = [check_box,
+                                   widgets.HTMLWidget(value='<b>Equations:</b><br>'),
                                    equations, 
                                    widgets.HTMLWidget(value='<b>Conditions:</b><br>'),
                                    conditions, 
@@ -205,6 +216,10 @@ class DisplayCase(object):
         
     def change_logarithmic(self, name, value):
         self.log_coordinates = value
+        self.update_equations()
+        
+    def change_dynamic_only(self, name, value):
+        self.dynamic_only = value
         self.update_equations()
         
     def save_table(self, b):
