@@ -287,6 +287,7 @@ class MakePlot(object):
         button.on_click(self.remove_plot)
         button.name = 'Interactive Plot (' + str(np.random.randint(0, 1000)) + ')'
         image_widget = widgets.ImageWidget()
+        popup_widget = widgets.PopupWidget(children=[image_widget])
         rangex, rangey = self.axes_ranges(b)
         interactive_plot = controller.ds.draw_2D_slice_notebook(controller.pvals, str(b.xlabel.value),
                                                                 str(b.ylabel.value),
@@ -298,7 +299,7 @@ class MakePlot(object):
         wi = widgets.ContainerWidget(description=button.name,
                                      children=[interactive_plot, 
                                                button,
-                                               image_widget])
+                                               popup_widget])
         controller.update_child(button.name, wi)
         
     def make_static_plot(self, b):

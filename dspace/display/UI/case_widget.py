@@ -55,7 +55,7 @@ class CaseReport(object):
         
 class DisplayCase(object):
     
-    def __init__(self, controller, case_id, by_signature=False, pvals=None, constraints=None):
+    def __init__(self, controller, case_id, by_signature=False, pvals=None, constraints=None, subtitle=''):
         setattr(self, 'controller', controller)
         setattr(self, 'pvals', pvals)
         setattr(self, 'case', controller.ds(case_id, 
@@ -67,6 +67,7 @@ class DisplayCase(object):
         setattr(self, 'parameter_table', None)
         setattr(self, 'log_coordinates', False)
         setattr(self, 'dynamic_only', False)
+        setattr(self, 'subtitle', subtitle)
         
     def create_case_widget(self):
         controller = self.controller 
@@ -77,7 +78,7 @@ class DisplayCase(object):
         self.equations = widgets.ContainerWidget()
         self.log_gains = widgets.ContainerWidget()
         self.parameter_table = widgets.ContainerWidget() 
-        save_button = widgets.ButtonWidget(description='Save Parameters')
+        save_button = widgets.ButtonWidget(description='Make Nominal Parameter Set')
         save_button.on_click(self.save_parameters)
         if case.is_valid() is True:
             if self.pvals is None:
@@ -95,11 +96,15 @@ class DisplayCase(object):
                                            close_button])
         wi.set_css('height', '400px')
         self.update_display()
-        controller.update_child('Case ' + self.case.case_number, wi)
+        subtitle = self.subtitle
+        if subtitle != '':
+            subtitle = ' (' + subtitle + ')'
+        self.title = 'Case ' + self.case.case_number + subtitle
+        controller.update_child(self.title, wi)
         
     def close_widget(self, button):
         controller = self.controller 
-        controller.update_child('Case ' + self.case.case_number, None)
+        controller.update_child(self.title, None)
         
     def save_parameters(self, b):
         controller = self.controller

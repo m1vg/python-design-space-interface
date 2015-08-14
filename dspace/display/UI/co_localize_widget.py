@@ -66,7 +66,7 @@ class DisplayColocalization(object):
         setattr(self, 'active_constraints', False)
         setattr(self, 'ci', dspace.CaseColocalization(cases, slice_variables))
         setattr(self, 'pvals', {})
-        
+        setattr(self, 'y_variable', 'log('+controller.ds.dependent_variables[0]+')')
         
     def make_display_widget(self):
         controller = self.controller 
@@ -158,19 +158,27 @@ class DisplayColocalization(object):
         fig = plt.figure(dpi=600, facecolor='w')
         cases = [i.case_number for i in self.cases]
         if len(self.slice_variables) == 1:
-            ax1 = fig.add_axes([0.2, 0.3, 0.55, 0.5])
-            ax2 = fig.add_axes([0.2, 0.2, 0.55, 0.05])
-            ax3 = fig.add_axes([0.8, 0.2, 0.05, 0.6])
+            ss_options = ['log('+ i + ')' for i in controller.ds.dependent_variables]
+            dropdown = widgets.DropdownWidget(description='y-axis', 
+                                              values=ss_options,
+                                              value=self.y_variable)
+            dropdown.on_trait_change(self.change_y_axis, 'value')
+            options = [dropdown]
+            ax1 = fig.add_axes([0.1, 0.2, 0.7, 0.7])
+            ax2 = fig.add_axes([0.1, 0.1, 0.7, 0.05])
+            ax3 = fig.add_axes([0.85, 0.1, 0.05, 0.8])
             xaxis = self.slice_variables[0]
             xvalues = [pset[i][xaxis] for i in pset]
             x_range = [min(xvalues)*1e-1, max(xvalues)*1e1]
             colors = ds.draw_1D_slice(ax2,
                                       pvals, xaxis, x_range, colorbar=False)
-            ds.draw_1D_ss_function(ax1, 'log('+ds.dependent_variables[0]+')',
+            ds.draw_1D_ss_function(ax1, self.y_variable,
                                    pvals, xaxis, x_range, colors=colors)
             ax1.set_xticklabels('')
             ds.draw_region_colorbar(ax3, colors)
+
         else:
+            options = []
             ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
             xaxis = self.slice_variables[0]
             yaxis = self.slice_variables[1]
@@ -186,15 +194,21 @@ class DisplayColocalization(object):
         image_widget = widgets.ImageWidget(value=data)
         image_widget.set_css('height', '400px')
         image_widget.set_css('width', '480px')
-        self.plot.children = [image_widget]
+        self.plot.children = options + [image_widget]
         plt.close()
+        
+    def change_y_axis(self, name, value):
+        self.y_variable = str(value)
+        self.plot.children = [self.plot.children[0]]
+        self.update_plot()
         
     def open_case(self, b):
         case_id = b.description.split(' ')[1]
         c_widget = DisplayCase(self.controller, 
                                str(case_id), 
                                by_signature=False,
-                               pvals=b.pvals)
+                               pvals=b.pvals,
+                               subtitle='Co-localized')
         c_widget.create_case_widget()
 
         

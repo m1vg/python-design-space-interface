@@ -109,7 +109,6 @@ class InteractiveInput(object):
         setattr(self, 'table_data', [])
         setattr(self, 'display_system', None)
         setattr(self, 'options', dict(kwargs))
-        setattr(self, 'actions', widgets.TabWidget())
         self.options.update(center_axes=centered_axes, 
                             xaxis=xaxis, yaxis=yaxis,
                             range_x=x_range, range_y=y_range, zlim=zlim, 
@@ -216,6 +215,15 @@ class InteractiveInput(object):
         save.save_data()
         self.display_system.update_display()
         
+    def modify_equations_widget(self, b):
+        self.ds = None
+        self.figure_data = []
+        self.table_data = []
+        self.widget.close()
+        self.widget = widgets.TabWidget()
+        display(self.widget)   
+        self.update_child('Options', self.edit_equations_widget(editing=True))
+        
     def make_options_menu(self, b):
         wi = b.wi
         b.visible = False
@@ -230,14 +238,7 @@ class InteractiveInput(object):
         options = [('Edit Symbols', self.create_edit_symbols),
                    ('Edit Parameters', self.create_edit_parameters),
                    ('Save widget', self.save_widget_data)]
-        actions_w = []
-        
-        for name, method in actions:
-            button = widgets.ButtonWidget(description=name)
-            button.on_click(method)
-            if method is None:
-                button.disabled = True
-            actions_w.append(button)
+        actions_w = widgets.TabWidget()#[]
         options_w = []
         for name, method in options:
             button = widgets.ButtonWidget(description=name)
@@ -246,12 +247,16 @@ class InteractiveInput(object):
             if method is None:
                 button.disabled = True
             options_w.append(button)
-        wi.children = [actions_h, self.actions] + [options_h] + options_w 
+        edit = widgets.ButtonWidget(description='Modify System')
+        edit.on_click(self.modify_equations_widget)
+        warning = widgets.HTMLWidget()
+        warning.value = '<font color="red"><b>Warning! Modifying system erases saved figures and tables.</b></font>'
+        wi.children = [actions_h, actions_w] + [options_h] + options_w + [edit, warning]
         for title, method in actions:
             title, widget = method(self)
-            children = [i for i in self.actions.children] + [widget]
-            self.actions.children = children
-            self.actions.set_title(len(children)-1, title)
+            children = [i for i in actions_w.children] + [widget]
+            actions_w.children = children
+            actions_w.set_title(len(children)-1, title)
         
         
     def update_widgets(self):
@@ -262,7 +267,7 @@ class InteractiveInput(object):
         self.tables = DisplayTables(self)
         self.tables.create_tables_widget()
                 
-    def edit_equations_widget(self):
+    def edit_equations_widget(self, editing=False):
         parameter_dict = self.options['parameter_dict']
         if parameter_dict is None:
             parameter_dict = {} 
@@ -291,7 +296,8 @@ class InteractiveInput(object):
                                                options_html, cyclical,
                                                codominance,
                                                ])
-        button = widgets.ButtonWidget(value=False, description='Create Design Space')
+        button = widgets.ButtonWidget(value=False, 
+                                      description='Create Design Space')
         button.on_click(self.make_design_space)
         button.equations = equations
         button.aux = aux
@@ -302,7 +308,8 @@ class InteractiveInput(object):
         button.wi = wi
         button.name = name
         button.version = version
-        load = widgets.ButtonWidget(value=False, description='Load Widget')
+        load = widgets.ButtonWidget(value=False, 
+                                    description='Load Widget')
         load.on_click(self.load_widget)
         load.equations = equations
         load.version = version
@@ -332,8 +339,10 @@ class InteractiveInput(object):
         edit_parameters.visible = False
         if self.ds is not None:
             wi.visible = True
-            self.update_widgets()
+            ## self.update_widgets()
             self.make_options_menu(button)
+        if editing is True:
+            self.make_design_space(button)
         return edit_equations  
         
     def make_design_space(self, b):

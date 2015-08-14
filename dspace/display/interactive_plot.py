@@ -32,7 +32,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 
 
 def make_2D_slice(ds=None, p_vals=None, x_variable=None, y_variable=None,
-                  range_x=None, range_y=None, intersections=None, image_widget=None, **kwargs):
+                  range_x=None, range_y=None, intersections=None, image_widget=None, highlight='', **kwargs):
     for i in kwargs:
         p_vals[str(i)] = 10**kwargs[str(i)]
     x_range = range_x
@@ -44,6 +44,14 @@ def make_2D_slice(ds=None, p_vals=None, x_variable=None, y_variable=None,
     ds.draw_2D_slice(ax, p_vals, str(x_variable), str(y_variable),
                              x_range, y_range,
                      intersections=intersections)
+    highlight = str(highlight)
+    if highlight != '':
+        try:
+            case = ds(highlight)
+            case.draw_2D_slice(ax, p_vals, str(x_variable), str(y_variable),
+                               x_range, y_range, fc='none', ec='k', lw='2.')
+        except:
+            pass
     ax.plot(log10(p_vals[x_variable]), log10(p_vals[y_variable]), 'k.')
     if image_widget is not None:
         fig = plt.gcf()
@@ -52,7 +60,7 @@ def make_2D_slice(ds=None, p_vals=None, x_variable=None, y_variable=None,
         canvas.print_png(buf)
         data = buf.getvalue()
         image_widget.value = data
-        fig.clf()
+        plt.close()
     return
     
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
@@ -68,13 +76,20 @@ def draw_2D_slice_notebook(self, p_vals, x_variable, y_variable,
                               intersections={'Single':[1],
                                              'Single and Triple':[1,3],
                                              'All':range(1, 100)},
+                              highlight=widgets.TextWidget(value=''),
                               image_widget=fixed(image_container),
                               **{i:widgets.FloatSliderWidget(min=log10(slider_ranges[i][0]),
                                                              max=log10(slider_ranges[i][1]),
                                                              step=log10(slider_ranges[i][1]/slider_ranges[i][0])/20,
-                                                          value=log10(p_vals[i]))
-                                                          for i in slider_ranges
-                                                          }
-                              )
+                                                             value=log10(p_vals[i]))
+                                                             for i in slider_ranges
+                                                             }
+
+                                 )
+    make_2D_slice(ds=self, p_vals=p_vals,
+                  x_variable=x_variable, y_variable=y_variable,
+                  range_x=range_x, range_y=range_y, 
+                  intersections=range(1, 100), image_widget=image_container, 
+                  highlight='')
     return plot_widget
     
