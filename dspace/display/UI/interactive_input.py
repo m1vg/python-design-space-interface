@@ -309,7 +309,7 @@ class InteractiveInput(object):
         button.name = name
         button.version = version
         load = widgets.ButtonWidget(value=False, 
-                                    description='Load Widget')
+                                    description='Load Data')
         load.on_click(self.load_widget)
         load.equations = equations
         load.version = version
