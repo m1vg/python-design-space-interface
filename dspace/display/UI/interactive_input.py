@@ -136,7 +136,7 @@ class InteractiveInput(object):
             self.pvals.update(parameters)
            
         display(self.widget)   
-        self.update_child('Options', self.edit_equations_widget())
+        self.update_child('Main Menu', self.edit_equations_widget())
         
     def defaults(self, key):
         if key in self.options:
@@ -147,7 +147,7 @@ class InteractiveInput(object):
     def reload_widgets(self):
         self.widget = widgets.TabWidget()
         display(self.widget)
-        self.update_child('Options', self.edit_equations_widget())
+        self.update_child('Main Menu', self.edit_equations_widget())
         if self.ds is None:
             return
         self.update_widgets()
@@ -222,7 +222,7 @@ class InteractiveInput(object):
         self.widget.close()
         self.widget = widgets.TabWidget()
         display(self.widget)   
-        self.update_child('Options', self.edit_equations_widget(editing=True))
+        self.update_child('Main Menu', self.edit_equations_widget(editing=True))
         
     def make_options_menu(self, b):
         wi = b.wi
@@ -237,7 +237,7 @@ class InteractiveInput(object):
         options_h = widgets.HTMLWidget(value='<b>Options</b>')
         options = [('Edit Symbols', self.create_edit_symbols),
                    ('Edit Parameters', self.create_edit_parameters),
-                   ('Save widget', self.save_widget_data)]
+                   ('Save Data', self.save_widget_data)]
         actions_w = widgets.TabWidget()#[]
         options_w = []
         for name, method in options:
