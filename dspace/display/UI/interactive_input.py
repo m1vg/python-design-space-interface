@@ -361,7 +361,7 @@ class InteractiveInput(object):
         self.name = b.name.value
         constraints = self.constraints
         replacements = str(b.replacements.value).strip()
-        self.options.update(kinetic_orders=replacements)
+        self.options.update(kinetic_orders=b.replacements.value)
         if len(replacements) > 0:
             replacements = str(b.replacements.value).split(',')
             replacements = [[j.strip() for j in i.split('=')] for i in replacements] 
