@@ -88,7 +88,7 @@ class InteractiveInput(object):
                  symbols={}, resolve_cycles=False, resolve_codominance=False,
                  centered_axes=False, xaxis=None, yaxis=None,
                  x_range=[1e-3, 1e3], y_range=[1e-3, 1e3],
-                 zlim=None, by_signature=False, parameter_dict=None,
+                 zlim=None, by_signature=False, kinetic_orders=None,
                  included_cases=None, **kwargs):
         ''' 
         '''
