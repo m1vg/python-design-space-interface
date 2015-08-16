@@ -101,6 +101,7 @@ class InteractiveInput(object):
         setattr(self, 'codominance', resolve_codominance)
         setattr(self, 'auxiliary', [])
         setattr(self, 'constraints', [])
+        setattr(self, 'kinetic_orders', [])
         setattr(self, 'symbols', symbols)
         setattr(self, 'widget', widgets.TabWidget())
         setattr(self, 'figures', None)
@@ -238,7 +239,7 @@ class InteractiveInput(object):
         options = [('Edit Symbols', self.create_edit_symbols),
                    ('Edit Parameters', self.create_edit_parameters),
                    ('Save Data', self.save_widget_data)]
-        actions_w = widgets.TabWidget()#[]
+        actions_w = widgets.TabWidget()
         options_w = []
         for name, method in options:
             button = widgets.ButtonWidget(description=name)
@@ -268,9 +269,9 @@ class InteractiveInput(object):
         self.tables.create_tables_widget()
                 
     def edit_equations_widget(self, editing=False):
-        parameter_dict = self.options['parameter_dict']
-        if parameter_dict is None:
-            parameter_dict = {} 
+        kinetic_orders = self.options['kinetic_orders']
+        if kinetic_orders is None:
+            kinetic_orders = []
         name = widgets.TextWidget(description='* Name', value=self.name)
         version = widgets.TextWidget(description='Version', value=self.version)
         equations=widgets.TextareaWidget(description='* Equations',
@@ -288,8 +289,7 @@ class InteractiveInput(object):
                                              value = self.codominance)
         replacements=widgets.TextareaWidget(description='Kinetic Orders',
                                             value=', '.join(
-                                             [key + '=' + value for (key,value) in
-                                             parameter_dict.iteritems()]))
+                                             [i for i in kinetic_orders]))
         wi = widgets.ContainerWidget(children=[equations, 
                                                aux, html,
                                                constraints, replacements,
