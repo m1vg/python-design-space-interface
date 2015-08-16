@@ -114,7 +114,7 @@ class InteractiveInput(object):
                             xaxis=xaxis, yaxis=yaxis,
                             range_x=x_range, range_y=y_range, zlim=zlim, 
                             by_signature=by_signature, 
-                            parameter_dict=parameter_dict, 
+                            kinetic_orders=kinetic_orders, 
                             get_parameters=get_parameters,
                             included_cases=included_cases)
         if equations is not None:
