@@ -266,6 +266,7 @@ class DisplayCase(object):
     def change_logarithmic(self, name, value):
         self.log_coordinates = value
         self.update_equations()
+        self.update_global_tolerances(self)
         
     def change_dynamic_only(self, name, value):
         self.dynamic_only = value
