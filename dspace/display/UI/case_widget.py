@@ -68,6 +68,7 @@ class DisplayCase(object):
         setattr(self, 'log_coordinates', False)
         setattr(self, 'dynamic_only', False)
         setattr(self, 'subtitle', subtitle)
+        setattr(self, 'fixed_pvals', False if pvals is None else True)
         
     def create_case_widget(self):
         controller = self.controller 
@@ -78,6 +79,7 @@ class DisplayCase(object):
         self.equations = widgets.ContainerWidget()
         self.log_gains = widgets.ContainerWidget()
         self.parameter_table = widgets.ContainerWidget() 
+        self.tolerances_table = widgets.ContainerWidget() 
         save_button = widgets.ButtonWidget(description='Make Nominal Parameter Set')
         save_button.on_click(self.save_parameters)
         if case.is_valid() is True:
@@ -93,6 +95,7 @@ class DisplayCase(object):
                                            self.log_gains,
                                            self.parameter_table,
                                            save_button,
+                                           self.tolerances_table,
                                            close_button])
         wi.set_css('height', '400px')
         self.update_display()
@@ -115,6 +118,7 @@ class DisplayCase(object):
         self.update_equations()
         self.update_log_gains()
         self.update_parameter_table()
+        self.update_global_tolerances()
         
     def update_info(self):
         controller = self.controller 
@@ -204,6 +208,9 @@ class DisplayCase(object):
         if pvals is None:
             self.parameter_table.children = []
             return
+        if case.is_valid(p_bounds=pvals) is False:
+            self.parameter_table.children = []
+            return            
         table = widgets.HTMLWidget()
         html_str = '<br><div><table>\n<caption>Value for the parameters automatically determined for Case ' + case.case_number + ' (' + case.signature + '). </caption>\n'
         html_str += '<tr ><th align=center  style="padding:0 15px 0 15px;"> Parameters </th><th> Value </th>'
@@ -218,6 +225,34 @@ class DisplayCase(object):
         save_button.on_click(self.save_table)
         self.parameter_table.children = [save_button, table]
         return
+    
+    def update_global_tolerances(self):
+        controller = self.controller 
+        case = self.case
+        pvals = self.pvals
+        if pvals is None:
+            self.tolerances_table.children = []
+            return
+        if case.is_valid(p_bounds=pvals) is False:
+            self.tolerances_table.children = []
+            return            
+        table = widgets.HTMLWidget()
+        html_str = '<br><div><table>\n<caption>Global tolerances determined for Case ' + case.case_number + ' (' + case.signature + ') at the reference parameter values. </caption>\n'
+        html_str += '<tr ><th align=center  style="padding:0 15px 0 15px;"> Parameters </th><th> Lower tolerance </th><th> upper tolerance </th>'
+        tolerances = case.measure_tolerance(pvals, log_out=False)
+        for xi in sorted(pvals.keys()):
+                html_str += '<tr><td><b>{0}</b></td><td>{1}</td><td>{1}</td></tr>'.format(
+                             xi,
+                             tolerances[xi][0],
+                             tolerances[xi][1])
+        html_str += '</table></div>'
+        table.value = html_str
+        save_button = widgets.ButtonWidget(description='Save Table')
+        save_button.table_data = html_str
+        save_button.on_click(self.save_table)
+        self.tolerances_table.children = [save_button, table]
+        return
+        
         
     def change_logarithmic(self, name, value):
         self.log_coordinates = value
