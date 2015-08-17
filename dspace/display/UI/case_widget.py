@@ -247,10 +247,13 @@ class DisplayCase(object):
         html_str += '<tr ><th align=center  style="padding:0 15px 0 15px;"> Parameters </th><th> Lower tolerance </th><th> upper tolerance </th>'
         tolerances = case.measure_tolerance(pvals, log_out=self.log_coordinates)
         for xi in sorted(pvals.keys()):
-                html_str += '<tr><td><b>{0}</b></td><td>{1}</td><td>{2}</td></tr>'.format(
-                             xi,
-                             tolerances[xi][0],
-                             tolerances[xi][1])
+            lower_th = 1e-19 if self.log_coordinates is False else -19
+            upper_th = 1e19 if self.log_coordinates is False else 19
+            lower, upper = tolerances[xi]
+            html_str += '<tr><td><b>{0}</b></td><td>{1}</td><td>{2}</td></tr>'.format(
+                         xi,
+                         lower if lower > lower_th else '-&infin;',
+                         upper if upper < upper_th else '&infin;')
         html_str += '</table><caption>'
         html_str += 'Note: Global tolerance calculated based on the following values for the parameters: ' 
         html_str += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals.keys())]) + '.'
