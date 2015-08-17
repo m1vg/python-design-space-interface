@@ -252,7 +252,7 @@ class DisplayCase(object):
                              tolerances[xi][0],
                              tolerances[xi][1])
         html_str += '</table><caption>'
-        html_str += 'Note: Global tolerance calculates using the following values for the parameters: ' 
+        html_str += 'Note: Global tolerance calculated based on the following values for the parameters: ' 
         html_str += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals.keys())]) + '.'
         html_str += '</caption></div>'
         table.value = html_str
