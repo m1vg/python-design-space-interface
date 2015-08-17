@@ -198,10 +198,9 @@ class DisplayCase(object):
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
         table.value = html_str
-        self.log_gains.children = [widgets.HTMLWidget(value='<hr>'),
+        self.log_gains.children = [widgets.HTMLWidget(value='<br>'),
                                    save_button, 
-                                   table,
-                                   widgets.HTMLWidget(value='<hr>')]
+                                   table]
         return
     
     def update_parameter_table(self):
@@ -226,10 +225,9 @@ class DisplayCase(object):
         save_button = widgets.ButtonWidget(description='Save Table')
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
-        self.parameter_table.children = [widgets.HTMLWidget(value='<hr>'),
+        self.parameter_table.children = [widgets.HTMLWidget(value='<br>'),
                                          save_button,
-                                         table,
-                                         widgets.HTMLWidget(value='<hr>')]
+                                         table]
         return
     
     def update_global_tolerances(self):
@@ -263,10 +261,9 @@ class DisplayCase(object):
         save_button = widgets.ButtonWidget(description='Save Table')
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
-        self.tolerances_table.children = [widgets.HTMLWidget(value='<br><hr>'),
+        self.tolerances_table.children = [widgets.HTMLWidget(value='<br>'),
                                           save_button,
-                                          table,
-                                          widgets.HTMLWidget(value='<br><hr>')]
+                                          table]
         return
         
         
