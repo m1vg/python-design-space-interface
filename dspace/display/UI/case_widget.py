@@ -245,7 +245,7 @@ class DisplayCase(object):
         table = widgets.HTMLWidget()
         html_str = '<br><div><table>\n<caption>Global tolerances determined for Case ' + case.case_number + ' (' + case.signature + ') showing fold-difference to a large qualitative change{0}. </caption>\n'.format(' in log-coordinates' if self.log_coordinates is True else '') 
         html_str += '<tr ><th align=center  rowspan=2 style="padding:0 15px 0 15px;"> Parameters </th><th colspan=2> Tolerance </th></tr>'
-        html_str += '<tr><td style="padding:0 15px 0 15px;><b> Lower bound</b></td><td style="padding:0 15px 0 15px;><b> Upper bound</td></b></tr>')
+        html_str += '<tr><td style="padding:0 15px 0 15px;><b> Lower bound</b></td><td style="padding:0 15px 0 15px;><b> Upper bound</td></b></tr>'
         tolerances = case.measure_tolerance(pvals, log_out=self.log_coordinates)
         for xi in sorted(pvals.keys()):
             lower_th = 1e-19 if self.log_coordinates is False else -19
