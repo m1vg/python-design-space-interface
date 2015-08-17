@@ -80,6 +80,7 @@ class DisplayCase(object):
         self.log_gains = widgets.ContainerWidget()
         self.parameter_table = widgets.ContainerWidget() 
         self.tolerances_table = widgets.ContainerWidget() 
+        self.bounding_box_table = widgets.ContainerWidget()
         calculate_pvals = widgets.ButtonWidget(description='Determine values for the parameters')
         calculate_pvals.visible = False
         calculate_pvals.on_click(self.identify_parameters)
@@ -91,6 +92,7 @@ class DisplayCase(object):
         wi = widgets.PopupWidget(children=[self.info, 
                                            self.equations,
                                            self.log_gains,
+                                           self.bounding_box_table,
                                            calculate_pvals,
                                            self.parameter_table,
                                            self.tolerances_table,
@@ -117,6 +119,7 @@ class DisplayCase(object):
         self.update_log_gains()
         self.update_parameter_table()
         self.update_global_tolerances()
+        self.update_bounding_box()
         
     def update_info(self):
         controller = self.controller 
@@ -201,6 +204,36 @@ class DisplayCase(object):
                                    table]
         return
     
+    def update_bounding_box(self):
+        controller = self.controller 
+        case = self.case
+        pvals = self.pvals
+        if case.is_valid(p_bounds=pvals) is False:
+            self.bounding_box_table.children = []
+            return            
+        table = widgets.HTMLWidget()
+        html_str = '<div><table>\n<caption>Bounding box determined for Case ' + case.case_number + ' (' + case.signature + '){0}. </caption>\n'.format(' in log-coordinates' if self.log_coordinates is True else '') 
+        html_str += '<tr ><th align=center  rowspan=2 style="padding:0 15px 0 15px;"> Parameters </th><th colspan=2> Tolerance </th></tr>'
+        html_str += '<tr><td style="padding:0 15px 0 15px;"><b> Lower bound</b></td><td style="padding:0 15px 0 15px;"><b> Upper bound</b></td></tr>'
+        tolerances = case.bounding_box(log_out=self.log_coordinates)
+        for xi in sorted(tolerances.keys()):
+            lower_th = 1e-15 if self.log_coordinates is False else -15
+            upper_th = 1e15 if self.log_coordinates is False else 15
+            lower, upper = tolerances[xi]
+            html_str += '<tr><td style="padding:0 15px 0 15px;"><b>{0}</b></td><td style="padding:0 15px 0 15px;">{1}</td><td style="padding:0 15px 0 15px;">{2}</td></tr>'.format(
+                         xi,
+                         lower if lower > lower_th else '-&infin;',
+                         upper if upper < upper_th else '&infin;')
+        html_str += '</table></div>'
+        table.value = html_str
+        save_button = widgets.ButtonWidget(description='Save Bounding Box Table')
+        save_button.table_data = html_str
+        save_button.on_click(self.save_table)
+        self.bounding_box_table.children = [widgets.HTMLWidget(value='<br>'),
+                                            save_button,
+                                            table]
+        return
+        
     def update_parameter_table(self):
         controller = self.controller 
         case = self.case
