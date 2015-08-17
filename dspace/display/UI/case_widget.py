@@ -241,7 +241,7 @@ class DisplayCase(object):
         html_str += '<tr ><th align=center  style="padding:0 15px 0 15px;"> Parameters </th><th> Lower tolerance </th><th> upper tolerance </th>'
         tolerances = case.measure_tolerance(pvals, log_out=False)
         for xi in sorted(pvals.keys()):
-                html_str += '<tr><td><b>{0}</b></td><td>{1}</td><td>{1}</td></tr>'.format(
+                html_str += '<tr><td><b>{0}</b></td><td>{1}</td><td>{2}</td></tr>'.format(
                              xi,
                              tolerances[xi][0],
                              tolerances[xi][1])
