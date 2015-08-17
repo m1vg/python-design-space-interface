@@ -245,7 +245,7 @@ class DisplayCase(object):
         table = widgets.HTMLWidget()
         html_str = '<br><div><table>\n<caption>Global tolerances determined for Case ' + case.case_number + ' (' + case.signature + ') at the reference parameter values. </caption>\n'
         html_str += '<tr ><th align=center  style="padding:0 15px 0 15px;"> Parameters </th><th> Lower tolerance </th><th> upper tolerance </th>'
-        tolerances = case.measure_tolerance(pvals, log_out=False)
+        tolerances = case.measure_tolerance(pvals, log_out=self.log_coordinates)
         for xi in sorted(pvals.keys()):
                 html_str += '<tr><td><b>{0}</b></td><td>{1}</td><td>{2}</td></tr>'.format(
                              xi,
