@@ -243,7 +243,7 @@ class DisplayCase(object):
             self.tolerances_table.children = []
             return            
         table = widgets.HTMLWidget()
-        html_str = '<br><div><table>\n<caption>Global tolerances determined for Case ' + case.case_number + ' (' + case.signature + ') at the reference parameter values. </caption>\n'
+        html_str = '<br><div><table>\n<caption>Global tolerances determined for Case ' + case.case_number + ' (' + case.signature + ') showing fold-difference to a large qualitative change{0}. </caption>\n'.format(' in log-coordinates' if self.log_coordinates is True else '') 
         html_str += '<tr ><th align=center  style="padding:0 15px 0 15px;"> Parameters </th><th> Lower tolerance </th><th> upper tolerance </th>'
         tolerances = case.measure_tolerance(pvals, log_out=self.log_coordinates)
         for xi in sorted(pvals.keys()):
@@ -251,7 +251,10 @@ class DisplayCase(object):
                              xi,
                              tolerances[xi][0],
                              tolerances[xi][1])
-        html_str += '</table></div>'
+        html_str += '</table><caption>'
+        html_str += 'Note: Global tolerance calculates using the following values for the parameters: ' 
+        html_str += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals.keys())]) + '.'
+        html_str += '</caption></div>'
         table.value = html_str
         save_button = widgets.ButtonWidget(description='Save Table')
         save_button.table_data = html_str
