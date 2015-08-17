@@ -193,12 +193,15 @@ class DisplayCase(object):
             for xi in case.independent_variables:
                 html_str += '<td align=center  style="padding:0 15px 0 15px;">{0}</td>'.format(str(case.ssystem.log_gain(xd, xi)))
             html_str += '</tr>\n'
-        html_str += '</table></div><hr>'
+        html_str += '</table></div>'
         save_button = widgets.ButtonWidget(description='Save Table')
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
         table.value = html_str
-        self.log_gains.children = [save_button, table]
+        self.log_gains.children = [widgets.HTMLWidget(value='<hr>'),
+                                   save_button, 
+                                   table,
+                                   widgets.HTMLWidget(value='<hr>')]
         return
     
     def update_parameter_table(self):
@@ -223,7 +226,10 @@ class DisplayCase(object):
         save_button = widgets.ButtonWidget(description='Save Table')
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
-        self.parameter_table.children = [save_button, table]
+        self.parameter_table.children = [widgets.HTMLWidget(value='<hr>'),
+                                         save_button,
+                                         table,
+                                         widgets.HTMLWidget(value='<hr>')]
         return
     
     def update_global_tolerances(self):
@@ -250,7 +256,10 @@ class DisplayCase(object):
         save_button = widgets.ButtonWidget(description='Save Table')
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
-        self.tolerances_table.children = [save_button, table]
+        self.tolerances_table.children = [widgets.HTMLWidget(value='<hr>'),
+                                          save_button,
+                                          table,
+                                          widgets.HTMLWidget(value='<hr>')]
         return
         
         
