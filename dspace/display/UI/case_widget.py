@@ -259,10 +259,10 @@ class DisplayCase(object):
         save_button = widgets.ButtonWidget(description='Save Table')
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
-        self.tolerances_table.children = [widgets.HTMLWidget(value='<hr>'),
+        self.tolerances_table.children = [widgets.HTMLWidget(value='<br><hr>'),
                                           save_button,
                                           table,
-                                          widgets.HTMLWidget(value='<hr>')]
+                                          widgets.HTMLWidget(value='<br><hr>')]
         return
         
         
