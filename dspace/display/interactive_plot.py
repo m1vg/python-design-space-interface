@@ -48,7 +48,7 @@ def make_2D_slice(ds=None, p_vals=None, x_variable=None, y_variable=None,
     if highlight != '':
         try:
             case = ds(highlight)
-            p_bounds = dict(pvals)
+            p_bounds = dict(p_vals)
             p_bounds[x_variable] = x_range
             p_bounds[y_variable] = y_range
             if case.is_valid(p_bounds=p_bounds, strict=False) is True:
