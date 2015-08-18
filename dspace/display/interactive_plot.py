@@ -48,8 +48,12 @@ def make_2D_slice(ds=None, p_vals=None, x_variable=None, y_variable=None,
     if highlight != '':
         try:
             case = ds(highlight)
-            case.draw_2D_slice(ax, p_vals, str(x_variable), str(y_variable),
-                               x_range, y_range, fc='none', ec='k', lw='2.')
+            p_bounds = dict(pvals)
+            p_bounds[x_variable] = x_range
+            p_bounds[y_variable] = y_range
+            if case.is_valid(p_bounds=p_bounds):
+                case.draw_2D_slice(ax, p_vals, str(x_variable), str(y_variable),
+                                   x_range, y_range, fc='none', ec='k', lw='2.')
         except:
             pass
     ax.plot(log10(p_vals[x_variable]), log10(p_vals[y_variable]), 'k.')
