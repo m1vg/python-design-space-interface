@@ -164,9 +164,10 @@ class DisplayColocalization(object):
                                               value=self.y_variable)
             dropdown.on_trait_change(self.change_y_axis, 'value')
             options = [dropdown]
-            ax1 = fig.add_axes([0.1, 0.2, 0.7, 0.7])
-            ax2 = fig.add_axes([0.1, 0.1, 0.7, 0.05])
-            ax3 = fig.add_axes([0.85, 0.1, 0.05, 0.8])
+            fig = plt.figure(figsize=[6, 3], dpi=600, facecolor='w')
+            ax1 = fig.add_axes([0.2, 0.3, 0.55, 0.6])
+            ax2 = fig.add_axes([0.2, 0.2, 0.55, 0.075])
+            ax3 = fig.add_axes([0.8, 0.2, 0.05, 0.7])
             xaxis = self.slice_variables[0]
             xvalues = [pset[i][xaxis] for i in pset]
             x_range = [min(xvalues)*1e-1, max(xvalues)*1e1]
@@ -175,10 +176,12 @@ class DisplayColocalization(object):
             ds.draw_1D_ss_function(ax1, self.y_variable,
                                    pvals, xaxis, x_range, colors=colors)
             ax1.set_xticklabels('')
+            ax1.set_xlabel('')
             ds.draw_region_colorbar(ax3, colors)
 
         else:
             options = []
+            fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
             ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
             xaxis = self.slice_variables[0]
             yaxis = self.slice_variables[1]
@@ -193,7 +196,6 @@ class DisplayColocalization(object):
         data = buf.getvalue()
         image_widget = widgets.ImageWidget(value=data)
         image_widget.set_css('height', '400px')
-        image_widget.set_css('width', '480px')
         self.plot.children = options + [image_widget]
         plt.close()
         

@@ -623,7 +623,11 @@ def draw_1D_ss_function(self, ax, function, p_vals, slice_variable, range_slice,
     
     params = VariablePool(p_vals)
     V = self.vertices_1D_slice(params, slice_variable, range_slice=range_slice, log_out=True)
+    if len(V) == 0:
+        return None
     V = zip(*V)[0]
+    if len(V) == 1:
+        return None
     X = np.linspace(V[0], V[1], resolution)
     f_val = list()
     for x in X:
@@ -637,7 +641,11 @@ def draw_1D_ss_function(self, ax, function, p_vals, slice_variable, range_slice,
 def draw_1D_slice(self, ax, p_vals, slice_variable, range_slice, **kwargs):
     
     V = self.vertices_1D_slice(p_vals, slice_variable, range_slice=range_slice, log_out=True)
+    if len(V) == 0:
+        return None
     V = zip(*V)[0]
+    if len(V) == 1:
+        return None
     pt = ax.fill([V[0], V[1], V[1], V[0]], [0, 0, 1, 1], **kwargs)
     #pt = ax.plot(V, [0, 0], **kwargs)
     return pt

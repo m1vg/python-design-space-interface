@@ -816,12 +816,32 @@ def draw_2D_dominant_eigenvalues(self, ax, p_vals, x_variable, y_variable,
     
 @monkeypatch_method(dspace.models.designspace.DesignSpace)
 def draw_1D_slice(self, ax, p_vals, slice_variable, range_slice, color_dict=None,
-                  intersections=[1,2,3,4,5], colorbar=True, cmap=mt.cm.gist_rainbow, **kwargs):
+                  intersections=[1,2,3,4,5], colorbar=True, cmap=mt.cm.gist_rainbow,
+                  included_cases = None, **kwargs):
     
     p_bounds = dict(p_vals)
     p_bounds[slice_variable] = range_slice
-    valid_cases = self.valid_cases(p_bounds=p_bounds)
-    case_int_list = self.intersecting_cases(intersections, valid_cases, p_bounds=p_bounds)
+    ## valid_cases = self.valid_cases(p_bounds=p_bounds)
+    if included_cases is not None:
+        included_cases = [i.case_number for i in self(included_cases)]
+        if self.number_of_cases < 1e5:
+            valid_cases = self.valid_cases(p_bounds=p_bounds)
+            valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
+            hatched_cases = [i for i in valid_cases if i not in included_cases]
+            valid_nonstrict = [i for i in valid_cases if i in included_cases]
+            valid_cases = [i for i in valid_cases if i in included_cases]
+            valid_nonstrict = [i for i in valid_cases if i not in valid_cases]
+        else:
+            valid_cases = [i for i in included_cases if self(i).is_valid(p_bounds=p_bounds)]
+    else:
+        valid_cases = self.valid_cases(p_bounds=p_bounds)
+        valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
+        valid_nonstrict = [i for i in valid_nonstrict if i not in valid_cases]
+    if len(valid_cases)+len(valid_nonstrict) == 0:
+        # fill black
+        return
+    case_int_list = self.intersecting_cases(intersections, valid_cases+valid_nonstrict, 
+                                            p_bounds=p_bounds, strict=False)
     if color_dict is None:
         color_dict = dict()
         
@@ -845,18 +865,38 @@ def draw_1D_slice(self, ax, p_vals, slice_variable, range_slice, color_dict=None
 @monkeypatch_method(dspace.models.designspace.DesignSpace)
 def draw_1D_ss_function(self, ax, function, p_vals, 
                         slice_variable, range_slice, 
-                        resolution=100, colors=None, **kwargs):
+                        resolution=100, colors=None, included_cases=None, ylim = None, **kwargs):
     p_bounds = dict(p_vals)
     p_bounds[slice_variable] = range_slice
-    valid_cases = self.valid_cases(p_bounds=p_bounds)
+    if included_cases is not None:
+        included_cases = [i.case_number for i in self(included_cases)]
+        if self.number_of_cases < 1e5:
+            valid_cases = self.valid_cases(p_bounds=p_bounds)
+            valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
+            hatched_cases = [i for i in valid_cases if i not in included_cases]
+            valid_nonstrict = [i for i in valid_cases if i in included_cases]
+            valid_cases = [i for i in valid_cases if i in included_cases]
+            valid_nonstrict = [i for i in valid_cases if i not in valid_cases]
+        else:
+            valid_cases = [i for i in included_cases if self(i).is_valid(p_bounds=p_bounds)]
+    else:
+        valid_cases = self.valid_cases(p_bounds=p_bounds)
+        valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
+        valid_nonstrict = [i for i in valid_nonstrict if i not in valid_cases]
+    if len(valid_cases)+len(valid_nonstrict) == 0:
+        # fill black
+        return
+    valid_cases = valid_cases + valid_nonstrict#self.valid_cases(p_bounds=p_bounds)
     lines = list()
-    ylim = None
+    ylim_t = None
+    if 'color' not in kwargs:
+        kwargs['color'] = 'k'
     for case in valid_cases:
         if colors is not None:
             if case in colors:
-                kwargs['c'] = colors[case]
+                kwargs['color'] = colors[case]
             else:
-                kwargs.pop('c')
+                kwargs.pop('color')
         pt = self(case).draw_1D_ss_function(ax, 
                                             function,
                                             p_vals,
@@ -864,16 +904,29 @@ def draw_1D_ss_function(self, ax, function, p_vals,
                                             range_slice,
                                             resolution=resolution,
                                             **kwargs)
+        if pt is None:
+            continue
         lines.append(pt)
         ydata = pt[0].get_ydata()
         miny = min(ydata)
         maxy = max(ydata)
         if ylim is None:
-            ylim = [min(ydata), max(ydata)]
-        else:
-            ylim = [min((ylim[0], miny)), max((ylim[1], maxy))]
+            if ylim_t is None:
+                ylim_t = [min(ydata), max(ydata)]
+            else:
+                ylim_t = [min((ylim_t[0], miny)), max((ylim_t[1], maxy))]
+    if ylim is None:
+        ylim = ylim_t
     ax.set_ylim([ylim[0]-(ylim[1]-ylim[0])*0.1, ylim[1]+(ylim[1]-ylim[0])*0.1])
     ax.set_xlim(np.log10(range_slice))
+    if slice_variable in self._latex:
+        slice_variable = '$'+self._latex[slice_variable]+'$'
+    ax.set_xlabel(r'$\log_{10}$(' + slice_variable + ')')
+    if isinstance(function, Expression):
+        expr = function
+    else:
+        expr = Expression(function)
+    ax.set_ylabel('$'+expr.latex(self._latex)+'$')    
     return lines
    
 @monkeypatch_method(dspace.models.designspace.DesignSpace) 
@@ -881,7 +934,7 @@ def draw_1D_positive_roots(self, ax, function, p_vals, slice_variable,
                            range_slice, resolution=100,
                            line_dict=None, **kwargs):
     lines = self.line_1D_positive_roots(function, p_vals, slice_variable,
-                                        range_slice, resolution=resolution)
+                                        range_slice, resolution=int(resolution))
     line_styles = ['-', '--', '..']
     colors = ['k', 'r', 'y']
     unique_R = {i[2] for i in lines}
@@ -901,6 +954,14 @@ def draw_1D_positive_roots(self, ax, function, p_vals, slice_variable,
         y = i[1]
         r = i[2]
         ax.plot(x, y, **line_dict[r])
+    if slice_variable in self._latex:
+        slice_variable = '$'+self._latex[slice_variable]+'$'
+    ax.set_xlabel(r'$\log_{10}$(' + slice_variable + ')')
+    if isinstance(function, Expression):
+        expr = function
+    else:
+        expr = Expression(function)
+    ax.set_ylabel('$'+expr.latex(self._latex)+'$')
     return lines
 
 @monkeypatch_method(dspace.models.designspace.DesignSpace) 
