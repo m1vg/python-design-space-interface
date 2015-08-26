@@ -150,12 +150,24 @@ class MakePlot(object):
     
     def stability_1D_plot_widget(self):
         controller = self.controller
+        zlim = controller.defaults('zlim')
         function_widget = widgets.TextWidget(description='* Y-Axis', 
                                              value = 'log('+controller.ds.dependent_variables[0]+')')
         resolution_widget = widgets.FloatTextWidget(description='Resolution', value=100)
-        wi = widgets.ContainerWidget(children=[resolution_widget, function_widget])
-        wi.resolution = resolution_widget
+        zlim_auto = (zlim is None)
+        zlim_widget = widgets.CheckboxWidget(description='Automatic Z-Lim', value=zlim_auto)
+        if zlim_auto is True:
+            zlim = [0., 0.]
+        zmin_widget = widgets.FloatTextWidget(description='Z-Min', value=zlim[0])
+        zmax_widget = widgets.FloatTextWidget(description='Z-Max', value=zlim[1])
+        wi = widgets.ContainerWidget(children=[function_widget, resolution_widget,
+                                               zlim_widget, zmin_widget, zmax_widget,
+                                               ])
         wi.function = function_widget
+        wi.resolution = resolution_widget
+        wi.zlim = zlim_widget
+        wi.zmin = zmin_widget
+        wi.zmax = zmax_widget
         self.plot_data.children = [wi]
         self.title.value = 'System design space showing stability of the fixed points'
         self.caption.value = 'Number of eigenvalues with positive real part represented by line style: '
@@ -243,6 +255,7 @@ class MakePlot(object):
         wi.zmin = zmin_widget
         wi.zmax = zmax_widget
         self.plot_data.children = [wi]
+        return
 
         
     def function_1D_plot_widget(self):
@@ -260,9 +273,11 @@ class MakePlot(object):
         else:
             self.title.value = 'System Design Space showing a steady state concentration'
             self.caption.value = 'Steady state concentration shown on the y-axis.'
+        wi.function.description = 'Y-Axis'
         wi.zlim.description = 'Automatic Y-Lim'
         wi.zmin.description = 'Y-Min'
         wi.zmax.description = 'Y-Max'
+        return
             
     def update_plot_widget(self, name, value):
         controller = self.controller
@@ -300,43 +315,6 @@ class MakePlot(object):
                 self.function_1D_plot_widget()
             else:
                 self.function_2D_plot_widget()
-        ## elif value in ['Steady State Concentration', 'Steady State Flux', 'Steady State Function']:
-        ##     log_linear_widget = widgets.CheckboxWidget(description='Function is log linear',
-        ##                                                value=True)
-        ##     if value == 'Steady State Flux':
-        ##         flux_options = ['log(V_'+ i + ')' for i in controller.ds.dependent_variables]
-        ##         function_widget = widgets.DropdownWidget(values=flux_options)
-        ##         self.title.value = 'System design space showing a steady state flux'
-        ##         self.caption.value = 'Steady state flux shown as a heat map on the z-axis.'
-        ##     elif value == 'Steady State Function':
-        ##         function_widget = widgets.TextWidget(description='Function', value='')
-        ##         log_linear_widget.value = False
-        ##         self.title.value = 'System design space showing a function at steady state'
-        ##         self.caption.value = 'Steady state function shown as a heat map on the z-axis.'
-        ##     else:
-        ##         ss_options = ['log('+ i + ')' for i in controller.ds.dependent_variables]
-        ##         function_widget = widgets.DropdownWidget(values=ss_options)
-        ##         self.title.value = 'System Design Space showing a steady state concentration'
-        ##         self.caption.value = 'Steady state concentration shown as a heat map on the z-axis.'
-        ##     resolution_widget = widgets.FloatTextWidget(description='Resolution', value=100)
-        ##     parallel_widget = widgets.CheckboxWidget(description='Compute in Parallel', value=False)
-        ##     zlim_auto = (zlim is None)
-        ##     zlim_widget = widgets.CheckboxWidget(description='Automatic Z-Lim', value=zlim_auto)
-        ##     if zlim_auto is True:
-        ##         zlim = [0., 0.]
-        ##     zmin_widget = widgets.FloatTextWidget(description='Z-Min', value=zlim[0])
-        ##     zmax_widget = widgets.FloatTextWidget(description='Z-Max', value=zlim[1])
-        ##     wi = widgets.ContainerWidget(children=[function_widget, resolution_widget,
-        ##                                            zlim_widget, zmin_widget, zmax_widget,
-        ##                                            parallel_widget, log_linear_widget])
-        ##     wi.function = function_widget
-        ##     wi.resolution = resolution_widget
-        ##     wi.parallel = parallel_widget
-        ##     wi.log_linear = log_linear_widget
-        ##     wi.zlim = zlim_widget
-        ##     wi.zmin = zmin_widget
-        ##     wi.zmax = zmax_widget
-        ##     self.plot_data.children = [wi]
         if controller.name != '':
             title = 'Analysis of the ' + controller.name + ' by ' + self.title.value.lower()
             self.title.value = title
@@ -354,8 +332,6 @@ class MakePlot(object):
             self.make_stability_plot(b)
         elif b.plot_type.value == 'Eigenvalues':
             self.make_eigenvalue_plot(b)
-        elif b.plot_type.value == 'Network Graph':
-            self.make_network_graph(b)
         else:
             self.make_function_plot(b)
         b.description = 'Add Plot'
@@ -433,7 +409,7 @@ class MakePlot(object):
         controller.figures.add_figure(data, 
                                       title=b.title.value,
                                       caption=b.caption.value)
-        fig=plt.clf()
+        plt.close()
         
     def make_stability_plot(self, b):
         controller = self.controller
@@ -450,15 +426,19 @@ class MakePlot(object):
                                                  resolution=resolution,
                                                  included_cases=self.included_cases(b))
         else:
+            zlim = None
+            if plot_data.zlim.value == False:
+                zlim = [plot_data.zmin.value, plot_data.zmax.value]
             controller.ds.draw_1D_positive_roots(ax, function, controller.pvals, 
                                                  str(b.xlabel.value), rangex,
+                                                 ylim=zlim,
                                                  resolution=resolution)
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
         controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value)
-        fig=plt.clf()
+        plt.close()
     
     def make_function_plot(self, b):
         controller = self.controller
@@ -494,7 +474,7 @@ class MakePlot(object):
         canvas.print_png(buf)
         data = buf.getvalue()
         controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value)
-        fig=plt.clf()
+        plt.close()
         
     def make_eigenvalue_plot(self, b):
         controller = self.controller
@@ -529,7 +509,7 @@ class MakePlot(object):
         canvas.print_png(buf)
         data = buf.getvalue()
         controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value)
-        fig=plt.clf()
+        plt.close()
                 
     def remove_plot(self, b):
         controller = self.controller
@@ -541,20 +521,62 @@ class DisplayFigures(object):
     def __init__(self, controller):
         setattr(self, 'controller', controller)
         setattr(self, 'figures_widget', None)
+        setattr(self, 'unsaved', None)
         
     def create_figures_widget(self):
         
         controller = self.controller
         self.figures_widget = widgets.ContainerWidget()
-        controller.update_child('Figures', self.figures_widget)
+        self.unsaved = widgets.ContainerWidget()
+        unsaved = '<center><b style="color:red;"> Unsaved Figures </b></center><br><hr>'
+        self.figures = widgets.ContainerWidget(children=[self.figures_widget,
+                                                         widgets.HTMLWidget(value=unsaved),
+                                                         self.unsaved])
+        controller.update_child('Figures', self.figures)
         
     def add_figure(self, image_data, title='', caption = ''):
         controller = self.controller
-        figures = controller.figure_data
-        figures.append((image_data, title, caption))
         self.add_figure_widget(image_data, title=title, caption = caption)
         
+    def remove_unsaved_figure(self, b):
+        children = [i for i in self.unsaved.children] 
+        children.remove(b.wi)
+        self.unsaved.children = children
+        
+    def save_unsaved_figure(self, b):
+        self.remove_unsaved_figure(b)
+        self.save_figure(b.image_data, title=b.title, caption=b.caption)
+        
+    def save_figure(self, image_data, title='', caption = ''):
+        controller = self.controller
+        figures = controller.figure_data
+        figures.append((image_data, title, caption))
+        self.save_figure_widget(image_data, title=title, caption = caption)
+        
     def add_figure_widget(self, image_data, title='', caption = ''):
+        image_widget = widgets.ImageWidget()
+        image_widget.value = image_data
+        children = [i for i in self.unsaved.children]      
+        if len(title) > 0:
+            title = title + '.'
+        if len(caption) > 0:
+            caption = '  ' + caption
+        html_str = '<b>'+title+'</b>' + caption
+        html_widget = widgets.HTMLWidget(value=html_str)
+        save_button = widgets.ButtonWidget(description='Save Figure')
+        save_button.image_data = image_data
+        save_button.title = title
+        save_button.caption = caption
+        save_button.on_click(self.save_unsaved_figure)
+        close_button = widgets.ButtonWidget(description='Remove Figure')
+        close_button.on_click(self.remove_unsaved_figure)
+        wi = widgets.PopupWidget(children=[close_button, save_button, image_widget, html_widget])
+        save_button.wi = wi
+        close_button.wi = wi
+        children.append(wi)
+        self.unsaved.children = children
+    
+    def save_figure_widget(self, image_data, title='', caption = ''):
         image_widget = widgets.ImageWidget()
         image_widget.value = image_data
         children = [i for i in self.figures_widget.children]      
@@ -571,6 +593,6 @@ class DisplayFigures(object):
     def load_widgets(self):
         controller = self.controller
         for data in controller.figure_data:
-            self.add_figure_widget(data[0], title=data[1], caption=data[2])
+            self.save_figure_widget(data[0], title=data[1], caption=data[2])
         
         

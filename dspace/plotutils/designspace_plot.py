@@ -931,7 +931,7 @@ def draw_1D_ss_function(self, ax, function, p_vals,
    
 @monkeypatch_method(dspace.models.designspace.DesignSpace) 
 def draw_1D_positive_roots(self, ax, function, p_vals, slice_variable, 
-                           range_slice, resolution=100,
+                           range_slice, resolution=100, ylim=None,
                            line_dict=None, **kwargs):
     lines = self.line_1D_positive_roots(function, p_vals, slice_variable,
                                         range_slice, resolution=int(resolution))
@@ -956,6 +956,8 @@ def draw_1D_positive_roots(self, ax, function, p_vals, slice_variable,
         ax.plot(x, y, **line_dict[r])
     if slice_variable in self._latex:
         slice_variable = '$'+self._latex[slice_variable]+'$'
+    if ylim is not None:
+        ax.set_ylim(ylim)
     ax.set_xlabel(r'$\log_{10}$(' + slice_variable + ')')
     if isinstance(function, Expression):
         expr = function
