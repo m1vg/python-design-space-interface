@@ -168,11 +168,11 @@ class MakePlot(object):
                                              value = 'log('+controller.ds.dependent_variables[0]+')')
         resolution_widget = widgets.FloatTextWidget(description='Resolution', value=100)
         zlim_auto = (zlim is None)
-        zlim_widget = widgets.CheckboxWidget(description='Automatic Z-Lim', value=zlim_auto)
+        zlim_widget = widgets.CheckboxWidget(description='Automatic Y-Lim', value=zlim_auto)
         if zlim_auto is True:
             zlim = [0., 0.]
-        zmin_widget = widgets.FloatTextWidget(description='Z-Min', value=zlim[0])
-        zmax_widget = widgets.FloatTextWidget(description='Z-Max', value=zlim[1])
+        zmin_widget = widgets.FloatTextWidget(description='Y-Min', value=zlim[0])
+        zmax_widget = widgets.FloatTextWidget(description='Y-Max', value=zlim[1])
         wi = widgets.ContainerWidget(children=[function_widget, resolution_widget,
                                                zlim_widget, zmin_widget, zmax_widget,
                                                ])

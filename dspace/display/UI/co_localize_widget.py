@@ -193,7 +193,6 @@ class DisplayColocalization(object):
             ax1.set_xticklabels('')
             ax1.set_xlabel('')
             ds.draw_region_colorbar(ax3, colors)
-
         else:
             options = []
             fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
@@ -209,10 +208,10 @@ class DisplayColocalization(object):
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
+        plt.close()
         image_widget = widgets.ImageWidget(value=data)
         image_widget.set_css('height', '400px')
         self.plot.children = options + [image_widget]
-        plt.close()
         
     def change_y_axis(self, name, value):
         self.y_variable = str(value)
