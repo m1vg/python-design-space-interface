@@ -78,6 +78,8 @@ class MakePlot(object):
                                        value=range_y[1])
         center_axes = widgets.CheckboxWidget(description='Center Axes',
                                              value=center)
+        boundaries = widgets.CheckboxWidget(description='Draw Boundaries',
+                                            value=False)
         plot_type = widgets.DropdownWidget(description='* Plot Type',
                                            values=self.widget_types,
                                            value='Design Space (interactive)')
@@ -92,8 +94,9 @@ class MakePlot(object):
                                                  value=', '.join(included))
         wi = widgets.ContainerWidget(children=[xlabel, ylabel, plot_type, 
                                                xmin, xmax, ymin, ymax,
-                                               center_axes, title_widget, 
-                                               caption_widget, included_widget])
+                                               center_axes, boundaries,
+                                               title_widget, caption_widget,
+                                               included_widget])
         for i in [xlabel, ylabel, plot_type]:
             i.on_trait_change(self.update_field, 'value')    
         plot_type.widget_container = wi
@@ -106,6 +109,7 @@ class MakePlot(object):
         button.ymin = ymin
         button.ymax = ymax
         button.center_axes = center_axes
+        button.boundaries = boundaries
         button.plot_type = plot_type
         button.title = title_widget
         button.caption = caption_widget
@@ -392,11 +396,13 @@ class MakePlot(object):
                               'Single and Three':[1,3],
                               'All':range(1, 100)}
         rangex, rangey = self.axes_ranges(b)
+        ec = 'k' if b.boundaries.value is True else 'none'
         if str(b.ylabel.value) != 'None':
             controller.ds.draw_2D_slice(ax, controller.pvals, str(b.xlabel.value), str(b.ylabel.value),
                                         rangex, rangey,
                                         intersections=intersections_dict[intersects],
-                                        included_cases=self.included_cases(b))
+                                        included_cases=self.included_cases(b),
+                                        ec=ec)
         else:
             controller.ds.draw_1D_slice(ax, controller.pvals, str(b.xlabel.value),
                                         rangex,
@@ -419,11 +425,21 @@ class MakePlot(object):
         plot_data = self.plot_data.children[0]
         resolution = plot_data.resolution.value
         rangex, rangey = self.axes_ranges(b)
+        ec = 'k' if b.boundaries.value is True else 'none'
         if str(b.ylabel.value) != 'None':
             controller.ds.draw_2D_positive_roots(ax, controller.pvals, str(b.xlabel.value), str(b.ylabel.value),
                                                  rangex, rangey,
                                                  resolution=resolution,
-                                                 included_cases=self.included_cases(b))
+                                                 included_cases=self.included_cases(b)
+                                                 )
+            if ec == 'k':
+                controller.ds.draw_2D_slice(ax, controller.pvals, str(b.xlabel.value), str(b.ylabel.value),
+                                            rangex, rangey,
+                                            intersections=[1],
+                                            included_cases=self.included_cases(b),
+                                            colorbar=False,
+                                            facecolor='none',
+                                            ec=ec)
         else:
             zlim = None
             function = str(plot_data.function.value)
@@ -455,6 +471,7 @@ class MakePlot(object):
         fn = dspace.Expression(function)
         rangex, rangey = self.axes_ranges(b)
         ax.set_title('$' + fn.latex(substitution_dictionary=controller.symbols) + '$')
+        ec = 'k' if b.boundaries.value is True else 'none'
         if str(b.ylabel.value) != 'None':
             controller.ds.draw_2D_ss_function(ax, function, controller.pvals, 
                                               str(b.xlabel.value),
@@ -463,6 +480,14 @@ class MakePlot(object):
                                               log_linear=log_linear, resolution=resolution, 
                                               parallel=parallel,
                                               included_cases=self.included_cases(b))
+            if ec == 'k':
+                controller.ds.draw_2D_slice(ax, controller.pvals, str(b.xlabel.value), str(b.ylabel.value),
+                                            rangex, rangey,
+                                            intersections=[1],
+                                            included_cases=self.included_cases(b),
+                                            colorbar=False,
+                                            facecolor='none',
+                                            ec=ec)
         else:
             controller.ds.draw_1D_ss_function(ax, function, controller.pvals, 
                                               str(b.xlabel.value),
@@ -504,6 +529,15 @@ class MakePlot(object):
                                                        eigenvalue_compare(eig,
                                                                           component=component.lower(),
                                                                           rank=rank))
+        ec = 'k' if b.boundaries.value is True else 'none'
+        if ec == 'k':
+            controller.ds.draw_2D_slice(ax, controller.pvals, str(b.xlabel.value), str(b.ylabel.value),
+                                        rangex, rangey,
+                                        intersections=[1],
+                                        included_cases=self.included_cases(b),
+                                        colorbar=False,
+                                        facecolor='none',
+                                        ec=ec)
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
