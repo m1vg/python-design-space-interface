@@ -418,7 +418,6 @@ class MakePlot(object):
         ax.set_title('Stability plot')
         plot_data = self.plot_data.children[0]
         resolution = plot_data.resolution.value
-        function = str(plot_data.function.value)
         rangex, rangey = self.axes_ranges(b)
         if str(b.ylabel.value) != 'None':
             controller.ds.draw_2D_positive_roots(ax, controller.pvals, str(b.xlabel.value), str(b.ylabel.value),
@@ -427,6 +426,7 @@ class MakePlot(object):
                                                  included_cases=self.included_cases(b))
         else:
             zlim = None
+            function = str(plot_data.function.value)
             if plot_data.zlim.value == False:
                 zlim = [plot_data.zmin.value, plot_data.zmax.value]
             controller.ds.draw_1D_positive_roots(ax, function, controller.pvals, 
