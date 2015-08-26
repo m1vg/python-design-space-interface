@@ -26,9 +26,14 @@ class CasesTable(object):
                                                        'Valid',
                                                        'User Specified'],
                                              value='None')
+        if 'biological_constraints' not in controller.options:
+            bio_constraints = ''
+        else:
+            bio_constraints = ', '.join(controller.defaults('biological_constraints')) 
         cases = widgets.TextareaWidget(description='User specified cases')
         by_signature = widgets.CheckboxWidget(description='Cases indicated by signature?', value=True)
-        constraints = widgets.TextareaWidget(description='Biological constraints:')
+        constraints = widgets.TextareaWidget(description='Biological constraints:',
+                                             value=bio_constraints)
         add_column = widgets.ButtonWidget(description='Add column')
         remove_column = widgets.ButtonWidget(description='Remove column')
         remove_column.visible = False
@@ -110,9 +115,10 @@ class CasesTable(object):
         constraints = str(b.constraints.value)
         if constraints != '':
             constraints = constraints.split(',')
-            constraints = [i.strip() for i in constraints]
+            constraints = [i.strip() for i in constraints if len(i.strip()) > 0]
         else:
-            constraints = None
+            constraints = []
+        controller.set_defaults('biological_constraints', constraints)
         if mode == 'None':
             self.table.children=[]
             return
@@ -146,7 +152,7 @@ class CasesTable(object):
         s += 'Note: # of eigenvalues w/ positive real part is calculated using a representative set of parameter values, and may not be reflective of all potential behaviors.'
         s += '</caption></div>'
         html_widget = widgets.HTMLWidget(value = s)
-        save_table = widgets.ButtonWidget(description='Save Table')
+        save_table = widgets.ButtonWidget(description='Retain Table')
         save_table.table_data = s
         save_table.on_click(self.save_table)
         table_container = widgets.ContainerWidget(children=[save_table, 

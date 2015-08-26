@@ -123,6 +123,8 @@ class MakePlot(object):
         self.ylabel = ylabel
         self.ymin = ymin
         self.ymax = ymax
+        self.xmin = xmin
+        self.xmax = xmax
         add_plot = widgets.ContainerWidget(description='Add Plot',
                                            children=[wi,
                                                      self.plot_data, 
@@ -133,6 +135,10 @@ class MakePlot(object):
     def update_field(self, name, value):
         controller = self.controller
         self.is_1D = True if str(self.ylabel.value) == 'None' else False
+        controller.set_defaults('xaxis', str(self.xlabel.value))
+        controller.set_defaults('yaxis', str(self.ylabel.value))
+        controller.set_defaults('range_x', [self.xmin.value, self.xmax.value])
+        controller.set_defaults('range_y', [self.ymin.value, self.ymax.value])
         if self.is_1D is True:
             self.ymin.visible = False
             self.ymax.visible = False
@@ -565,7 +571,7 @@ class DisplayFigures(object):
         controller = self.controller
         self.figures_widget = widgets.ContainerWidget()
         self.unsaved = widgets.ContainerWidget()
-        unsaved = '<center><b style="color:red;"> Unsaved Figures </b></center><br><hr>'
+        unsaved = '<center><b style="color:red;">Figures that will not be saved:</b></center><br><hr>'
         self.figures = widgets.ContainerWidget(children=[self.figures_widget,
                                                          widgets.HTMLWidget(value=unsaved),
                                                          self.unsaved])
@@ -600,7 +606,7 @@ class DisplayFigures(object):
             caption = '  ' + caption
         html_str = '<b>'+title+'</b>' + caption
         html_widget = widgets.HTMLWidget(value=html_str)
-        save_button = widgets.ButtonWidget(description='Save Figure')
+        save_button = widgets.ButtonWidget(description='Retain Figure')
         save_button.image_data = image_data
         save_button.title = title
         save_button.caption = caption

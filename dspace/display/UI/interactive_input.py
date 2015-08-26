@@ -52,6 +52,7 @@ class WidgetSavedData(object):
         figure_data = [(base64.b64decode(i[0]), i[1], i[2]) for i in figure_data]
         saved_data.saved['figure_data'] = figure_data
         interactive.__dict__.update(saved_data.saved)
+        
     
     def __init__(self, interactive):
         setattr(self, 'saved', {})
@@ -89,7 +90,7 @@ class InteractiveInput(object):
                  centered_axes=False, xaxis=None, yaxis=None,
                  x_range=[1e-3, 1e3], y_range=[1e-3, 1e3],
                  zlim=None, by_signature=False, kinetic_orders=None,
-                 included_cases=None, **kwargs):
+                 included_cases=None, biological_constraints=[], **kwargs):
         ''' 
         '''
         setattr(self, 'ds', None)
@@ -116,7 +117,8 @@ class InteractiveInput(object):
                             by_signature=by_signature, 
                             kinetic_orders=kinetic_orders, 
                             get_parameters=get_parameters,
-                            included_cases=included_cases)
+                            included_cases=included_cases,
+                            biological_constraints=biological_constraints)
         if equations is not None:
             self.equations = equations
             if isinstance(equations, list) is False:
@@ -138,6 +140,9 @@ class InteractiveInput(object):
            
         display(self.widget)   
         self.update_child('Main Menu', self.edit_equations_widget())
+        
+    def set_defaults(self, key, value):
+        self.options[key] = value
         
     def defaults(self, key):
         if key in self.options:
@@ -174,10 +179,14 @@ class InteractiveInput(object):
             if child is not None:
                 child.description = name
                 children.append(child)
+                index = len(children)-1
+            else:
+                index = 0
         self.widget.children = children
         for (i, child) in enumerate(children):
             self.widget.set_title(i, child.description)
-    
+        self.widget.selected_index = index
+        
     def enumerate_phenotypes_menu(self, b):
         cases_table = CasesTable(self)
         return cases_table.cases_table_widget()
@@ -209,6 +218,7 @@ class InteractiveInput(object):
         self.figures.load_widgets()       
         self.tables.load_widgets()       
         b.version.value = self.version
+        self.widget.selected_index = 0
         
     def save_widget_data(self, b):
         self.version = str(b.version.value)
@@ -258,6 +268,7 @@ class InteractiveInput(object):
             children = [i for i in actions_w.children] + [widget]
             actions_w.children = children
             actions_w.set_title(len(children)-1, title)
+        self.widget.selected_index = 0
         
         
     def update_widgets(self):
@@ -403,4 +414,6 @@ class InteractiveInput(object):
     def create_edit_parameters(self, b):
         Edit = EditParameters(self)
         Edit.edit_parameters_widget()
-        
+
+
+

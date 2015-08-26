@@ -27,7 +27,12 @@ class CaseReport(object):
                         value=self.by_signature
                         )
         case_id = widgets.TextWidget(description='* Analysis for case:')        
-        constraints = widgets.TextareaWidget(description='Biological constraints:')
+        if 'biological_constraints' not in controller.options:
+            bio_constraints = ''
+        else:
+            bio_constraints = ', '.join(controller.defaults('biological_constraints')) 
+        constraints = widgets.TextareaWidget(description='Biological constraints:',
+                                             value=bio_constraints)
         button = widgets.ButtonWidget(description='Create Analysis')
         button.on_click(self.create_report)
         button.case_id = case_id
@@ -47,9 +52,10 @@ class CaseReport(object):
         constraints = str(b.constraints.value)
         if constraints != '':
             constraints = constraints.split(',')
-            constraints = [i.strip() for i in constraints]
+            constraints = [i.strip() for i in constraints if len(i.strip()) > 0]
         else:
-            constraints = None
+            constraints = []
+        controller.set_defaults('biological_constraints', constraints)
         display_case = DisplayCase(controller, case_id, by_signature=by_signature, constraints=constraints)
         display_case.create_case_widget()
         
@@ -195,7 +201,7 @@ class DisplayCase(object):
                 html_str += '<td align=center  style="padding:0 15px 0 15px;">{0}</td>'.format(str(case.ssystem.log_gain(xd, xi)))
             html_str += '</tr>\n'
         html_str += '</table></div><br>'
-        save_button = widgets.ButtonWidget(description='Save Log-Gain Table')
+        save_button = widgets.ButtonWidget(description='Retain Log-Gain Table')
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
         table.value = html_str
@@ -226,7 +232,7 @@ class DisplayCase(object):
                          upper if upper < upper_th else '&infin;')
         html_str += '</table></div>'
         table.value = html_str
-        save_button = widgets.ButtonWidget(description='Save Bounding Box Table')
+        save_button = widgets.ButtonWidget(description='Retain Bounding Box Table')
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
         self.bounding_box_table.children = [widgets.HTMLWidget(value='<br>'),
@@ -255,7 +261,7 @@ class DisplayCase(object):
                              pvals[xi])
         html_str += '</table></div>'
         table.value = html_str
-        save_button = widgets.ButtonWidget(description='Save Parameter Table')
+        save_button = widgets.ButtonWidget(description='Retain Parameter Table')
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
         self.parameter_table.children = [widgets.HTMLWidget(value='<br>'),
@@ -293,7 +299,7 @@ class DisplayCase(object):
         html_str += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals.keys())]) + '.'
         html_str += '</caption></div>'
         table.value = html_str
-        save_button = widgets.ButtonWidget(description='Save Global Tolerance Table')
+        save_button = widgets.ButtonWidget(description='Retain Global Tolerance Table')
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
         self.tolerances_table.children = [widgets.HTMLWidget(value='<br>'),

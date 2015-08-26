@@ -31,14 +31,22 @@ class CaseColocalization(object):
         by_signature = widgets.CheckboxWidget(description='Cases indicated by signature?', 
                                               value=self.by_signature)
         slice_variables = widgets.TextareaWidget(description='* Slice variables:')
+        if 'biological_constraints' not in controller.options:
+            bio_constraints = ''
+        else:
+            bio_constraints = ', '.join(controller.defaults('biological_constraints')) 
+        constraints = widgets.TextareaWidget(description='Biological constraints:',
+                                             value=bio_constraints)
         button = widgets.ButtonWidget(description='Create Co-Localization')
         button.on_click(self.make_colocalization)
         button.cases = cases
         button.by_signature = by_signature
         button.slice_variables = slice_variables
+        button.constraints = constraints
         wi = widgets.ContainerWidget(children=[cases,
                                                by_signature,
                                                slice_variables,
+                                               constraints,
                                                button])
         return ('Co-localizations', wi)
         
@@ -47,7 +55,14 @@ class CaseColocalization(object):
         ds = controller.ds
         case_numbers = str(b.cases.value).split(',')
         case_numbers = [i.strip() for i in case_numbers]
-        cases = ds(case_numbers, by_signature=b.by_signature.value)
+        constraints = str(b.constraints.value)
+        if constraints != '':
+            constraints = constraints.split(',')
+            constraints = [i.strip() for i in constraints if len(i.strip()) > 0]
+        else:
+            constraints = []
+        controller.set_defaults('biological_constraints', constraints)
+        cases = ds(case_numbers, by_signature=b.by_signature.value, constraints=constraints)
         slice_variables = str(b.slice_variables.value).split(',')
         slice_variables = [i.strip() for i in slice_variables]
         co = DisplayColocalization(self.controller, cases, slice_variables)

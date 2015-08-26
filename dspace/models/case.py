@@ -35,7 +35,8 @@ class Case(Model):
         if constraints is not None:
             if isinstance(constraints, list) is False:
                 constraints = [constraints]
-            DSCaseAddConstraints(self._swigwrapper, constraints, len(constraints))
+            if len(constraints) > 0:
+                DSCaseAddConstraints(self._swigwrapper, constraints, len(constraints))
             
     def __del__(self):
         ''' 
