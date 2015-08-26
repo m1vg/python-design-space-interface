@@ -117,6 +117,7 @@ class MakePlot(object):
         button.wi = wi
         self.title = title_widget
         self.caption = caption_widget
+        self.boundaries = boundaries
         self.plot_type = plot_type
         self.xlabel = xlabel
         self.ylabel = ylabel
@@ -135,10 +136,12 @@ class MakePlot(object):
         if self.is_1D is True:
             self.ymin.visible = False
             self.ymax.visible = False
+            self.boundaries.visible = False
             self.ylabel.description = '* 2D plot'
         else:
             self.ymin.visible = True
             self.ymax.visible = True
+            self.boundaries.visible = True
             self.ylabel.description = '* Y-Axis'
         self.update_plot_widget(name, value)
         
