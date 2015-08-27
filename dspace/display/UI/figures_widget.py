@@ -623,10 +623,6 @@ class DisplayFigures(object):
         image_widget = widgets.ImageWidget()
         image_widget.value = image_data
         children = [i for i in self.figures_widget.children]      
-        if len(title) > 0:
-            title = title + '.'
-        if len(caption) > 0:
-            caption = '  ' + caption
         html_str = '<b>Figure '+str(len(children)+1)+'.  '+title+'</b>' + caption
         html_widget = widgets.HTMLWidget(value=html_str)
         wi = widgets.PopupWidget(children=[image_widget, html_widget])

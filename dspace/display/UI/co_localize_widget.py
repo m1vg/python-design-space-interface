@@ -185,14 +185,27 @@ class DisplayColocalization(object):
             ax3 = fig.add_axes([0.8, 0.2, 0.05, 0.7])
             xaxis = self.slice_variables[0]
             xvalues = [pset[i][xaxis] for i in pset]
-            x_range = [min(xvalues)*1e-1, max(xvalues)*1e1]
+            x_range = [min(xvalues)*1e-2, max(xvalues)*1e2]
             colors = ds.draw_1D_slice(ax2,
-                                      pvals, xaxis, x_range, colorbar=False)
+                                      pvals, xaxis, x_range, colorbar=False, intersections=[1, 3, 5, 7])
             ds.draw_1D_ss_function(ax1, self.y_variable,
-                                   pvals, xaxis, x_range, colors=colors)
+                                   pvals, xaxis, x_range, colors=colors, lw=2.)
+            for case_number in pset:
+                case = controller.ds(case_number)
+                pvals = pset[case_number]
+                yval = case.ssystem.steady_state_function(self.y_variable, pvals)
+                ax1.plot(np.log10(pset[case_number][xaxis]), yval, 
+                         'o', mfc=colors[case_number], mec='k', ms=5., lw=2.)
             ax1.set_xticklabels('')
             ax1.set_xlabel('')
             ds.draw_region_colorbar(ax3, colors)
+            title = 'System design space showing a 1-D case co-localization'
+            caption = 'Different cases shown by line segments of different colors. '
+            caption += 'Steady state function shown on the y-axis.  '
+            caption += 'Bottom bar shows 1D design space slice showing valid cases '
+            caption += 'as shown by the colorbar.'
+            caption += ' Figure generated with the following parameter values: '
+            caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis]]) + '.'
         else:
             options = []
             fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
@@ -201,17 +214,34 @@ class DisplayColocalization(object):
             yaxis = self.slice_variables[1]
             xvalues = [pset[i][xaxis] for i in pset]
             yvalues = [pset[i][yaxis] for i in pset]
-            x_range = [min(xvalues)*1e-1, max(xvalues)*1e1]
-            y_range = [min(xvalues)*1e-1, max(xvalues)*1e1]
-            ds.draw_2D_slice(ax, pvals, xaxis, yaxis, x_range, y_range, included_cases=cases)            
+            x_range = [min(xvalues)*1e-2, max(xvalues)*1e2]
+            y_range = [min(xvalues)*1e-2, max(xvalues)*1e2]
+            colors = ds.draw_2D_slice(ax, pvals, xaxis, yaxis,
+                                      x_range, y_range, included_cases=cases)
+            for case_number in pset:
+                case = controller.ds(case_number)
+                pvals = pset[case_number]
+                ax.plot(np.log10(pset[case_number][xaxis]), np.log10(pset[case_number][yaxis]), 
+                         'o', mfc=colors[case_number], mec='k', ms=5., lw=2.)
+            title = 'System design space showing a 2-D case co-localization'
+            caption = 'Enumerated co-localized qualitatively-distinct phenotypes represented '
+            caption += 'on the z-axis and identified by color.  '
+            caption += 'Circles represent automatically determined values for each phenotype.'                
+            caption += ' Figure generated with the following parameter values: '
+            caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis, yaxis]]) + '.'
+
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
         plt.close()
-        image_widget = widgets.ImageWidget(value=data)
-        image_widget.set_css('height', '400px')
-        self.plot.children = options + [image_widget]
+        ## image_widget = widgets.ImageWidget(value=data)
+        ## image_widget.set_css('height', '400px')
+        self.plot.children = options
+        controller.figures.add_figure(data, 
+                                      title=title,
+                                      caption=caption)
+        
         
     def change_y_axis(self, name, value):
         self.y_variable = str(value)
