@@ -139,7 +139,8 @@ class DisplayColocalization(object):
         self.y_variable = ss_new[index]
         self.y_dropdown.values = ss_options
         self.y_dropdown.value = self.y_variable
-        self.update_info()
+        self.update_global_tolerance()
+        
         
     def update_info(self):
         
