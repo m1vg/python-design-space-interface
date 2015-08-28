@@ -18,6 +18,8 @@ from dspace.graphs.designspace_graph import GraphGenerator
 from dspace.display.UI.case_widget import DisplayCase
 import base64
 
+from collections import OrderedDict
+
 class CaseColocalization(object):
     
     def __init__(self, controller, by_signature=False):
@@ -134,7 +136,7 @@ class DisplayColocalization(object):
         else:
             ss_old = [i for i in controller.ds.dependent_variables]
             ss_new = ['log('+i+')' for i in controller.ds.dependent_variables]
-        ss_options = {unicode(i):i for i in ss_new}
+        ss_options = OrderedDict([(unicode(i),i) for i in ss_new])
         index = ss_old.index(self.y_variable)
         self.y_variable = ss_new[index]
         self.y_dropdown.values = ss_options
@@ -278,7 +280,6 @@ class DisplayColocalization(object):
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
-        ## self.plot.children = options
         controller.figures.add_figure(data, 
                                       title=title,
                                       caption=caption)
@@ -287,16 +288,20 @@ class DisplayColocalization(object):
     def update_global_tolerances(self):
         controller = self.controller
         ds = controller.ds
+        print 1
         if len(self.slice_variables) > 2:
             return
         ci = self.ci
+        print 2
         if ci.is_valid() is False:
             self.global_tolerance.children = []
             return
+        print 3
         pvals = self.ci.valid_interior_parameter_set(project=False)
         if pvals is None:
             self.global_tolerance.children = []
             return
+        print 4
         table = widgets.HTMLWidget()
         html_str = '<div><table>\n<caption>Global tolerances determined for ' + self.name + ' showing fold-difference to a large qualitative change{0}. </caption>\n'.format(' in log-coordinates' if self.log_coordinates is True else '') 
         html_str += '<tr ><th align=center  rowspan=2 style="padding:0 15px 0 15px;"> Parameters </th><th colspan=2> Tolerance </th></tr>'
