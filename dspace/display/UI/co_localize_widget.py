@@ -127,11 +127,13 @@ class DisplayColocalization(object):
         self.update_global_tolerances()
         
     def update_log(self, name, value):
-        ss_old = self.y_dropdown.values
-        index = ss_old.index(self.y_variable)
         if value == False:
+            ss_old = ['log('+ i + ')' for i in controller.ds.dependent_variables]
+            index = ss_old.index(self.y_variable)
             ss_options = [i for i in controller.ds.dependent_variables]
         else:
+            ss_old = [i for i in controller.ds.dependent_variables]
+            index = ss_old.index(self.y_variable)
             ss_options = ['log('+ i + ')' for i in controller.ds.dependent_variables]
         self.y_variable = ss_options[index]
         self.y_dropdown.values = ss_options
