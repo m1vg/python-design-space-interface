@@ -135,7 +135,7 @@ class DisplayColocalization(object):
         else:
             self.make_plot.disabled = False
         valid = widgets.HTMLWidget(value = html_str)
-        html_str = '<table><caption> Auxiliary variables for co-localized cases.'
+        html_str = '<table><caption> Auxiliary variables for ' + self.name + ' with slice variables ' + ', '.join(self.slice_variables) + '</caption>'
         html_str += '<tr ><th rowspan="2" align=center  style="padding:0 15px 0 15px;"> Slice<br> Variables </th>'
         html_str += '<th colspan="' + str(len(self.cases)) + '" align=center  style="padding:0 15px 0 15px;"> Cases </th></tr><tr align=center>'
         for c in self.cases:
