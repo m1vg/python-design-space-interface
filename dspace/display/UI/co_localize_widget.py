@@ -130,6 +130,7 @@ class DisplayColocalization(object):
         
     def update_log(self, name, value):
         controller = self.controller
+        self.log_coordinates = value
         if value == False:
             ss_old = ['log('+ i + ')' for i in controller.ds.dependent_variables]
             ss_new = [i for i in controller.ds.dependent_variables]
@@ -288,20 +289,16 @@ class DisplayColocalization(object):
     def update_global_tolerances(self):
         controller = self.controller
         ds = controller.ds
-        print 1
         if len(self.slice_variables) > 2:
             return
         ci = self.ci
-        print 2
         if ci.is_valid() is False:
             self.global_tolerance.children = []
             return
-        print 3
         pvals = self.ci.valid_interior_parameter_set(project=False)
         if pvals is None:
             self.global_tolerance.children = []
             return
-        print self.log_coordinates
         table = widgets.HTMLWidget()
         html_str = '<div><table>\n<caption>Global tolerances determined for ' + self.name + ' showing fold-difference to a large qualitative change{0}. </caption>\n'.format(' in log-coordinates' if self.log_coordinates is True else '') 
         html_str += '<tr ><th align=center  rowspan=2 style="padding:0 15px 0 15px;"> Parameters </th><th colspan=2> Tolerance </th></tr>'
