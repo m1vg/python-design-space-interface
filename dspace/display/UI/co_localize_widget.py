@@ -301,7 +301,7 @@ class DisplayColocalization(object):
         if pvals is None:
             self.global_tolerance.children = []
             return
-        print 4
+        print self.log_coordinates
         table = widgets.HTMLWidget()
         html_str = '<div><table>\n<caption>Global tolerances determined for ' + self.name + ' showing fold-difference to a large qualitative change{0}. </caption>\n'.format(' in log-coordinates' if self.log_coordinates is True else '') 
         html_str += '<tr ><th align=center  rowspan=2 style="padding:0 15px 0 15px;"> Parameters </th><th colspan=2> Tolerance </th></tr>'
