@@ -130,13 +130,13 @@ class DisplayColocalization(object):
         controller = self.controller
         if value == False:
             ss_old = ['log('+ i + ')' for i in controller.ds.dependent_variables]
-            index = ss_old.index(self.y_variable)
-            ss_options = {unicode(x):x for x in controller.ds.dependent_variables}
+            ss_new = [i for i in controller.ds.dependent_variables]
         else:
             ss_old = [i for i in controller.ds.dependent_variables]
-            index = ss_old.index(self.y_variable)
-            ss_options = {unicode('log('+ x + ')'):'log('+ x + ')' for (i,x) in controller.ds.dependent_variables}
-        self.y_variable = ss_options[index]
+            ss_new = ['log('+i+')' for i in controller.ds.dependent_variables]
+        ss_options = {unicode(i):i for i in ss_new}
+        index = ss_old.index(self.y_variable)
+        self.y_variable = ss_new[index]
         self.y_dropdown.values = ss_options
         self.y_dropdown.value = self.y_variable
         self.update_info()
