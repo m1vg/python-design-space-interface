@@ -287,8 +287,8 @@ class DisplayCase(object):
         html_str += '<tr><td style="padding:0 15px 0 15px;"><b> Lower bound</b></td><td style="padding:0 15px 0 15px;"><b> Upper bound</b></td></tr>'
         tolerances = case.measure_tolerance(pvals, log_out=self.log_coordinates)
         for xi in sorted(pvals.keys()):
-            lower_th = 1e-17 if self.log_coordinates is False else -17
-            upper_th = 1e17 if self.log_coordinates is False else 17
+            lower_th = 1e-15 if self.log_coordinates is False else -15
+            upper_th = 1e15 if self.log_coordinates is False else 15
             lower, upper = tolerances[xi]
             html_str += '<tr><td style="padding:0 15px 0 15px;"><b>{0}</b></td><td style="padding:0 15px 0 15px;">{1}</td><td style="padding:0 15px 0 15px;">{2}</td></tr>'.format(
                          xi,

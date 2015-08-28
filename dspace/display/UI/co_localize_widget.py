@@ -90,10 +90,13 @@ class DisplayColocalization(object):
         self.info = widgets.ContainerWidget()
         self.constraints_widget = widgets.ContainerWidget()
         self.plot = widgets.ContainerWidget()
+        self.log_coordinates = False
+        self.global_tolerance = widget.ContainerWidget()
         close_button = widgets.ButtonWidget(description='Close Tab')
         close_button.on_click(self.close_widget)
         wi = widgets.ContainerWidget(children=[self.info, 
                                                self.constraints_widget,
+                                               self.global_tolerance,
                                                self.plot,
                                                close_button])
         wi.set_css('height', '400px')
@@ -104,6 +107,7 @@ class DisplayColocalization(object):
         self.update_info()
         self.update_constraints()
         self.update_plot()
+        self.update_global_tolerances()
 
         ## self.update_log_gains()
         
@@ -235,14 +239,56 @@ class DisplayColocalization(object):
         canvas.print_png(buf)
         data = buf.getvalue()
         plt.close()
-        ## image_widget = widgets.ImageWidget(value=data)
-        ## image_widget.set_css('height', '400px')
         self.plot.children = options
         controller.figures.add_figure(data, 
                                       title=title,
                                       caption=caption)
         
-        
+    
+    def update_global_tolerances(self):
+        controller = self.controller
+        ds = controller.ds
+        if len(self.slice_variables) > 2:
+            return
+        ci = self.ci
+        if ci.is_valid() is False:
+            self.global_tolerance.children = []
+            return
+        pvals = self.ci.valid_interior_parameter_set(project=False)
+        if pvals is None:
+            self.global_tolerance.children = []
+            return
+        table = widgets.HTMLWidget()
+        html_str = '<div><table>\n<caption>Global tolerances determined for ' + self.name + ' showing fold-difference to a large qualitative change{0}. </caption>\n'.format(' in log-coordinates' if self.log_coordinates is True else '') 
+        html_str += '<tr ><th align=center  rowspan=2 style="padding:0 15px 0 15px;"> Parameters </th><th colspan=2> Tolerance </th></tr>'
+        html_str += '<tr><td style="padding:0 15px 0 15px;"><b> Lower bound</b></td><td style="padding:0 15px 0 15px;"><b> Upper bound</b></td></tr>'
+        tolerances = ci.measure_tolerance(pvals, log_out=self.log_coordinates)
+        for xi in sorted(pvals.keys()):
+            lower_th = 1e-15 if self.log_coordinates is False else -15
+            upper_th = 1e15 if self.log_coordinates is False else 15
+            lower, upper = tolerances[xi]
+            html_str += '<tr><td style="padding:0 15px 0 15px;"><b>{0}</b></td><td style="padding:0 15px 0 15px;">{1}</td><td style="padding:0 15px 0 15px;">{2}</td></tr>'.format(
+                         xi,
+                         lower if lower > lower_th else '-&infin;',
+                         upper if upper < upper_th else '&infin;')
+        html_str += '</table><caption>'
+        html_str += 'Note: Global tolerance calculated based on the following values for the parameters: ' 
+        html_str += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals.keys())]) + '.'
+        html_str += '</caption></div>'
+        table.value = html_str
+        save_button = widgets.ButtonWidget(description='Retain Global Tolerance Table')
+        save_button.table_data = html_str
+        save_button.on_click(self.save_table)
+        self.global_tolerance.children = [widgets.HTMLWidget(value='<br>'),
+                                          save_button,
+                                          table]
+        return
+    
+    def save_table(self, b):
+        controller = self.controller
+        html_string = b.table_data
+        controller.tables.add_table(html_string)
+
     def change_y_axis(self, name, value):
         self.y_variable = str(value)
         self.plot.children = [self.plot.children[0]]
