@@ -95,7 +95,7 @@ class DisplayColocalization(object):
         close_button = widgets.ButtonWidget(description='Close Tab')
         close_button.on_click(self.close_widget)
         ss_options = ['log('+ i + ')' for i in controller.ds.dependent_variables]
-        dropdown = widgets.DropdownWidget(description='y-axis', 
+        dropdown = widgets.DropdownWidget(description='y-axis',
                                           values=ss_options,
                                           value=self.y_variable)
         button = widgets.ButtonWidget(description='Create Plot')
