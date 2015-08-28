@@ -153,11 +153,11 @@ class DisplayColocalization(object):
             for i, c in enumerate(self.cases):
                 html_str += '<td>${0}_{1}</td>'.format(xj, i)
             html_str += '</tr>'  
+        html_str += '</table>'
         html_str += '<caption>Case co-localization assumes that the slice variable '
         html_str += 'for one case is independent than the slice variable for the other '
         html_str += 'cases.  Thus, we define auxiliary variables, one per case per slice variable, '
         html_str += 'that correspond to each slice variable for each cases.</caption>'
-        html_str += '</table>'
         save_table = widgets.ButtonWidget(description='Retain variable table')
         save_table.on_click(self.save_table)
         save_table.table_data = html_str
