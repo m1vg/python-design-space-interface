@@ -141,7 +141,7 @@ class DisplayColocalization(object):
         index = ss_old.index(self.y_variable)
         self.y_variable = ss_new[index]
         self.y_dropdown.values = ss_options
-        self.y_dropdown.value = self.y_variable
+        self.y_dropdown.value = unicode(self.y_variable)
         self.update_display()
         
         
