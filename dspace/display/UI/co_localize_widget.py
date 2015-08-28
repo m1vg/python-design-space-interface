@@ -127,6 +127,7 @@ class DisplayColocalization(object):
         self.update_global_tolerances()
         
     def update_log(self, name, value):
+        controller = self.controller
         if value == False:
             ss_old = ['log('+ i + ')' for i in controller.ds.dependent_variables]
             index = ss_old.index(self.y_variable)
