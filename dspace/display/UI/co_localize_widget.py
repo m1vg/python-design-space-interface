@@ -91,7 +91,7 @@ class DisplayColocalization(object):
         self.constraints_widget = widgets.ContainerWidget()
         self.plot = widgets.ContainerWidget()
         self.log_coordinates = False
-        self.global_tolerance = widget.ContainerWidget()
+        self.global_tolerance = widgets.ContainerWidget()
         close_button = widgets.ButtonWidget(description='Close Tab')
         close_button.on_click(self.close_widget)
         wi = widgets.ContainerWidget(children=[self.info, 
