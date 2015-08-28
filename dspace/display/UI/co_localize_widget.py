@@ -101,7 +101,6 @@ class DisplayColocalization(object):
         self.make_plot = widgets.ButtonWidget(description='Create Plot')
         self.make_plot.on_click(self.change_y_axis)
         self.make_plot.yaxis = dropdown
-        self.make_plot = [dropdown, button]
         self.make_plot.visible = False
         dropdown.visible = False
         if len(self.slice_variables) <= 2:
