@@ -136,8 +136,8 @@ class DisplayColocalization(object):
             self.make_plot.disabled = False
         valid = widgets.HTMLWidget(value = html_str)
         html_str = '<table><caption> Auxiliary variables for ' + self.name 
-        html_st += ' with ' + ', '.join(self.slice_variables) 
-        html_st += ' as the slice variable{0}.</caption>'.format('s' if len(self.slice_variables) > 1 else '')
+        html_str += ' with ' + ', '.join(self.slice_variables) 
+        html_str += ' as the slice variable{0}.</caption>'.format('s' if len(self.slice_variables) > 1 else '')
         html_str += '<tr ><th rowspan="2" align=center  style="padding:0 15px 0 15px;"> Slice<br> Variables </th>'
         html_str += '<th colspan="' + str(len(self.cases)) + '" align=center  style="padding:0 15px 0 15px;"> Cases </th></tr><tr align=center>'
         for c in self.cases:
