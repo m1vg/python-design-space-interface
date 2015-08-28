@@ -94,9 +94,24 @@ class DisplayColocalization(object):
         self.global_tolerance = widgets.ContainerWidget()
         close_button = widgets.ButtonWidget(description='Close Tab')
         close_button.on_click(self.close_widget)
+        ss_options = ['log('+ i + ')' for i in controller.ds.dependent_variables]
+        dropdown = widgets.DropdownWidget(description='y-axis', 
+                                          values=ss_options,
+                                          value=self.y_variable)
+        button = widgets.ButtonWidget(description='Create Plot')
+        button.on_click(self.change_y_axis)
+        button.yaxis = dropdown
+        options = [dropdown, button]
+        button.visible = False
+        dropdown.visible = False
+        if len(self.slice_variables) <= 2:
+            button.visible = True
+            if len(self.slice_variables) == 1:
+                dropdown.visible = True
         wi = widgets.ContainerWidget(children=[self.info, 
                                                self.constraints_widget,
-                                               self.plot,
+                                               ss_options,
+                                               button,
                                                self.global_tolerance,
                                                close_button])
         wi.set_css('height', '400px')
@@ -106,7 +121,7 @@ class DisplayColocalization(object):
     def update_display(self):
         self.update_info()
         self.update_constraints()
-        self.update_plot()
+        ## self.update_plot()
         self.update_global_tolerances()
 
         ## self.update_log_gains()
@@ -168,7 +183,7 @@ class DisplayColocalization(object):
             return
         ci = self.ci
         if ci.is_valid() is False:
-            self.plot.children = []
+            ## self.plot.children = []
             self.pvals = {}
             return
         pset = self.ci.valid_interior_parameter_set()
@@ -177,14 +192,6 @@ class DisplayColocalization(object):
         fig = plt.figure(dpi=600, facecolor='w')
         cases = [i.case_number for i in self.cases]
         if len(self.slice_variables) == 1:
-            ss_options = ['log('+ i + ')' for i in controller.ds.dependent_variables]
-            dropdown = widgets.DropdownWidget(description='y-axis', 
-                                              values=ss_options,
-                                              value=self.y_variable)
-            button = widgets.ButtonWidget(description='Create Plot')
-            button.on_click(self.change_y_axis)
-            button.yaxis = dropdown
-            options = [dropdown, button]
             fig = plt.figure(figsize=[6, 3], dpi=600, facecolor='w')
             ax1 = fig.add_axes([0.2, 0.3, 0.55, 0.6])
             ax2 = fig.add_axes([0.2, 0.2, 0.55, 0.075])
@@ -240,7 +247,7 @@ class DisplayColocalization(object):
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
-        self.plot.children = options
+        ## self.plot.children = options
         controller.figures.add_figure(data, 
                                       title=title,
                                       caption=caption)
