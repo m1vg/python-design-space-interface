@@ -95,21 +95,25 @@ class DisplayColocalization(object):
         close_button = widgets.ButtonWidget(description='Close Tab')
         close_button.on_click(self.close_widget)
         ss_options = ['log('+ i + ')' for i in controller.ds.dependent_variables]
-        dropdown = widgets.DropdownWidget(description='y-axis',
+        self.y_dropdown = widgets.DropdownWidget(description='y-axis',
                                           values=ss_options,
                                           value=self.y_variable)
         self.make_plot = widgets.ButtonWidget(description='Create Plot')
         self.make_plot.on_click(self.change_y_axis)
-        self.make_plot.yaxis = dropdown
+        self.make_plot.yaxis = self.y_dropdown
         self.make_plot.visible = False
-        dropdown.visible = False
+        check_box = widgets.CheckboxWidget(description='Logarithmic coordinates', 
+                                           value=self.log_coordinates)
+        check_box.on_trait_change(self.update_log, 'value')
+        self.y_dropdown.visible = False
         if len(self.slice_variables) <= 2:
             self.make_plot.visible = True
             if len(self.slice_variables) == 1:
-                dropdown.visible = True
+                self.y_dropdown.visible = True
         wi = widgets.ContainerWidget(children=[self.info, 
                                                self.constraints_widget,
-                                               dropdown,
+                                               check_box,
+                                               self.y_dropdown,
                                                self.make_plot,
                                                self.global_tolerance,
                                                close_button])
@@ -120,10 +124,19 @@ class DisplayColocalization(object):
     def update_display(self):
         self.update_info()
         self.update_constraints()
-        ## self.update_plot()
         self.update_global_tolerances()
-
-        ## self.update_log_gains()
+        
+    def update_log(self, name, value):
+        ss_old = self.y_dropdown.values
+        index = ss_old.index(self.y_variable)
+        if value == False:
+            ss_options = [i for i in controller.ds.dependent_variables]
+        else:
+            ss_options = ['log('+ i + ')' for i in controller.ds.dependent_variables]
+        self.y_variable = ss_options[index]
+        self.y_dropdown.values = ss_options
+        self.y_dropdown.value = self.y_variable
+        self.update_info()
         
     def update_info(self):
         
