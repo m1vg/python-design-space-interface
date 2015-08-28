@@ -96,8 +96,8 @@ class DisplayColocalization(object):
         close_button.on_click(self.close_widget)
         wi = widgets.ContainerWidget(children=[self.info, 
                                                self.constraints_widget,
-                                               self.global_tolerance,
                                                self.plot,
+                                               self.global_tolerance,
                                                close_button])
         wi.set_css('height', '400px')
         self.update_display()
@@ -181,8 +181,10 @@ class DisplayColocalization(object):
             dropdown = widgets.DropdownWidget(description='y-axis', 
                                               values=ss_options,
                                               value=self.y_variable)
-            dropdown.on_trait_change(self.change_y_axis, 'value')
-            options = [dropdown]
+            button = widgets.ButtonWidget(description='Create Plot')
+            button.on_click(self.change_y_axis)
+            button.yaxis = dropdown
+            options = [dropdown, button]
             fig = plt.figure(figsize=[6, 3], dpi=600, facecolor='w')
             ax1 = fig.add_axes([0.2, 0.3, 0.55, 0.6])
             ax2 = fig.add_axes([0.2, 0.2, 0.55, 0.075])
@@ -233,12 +235,11 @@ class DisplayColocalization(object):
             caption += 'Circles represent automatically determined values for each phenotype.'                
             caption += ' Figure generated with the following parameter values: '
             caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis, yaxis]]) + '.'
-
         canvas = FigureCanvasAgg(fig) 
+        plt.close()
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
-        plt.close()
         self.plot.children = options
         controller.figures.add_figure(data, 
                                       title=title,
@@ -289,8 +290,8 @@ class DisplayColocalization(object):
         html_string = b.table_data
         controller.tables.add_table(html_string)
 
-    def change_y_axis(self, name, value):
-        self.y_variable = str(value)
+    def change_y_axis(self, b):
+        self.y_variable = str(b.yaxis.value)
         self.plot.children = [self.plot.children[0]]
         self.update_plot()
         
