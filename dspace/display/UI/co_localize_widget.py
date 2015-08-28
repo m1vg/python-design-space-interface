@@ -134,7 +134,8 @@ class DisplayColocalization(object):
             self.make_plot.disabled = True
         else:
             self.make_plot.disabled = False
-        html_str += '<br><div><table><caption> Auxiliary variables for co-localized cases.'
+        valid = widgets.HTMLWidget(value = html_str)
+        html_str = '<table><caption> Auxiliary variables for co-localized cases.'
         html_str += '<tr ><th rowspan="2" align=center  style="padding:0 15px 0 15px;"> Slice<br> Variables </th>'
         html_str += '<th colspan="' + str(len(self.cases)) + '" align=center  style="padding:0 15px 0 15px;"> Cases </th></tr><tr align=center>'
         for c in self.cases:
@@ -151,9 +152,17 @@ class DisplayColocalization(object):
             html_str += '<tr align=center><td>{0}</td>'.format(xj)
             for i, c in enumerate(self.cases):
                 html_str += '<td>${0}_{1}</td>'.format(xj, i)
-            html_str += '</tr>'                
+            html_str += '</tr>'  
+        html_str += '<caption>Case co-localization assumes that the slice variable '
+        html_str += 'for one case is independent than the slice variable for the other '
+        html_str += 'cases.  Thus, we define auxiliary variables, one per case per slice variable, '
+        html_str += 'that correspond to each slice variable for each cases.</caption>'
+        html_str += '</table>'
+        save_table = widgets.ButtonWidget(description='Retain variable table')
+        save_table.on_click(self.save_table)
+        save_table.table_data = html_str
         variables = widgets.HTMLWidget(value=html_str)
-        self.info.children = [title] + buttons + [variables]
+        self.info.children = [title] + buttons + [valid, save_table, variables]
         
     def update_constraints(self):
         constraints_widget = widgets.TextareaWidget(description='Constraints',
