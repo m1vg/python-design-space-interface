@@ -110,7 +110,7 @@ class DisplayColocalization(object):
                 dropdown.visible = True
         wi = widgets.ContainerWidget(children=[self.info, 
                                                self.constraints_widget,
-                                               ss_options,
+                                               dropdown,
                                                button,
                                                self.global_tolerance,
                                                close_button])
@@ -299,7 +299,7 @@ class DisplayColocalization(object):
 
     def change_y_axis(self, b):
         self.y_variable = str(b.yaxis.value)
-        self.plot.children = [self.plot.children[0]]
+        ## self.plot.children = [self.plot.children[0]]
         self.update_plot()
         
     def open_case(self, b):
