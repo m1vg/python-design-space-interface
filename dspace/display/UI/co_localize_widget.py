@@ -139,7 +139,7 @@ class DisplayColocalization(object):
         html_str += '<tr ><th rowspan="2" align=center  style="padding:0 15px 0 15px;"> Slice<br> Variables </th>'
         html_str += '<th colspan="' + str(len(self.cases)) + '" align=center  style="padding:0 15px 0 15px;"> Cases </th></tr><tr align=center>'
         for c in self.cases:
-                html_str += '<td><b>  {0}  </b></td>'.format(c.case_number)
+                html_str += '<td style="padding:0 15px 0 15px;"><b>  {0}  </b></td>'.format(c.case_number)
         html_str += '</tr>\n'
         pset = self.ci.valid_interior_parameter_set()
         for i in self.cases:
