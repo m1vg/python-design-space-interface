@@ -98,20 +98,20 @@ class DisplayColocalization(object):
         dropdown = widgets.DropdownWidget(description='y-axis',
                                           values=ss_options,
                                           value=self.y_variable)
-        button = widgets.ButtonWidget(description='Create Plot')
-        button.on_click(self.change_y_axis)
-        button.yaxis = dropdown
-        options = [dropdown, button]
-        button.visible = False
+        self.make_plot = widgets.ButtonWidget(description='Create Plot')
+        self.make_plot.on_click(self.change_y_axis)
+        self.make_plot.yaxis = dropdown
+        self.make_plot = [dropdown, button]
+        self.make_plot.visible = False
         dropdown.visible = False
         if len(self.slice_variables) <= 2:
-            button.visible = True
+            self.make_plot.visible = True
             if len(self.slice_variables) == 1:
                 dropdown.visible = True
         wi = widgets.ContainerWidget(children=[self.info, 
                                                self.constraints_widget,
                                                dropdown,
-                                               button,
+                                               self.make_plot,
                                                self.global_tolerance,
                                                close_button])
         wi.set_css('height', '400px')
@@ -131,6 +131,10 @@ class DisplayColocalization(object):
         title = widgets.HTMLWidget(value='<b> Cases to Co-localize </b>')
         buttons = []
         html_str = '<div><b>Is Valid: {0}</b></div>'.format(self.ci.is_valid())
+        if self.ci.is_valid() is False:
+            self.make_plot.disabled = True
+        else:
+            self.make_plot.disabled = False
         html_str += '<br><div><table><caption> Auxiliary variables for co-localized cases.'
         html_str += '<tr ><th rowspan="2" align=center  style="padding:0 15px 0 15px;"> Slice<br> Variables </th>'
         html_str += '<th colspan="' + str(len(self.cases)) + '" align=center  style="padding:0 15px 0 15px;"> Cases </th></tr><tr align=center>'
@@ -173,7 +177,7 @@ class DisplayColocalization(object):
                                                 self.slice_variables,
                                                 constraints = self.constraints)
             self.update_info()
-            self.update_plot()
+            ## self.update_plot()
         self.update_constraints()
         
     def update_plot(self):
