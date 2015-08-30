@@ -292,16 +292,6 @@ class DisplayColocalization(object):
             z_range = [min(zvalues)*1e-2, max(zvalues)*1e2]
             colors = ds.draw_3D_slice(ax, pvals, xaxis, yaxis, zaxis,
                                       x_range, y_range, z_range, included_cases=cases)
-            for case_number in pset:
-                case = controller.ds(case_number)
-                pvals = pset[case_number]
-                ax.plot([np.log10(pset[case_number][xaxis])], 
-                        [np.log10(pset[case_number][yaxis])], 
-                        [np.log10(pset[case_number][xaxis])],
-                         'o', mfc=colors[case_number], mec='k', ms=5., lw=2.)
-            ax.set_xlim(np.log10(x_range))
-            ax.set_ylim(np.log10(y_range))
-            ax.set_zlim(np.log10(z_range))
             title = 'System design space showing a 3-D case co-localization'
             caption = 'Enumerated co-localized qualitatively-distinct phenotypes represented '
             caption += 'on the z-axis and identified by color.  '
