@@ -497,6 +497,7 @@ def draw_3D_slice(self, ax, p_vals, x_variable, y_variable,z_variable, range_x,
     p_bounds[x_variable] = range_x
     p_bounds[y_variable] = range_y
     p_bounds[z_variable] = range_z
+    print 1
     if included_cases is not None:
         included_cases = [i.case_number for i in self(included_cases)]
         if self.number_of_cases < 1e5:
@@ -512,10 +513,12 @@ def draw_3D_slice(self, ax, p_vals, x_variable, y_variable,z_variable, range_x,
         valid_cases = self.valid_cases(p_bounds=p_bounds)
         valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
         valid_nonstrict = [i for i in valid_nonstrict if i not in valid_cases]
+    print 2
     print valid_cases
     case_int_list = self.intersecting_cases(intersections, 
                                             valid_cases,
                                             p_bounds=p_bounds)
+    print 3
     if color_dict is None:
         color_dict = dict()
     for case_int in case_int_list:
