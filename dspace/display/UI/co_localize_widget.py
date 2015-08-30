@@ -299,9 +299,9 @@ class DisplayColocalization(object):
                         [np.log10(pset[case_number][yaxis])], 
                         [np.log10(pset[case_number][xaxis])],
                          'o', mfc=colors[case_number], mec='k', ms=5., lw=2.)
-            ax.set_xlim(np.log10(xvalues))
-            ax.set_ylim(np.log10(yvalues))
-            ax.set_zlim(np.log10(zvalues))
+            ax.set_xlim(np.log10(x_range))
+            ax.set_ylim(np.log10(y_range))
+            ax.set_zlim(np.log10(z_range))
             title = 'System design space showing a 3-D case co-localization'
             caption = 'Enumerated co-localized qualitatively-distinct phenotypes represented '
             caption += 'on the z-axis and identified by color.  '
