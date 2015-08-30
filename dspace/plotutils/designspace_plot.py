@@ -497,7 +497,6 @@ def draw_3D_slice(self, ax, p_vals, x_variable, y_variable,z_variable, range_x,
     p_bounds[x_variable] = range_x
     p_bounds[y_variable] = range_y
     p_bounds[z_variable] = range_z
-    valid_cases = self.valid_cases(p_bounds=p_bounds)
     if included_cases is not None:
         included_cases = [i.case_number for i in self(included_cases)]
         if self.number_of_cases < 1e5:
