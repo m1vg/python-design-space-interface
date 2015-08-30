@@ -286,7 +286,7 @@ class DisplayColocalization(object):
             zaxis = self.slice_variables[2]
             xvalues = [pset[i][xaxis] for i in pset]
             yvalues = [pset[i][yaxis] for i in pset]
-            yvalues = [pset[i][zaxis] for i in pset]
+            zvalues = [pset[i][zaxis] for i in pset]
             x_range = [min(xvalues)*1e-2, max(xvalues)*1e2]
             y_range = [min(yvalues)*1e-2, max(yvalues)*1e2]
             z_range = [min(zvalues)*1e-2, max(zvalues)*1e2]
