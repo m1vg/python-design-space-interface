@@ -289,8 +289,6 @@ class DisplayColocalization(object):
     def update_global_tolerances(self):
         controller = self.controller
         ds = controller.ds
-        if len(self.slice_variables) > 2:
-            return
         ci = self.ci
         if ci.is_valid() is False:
             self.global_tolerance.children = []
