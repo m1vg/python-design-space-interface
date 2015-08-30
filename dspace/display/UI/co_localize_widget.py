@@ -295,7 +295,9 @@ class DisplayColocalization(object):
             for case_number in pset:
                 case = controller.ds(case_number)
                 pvals = pset[case_number]
-                ax.plot(np.log10(pset[case_number][xaxis]), np.log10(pset[case_number][yaxis]), 
+                ax.plot([np.log10(pset[case_number][xaxis])], 
+                        [np.log10(pset[case_number][yaxis])], 
+                        [np.log10(pset[case_number][xaxis])],
                          'o', mfc=colors[case_number], mec='k', ms=5., lw=2.)
             title = 'System design space showing a 2-D case co-localization'
             caption = 'Enumerated co-localized qualitatively-distinct phenotypes represented '
