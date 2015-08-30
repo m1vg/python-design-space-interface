@@ -109,7 +109,7 @@ class DisplayColocalization(object):
                                            value=self.log_coordinates)
         check_box.on_trait_change(self.update_log, 'value')
         self.y_dropdown.visible = False
-        if len(self.slice_variables) <= 2:
+        if len(self.slice_variables) <= 3:
             self.make_plot.visible = True
             if len(self.slice_variables) == 1:
                 self.y_dropdown.visible = True
