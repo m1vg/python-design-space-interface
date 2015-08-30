@@ -513,6 +513,7 @@ def draw_3D_slice(self, ax, p_vals, x_variable, y_variable,z_variable, range_x,
         valid_cases = self.valid_cases(p_bounds=p_bounds)
         valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
         valid_nonstrict = [i for i in valid_nonstrict if i not in valid_cases]
+    print valid_cases
     case_int_list = self.intersecting_cases(intersections, 
                                             valid_cases,
                                             p_bounds=p_bounds)
