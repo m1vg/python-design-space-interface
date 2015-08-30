@@ -9,6 +9,7 @@ from IPython.display import clear_output, display, HTML, Latex
 
 import matplotlib as mt
 import matplotlib.pyplot as plt
+import mpl_toolkits.mplot3d
 
 import cStringIO
 from matplotlib.backends.backend_agg import FigureCanvasAgg  
@@ -213,7 +214,7 @@ class DisplayColocalization(object):
     def update_plot(self):
         controller = self.controller
         ds = controller.ds
-        if len(self.slice_variables) > 2:
+        if len(self.slice_variables) > 3:
             return
         ci = self.ci
         if ci.is_valid() is False:
@@ -253,7 +254,7 @@ class DisplayColocalization(object):
             caption += 'as shown by the colorbar.'
             caption += ' Figure generated with the following parameter values: '
             caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis]]) + '.'
-        else:
+        elif len(self.slice_variables) == 1:
             options = []
             fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
             ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
@@ -262,9 +263,35 @@ class DisplayColocalization(object):
             xvalues = [pset[i][xaxis] for i in pset]
             yvalues = [pset[i][yaxis] for i in pset]
             x_range = [min(xvalues)*1e-2, max(xvalues)*1e2]
-            y_range = [min(xvalues)*1e-2, max(xvalues)*1e2]
+            y_range = [min(yvalues)*1e-2, max(yvalues)*1e2]
             colors = ds.draw_2D_slice(ax, pvals, xaxis, yaxis,
                                       x_range, y_range, included_cases=cases)
+            for case_number in pset:
+                case = controller.ds(case_number)
+                pvals = pset[case_number]
+                ax.plot(np.log10(pset[case_number][xaxis]), np.log10(pset[case_number][yaxis]), 
+                         'o', mfc=colors[case_number], mec='k', ms=5., lw=2.)
+            title = 'System design space showing a 2-D case co-localization'
+            caption = 'Enumerated co-localized qualitatively-distinct phenotypes represented '
+            caption += 'on the z-axis and identified by color.  '
+            caption += 'Circles represent automatically determined values for each phenotype.'                
+            caption += ' Figure generated with the following parameter values: '
+            caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis, yaxis]]) + '.'
+        else:
+            options = []
+            fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
+            ax = fig.add_axes([0.2, 0.2, 0.7, 0.7], projection='3d')
+            xaxis = self.slice_variables[0]
+            yaxis = self.slice_variables[1]
+            zaxis = self.slice_variables[2]
+            xvalues = [pset[i][xaxis] for i in pset]
+            yvalues = [pset[i][yaxis] for i in pset]
+            yvalues = [pset[i][zaxis] for i in pset]
+            x_range = [min(xvalues)*1e-2, max(xvalues)*1e2]
+            y_range = [min(yvalues)*1e-2, max(yvalues)*1e2]
+            z_range = [min(zvalues)*1e-2, max(zvalues)*1e2]
+            colors = ds.draw_3D_slice(ax, pvals, xaxis, yaxis, zaxis,
+                                      x_range, y_range, z_range, included_cases=cases)
             for case_number in pset:
                 case = controller.ds(case_number)
                 pvals = pset[case_number]
