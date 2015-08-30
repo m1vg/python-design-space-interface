@@ -254,7 +254,7 @@ class DisplayColocalization(object):
             caption += 'as shown by the colorbar.'
             caption += ' Figure generated with the following parameter values: '
             caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis]]) + '.'
-        elif len(self.slice_variables) == 1:
+        elif len(self.slice_variables) == 2:
             options = []
             fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
             ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
