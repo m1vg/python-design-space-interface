@@ -502,10 +502,17 @@ def draw_3D_slice(self, ax, p_vals, x_variable, y_variable,z_variable, range_x,
         included_cases = [i.case_number for i in self(included_cases)]
         if self.number_of_cases < 1e5:
             valid_cases = self.valid_cases(p_bounds=p_bounds)
+            valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
             hatched_cases = [i for i in valid_cases if i not in included_cases]
+            valid_nonstrict = [i for i in valid_cases if i in included_cases]
             valid_cases = [i for i in valid_cases if i in included_cases]
+            valid_nonstrict = [i for i in valid_cases if i not in valid_cases]
         else:
             valid_cases = [i for i in included_cases if self(i).is_valid(p_bounds=p_bounds)]
+    else:
+        valid_cases = self.valid_cases(p_bounds=p_bounds)
+        valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
+        valid_nonstrict = [i for i in valid_nonstrict if i not in valid_cases]
     case_int_list = self.intersecting_cases(intersections, 
                                             valid_cases,
                                             p_bounds=p_bounds)
