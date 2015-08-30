@@ -295,7 +295,6 @@ class DisplayColocalization(object):
             title = 'System design space showing a 3-D case co-localization'
             caption = 'Enumerated co-localized qualitatively-distinct phenotypes represented '
             caption += 'on the z-axis and identified by color.  '
-            caption += 'Circles represent automatically determined values for each phenotype.'                
             caption += ' Figure generated with the following parameter values: '
             caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis, yaxis]]) + '.'
         canvas = FigureCanvasAgg(fig) 
