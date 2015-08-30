@@ -518,7 +518,7 @@ def draw_3D_slice(self, ax, p_vals, x_variable, y_variable,z_variable, range_x,
     ## case_int_list = self.intersecting_cases(intersections, 
     ##                                         valid_cases,
     ##                                         p_bounds=p_bounds)
-    case_int_list = valid_cases
+    case_int_list = self(valid_cases)
     print 3
     if color_dict is None:
         color_dict = dict()
