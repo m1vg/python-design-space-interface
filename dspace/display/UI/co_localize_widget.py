@@ -113,6 +113,8 @@ class DisplayColocalization(object):
             self.make_plot.visible = True
             if len(self.slice_variables) == 1:
                 self.y_dropdown.visible = True
+            if len(self.slice_variables) == 3:
+                self.y_dropdown = widgets.HTMLWidget(value='<p color="red">Warning 3D plots are experimental.</p>')
         wi = widgets.ContainerWidget(children=[self.info, 
                                                self.constraints_widget,
                                                check_box,
