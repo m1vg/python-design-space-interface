@@ -50,7 +50,7 @@ class WidgetSavedData(object):
         f.close()
         figure_data = saved_data.saved['figure_data']
         
-        figure_data = [(base64.b64decode(i[0]), i[1], i[2]) for i in figure_data]
+        figure_data = [tuple([base64.b64decode(i[0])] + list(i[1:])) for i in figure_data]
         saved_data.saved['figure_data'] = figure_data
         interactive.__dict__.update(saved_data.saved)
         
