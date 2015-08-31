@@ -331,12 +331,13 @@ class MakePlot(object):
         if controller.name != '':
             title = 'Analysis of the ' + controller.name + ' by ' + self.title.value.lower()
             self.title.value = title
-        self.caption.value += ' Figure generated with the following parameter values: ' + '; '.join([i + ' = ' + str(controller.pvals[i]) for i in sorted(controller.pvals.keys())]) + '.'
             
     def make_plot(self, b):
         controller = self.controller
         b.description = 'Creating plot... Please Wait.'
         b.disabled = True
+        b.pvals = controller.pvals.copy()
+        b.caption.value += ' Figure generated with the following parameter values: ' + '; '.join([i + ' = ' + str(controller.pvals[i]) for i in sorted(controller.pvals.keys())]) + '.'
         if b.plot_type.value == 'Design Space (interactive)':
             self.make_interactive_plot(b)
         elif b.plot_type.value == 'Design Space':
@@ -423,7 +424,7 @@ class MakePlot(object):
         data = buf.getvalue()
         controller.figures.add_figure(data, 
                                       title=b.title.value,
-                                      caption=b.caption.value)
+                                      caption=b.caption.value, pvals=b.pvals)
         plt.close()
         
     def make_stability_plot(self, b):
@@ -462,7 +463,7 @@ class MakePlot(object):
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
-        controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value)
+        controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value, pvals=b.pvals)
         plt.close()
     
     def make_function_plot(self, b):
@@ -507,7 +508,7 @@ class MakePlot(object):
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
-        controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value)
+        controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value, pvals=b.pvals)
         plt.close()
         
     def make_eigenvalue_plot(self, b):
@@ -551,7 +552,7 @@ class MakePlot(object):
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
-        controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value)
+        controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value, pvals=b.pvals)
         plt.close()
                 
     def remove_plot(self, b):
@@ -577,9 +578,9 @@ class DisplayFigures(object):
                                                          self.unsaved])
         controller.update_child('Figures', self.figures)
         
-    def add_figure(self, image_data, title='', caption = ''):
+    def add_figure(self, image_data, title='', caption = '', pvals=None):
         controller = self.controller
-        self.add_figure_widget(image_data, title=title, caption = caption)
+        self.add_figure_widget(image_data, title=title, caption = caption, pvals=pvals)
         
     def remove_unsaved_figure(self, b):
         children = [i for i in self.unsaved.children] 
@@ -588,17 +589,17 @@ class DisplayFigures(object):
         
     def save_unsaved_figure(self, b):
         controller = self.controller
-        self.remove_unsaved_figure(b)
-        self.save_figure(b.image_data, title=b.title, caption=b.caption)
+        self.remove_unsaved_figure(b)        
+        self.save_figure(b.image_data, title=b.title, caption=b.caption, pvals = b.pvals)
         controller.save_widget_data(b)
         
-    def save_figure(self, image_data, title='', caption = ''):
+    def save_figure(self, image_data, title='', caption = '', pvals=None):
         controller = self.controller
         figures = controller.figure_data
-        figures.append((image_data, title, caption))
-        self.save_figure_widget(image_data, title=title, caption = caption)
+        figures.append((image_data, title, caption, pvals))
+        self.save_figure_widget(image_data, title=title, caption = caption, pvals=pvals)
         
-    def add_figure_widget(self, image_data, title='', caption = ''):
+    def add_figure_widget(self, image_data, title='', caption = '', pvals=None):
         image_widget = widgets.ImageWidget()
         image_widget.value = image_data
         children = [i for i in self.unsaved.children]      
@@ -615,21 +616,34 @@ class DisplayFigures(object):
         save_button.on_click(self.save_unsaved_figure)
         close_button = widgets.ButtonWidget(description='Remove Figure')
         close_button.on_click(self.remove_unsaved_figure)
-        wi = widgets.PopupWidget(children=[close_button, save_button, image_widget, html_widget])
+        restore_pvals = widgets.ButtonWidget(description='Restore Parameter Values')
+        restore_pvals.pvals = pvals
+        if pvals is None:
+            restore_pvals.visible = False
+        restore_pvals.on_click(self.restore_figure_pvals)
+        wi = widgets.PopupWidget(children=[close_button, save_button, image_widget, html_widget, restore_pvals])
         save_button.wi = wi
         close_button.wi = wi
         children.append(wi)
         self.unsaved.children = children
     
-    def save_figure_widget(self, image_data, title='', caption = ''):
+    def save_figure_widget(self, image_data, title='', caption = '', pvals=None):
         image_widget = widgets.ImageWidget()
         image_widget.value = image_data
         children = [i for i in self.figures_widget.children]      
         html_str = '<b>Figure '+str(len(children)+1)+'.  '+title+'</b>' + caption
         html_widget = widgets.HTMLWidget(value=html_str)
-        wi = widgets.PopupWidget(children=[image_widget, html_widget])
+        restore_pvals = widgets.ButtonWidget(description='Restore Parameter Values')
+        restore_pvals.pvals = pvals
+        if pvals is None:
+            restore_pvals.visible = False
+        restore_pvals.on_click(self.restore_figure_pvals)
+        wi = widgets.PopupWidget(children=[image_widget, html_widget, restore_pvals])
         children.append(wi)
         self.figures_widget.children = children
+        
+    def restore_figure_pvals(self, b):
+        controller.pvals = b.pvals
         
     def load_widgets(self):
         controller = self.controller
