@@ -614,6 +614,7 @@ class DisplayFigures(object):
         save_button.title = title
         save_button.caption = caption
         save_button.on_click(self.save_unsaved_figure)
+        save_button.pvals = pvals
         close_button = widgets.ButtonWidget(description='Remove Figure')
         close_button.on_click(self.remove_unsaved_figure)
         restore_pvals = widgets.ButtonWidget(description='Restore Parameter Values')
