@@ -587,8 +587,10 @@ class DisplayFigures(object):
         self.unsaved.children = children
         
     def save_unsaved_figure(self, b):
+        controller = self.controller
         self.remove_unsaved_figure(b)
         self.save_figure(b.image_data, title=b.title, caption=b.caption)
+        controller.save_widget_data(b)
         
     def save_figure(self, image_data, title='', caption = ''):
         controller = self.controller
@@ -606,7 +608,7 @@ class DisplayFigures(object):
             caption = '  ' + caption
         html_str = '<b>'+title+'</b>' + caption
         html_widget = widgets.HTMLWidget(value=html_str)
-        save_button = widgets.ButtonWidget(description='Retain Figure')
+        save_button = widgets.ButtonWidget(description='Save Figure')
         save_button.image_data = image_data
         save_button.title = title
         save_button.caption = caption

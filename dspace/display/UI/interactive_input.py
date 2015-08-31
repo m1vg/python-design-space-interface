@@ -221,7 +221,7 @@ class InteractiveInput(object):
         self.widget.selected_index = 0
         
     def save_widget_data(self, b):
-        self.version = str(b.version.value)
+        self.version = str(self.version_field.value)
         save = WidgetSavedData(self)
         save.save_data()
         self.display_system.update_display()
@@ -285,6 +285,7 @@ class InteractiveInput(object):
             kinetic_orders = []
         name = widgets.TextWidget(description='* Name', value=self.name)
         version = widgets.TextWidget(description='Version', value=self.version)
+        self.version_field = version
         equations=widgets.TextareaWidget(description='* Equations',
                                          value='\n'.join(self.equations))
         aux=widgets.TextareaWidget(description='Auxiliary Variables',
