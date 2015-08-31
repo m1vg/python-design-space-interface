@@ -644,6 +644,7 @@ class DisplayFigures(object):
         self.figures_widget.children = children
         
     def restore_figure_pvals(self, b):
+        controller = self.controller
         controller.pvals = b.pvals
         
     def load_widgets(self):
