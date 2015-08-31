@@ -71,7 +71,7 @@ class WidgetSavedData(object):
                        'options',]
         self.saved.update({i:interactive.__dict__[i] for i in save_fields if i in interactive.__dict__})
         figure_data = interactive.figure_data
-        figure_data = [tuple([base64.b64encode(i[0])] + i[1:]) for i in figure_data]
+        figure_data = [tuple([base64.b64encode(i[0])] + list(i[1:])) for i in figure_data]
         self.saved['figure_data'] = figure_data
         
     def save_data(self):
