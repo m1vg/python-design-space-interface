@@ -152,7 +152,7 @@ class CasesTable(object):
         s += 'Note: # of eigenvalues w/ positive real part is calculated using a representative set of parameter values, and may not be reflective of all potential behaviors.'
         s += '</caption></div>'
         html_widget = widgets.HTMLWidget(value = s)
-        save_table = widgets.ButtonWidget(description='Retain Table')
+        save_table = widgets.ButtonWidget(description='Save Table')
         save_table.table_data = s
         save_table.on_click(self.save_table)
         table_container = widgets.ContainerWidget(children=[save_table, 
@@ -165,6 +165,7 @@ class CasesTable(object):
         controller = self.controller
         html_string = b.table_data
         controller.tables.add_table(html_string)
+        controller.save_widget_data(b)
         
         
     

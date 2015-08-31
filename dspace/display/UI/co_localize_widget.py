@@ -183,7 +183,7 @@ class DisplayColocalization(object):
         html_str += 'for one case are independent from the other cases in the co-localization.'
         html_str += 'Therefore, we define a unique auxiliary variable representing the'
         html_str += 'slice variables for each of cases.</caption>'
-        save_table = widgets.ButtonWidget(description='Retain variable table')
+        save_table = widgets.ButtonWidget(description='Save variable table')
         save_table.on_click(self.save_table)
         save_table.table_data = html_str
         variables = widgets.HTMLWidget(value=html_str)
@@ -338,7 +338,7 @@ class DisplayColocalization(object):
         html_str += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals.keys())]) + '.'
         html_str += '</caption></div>'
         table.value = html_str
-        save_button = widgets.ButtonWidget(description='Retain Global Tolerance Table')
+        save_button = widgets.ButtonWidget(description='Save Global Tolerance Table')
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
         self.global_tolerance.children = [widgets.HTMLWidget(value='<br>'),
@@ -350,6 +350,7 @@ class DisplayColocalization(object):
         controller = self.controller
         html_string = b.table_data
         controller.tables.add_table(html_string)
+        controller.save_widget_data(b)
 
     def change_y_axis(self, b):
         self.y_variable = str(b.yaxis.value)

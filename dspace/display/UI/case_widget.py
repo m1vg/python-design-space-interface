@@ -201,7 +201,7 @@ class DisplayCase(object):
                 html_str += '<td align=center  style="padding:0 15px 0 15px;">{0}</td>'.format(str(case.ssystem.log_gain(xd, xi)))
             html_str += '</tr>\n'
         html_str += '</table></div><br>'
-        save_button = widgets.ButtonWidget(description='Retain Log-Gain Table')
+        save_button = widgets.ButtonWidget(description='Save Log-Gain Table')
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
         table.value = html_str
@@ -232,7 +232,7 @@ class DisplayCase(object):
                          upper if upper < upper_th else '&infin;')
         html_str += '</table></div>'
         table.value = html_str
-        save_button = widgets.ButtonWidget(description='Retain Bounding Box Table')
+        save_button = widgets.ButtonWidget(description='Save Bounding Box Table')
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
         self.bounding_box_table.children = [widgets.HTMLWidget(value='<br>'),
@@ -261,7 +261,7 @@ class DisplayCase(object):
                              pvals[xi])
         html_str += '</table></div>'
         table.value = html_str
-        save_button = widgets.ButtonWidget(description='Retain Parameter Table')
+        save_button = widgets.ButtonWidget(description='Save Parameter Table')
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
         self.parameter_table.children = [widgets.HTMLWidget(value='<br>'),
@@ -299,7 +299,7 @@ class DisplayCase(object):
         html_str += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals.keys())]) + '.'
         html_str += '</caption></div>'
         table.value = html_str
-        save_button = widgets.ButtonWidget(description='Retain Global Tolerance Table')
+        save_button = widgets.ButtonWidget(description='Save Global Tolerance Table')
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
         self.tolerances_table.children = [widgets.HTMLWidget(value='<br>'),
@@ -328,7 +328,7 @@ class DisplayCase(object):
         controller = self.controller
         html_string = b.table_data
         controller.tables.add_table(html_string)
- 
+        controller.save_widget_data(b)
        
        
         
