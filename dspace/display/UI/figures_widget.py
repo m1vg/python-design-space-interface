@@ -337,7 +337,6 @@ class MakePlot(object):
         b.description = 'Creating plot... Please Wait.'
         b.disabled = True
         b.pvals = controller.pvals.copy()
-        b.caption.value += ' Figure generated with the following parameter values: ' + '; '.join([i + ' = ' + str(controller.pvals[i]) for i in sorted(controller.pvals.keys())]) + '.'
         if b.plot_type.value == 'Design Space (interactive)':
             self.make_interactive_plot(b)
         elif b.plot_type.value == 'Design Space':
@@ -580,6 +579,9 @@ class DisplayFigures(object):
         
     def add_figure(self, image_data, title='', caption = '', pvals=None):
         controller = self.controller
+        if pvals is not None:
+            caption += ' Figure generated with the following parameter values: '
+            caption += '; '.join([i + ' = ' + str(controller.pvals[i]) for i in sorted(controller.pvals.keys())]) + '.'
         self.add_figure_widget(image_data, title=title, caption = caption, pvals=pvals)
         
     def remove_unsaved_figure(self, b):
