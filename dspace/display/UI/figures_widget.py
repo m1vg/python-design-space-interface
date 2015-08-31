@@ -650,6 +650,10 @@ class DisplayFigures(object):
     def load_widgets(self):
         controller = self.controller
         for data in controller.figure_data:
-            self.save_figure_widget(data[0], title=data[1], caption=data[2])
+            if len(data) == 3:
+                self.save_figure_widget(data[0], title=data[1], caption=data[2])
+            elif len(data) == 4:
+                self.save_figure_widget(data[0], title=data[1], caption=data[2], pvals=data[3])
+                
         
         
