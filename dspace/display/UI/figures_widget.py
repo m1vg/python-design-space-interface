@@ -153,7 +153,7 @@ class MakePlot(object):
         
     def stability_2D_plot_widget(self):
         controller = self.controller
-        resolution_widget = widgets.FloatTextWidget(description='Resolution', value=100)
+        resolution_widget = widgets.FloatTextWidget(description='Resolution', value=controller.defaults('resolution'))
         wi = widgets.ContainerWidget(children=[resolution_widget])
         wi.resolution = resolution_widget
         self.plot_data.children = [wi]
@@ -166,7 +166,7 @@ class MakePlot(object):
         zlim = controller.defaults('zlim')
         function_widget = widgets.TextWidget(description='* Y-Axis', 
                                              value = 'log('+controller.ds.dependent_variables[0]+')')
-        resolution_widget = widgets.FloatTextWidget(description='Resolution', value=100)
+        resolution_widget = widgets.FloatTextWidget(description='Resolution', value=controller.defaults('resolution'))
         zlim_auto = (zlim is None)
         zlim_widget = widgets.CheckboxWidget(description='Automatic Y-Lim', value=zlim_auto)
         if zlim_auto is True:
@@ -195,7 +195,7 @@ class MakePlot(object):
         component_widget = widgets.DropdownWidget(description='Complex component',
                                                       values=['Real', 'Imaginary'],
                                                       value='Real')
-        resolution_widget = widgets.FloatTextWidget(description='Resolution', value=100)
+        resolution_widget = widgets.FloatTextWidget(description='Resolution', value=controller.defaults('resolution'))
         zlim_auto = (zlim is None)
         zlim_widget = widgets.CheckboxWidget(description='Automatic Z-Lim', value=zlim_auto)
         if zlim_auto is True:
@@ -249,7 +249,7 @@ class MakePlot(object):
             function_widget = widgets.DropdownWidget(values=ss_options)
             self.title.value = 'System Design Space showing a steady state concentration'
             self.caption.value = 'Steady state concentration shown as a heat map on the z-axis.'
-        resolution_widget = widgets.FloatTextWidget(description='Resolution', value=100)
+        resolution_widget = widgets.FloatTextWidget(description='Resolution', value=controller.defaults('resolution'))
         parallel_widget = widgets.CheckboxWidget(description='Compute in Parallel', value=False)
         zlim_auto = (zlim is None)
         zlim_widget = widgets.CheckboxWidget(description='Automatic Z-Lim', value=zlim_auto)
