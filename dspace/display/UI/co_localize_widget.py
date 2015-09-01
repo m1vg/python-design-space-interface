@@ -316,7 +316,7 @@ class DisplayColocalization(object):
                 if min_value is None:
                     min_value = min_y
                 else:
-                    min_value = min([max_value, max_y])
+                    min_value = min([min_value, min_y])
                 if max_value is None:
                     max_value = max_y
                 else:
