@@ -104,13 +104,13 @@ class DisplayColocalization(object):
         self.make_plot = widgets.ButtonWidget(description='Create Plot')
         self.make_plot.on_click(self.change_y_axis)
         self.make_plot.yaxis = self.y_dropdown
-        self.make_plot.visible = False
+        self.make_plot.visible = True
         check_box = widgets.CheckboxWidget(description='Logarithmic coordinates', 
                                            value=self.log_coordinates)
         check_box.on_trait_change(self.update_log, 'value')
         self.y_dropdown.visible = False
         if len(self.slice_variables) <= 3:
-            self.make_plot.visible = True
+            ## self.make_plot.visible = True
             if len(self.slice_variables) == 1:
                 self.y_dropdown.visible = True
             if len(self.slice_variables) == 3:
@@ -215,8 +215,8 @@ class DisplayColocalization(object):
     def update_plot(self):
         controller = self.controller
         ds = controller.ds
-        if len(self.slice_variables) > 3:
-            return
+        ## if len(self.slice_variables) > 3:
+        ##     return
         ci = self.ci
         if ci.is_valid() is False:
             ## self.plot.children = []
