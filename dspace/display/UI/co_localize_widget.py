@@ -328,7 +328,7 @@ class DisplayColocalization(object):
             ax1.set_xlim([0, len(slice_variables)])
             ax1.set_xticks(range(len(slice_variables)))
             ax1.set_xticklabels(['$' + controller.symbols[i] + '$' for i in slice_variables])
-            ds.draw_region_colorbar(ax3, colors)
+            ds.draw_region_colorbar(ax2, colors)
             title = 'Values for the slice variable for the n-D case co-localization'
             caption = 'The y-axis represents value for the slice variable on the'
             caption += ' x-axis for a case identified by color.'
