@@ -300,6 +300,7 @@ class DisplayColocalization(object):
             caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis, yaxis]]) + '.'
         else:
             options = []
+            slice_variables = self.slice_variables
             fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
             ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
             values = {axis:[pset[i][axis] for i in pset] for axis in slice_variables}
