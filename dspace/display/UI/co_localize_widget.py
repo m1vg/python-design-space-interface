@@ -301,8 +301,9 @@ class DisplayColocalization(object):
         else:
             options = []
             slice_variables = self.slice_variables
-            fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
-            ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
+            fig = plt.figure(figsize=[6, 3], dpi=600, facecolor='w')
+            ax1 = fig.add_axes([0.2, 0.2, 0.55, 0.7])
+            ax2 = fig.add_axes([0.8, 0.2, 0.05, 0.7])
             values = {i:[pset[i][axis] for axis in slice_variables] for i in pset}
             ## ranges = {axis:(min(values[axis])*1e-2,max(values[axis])*1e2) for axis in slice_variables}
             colors = {name:mt.cm.hsv(float(i)/float(len(cases))) for i, name in enumerate(cases)}
@@ -320,13 +321,14 @@ class DisplayColocalization(object):
                     max_value = min_y
                 else:
                     max_value = max([max_value, max_y])
-                ax.plot(range(len(slice_variables)), 
-                        y_values,
-                        lw=2., c=colors[case])
-            ax.set_ylim([min_value, max_value])
-            ax.set_xlim([0, len(slice_variables)])
-            ax.set_xticks(range(len(slice_variables)))
-            ax.set_xticklabels(['$' + controller.symbols[i] + '$' for i in slice_variables])
+                ax1.plot(range(len(slice_variables)), 
+                         y_values,
+                         lw=2., c=colors[case])
+            ax1.set_ylim([min_value-2, max_value+2])
+            ax1.set_xlim([0, len(slice_variables)])
+            ax1.set_xticks(range(len(slice_variables)))
+            ax1.set_xticklabels(['$' + controller.symbols[i] + '$' for i in slice_variables])
+            ds.draw_region_colorbar(ax3, colors)
             title = 'Values for the slice variable for the n-D case co-localization'
             caption = 'The y-axis represents value for the slice variable on the'
             caption += ' x-axis for a case identified by color.'
