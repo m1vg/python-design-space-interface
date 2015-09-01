@@ -467,7 +467,7 @@ class MakePlot(object):
                                                  str(b.xlabel.value), rangex,
                                                  ylim=zlim,
                                                  resolution=resolution)
-            controller.update_defaults('zlim', zlim)
+            controller.set_defaults('zlim', zlim)
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
