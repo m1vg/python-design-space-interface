@@ -180,9 +180,8 @@ class DisplayColocalization(object):
             html_str += '</tr>'  
         html_str += '</table>'
         html_str += '<caption>Case co-localization assumes that the slice variables '
-        html_str += 'for one case are independent from the other cases in the co-localization.'
-        html_str += 'Therefore, we define a unique auxiliary variable representing the'
-        html_str += 'slice variables for each of cases.</caption>'
+        html_str += 'for one case are independent from the slice variables for the other cases in the co-localization.'
+        html_str += 'Each auxiliary variable corresponds to a slice variable for one cases.</caption>'
         save_table = widgets.ButtonWidget(description='Save variable table')
         save_table.on_click(self.save_table)
         save_table.table_data = html_str
