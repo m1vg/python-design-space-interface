@@ -303,8 +303,8 @@ class DisplayColocalization(object):
             slice_variables = self.slice_variables
             fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
             ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
-            values = {axis:[pset[i][axis] for i in pset] for axis in slice_variables}
-            ranges = {axis:(min(values[axis])*1e-2,max(values[axis])*1e2) for axis in slice_variables}
+            values = {i:[pset[i][axis] for axis in slice_variables] for i in pset}
+            ## ranges = {axis:(min(values[axis])*1e-2,max(values[axis])*1e2) for axis in slice_variables}
             colors = {name:mt.cm.hsv(float(i)/float(len(cases))) for i, name in enumerate(cases)}
             min_value = None
             max_value = None
