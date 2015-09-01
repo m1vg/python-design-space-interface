@@ -309,7 +309,7 @@ class DisplayColocalization(object):
             min_value = None
             max_value = None
             for case in cases: 
-                y_values = [np.log10(values[case][axis]) for axis in slice_variables]
+                y_values = np.log10(values[case])
                 min_y = min(y_values)
                 max_y = min(y_values)
                 if min_value is None:
