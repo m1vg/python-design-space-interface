@@ -392,6 +392,10 @@ class MakePlot(object):
                                      children=[interactive_plot, 
                                                button,
                                                popup_widget])
+        controller.options.update({'xaxis':str(b.xlabel.value),
+                                   'yaxis':str(b.ylabel.value),
+                                   'x_range':rangex, 
+                                   'y_range':rangey})
         controller.update_child(button.name, wi)
         
     def make_static_plot(self, b):
@@ -424,6 +428,11 @@ class MakePlot(object):
         controller.figures.add_figure(data, 
                                       title=b.title.value,
                                       caption=b.caption.value, pvals=b.pvals)
+        controller.options.update({'xaxis':str(b.xlabel.value),
+                                   'yaxis':str(b.ylabel.value),
+                                   'x_range':rangex, 
+                                   'y_range':rangey,
+                                   'included_cases':self.included_cases(b)})
         plt.close()
         
     def make_stability_plot(self, b):
@@ -458,12 +467,20 @@ class MakePlot(object):
                                                  str(b.xlabel.value), rangex,
                                                  ylim=zlim,
                                                  resolution=resolution)
+            controller.update_defaults('zlim', zlim)
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
         controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value, pvals=b.pvals)
         plt.close()
+        controller.options.update({'xaxis':str(b.xlabel.value),
+                                   'yaxis':str(b.ylabel.value),
+                                   'x_range':rangex, 
+                                   'y_range':rangey,
+                                   'included_cases':self.included_cases(b),
+                                   'resolution':resolution})
+        
     
     def make_function_plot(self, b):
         controller = self.controller
@@ -509,6 +526,13 @@ class MakePlot(object):
         data = buf.getvalue()
         controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value, pvals=b.pvals)
         plt.close()
+        controller.options.update({'xaxis':str(b.xlabel.value),
+                                   'yaxis':str(b.ylabel.value),
+                                   'x_range':rangex, 
+                                   'y_range':rangey,
+                                   'included_cases':self.included_cases(b),
+                                   'resolution':resolution,
+                                   'zlim':zlim})
         
     def make_eigenvalue_plot(self, b):
         controller = self.controller
@@ -553,6 +577,13 @@ class MakePlot(object):
         data = buf.getvalue()
         controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value, pvals=b.pvals)
         plt.close()
+        controller.options.update({'xaxis':str(b.xlabel.value),
+                                   'yaxis':str(b.ylabel.value),
+                                   'x_range':rangex, 
+                                   'y_range':rangey,
+                                   'included_cases':self.included_cases(b),
+                                   'resolution':resolution,
+                                   'zlim':zlim})
                 
     def remove_plot(self, b):
         controller = self.controller

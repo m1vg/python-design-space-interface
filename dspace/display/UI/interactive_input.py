@@ -91,7 +91,8 @@ class InteractiveInput(object):
                  centered_axes=False, xaxis=None, yaxis=None,
                  x_range=[1e-3, 1e3], y_range=[1e-3, 1e3],
                  zlim=None, by_signature=False, kinetic_orders=None,
-                 included_cases=None, biological_constraints=[], **kwargs):
+                 included_cases=None, biological_constraints=[], resolution=100,
+                 **kwargs):
         ''' 
         '''
         setattr(self, 'ds', None)
@@ -119,7 +120,8 @@ class InteractiveInput(object):
                             kinetic_orders=kinetic_orders, 
                             get_parameters=get_parameters,
                             included_cases=included_cases,
-                            biological_constraints=biological_constraints)
+                            biological_constraints=biological_constraints,
+                            resolution=resolution)
         if equations is not None:
             self.equations = equations
             if isinstance(equations, list) is False:
