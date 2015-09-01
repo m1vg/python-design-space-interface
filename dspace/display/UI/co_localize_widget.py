@@ -278,7 +278,7 @@ class DisplayColocalization(object):
             caption += 'Circles represent automatically determined values for each phenotype.'                
             caption += ' Figure generated with the following parameter values: '
             caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis, yaxis]]) + '.'
-        else:
+        elif len(self.slice_variables) == 3:
             options = []
             fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
             ax = fig.add_axes([0.2, 0.2, 0.7, 0.7], projection='3d')
@@ -296,6 +296,39 @@ class DisplayColocalization(object):
             title = 'System design space showing a 3-D case co-localization'
             caption = 'Enumerated co-localized qualitatively-distinct phenotypes represented '
             caption += 'on the z-axis and identified by color.  '
+            caption += ' Figure generated with the following parameter values: '
+            caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis, yaxis]]) + '.'
+        else:
+            options = []
+            fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
+            ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
+            values = {axis:[pset[i][axis] for i in pset] for axis in slice_variables}
+            ranges = {axis:(min(values[axis])*1e-2,max(values[axis])*1e2) for axis in slice_variables}
+            colors = {name:mt.cm.hsv(float(i)/float(len(cases))) for i, name in enumerate(cases)}
+            min_value = None
+            max_value = None
+            for case in cases: 
+                y_values = [np.log10(values[case][axis]) for axis in slice_variables]
+                min_y = min(y_values)
+                max_y = min(y_values)
+                if min_value is None:
+                    min_value = min_y
+                else:
+                    min_value = min([max_value, max_y])
+                if max_value is None:
+                    max_value = min_y
+                else:
+                    max_value = max([max_value, max_y])
+                ax.plot(range(len(slice_variables)), 
+                        y_values,
+                        lw=2., c=colors[case])
+            ax.set_ylim([min_value, max_value])
+            ax.set_xlim([0, len(slice_variables)])
+            ax.set_xticks(range(len(slice_variables)))
+            ax.set_xticklabels([controller.symbols[i] for i in slice_variabkes])
+            title = 'Values for the slice variable for the n-D case co-localization'
+            caption = 'The y-axis represents value for the slice variable on the'
+            caption += ' x-axis for a case identified by color.'
             caption += ' Figure generated with the following parameter values: '
             caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis, yaxis]]) + '.'
         canvas = FigureCanvasAgg(fig) 
