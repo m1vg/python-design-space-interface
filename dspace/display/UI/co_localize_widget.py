@@ -331,7 +331,7 @@ class DisplayColocalization(object):
             caption = 'The y-axis represents value for the slice variable on the'
             caption += ' x-axis for a case identified by color.'
             caption += ' Figure generated with the following parameter values: '
-            caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals)]) + '.'
+            caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i[0] != '$']) + '.'
         canvas = FigureCanvasAgg(fig) 
         plt.close()
         buf = cStringIO.StringIO()
