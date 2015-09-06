@@ -153,6 +153,11 @@ class Case(Model):
             variablepool = DSCaseValidParameterSet(self._swigwrapper)
         pvals = VariablePool()
         pvals.set_swigwrapper(variablepool)
+        for i in pvals:
+            if pvals[i] == 0.0 or pvals[i] == float('inf'):
+                return self._valid_parameter_set_bounded({i:[1e-20, 1e20] for i in self.independent_variables}, 
+                                                         optimize=optimize,
+                                                         minimize=minimize)
         return pvals
     
     def valid_interior_parameter_set(self, p_bounds=None, distance=50, **kwargs):
