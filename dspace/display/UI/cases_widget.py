@@ -2,9 +2,27 @@ import dspace
 import dspace.plotutils
 import dspace.display
 
-from IPython.html.widgets import interact, interactive, fixed
-from IPython.html import widgets
-from IPython.display import clear_output, display, HTML, Latex
+from distutils.version import LooseVersion, StrictVersion
+
+import IPython
+
+if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
+    from IPython.html.widgets import interact, interactive, fixed
+    from IPython.html.widgets import HTMLWidget as HTML
+    from IPython.html.widgets import TabWidget as Tab
+    from IPython.html.widgets import CheckboxWidget as Checkbox
+    from IPython.html.widgets import ButtonWidget as Button
+    from IPython.html.widgets import ContainerWidget as Box
+    from IPython.html.widgets import TextWidget as Text
+    from IPython.html.widgets import TextareaWidget as Textarea
+    from IPython.html.widgets import DropdownWidget as Dropdown
+    from IPython.html.widgets import RadioButtonsWidget as RadioButtons
+    VBox = Box
+    HBox = Box
+else:
+    from ipywidgets import *
+    
+from IPython.display import clear_output, display, Latex
 
 import matplotlib.pyplot as plt
 
@@ -17,11 +35,11 @@ class CasesTable(object):
     
     def __init__(self, controller):
         setattr(self, 'controller', controller)
-        setattr(self, 'table', widgets.ContainerWidget())
+        setattr(self, 'table', VBox())
     
     def cases_table_widget(self):
         controller = self.controller
-        options = widgets.RadioButtonsWidget(values = ['None',
+        options = RadioButtonsWidget(values = ['None',
                                                        'All',
                                                        'Valid',
                                                        'User Specified'],
@@ -30,21 +48,21 @@ class CasesTable(object):
             bio_constraints = ''
         else:
             bio_constraints = ', '.join(controller.defaults('biological_constraints')) 
-        cases = widgets.TextareaWidget(description='User specified cases')
-        by_signature = widgets.CheckboxWidget(description='Cases indicated by signature?', value=True)
-        constraints = widgets.TextareaWidget(description='Biological constraints:',
+        cases = Textarea(description='User specified cases')
+        by_signature = Checkbox(description='Cases indicated by signature?', value=True)
+        constraints = Textarea(description='Biological constraints:',
                                              value=bio_constraints)
-        add_column = widgets.ButtonWidget(description='Add column')
-        remove_column = widgets.ButtonWidget(description='Remove column')
+        add_column = Button(description='Add column')
+        remove_column = Button(description='Remove column')
         remove_column.visible = False
         add_column.remove_column = remove_column
-        extra_columns = widgets.ContainerWidget(children=[])
+        extra_columns = VBox(children=[])
         add_column.on_click(self.add_cases_column)
         add_column.column_block = extra_columns
         remove_column.on_click(self.remove_cases_column)
         remove_column.column_block = extra_columns
-        case_id = widgets.TextWidget(description='Report for case:')
-        wi = widgets.ContainerWidget(children=[options,
+        case_id = Text(description='Report for case:')
+        wi = VBox(children=[options,
                                                cases,
                                                by_signature,
                                                constraints, 
@@ -52,7 +70,7 @@ class CasesTable(object):
                                                extra_columns, 
                                                remove_column
                                                ])
-        button = widgets.ButtonWidget(value=False, description='Create/modify cases table')
+        button = Button(value=False, description='Create/modify cases table')
         button.on_click(self.show_cases)
         button.wi = wi
         button.options = options
@@ -60,23 +78,23 @@ class CasesTable(object):
         button.by_signature = by_signature
         button.extra_columns = extra_columns
         button.constraints = constraints
-        cases_table = widgets.ContainerWidget(description='Cases Table', children=[wi, button, self.table])
+        cases_table = VBox(description='Cases Table', children=[wi, button, self.table])
         wi.visible = False
         return ('Phenotypic Repertoire', cases_table)
     
     def add_cases_column(self, b):
         controller = self.controller
         children = [i for i in b.column_block.children]
-        new_column = [widgets.DropdownWidget(description='Column ' + str(len(children)+3), 
+        new_column = [Dropdown(description='Column ' + str(len(children)+3), 
                                                values=['Validity',
                                                        '# eigenvalues w/ positive real part',
                                                        'Log-Gain'],
                                                value='Log-Gain'),
-                      widgets.DropdownWidget(description='Log-gain (dependent variable)', 
+                      Dropdown(description='Log-gain (dependent variable)', 
                                                values=controller.ds.dependent_variables),
-                      widgets.DropdownWidget(description='Log-gain (independent variable)', 
+                      Dropdown(description='Log-gain (independent variable)', 
                                                values=controller.ds.independent_variables)]
-        column = widgets.ContainerWidget(children=new_column)
+        column = VBox(children=new_column)
         column.header = new_column[0]
         column.dependent = new_column[1]
         column.independent = new_column[2]
@@ -151,11 +169,11 @@ class CasesTable(object):
         s += '</table><caption>'
         s += 'Note: # of eigenvalues w/ positive real part is calculated using a representative set of parameter values, and may not be reflective of all potential behaviors.'
         s += '</caption></div>'
-        html_widget = widgets.HTMLWidget(value = s)
-        save_table = widgets.ButtonWidget(description='Save Table')
+        html_widget = HTML(value = s)
+        save_table = Button(description='Save Table')
         save_table.table_data = s
         save_table.on_click(self.save_table)
-        table_container = widgets.ContainerWidget(children=[save_table, 
+        table_container = VBox(children=[save_table, 
                                                         html_widget])
         table_container.set_css('height', '300px')
         self.table.children = [table_container]
