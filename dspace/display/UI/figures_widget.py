@@ -3,9 +3,32 @@ import dspace.plotutils
 import dspace.display
 
 import numpy as np
-from IPython.html.widgets import interact, interactive, fixed
-from IPython.html import widgets
-from IPython.display import clear_output, display, HTML, Latex
+
+from distutils.version import LooseVersion, StrictVersion
+
+import IPython
+
+if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
+    from IPython.html.widgets import interact, interactive, fixed
+    from IPython.html.widgets import HTMLWidget as HTML
+    from IPython.html.widgets import TabWidget as Tab
+    from IPython.html.widgets import CheckboxWidget as Checkbox
+    from IPython.html.widgets import ButtonWidget as Button
+    from IPython.html.widgets import ContainerWidget as Box
+    from IPython.html.widgets import TextWidget as Text
+    from IPython.html.widgets import TextareaWidget as Textarea
+    from IPython.html.widgets import DropdownWidget as Dropdown
+    from IPython.html.widgets import RadioButtonsWidget as RadioButtons
+    from IPython.html.widgets import PopupWidget as Popup
+    from IPython.html.widgets import LatexWidget as Latex
+    from IPython.html.widgets import FloatTextWidget as FloatText
+    from IPython.html.widgets import ImageWidget as Image
+    VBox = Box
+    HBox = Box
+else:
+    from ipywidgets import *
+    
+from IPython.display import clear_output, display
 
 import matplotlib as mt
 import matplotlib.pyplot as plt
@@ -29,7 +52,7 @@ class MakePlot(object):
     
     def __init__(self, controller):
         setattr(self, 'controller', controller)
-        setattr(self, 'plot_data', widgets.ContainerWidget())
+        setattr(self, 'plot_data', VBox())
         setattr(self, 'title', None)
         setattr(self, 'caption', None)
         setattr(self, 'is_1D', False)
@@ -60,39 +83,39 @@ class MakePlot(object):
         center = controller.defaults('center_axes')
         range_x = controller.defaults('range_x')
         range_y = controller.defaults('range_y') 
-        xlabel = widgets.DropdownWidget(
+        xlabel = Dropdown(
                   description='* X-Axis',
                   values=controller.ds.independent_variables, 
                   value=xaxis)
-        ylabel = widgets.DropdownWidget(
+        ylabel = Dropdown(
                   description='* Y-Axis',
                   values=['None'] + controller.ds.independent_variables,
                   value=yaxis)
-        xmin = widgets.FloatTextWidget(description='* X-Min',
+        xmin = FloatText(description='* X-Min',
                                        value=range_x[0])
-        xmax = widgets.FloatTextWidget(description='* X-Max',
+        xmax = FloatText(description='* X-Max',
                                        value=range_x[1])
-        ymin = widgets.FloatTextWidget(description='* Y-Min',
+        ymin = FloatText(description='* Y-Min',
                                        value=range_y[0])
-        ymax = widgets.FloatTextWidget(description='* Y-Max',
+        ymax = FloatText(description='* Y-Max',
                                        value=range_y[1])
-        center_axes = widgets.CheckboxWidget(description='Center Axes',
+        center_axes = Checkbox(description='Center Axes',
                                              value=center)
-        boundaries = widgets.CheckboxWidget(description='Draw Boundaries',
+        boundaries = Checkbox(description='Draw Boundaries',
                                             value=False)
-        plot_type = widgets.DropdownWidget(description='* Plot Type',
+        plot_type = Dropdown(description='* Plot Type',
                                            values=self.widget_types,
                                            value='Design Space (interactive)')
-        title_widget = widgets.TextWidget(description='Title')
-        caption_widget = widgets.TextareaWidget(description='Caption')
+        title_widget = Text(description='Title')
+        caption_widget = Textarea(description='Caption')
         included = controller.defaults('included_cases')
         if included is None:
             included = []
         if isinstance(included, list) is False:
             included = [included]
-        included_widget = widgets.TextareaWidget(description='Only Cases',
+        included_widget = Textarea(description='Only Cases',
                                                  value=', '.join(included))
-        wi = widgets.ContainerWidget(children=[xlabel, ylabel, plot_type, 
+        wi = VBox(children=[xlabel, ylabel, plot_type, 
                                                xmin, xmax, ymin, ymax,
                                                center_axes, boundaries,
                                                title_widget, caption_widget,
@@ -100,7 +123,7 @@ class MakePlot(object):
         for i in [xlabel, ylabel, plot_type]:
             i.on_trait_change(self.update_field, 'value')    
         plot_type.widget_container = wi
-        button = widgets.ButtonWidget(value=False, description='Add Plot')
+        button = Button(value=False, description='Add Plot')
         button.on_click(self.make_plot)
         button.xlabel = xlabel
         button.ylabel = ylabel
@@ -125,7 +148,7 @@ class MakePlot(object):
         self.ymax = ymax
         self.xmin = xmin
         self.xmax = xmax
-        add_plot = widgets.ContainerWidget(description='Add Plot',
+        add_plot = VBox(description='Add Plot',
                                            children=[wi,
                                                      self.plot_data, 
                                                      button])
@@ -153,8 +176,8 @@ class MakePlot(object):
         
     def stability_2D_plot_widget(self):
         controller = self.controller
-        resolution_widget = widgets.FloatTextWidget(description='Resolution', value=controller.defaults('resolution'))
-        wi = widgets.ContainerWidget(children=[resolution_widget])
+        resolution_widget = FloatText(description='Resolution', value=controller.defaults('resolution'))
+        wi = VBox(children=[resolution_widget])
         wi.resolution = resolution_widget
         self.plot_data.children = [wi]
         self.title.value = 'System design space showing stability of the fixed points'
@@ -164,16 +187,16 @@ class MakePlot(object):
     def stability_1D_plot_widget(self):
         controller = self.controller
         zlim = controller.defaults('zlim')
-        function_widget = widgets.TextWidget(description='* Y-Axis', 
+        function_widget = Text(description='* Y-Axis', 
                                              value = 'log('+controller.ds.dependent_variables[0]+')')
-        resolution_widget = widgets.FloatTextWidget(description='Resolution', value=controller.defaults('resolution'))
+        resolution_widget = FloatText(description='Resolution', value=controller.defaults('resolution'))
         zlim_auto = (zlim is None)
-        zlim_widget = widgets.CheckboxWidget(description='Automatic Y-Lim', value=zlim_auto)
+        zlim_widget = Checkbox(description='Automatic Y-Lim', value=zlim_auto)
         if zlim_auto is True:
             zlim = [0., 0.]
-        zmin_widget = widgets.FloatTextWidget(description='Y-Min', value=zlim[0])
-        zmax_widget = widgets.FloatTextWidget(description='Y-Max', value=zlim[1])
-        wi = widgets.ContainerWidget(children=[function_widget, resolution_widget,
+        zmin_widget = FloatText(description='Y-Min', value=zlim[0])
+        zmax_widget = FloatText(description='Y-Max', value=zlim[1])
+        wi = VBox(children=[function_widget, resolution_widget,
                                                zlim_widget, zmin_widget, zmax_widget,
                                                ])
         wi.function = function_widget
@@ -192,24 +215,24 @@ class MakePlot(object):
     def eigenvalue_2D_plot_widget(self):
         controller = self.controller
         zlim = controller.defaults('zlim')
-        component_widget = widgets.DropdownWidget(description='Complex component',
+        component_widget = Dropdown(description='Complex component',
                                                       values=['Real', 'Imaginary'],
                                                       value='Real')
-        resolution_widget = widgets.FloatTextWidget(description='Resolution', value=controller.defaults('resolution'))
+        resolution_widget = FloatText(description='Resolution', value=controller.defaults('resolution'))
         zlim_auto = (zlim is None)
-        zlim_widget = widgets.CheckboxWidget(description='Automatic Z-Lim', value=zlim_auto)
+        zlim_widget = Checkbox(description='Automatic Z-Lim', value=zlim_auto)
         if zlim_auto is True:
             zlim = [0., 0.]
-        zmin_widget = widgets.FloatTextWidget(description='Z-Min', value=zlim[0])
-        zmax_widget = widgets.FloatTextWidget(description='Z-Max', value=zlim[1])
-        parallel_widget = widgets.CheckboxWidget(description='Compute in Parallel', value=False)
+        zmin_widget = FloatText(description='Z-Min', value=zlim[0])
+        zmax_widget = FloatText(description='Z-Max', value=zlim[1])
+        parallel_widget = Checkbox(description='Compute in Parallel', value=False)
         number_dynamic = len(controller.ds.dependent_variables)
         number_dynamic -= len(controller.ds.auxiliary_variables)
-        select_widget = widgets.DropdownWidget(
+        select_widget = Dropdown(
                          description='Rank to Plot',
                          values = [str(i+1) for i in range(number_dynamic)],
                                                value=str(1))
-        wi = widgets.ContainerWidget(children=[component_widget, 
+        wi = VBox(children=[component_widget, 
                                                select_widget,
                                                resolution_widget,
                                                zlim_widget,
@@ -232,32 +255,32 @@ class MakePlot(object):
         controller = self.controller
         zlim = controller.defaults('zlim')
         value = str(self.plot_type.value)
-        log_linear_widget = widgets.CheckboxWidget(description='Function is log linear',
+        log_linear_widget = Checkbox(description='Function is log linear',
                                                    value=True)
         if value == 'Steady State Flux':
             flux_options = ['log(V_'+ i + ')' for i in controller.ds.dependent_variables]
-            function_widget = widgets.DropdownWidget(values=flux_options)
+            function_widget = Dropdown(values=flux_options)
             self.title.value = 'System design space showing a steady state flux'
             self.caption.value = 'Steady state flux shown as a heat map on the z-axis.'
         elif value == 'Steady State Function':
-            function_widget = widgets.TextWidget(description='Function', value='')
+            function_widget = Text(description='Function', value='')
             log_linear_widget.value = False
             self.title.value = 'System design space showing a function at steady state'
             self.caption.value = 'Steady state function shown as a heat map on the z-axis.'
         else:
             ss_options = ['log('+ i + ')' for i in controller.ds.dependent_variables]
-            function_widget = widgets.DropdownWidget(values=ss_options)
+            function_widget = Dropdown(values=ss_options)
             self.title.value = 'System Design Space showing a steady state concentration'
             self.caption.value = 'Steady state concentration shown as a heat map on the z-axis.'
-        resolution_widget = widgets.FloatTextWidget(description='Resolution', value=controller.defaults('resolution'))
-        parallel_widget = widgets.CheckboxWidget(description='Compute in Parallel', value=False)
+        resolution_widget = FloatText(description='Resolution', value=controller.defaults('resolution'))
+        parallel_widget = Checkbox(description='Compute in Parallel', value=False)
         zlim_auto = (zlim is None)
-        zlim_widget = widgets.CheckboxWidget(description='Automatic Z-Lim', value=zlim_auto)
+        zlim_widget = Checkbox(description='Automatic Z-Lim', value=zlim_auto)
         if zlim_auto is True:
             zlim = [0., 0.]
-        zmin_widget = widgets.FloatTextWidget(description='Z-Min', value=zlim[0])
-        zmax_widget = widgets.FloatTextWidget(description='Z-Max', value=zlim[1])
-        wi = widgets.ContainerWidget(children=[function_widget, resolution_widget,
+        zmin_widget = FloatText(description='Z-Min', value=zlim[0])
+        zmax_widget = FloatText(description='Z-Max', value=zlim[1])
+        wi = VBox(children=[function_widget, resolution_widget,
                                                zlim_widget, zmin_widget, zmax_widget,
                                                parallel_widget, log_linear_widget])
         wi.function = function_widget
@@ -297,17 +320,17 @@ class MakePlot(object):
         zlim = controller.defaults('zlim')
         value = str(self.plot_type.value)
         if value == 'Design Space (interactive)':
-            wi = widgets.ContainerWidget(children=[])
+            wi = VBox(children=[])
             self.plot_data.children = [wi]
             self.title.value = 'System design space'
             self.caption.value = 'System design space with the enumerated qualitatively-distinct phenotypes represented on the z-axis, identified by color.'                
         elif value == 'Design Space':
-            intersections_widget = widgets.DropdownWidget(description='# Intersetcions', 
+            intersections_widget = Dropdown(description='# Intersetcions', 
                                                           values=['Single',
                                                                   'Single and Three',
                                                                   'All',],
                                                           value='Single and Three')
-            wi = widgets.ContainerWidget(children=[intersections_widget])
+            wi = VBox(children=[intersections_widget])
             wi.intersections = intersections_widget
             self.title.value = 'System design space'
             self.caption.value = 'Enumerated qualitatively-distinct phenotypes represented on the z-axis and identified by color.'                
@@ -375,11 +398,11 @@ class MakePlot(object):
         controller = self.controller
         if str(b.ylabel.value) == 'None':
             return
-        button = widgets.ButtonWidget(description='Stop interactive plot')
+        button = Button(description='Stop interactive plot')
         button.on_click(self.remove_plot)
         button.name = 'Interactive Plot (' + str(np.random.randint(0, 1000)) + ')'
-        image_widget = widgets.ImageWidget()
-        popup_widget = widgets.PopupWidget(children=[image_widget])
+        image_widget = Image()
+        popup_widget = Popup(children=[image_widget])
         rangex, rangey = self.axes_ranges(b)
         interactive_plot = controller.ds.draw_2D_slice_notebook(controller.pvals, str(b.xlabel.value),
                                                                 str(b.ylabel.value),
@@ -388,7 +411,7 @@ class MakePlot(object):
                                                                  controller.pvals},
                                                                 intersections=[1],
                                                                 image_container=image_widget)
-        wi = widgets.ContainerWidget(description=button.name,
+        wi = VBox(description=button.name,
                                      children=[interactive_plot, 
                                                button,
                                                popup_widget])
@@ -600,11 +623,11 @@ class DisplayFigures(object):
     def create_figures_widget(self):
         
         controller = self.controller
-        self.figures_widget = widgets.ContainerWidget()
-        self.unsaved = widgets.ContainerWidget()
+        self.figures_widget = VBox()
+        self.unsaved = VBox()
         unsaved = '<center><b style="color:red;">Figures that will not be saved:</b></center><br><hr>'
-        self.figures = widgets.ContainerWidget(children=[self.figures_widget,
-                                                         widgets.HTMLWidget(value=unsaved),
+        self.figures = VBox(children=[self.figures_widget,
+                                                         HTML(value=unsaved),
                                                          self.unsaved])
         controller.update_child('Figures', self.figures)
         
@@ -633,7 +656,7 @@ class DisplayFigures(object):
         self.save_figure_widget(image_data, title=title, caption = caption, pvals=pvals)
         
     def add_figure_widget(self, image_data, title='', caption = '', pvals=None):
-        image_widget = widgets.ImageWidget()
+        image_widget = Image()
         image_widget.value = image_data
         children = [i for i in self.unsaved.children]      
         if len(title) > 0:
@@ -641,38 +664,38 @@ class DisplayFigures(object):
         if len(caption) > 0:
             caption = '  ' + caption
         html_str = '<b>'+title+'</b>' + caption
-        html_widget = widgets.HTMLWidget(value=html_str)
-        save_button = widgets.ButtonWidget(description='Save Figure')
+        html_widget = HTML(value=html_str)
+        save_button = Button(description='Save Figure')
         save_button.image_data = image_data
         save_button.title = title
         save_button.caption = caption
         save_button.on_click(self.save_unsaved_figure)
         save_button.pvals = pvals
-        close_button = widgets.ButtonWidget(description='Remove Figure')
+        close_button = Button(description='Remove Figure')
         close_button.on_click(self.remove_unsaved_figure)
-        restore_pvals = widgets.ButtonWidget(description='Restore Parameter Values')
+        restore_pvals = Button(description='Restore Parameter Values')
         restore_pvals.pvals = pvals
         if pvals is None:
             restore_pvals.visible = False
         restore_pvals.on_click(self.restore_figure_pvals)
-        wi = widgets.PopupWidget(children=[close_button, save_button, image_widget, html_widget, restore_pvals])
+        wi = Popup(children=[close_button, save_button, image_widget, html_widget, restore_pvals])
         save_button.wi = wi
         close_button.wi = wi
         children.append(wi)
         self.unsaved.children = children
     
     def save_figure_widget(self, image_data, title='', caption = '', pvals=None):
-        image_widget = widgets.ImageWidget()
+        image_widget = Image()
         image_widget.value = image_data
         children = [i for i in self.figures_widget.children]      
         html_str = '<b>Figure '+str(len(children)+1)+'.  '+title+'</b>' + caption
-        html_widget = widgets.HTMLWidget(value=html_str)
-        restore_pvals = widgets.ButtonWidget(description='Restore Parameter Values')
+        html_widget = HTML(value=html_str)
+        restore_pvals = Button(description='Restore Parameter Values')
         restore_pvals.pvals = pvals
         if pvals is None:
             restore_pvals.visible = False
         restore_pvals.on_click(self.restore_figure_pvals)
-        wi = widgets.PopupWidget(children=[image_widget, html_widget, restore_pvals])
+        wi = Popup(children=[image_widget, html_widget, restore_pvals])
         children.append(wi)
         self.figures_widget.children = children
         
