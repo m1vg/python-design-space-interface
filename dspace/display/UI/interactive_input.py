@@ -2,8 +2,26 @@ import dspace
 import dspace.plotutils
 import dspace.display
 
-from IPython.html.widgets import interact, interactive, fixed
-from IPython.html import widgets
+from distutils.version import LooseVersion, StrictVersion
+
+import IPython
+
+if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
+    import IPython.html.widgets as widgets
+    from widgets import interact, interactive, fixed
+    from widgets import HTMLWidget, TabWidget, CheckboxWidget, ButtonWidget
+    from widgets import ContainerWidget, TextWidget, TextareaWidget
+    HTML = HTMLWidget
+    Tab = TabWidget
+    Checkbox = CheckboxWidget
+    Button = ButtonWidget
+    VBox = ContainerWidget
+    HBox = ContainerWidget
+    Text = TextWidget
+    Textarea = TextareaWidget
+else:
+    from ipywidgets import *
+    
 from IPython.display import clear_output, display, HTML, Latex
 
 import matplotlib.pyplot as plt
@@ -25,7 +43,7 @@ import base64
 
 from os import listdir
 from os.path import isfile, join
-from distutils.version import LooseVersion
+
 
 class WidgetSavedData(object):
    
@@ -106,7 +124,7 @@ class InteractiveInput(object):
         setattr(self, 'constraints', [])
         setattr(self, 'kinetic_orders', [])
         setattr(self, 'symbols', symbols)
-        setattr(self, 'widget', widgets.TabWidget())
+        setattr(self, 'widget', Tab())
         setattr(self, 'figures', None)
         setattr(self, 'figure_data', [])
         setattr(self, 'tables', None)
@@ -154,7 +172,7 @@ class InteractiveInput(object):
             return None        
         
     def reload_widgets(self):
-        self.widget = widgets.TabWidget()
+        self.widget = Tab()
         display(self.widget)
         self.update_child('Main Menu', self.edit_equations_widget())
         if self.ds is None:
@@ -234,7 +252,7 @@ class InteractiveInput(object):
         self.figure_data = []
         self.table_data = []
         self.widget.close()
-        self.widget = widgets.TabWidget()
+        self.widget = Tab()
         display(self.widget)   
         self.update_child('Main Menu', self.edit_equations_widget(editing=True))
         
@@ -247,23 +265,23 @@ class InteractiveInput(object):
                    ('Analyze Case', self.case_report_menu),
                    ('Co-localize Phenotypes', self.co_localize_menu),
                    ('Create Plot', self.create_plot_menu)]
-        actions_h = widgets.HTMLWidget(value='<b>Actions</b>')
-        options_h = widgets.HTMLWidget(value='<b>Options</b>')
+        actions_h = HTML(value='<b>Actions</b>')
+        options_h = HTML(value='<b>Options</b>')
         options = [('Edit Symbols', self.create_edit_symbols),
                    ('Edit Parameters', self.create_edit_parameters),
                    ('Save Data', self.save_widget_data)]
-        actions_w = widgets.TabWidget()
+        actions_w = Tab()
         options_w = []
         for name, method in options:
-            button = widgets.ButtonWidget(description=name)
+            button = Button(description=name)
             button.on_click(method)
             button.version = b.version
             if method is None:
                 button.disabled = True
             options_w.append(button)
-        edit = widgets.ButtonWidget(description='Modify System')
+        edit = Button(description='Modify System')
         edit.on_click(self.modify_equations_widget)
-        warning = widgets.HTMLWidget()
+        warning = HTML()
         warning.value = '<font color="red"><b>Warning! Modifying system erases saved figures and tables.</b></font>'
         wi.children = [actions_h, actions_w] + [options_h] + options_w + [edit, warning]
         for title, method in actions:
@@ -286,32 +304,32 @@ class InteractiveInput(object):
         kinetic_orders = self.options['kinetic_orders']
         if kinetic_orders is None:
             kinetic_orders = []
-        name = widgets.TextWidget(description='* Name', value=self.name)
-        version = widgets.TextWidget(description='Version', value=self.version)
+        name = Text(description='* Name', value=self.name)
+        version = Text(description='Version', value=self.version)
         self.version_field = version
-        equations=widgets.TextareaWidget(description='* Equations',
+        equations=Textarea(description='* Equations',
                                          value='\n'.join(self.equations))
-        aux=widgets.TextareaWidget(description='Auxiliary Variables',
+        aux=Textarea(description='Auxiliary Variables',
                                    value=', '.join(self.auxiliary))
-        html = widgets.HTMLWidget(value='<b>Architectural Constraints</b>')
-        constraints=widgets.TextareaWidget(description='Parameters',
+        html = HTML(value='<b>Architectural Constraints</b>')
+        constraints=Textarea(description='Parameters',
                                            value=', '.join(self.constraints)
                                            )
-        options_html = widgets.HTMLWidget(value='<b>Additional Options</b>')
-        cyclical = widgets.CheckboxWidget(description='Check for Cycles',
+        options_html = HTML(value='<b>Additional Options</b>')
+        cyclical = Checkbox(description='Check for Cycles',
                                           value = self.cyclical)
-        codominance = widgets.CheckboxWidget(description='Check for Co-dominance',
+        codominance = Checkbox(description='Check for Co-dominance',
                                              value = self.codominance)
-        replacements=widgets.TextareaWidget(description='Kinetic Orders',
+        replacements=Textarea(description='Kinetic Orders',
                                             value=', '.join(
                                              [i for i in kinetic_orders]))
-        wi = widgets.ContainerWidget(children=[equations, 
-                                               aux, html,
-                                               constraints, replacements,
-                                               options_html, cyclical,
-                                               codominance,
-                                               ])
-        button = widgets.ButtonWidget(value=False, 
+        wi = VBox(children=[equations, 
+                            aux, html,
+                            constraints, replacements,
+                            options_html, cyclical,
+                            codominance,
+                            ])
+        button = Button(value=False, 
                                       description='Create Design Space')
         button.on_click(self.make_design_space)
         button.equations = equations
@@ -323,7 +341,7 @@ class InteractiveInput(object):
         button.wi = wi
         button.name = name
         button.version = version
-        load = widgets.ButtonWidget(value=False, 
+        load = Button(value=False, 
                                     description='Load Data')
         load.on_click(self.load_widget)
         load.equations = equations
@@ -337,18 +355,18 @@ class InteractiveInput(object):
         load.name = name
         load.button = button
         button.load = load
-        edit_symbols = widgets.ButtonWidget(value=False, description='Edit Symbols')
+        edit_symbols = Button(value=False, description='Edit Symbols')
         edit_symbols.on_click(self.create_edit_symbols)
-        edit_parameters = widgets.ButtonWidget(value=False, description='Edit Parameters')
+        edit_parameters = Button(value=False, description='Edit Parameters')
         edit_parameters.on_click(self.create_edit_parameters)
         button.edit_symbols = edit_symbols
         button.edit_parameters = edit_parameters
-        edit_equations = widgets.ContainerWidget(description='Edit Equations', 
-                                                 children=[name, version, wi, 
-                                                           edit_symbols,
-                                                           edit_parameters,
-                                                           button,
-                                                           load])
+        edit_equations = VBox(description='Edit Equations', 
+                              children=[name, version, wi, 
+                                        edit_symbols,
+                                        edit_parameters,
+                                        button,
+                                        load])
         wi.visible = False
         edit_symbols.visible = False
         edit_parameters.visible = False
