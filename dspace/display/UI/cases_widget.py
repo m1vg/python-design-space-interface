@@ -39,7 +39,7 @@ class CasesTable(object):
     
     def cases_table_widget(self):
         controller = self.controller
-        options = RadioButtonsWidget(values = ['None',
+        options = RadioButtons(values = ['None',
                                                        'All',
                                                        'Valid',
                                                        'User Specified'],
