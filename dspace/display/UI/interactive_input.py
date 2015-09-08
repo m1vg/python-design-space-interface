@@ -312,16 +312,16 @@ class InteractiveInput(object):
                                    value=', '.join(self.auxiliary))
         html = HTML(value='<b>Architectural Constraints</b>')
         constraints=Textarea(description='Parameters',
-                                           value=', '.join(self.constraints)
-                                           )
+                             value=', '.join(self.constraints)
+                             )
         options_html = HTML(value='<b>Additional Options</b>')
         cyclical = Checkbox(description='Check for Cycles',
-                                          value = self.cyclical)
+                            value = self.cyclical)
         codominance = Checkbox(description='Check for Co-dominance',
-                                             value = self.codominance)
+                               value = self.codominance)
         replacements=Textarea(description='Kinetic Orders',
-                                            value=', '.join(
-                                             [i for i in kinetic_orders]))
+                              value=', '.join(
+                               [i for i in kinetic_orders]))
         wi = VBox(children=[equations, 
                             aux, html,
                             constraints, replacements,
