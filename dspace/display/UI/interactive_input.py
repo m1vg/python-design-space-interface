@@ -8,16 +8,13 @@ import IPython
 
 if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
     from IPython.html.widgets import interact, interactive, fixed
-    from IPython.html.widgets import HTMLWidget, TabWidget, CheckboxWidget, ButtonWidget
-    from IPython.html.widgets import ContainerWidget, TextWidget, TextareaWidget
-    HTML = HTMLWidget
-    Tab = TabWidget
-    Checkbox = CheckboxWidget
-    Button = ButtonWidget
-    VBox = ContainerWidget
-    HBox = ContainerWidget
-    Text = TextWidget
-    Textarea = TextareaWidget
+    from IPython.html.widgets import HTMLWidget as HTML
+    from IPython.html.widgets import TabWidget as Tab
+    from IPython.html.widgets import CheckboxWidget as Checkbox
+    from IPython.html.widgets import ButtonWidget as Button
+    from IPython.html.widgets import ContainerWidget as Box
+    from IPython.html.widgets import TextWidget as Text
+    from IPython.html.widgets import TextareaWidget as Textarea
 else:
     from ipywidgets import *
     
