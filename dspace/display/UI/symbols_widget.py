@@ -25,6 +25,7 @@ if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
     HBox = Box
 else:
     from ipywidgets import *
+    Popup = HBox
     
 from IPython.display import clear_output, display
 
