@@ -15,6 +15,8 @@ if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
     from IPython.html.widgets import ContainerWidget as Box
     from IPython.html.widgets import TextWidget as Text
     from IPython.html.widgets import TextareaWidget as Textarea
+    VBox = Box
+    HBox = Box
 else:
     from ipywidgets import *
     
