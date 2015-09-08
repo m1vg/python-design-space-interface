@@ -3,9 +3,32 @@ import dspace.plotutils
 import dspace.display
 
 import numpy as np
-from IPython.html.widgets import interact, interactive, fixed
-from IPython.html import widgets
-from IPython.display import clear_output, display, HTML, Latex
+
+from distutils.version import LooseVersion, StrictVersion
+
+import IPython
+
+if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
+    from IPython.html.widgets import interact, interactive, fixed
+    from IPython.html.widgets import HTMLWidget as HTML
+    from IPython.html.widgets import TabWidget as Tab
+    from IPython.html.widgets import CheckboxWidget as Checkbox
+    from IPython.html.widgets import ButtonWidget as Button
+    from IPython.html.widgets import ContainerWidget as Box
+    from IPython.html.widgets import TextWidget as Text
+    from IPython.html.widgets import TextareaWidget as Textarea
+    from IPython.html.widgets import DropdownWidget as Dropdown
+    from IPython.html.widgets import RadioButtonsWidget as RadioButtons
+    from IPython.html.widgets import PopupWidget as Popup
+    from IPython.html.widgets import LatexWidget as Latex
+    from IPython.html.widgets import FloatTextWidget as FloatText
+    from IPython.html.widgets import ImageWidget as Image
+    VBox = Box
+    HBox = Box
+else:
+    from ipywidgets import *
+    
+from IPython.display import clear_output, display
 
 import matplotlib as mt
 import matplotlib.pyplot as plt
@@ -25,32 +48,32 @@ class CaseColocalization(object):
     
     def __init__(self, controller, by_signature=False):
         setattr(self, 'controller', controller)
-        setattr(self, 'colocalization_data', widgets.ContainerWidget())
+        setattr(self, 'colocalization_data', VBox())
         setattr(self, 'by_signature', by_signature)
     
     def colocalization_widget(self):
         controller = self.controller
-        cases = widgets.TextareaWidget(description='* Cases to co-localize:')
-        by_signature = widgets.CheckboxWidget(description='Cases indicated by signature?', 
+        cases = Textarea(description='* Cases to co-localize:')
+        by_signature = Checkbox(description='Cases indicated by signature?', 
                                               value=self.by_signature)
-        slice_variables = widgets.TextareaWidget(description='* Slice variables:')
+        slice_variables = Textarea(description='* Slice variables:')
         if 'biological_constraints' not in controller.options:
             bio_constraints = ''
         else:
             bio_constraints = ', '.join(controller.defaults('biological_constraints')) 
-        constraints = widgets.TextareaWidget(description='Biological constraints:',
+        constraints = Textarea(description='Biological constraints:',
                                              value=bio_constraints)
-        button = widgets.ButtonWidget(description='Create Co-Localization')
+        button = Button(description='Create Co-Localization')
         button.on_click(self.make_colocalization)
         button.cases = cases
         button.by_signature = by_signature
         button.slice_variables = slice_variables
         button.constraints = constraints
-        wi = widgets.ContainerWidget(children=[cases,
-                                               by_signature,
-                                               slice_variables,
-                                               constraints,
-                                               button])
+        wi = VBox(children=[cases,
+                                 by_signature,
+                                 slice_variables,
+                                 constraints,
+                                 button])
         return ('Co-localizations', wi)
         
     def make_colocalization(self, b):
@@ -90,22 +113,22 @@ class DisplayColocalization(object):
         controller = self.controller 
         if controller.ds is None:
             return
-        self.info = widgets.ContainerWidget()
-        self.constraints_widget = widgets.ContainerWidget()
-        self.plot = widgets.ContainerWidget()
+        self.info = VBox()
+        self.constraints_widget = VBox()
+        self.plot = HBox()
         self.log_coordinates = True
-        self.global_tolerance = widgets.ContainerWidget()
-        close_button = widgets.ButtonWidget(description='Close Tab')
+        self.global_tolerance = VBox()
+        close_button = Button(description='Close Tab')
         close_button.on_click(self.close_widget)
         ss_options = ['log('+ i + ')' for i in controller.ds.dependent_variables]
-        self.y_dropdown = widgets.DropdownWidget(description='y-axis',
-                                          values=ss_options,
-                                          value=self.y_variable)
-        self.make_plot = widgets.ButtonWidget(description='Create Plot')
+        self.y_dropdown = Dropdown(description='y-axis',
+                                   values=ss_options,
+                                   value=self.y_variable)
+        self.make_plot = Button(description='Create Plot')
         self.make_plot.on_click(self.change_y_axis)
         self.make_plot.yaxis = self.y_dropdown
         self.make_plot.visible = True
-        check_box = widgets.CheckboxWidget(description='Logarithmic coordinates', 
+        check_box = Checkbox(description='Logarithmic coordinates', 
                                            value=self.log_coordinates)
         check_box.on_trait_change(self.update_log, 'value')
         self.y_dropdown.visible = False
@@ -114,14 +137,14 @@ class DisplayColocalization(object):
             if len(self.slice_variables) == 1:
                 self.y_dropdown.visible = True
             if len(self.slice_variables) == 3:
-                self.y_dropdown = widgets.HTMLWidget(value='<font color="red">Warning 3D plots are experimental.</font>')
-        wi = widgets.ContainerWidget(children=[self.info, 
-                                               self.constraints_widget,
-                                               check_box,
-                                               self.y_dropdown,
-                                               self.make_plot,
-                                               self.global_tolerance,
-                                               close_button])
+                self.y_dropdown = HTML(value='<font color="red">Warning 3D plots are experimental.</font>')
+        wi = VBox(children=[self.info, 
+                            self.constraints_widget,
+                            check_box,
+                            self.y_dropdown,
+                            self.make_plot,
+                            self.global_tolerance,
+                            close_button])
         wi.set_css('height', '400px')
         self.update_display()
         controller.update_child(self.name, wi)
@@ -150,14 +173,14 @@ class DisplayColocalization(object):
         
     def update_info(self):
         
-        title = widgets.HTMLWidget(value='<b> Cases to Co-localize </b>')
+        title = HTML(value='<b> Cases to Co-localize </b>')
         buttons = []
         html_str = '<div><b>Is Valid: {0}</b></div>'.format(self.ci.is_valid())
         if self.ci.is_valid() is False:
             self.make_plot.disabled = True
         else:
             self.make_plot.disabled = False
-        valid = widgets.HTMLWidget(value = html_str)
+        valid = HTML(value = html_str)
         html_str = '<table><caption> Auxiliary variables for ' + self.name 
         html_str += ' with ' + ', '.join(self.slice_variables) 
         html_str += ' as the slice variable{0}.</caption>'.format('s' if len(self.slice_variables) > 1 else '')
@@ -169,7 +192,7 @@ class DisplayColocalization(object):
         pset = self.ci.valid_interior_parameter_set()
         for i in self.cases:
             key = i.case_number
-            case_button = widgets.ButtonWidget(description='Case ' + key)
+            case_button = Button(description='Case ' + key)
             buttons.append(case_button)
             case_button.pvals = pset[key] if key in pset else None
             case_button.on_click(self.open_case)
@@ -182,18 +205,18 @@ class DisplayColocalization(object):
         html_str += '<caption>Case co-localization assumes that the slice variables '
         html_str += 'for one case are independent from the slice variables for the other cases in the co-localization.'
         html_str += 'Each auxiliary variable corresponds to a slice variable for one cases.</caption>'
-        save_table = widgets.ButtonWidget(description='Save variable table')
+        save_table = Button(description='Save variable table')
         save_table.on_click(self.save_table)
         save_table.table_data = html_str
-        variables = widgets.HTMLWidget(value=html_str)
+        variables = HTML(value=html_str)
         self.info.children = [title] + buttons + [valid, save_table, variables]
         
     def update_constraints(self):
-        constraints_widget = widgets.TextareaWidget(description='Constraints',
+        constraints_widget = Textarea(description='Constraints',
                                                     value = ',\n'.join(self.constraints)
                                                     )
         constraints_widget.visible = self.active_constraints
-        button = widgets.ButtonWidget(description='Done' if self.active_constraints else 'Modify constraints')
+        button = button(description='Done' if self.active_constraints else 'Modify constraints')
         button.constraints_widget = constraints_widget
         button.on_click(self.modify_constraints)
         self.constraints_widget.children = [constraints_widget, button]
@@ -355,7 +378,7 @@ class DisplayColocalization(object):
         if pvals is None:
             self.global_tolerance.children = []
             return
-        table = widgets.HTMLWidget()
+        table = HTML()
         html_str = '<div><table>\n<caption>Global tolerances determined for ' + self.name + ' showing fold-difference to a large qualitative change{0}. </caption>\n'.format(' in log-coordinates' if self.log_coordinates is True else '') 
         html_str += '<tr ><th align=center  rowspan=2 style="padding:0 15px 0 15px;"> Parameters </th><th colspan=2> Tolerance </th></tr>'
         html_str += '<tr><td style="padding:0 15px 0 15px;"><b> Lower bound</b></td><td style="padding:0 15px 0 15px;"><b> Upper bound</b></td></tr>'
@@ -373,10 +396,10 @@ class DisplayColocalization(object):
         html_str += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals.keys())]) + '.'
         html_str += '</caption></div>'
         table.value = html_str
-        save_button = widgets.ButtonWidget(description='Save Global Tolerance Table')
+        save_button = Button(description='Save Global Tolerance Table')
         save_button.table_data = html_str
         save_button.on_click(self.save_table)
-        self.global_tolerance.children = [widgets.HTMLWidget(value='<br>'),
+        self.global_tolerance.children = [HTML(value='<br>'),
                                           save_button,
                                           table]
         return

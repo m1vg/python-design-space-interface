@@ -2,9 +2,31 @@ import dspace
 import dspace.plotutils
 import dspace.display
 
-from IPython.html.widgets import interact, interactive, fixed
-from IPython.html import widgets
-from IPython.display import clear_output, display, HTML, Latex
+from distutils.version import LooseVersion, StrictVersion
+
+import IPython
+
+if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
+    from IPython.html.widgets import interact, interactive, fixed
+    from IPython.html.widgets import HTMLWidget as HTML
+    from IPython.html.widgets import TabWidget as Tab
+    from IPython.html.widgets import CheckboxWidget as Checkbox
+    from IPython.html.widgets import ButtonWidget as Button
+    from IPython.html.widgets import ContainerWidget as Box
+    from IPython.html.widgets import TextWidget as Text
+    from IPython.html.widgets import TextareaWidget as Textarea
+    from IPython.html.widgets import DropdownWidget as Dropdown
+    from IPython.html.widgets import RadioButtonsWidget as RadioButtons
+    from IPython.html.widgets import PopupWidget as Popup
+    from IPython.html.widgets import LatexWidget as Latex
+    from IPython.html.widgets import FloatTextWidget as FloatText
+    from IPython.html.widgets import ImageWidget as Image
+    VBox = Box
+    HBox = Box
+else:
+    from ipywidgets import *
+    
+from IPython.display import clear_output, display
 
 import matplotlib.pyplot as plt
 
@@ -24,16 +46,16 @@ class DisplaySystem(object):
         controller = self.controller 
         if controller.ds is None:
             return
-        self.html = widgets.HTMLWidget()
-        self.html_equations = widgets.HTMLWidget()
-        self.latex = widgets.LatexWidget()
-        self.checkbox = widgets.CheckboxWidget(description='Typeset Equations?',
-                                               value=True)
+        self.html = HTML()
+        self.html_equations = HTML()
+        self.latex = Latex()
+        self.checkbox = Checkbox(description='Typeset Equations?',
+                                 value=True)
         self.checkbox.on_trait_change(self.changed_check_box, 'value')
-        wi = widgets.ContainerWidget(children=[self.html,
-                                               self.checkbox,
-                                               self.html_equations,
-                                               self.latex])
+        wi = VBox(children=[self.html,
+                                    self.checkbox,
+                                    self.html_equations,
+                                    self.latex])
         self.update_display()
         controller.update_child('System', wi)
         
