@@ -7,10 +7,9 @@ from distutils.version import LooseVersion, StrictVersion
 import IPython
 
 if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
-    import IPython.html.widgets as widgets
-    from widgets import interact, interactive, fixed
-    from widgets import HTMLWidget, TabWidget, CheckboxWidget, ButtonWidget
-    from widgets import ContainerWidget, TextWidget, TextareaWidget
+    from IPython.html.widgets import interact, interactive, fixed
+    from IPython.html.widgets import HTMLWidget, TabWidget, CheckboxWidget, ButtonWidget
+    from IPython.html.widgets import ContainerWidget, TextWidget, TextareaWidget
     HTML = HTMLWidget
     Tab = TabWidget
     Checkbox = CheckboxWidget
