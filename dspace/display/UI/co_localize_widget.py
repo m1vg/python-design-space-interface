@@ -216,7 +216,7 @@ class DisplayColocalization(object):
                                                     value = ',\n'.join(self.constraints)
                                                     )
         constraints_widget.visible = self.active_constraints
-        button = button(description='Done' if self.active_constraints else 'Modify constraints')
+        button = Button(description='Done' if self.active_constraints else 'Modify constraints')
         button.constraints_widget = constraints_widget
         button.on_click(self.modify_constraints)
         self.constraints_widget.children = [constraints_widget, button]
