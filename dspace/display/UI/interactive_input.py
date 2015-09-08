@@ -18,7 +18,7 @@ if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
 else:
     from ipywidgets import *
     
-from IPython.display import clear_output, display, HTML, Latex
+from IPython.display import clear_output, display, Latex
 
 import matplotlib.pyplot as plt
 
