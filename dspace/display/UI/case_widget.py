@@ -21,9 +21,11 @@ if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
     from IPython.html.widgets import LatexWidget as Latex
     VBox = Box
     HBox = Box
+    ipy_old = True
 else:
     from ipywidgets import *
-    Popup = HBox
+    Popup = VBox
+    ipy_old = False
     
 from IPython.display import clear_output, display
 
@@ -124,7 +126,10 @@ class DisplayCase(object):
                                            self.parameter_table,
                                            self.tolerances_table,
                                            close_button])
-        wi.set_css('height', '400px')
+        if ipy_old is True:
+            wi.set_css('height', '400px')
+        else:
+            wi.width = '700px'
         self.update_display()
         subtitle = self.subtitle
         if subtitle != '':

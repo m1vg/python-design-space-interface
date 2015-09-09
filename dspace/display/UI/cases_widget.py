@@ -16,7 +16,7 @@ if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
     from IPython.html.widgets import TextWidget as Text
     from IPython.html.widgets import TextareaWidget as Textarea
     from IPython.html.widgets import DropdownWidget as Dropdown
-    from IPython.html.widgets import RadioButtonsWidget as RadioButtons
+    from IPython.html.widgets import RadioButtonsWidget as Select
     VBox = Box
     HBox = Box
 else:
@@ -39,11 +39,15 @@ class CasesTable(object):
     
     def cases_table_widget(self):
         controller = self.controller
-        options = RadioButtons(values = ['None',
-                                                       'All',
-                                                       'Valid',
-                                                       'User Specified'],
-                                             value='None')
+        options = Select(values = ['None',
+                                   'All',
+                                   'Valid',
+                                   'User Specified'],
+                         options = ['None',
+                                    'All',
+                                    'Valid',
+                                    'User Specified'],
+                         value='None')
         if 'biological_constraints' not in controller.options:
             bio_constraints = ''
         else:
@@ -86,14 +90,19 @@ class CasesTable(object):
         controller = self.controller
         children = [i for i in b.column_block.children]
         new_column = [Dropdown(description='Column ' + str(len(children)+3), 
-                                               values=['Validity',
-                                                       '# eigenvalues w/ positive real part',
-                                                       'Log-Gain'],
-                                               value='Log-Gain'),
+                               values=['Validity',
+                                       '# eigenvalues w/ positive real part',
+                                       'Log-Gain'],
+                               options=['Validity',
+                                        '# eigenvalues w/ positive real part',
+                                        'Log-Gain'],
+                               value='Log-Gain'),
                       Dropdown(description='Log-gain (dependent variable)', 
-                                               values=controller.ds.dependent_variables),
+                               values=controller.ds.dependent_variables,
+                               options=controller.ds.dependent_variables,),
                       Dropdown(description='Log-gain (independent variable)', 
-                                               values=controller.ds.independent_variables)]
+                               values=controller.ds.independent_variables,
+                               options=controller.ds.independent_variables)]
         column = VBox(children=new_column)
         column.header = new_column[0]
         column.dependent = new_column[1]

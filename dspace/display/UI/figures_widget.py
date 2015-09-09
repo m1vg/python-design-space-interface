@@ -87,10 +87,12 @@ class MakePlot(object):
         xlabel = Dropdown(
                   description='* X-Axis',
                   values=controller.ds.independent_variables, 
+                  options=controller.ds.independent_variables, 
                   value=xaxis)
         ylabel = Dropdown(
                   description='* Y-Axis',
                   values=['None'] + controller.ds.independent_variables,
+                  options=['None'] + controller.ds.independent_variables,
                   value=yaxis)
         xmin = FloatText(description='* X-Min',
                                        value=range_x[0])
@@ -105,8 +107,9 @@ class MakePlot(object):
         boundaries = Checkbox(description='Draw Boundaries',
                                             value=False)
         plot_type = Dropdown(description='* Plot Type',
-                                           values=self.widget_types,
-                                           value='Design Space (interactive)')
+                             values=self.widget_types,
+                             options=self.widget_types,
+                             value='Design Space (interactive)')
         title_widget = Text(description='Title')
         caption_widget = Textarea(description='Caption')
         included = controller.defaults('included_cases')
@@ -217,8 +220,9 @@ class MakePlot(object):
         controller = self.controller
         zlim = controller.defaults('zlim')
         component_widget = Dropdown(description='Complex component',
-                                                      values=['Real', 'Imaginary'],
-                                                      value='Real')
+                                    values=['Real', 'Imaginary'],
+                                    options=['Real', 'Imaginary'],
+                                    value='Real')
         resolution_widget = FloatText(description='Resolution', value=controller.defaults('resolution'))
         zlim_auto = (zlim is None)
         zlim_widget = Checkbox(description='Automatic Z-Lim', value=zlim_auto)
@@ -232,7 +236,8 @@ class MakePlot(object):
         select_widget = Dropdown(
                          description='Rank to Plot',
                          values = [str(i+1) for i in range(number_dynamic)],
-                                               value=str(1))
+                         options = [str(i+1) for i in range(number_dynamic)],
+                         value=str(1))
         wi = VBox(children=[component_widget, 
                                                select_widget,
                                                resolution_widget,
@@ -260,7 +265,8 @@ class MakePlot(object):
                                                    value=True)
         if value == 'Steady State Flux':
             flux_options = ['log(V_'+ i + ')' for i in controller.ds.dependent_variables]
-            function_widget = Dropdown(values=flux_options)
+            function_widget = Dropdown(values=flux_options,
+                                       options=flux_options)
             self.title.value = 'System design space showing a steady state flux'
             self.caption.value = 'Steady state flux shown as a heat map on the z-axis.'
         elif value == 'Steady State Function':
@@ -270,7 +276,8 @@ class MakePlot(object):
             self.caption.value = 'Steady state function shown as a heat map on the z-axis.'
         else:
             ss_options = ['log('+ i + ')' for i in controller.ds.dependent_variables]
-            function_widget = Dropdown(values=ss_options)
+            function_widget = Dropdown(values=ss_options,
+                                       options=ss_options)
             self.title.value = 'System Design Space showing a steady state concentration'
             self.caption.value = 'Steady state concentration shown as a heat map on the z-axis.'
         resolution_widget = FloatText(description='Resolution', value=controller.defaults('resolution'))
@@ -327,10 +334,13 @@ class MakePlot(object):
             self.caption.value = 'System design space with the enumerated qualitatively-distinct phenotypes represented on the z-axis, identified by color.'                
         elif value == 'Design Space':
             intersections_widget = Dropdown(description='# Intersetcions', 
-                                                          values=['Single',
-                                                                  'Single and Three',
-                                                                  'All',],
-                                                          value='Single and Three')
+                                            values=['Single',
+                                                    'Single and Three',
+                                                    'All',],
+                                            options=['Single',
+                                                     'Single and Three',
+                                                     'All',],
+                                            value='Single and Three')
             wi = VBox(children=[intersections_widget])
             wi.intersections = intersections_widget
             self.title.value = 'System design space'

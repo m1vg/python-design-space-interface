@@ -227,7 +227,7 @@ class InteractiveInput(object):
         
     def load_widget(self, b):
         self.name = str(b.name.value)
-        self.version = str(b.version.value)
+        self.version = str(self.version_field.value)
         saved = WidgetSavedData.load_widget_data(self)
         b.wi.visible = True
         if self.ds is None:
@@ -236,7 +236,7 @@ class InteractiveInput(object):
         self.update_widgets()
         self.figures.load_widgets()       
         self.tables.load_widgets()       
-        b.version.value = self.version
+        ## b.version.value = self.version
         self.widget.selected_index = 0
         
     def save_widget_data(self, b):
@@ -273,7 +273,7 @@ class InteractiveInput(object):
         for name, method in options:
             button = Button(description=name)
             button.on_click(method)
-            button.version = b.version
+            ## button.version = b.version
             if method is None:
                 button.disabled = True
             options_w.append(button)
@@ -338,12 +338,12 @@ class InteractiveInput(object):
         button.replacements = replacements
         button.wi = wi
         button.name = name
-        button.version = version
+        ## button.version = version
         load = Button(value=False, 
-                                    description='Load Data')
+                      description='Load Data')
         load.on_click(self.load_widget)
         load.equations = equations
-        load.version = version
+        ## load.version = version
         load.aux = aux
         load.constraints = constraints
         load.cyclical = cyclical
