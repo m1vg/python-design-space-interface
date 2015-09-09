@@ -434,8 +434,8 @@ class MakePlot(object):
         
     def make_static_plot(self, b):
         controller = self.controller
-        fig = plt.figure(figsize=[8, 4], dpi=600, facecolor='w')
-        ax = fig.add_axes([0.15, 0.2, 0.525, 0.7])
+        fig = plt.figure(figsize=[7, 4], dpi=600, facecolor='w')
+        ax = fig.add_axes([0.1714, 0.2, 0.6, 0.7])
         ax.set_title('Design Space plot')
         plot_data = self.plot_data.children[0]
         intersects = plot_data.intersections.value
