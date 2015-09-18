@@ -24,7 +24,9 @@ if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
     ipy_old = True
 else:
     from ipywidgets import *
-    Popup = VBox
+    from popup import Popup as PopupWidget
+    def Popup(children=[], **kwargs):
+        return PopupWidget(children=[VBox(children=children)], **kwargs)
     ipy_old = False
     
 from IPython.display import clear_output, display

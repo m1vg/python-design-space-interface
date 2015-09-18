@@ -15,10 +15,15 @@ if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
     from IPython.html.widgets import ContainerWidget as Box
     from IPython.html.widgets import TextWidget as Text
     from IPython.html.widgets import TextareaWidget as Textarea
+    from IPython.html.widgets import PopupWidget as Popup
     VBox = Box
     HBox = Box
 else:
     from ipywidgets import *
+    from popup import Popup as PopupWidget
+    def Popup(children=[], **kwargs):
+        return PopupWidget(children=[VBox(children=children)], **kwargs)
+
     
 from IPython.display import clear_output, display, Latex
 
@@ -240,11 +245,9 @@ class InteractiveInput(object):
         self.widget.selected_index = 0
         
     def save_widget_data(self, b):
-        self.version = str(self.version_field.value)
-        save = WidgetSavedData(self)
-        save.save_data()
-        self.display_system.update_display()
-        
+        save_widget = SavePopupWidget(self)
+        display(save_widget.save_popup_widget())
+                
     def modify_equations_widget(self, b):
         self.ds = None
         self.figure_data = []
@@ -381,6 +384,7 @@ class InteractiveInput(object):
             b.wi.visible = True
             b.description = 'Done'
             return
+        self.version_field.visible = False
         self.equations = [i.strip() for i in str(b.equations.value).split('\n') if len(i.strip()) > 0]
         self.auxiliary = [i.strip() for i in str(b.aux.value).split(',') if len(i.strip()) > 0] 
         self.constraints = [i.strip() for i in str(b.constraints.value).split(',') if len(i.strip()) > 0] 
@@ -435,5 +439,41 @@ class InteractiveInput(object):
         Edit = EditParameters(self)
         Edit.edit_parameters_widget()
 
-
-
+class SavePopupWidget(object):
+    
+    def __init__(self, controller):
+        
+        setattr(self, 'controller', controller)
+        
+    def save_popup_widget(self):
+        controller = self.controller
+        save_button = Button(description='Save')
+        cancel_button = Button(description='Cancel')
+        name_field = Text(description='* Name', value=controller.name)
+        version_field = Text(description='Version', 
+                             value=controller.version)
+        save_button.on_click(self.save_widget_data)
+        save_button.name_field = name_field
+        save_button.version_field = version_field
+        cancel_button.on_click(self.cancel_save)
+        self.save_data = Popup(description='Save Data',
+                               children=[VBox(children=[
+                                               name_field,
+                                               version_field,
+                                               HBox(children=[
+                                                     save_button, 
+                                                     cancel_button])])])
+        return self.save_data
+    
+    def save_widget_data(self, b):
+        controller = self.controller
+        controller.name = str(b.name_field.value)
+        controller.version = str(b.version_field.value)
+        save = WidgetSavedData(controller)
+        save.save_data()
+        controller.display_system.update_display()
+        self.save_data.close()
+        
+    def cancel_save(self, b):
+        self.save_data.close()
+        

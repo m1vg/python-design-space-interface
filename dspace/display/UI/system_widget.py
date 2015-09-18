@@ -62,7 +62,8 @@ class DisplaySystem(object):
         
     def update_display(self):
         controller = self.controller 
-        html_string = '<b>Name:</b> ' + ' '.join([controller.name, controller.version]) + '<br>'
+        html_string = '<b>Name:</b> ' + controller.name
+        html_string += ' (<font color="darkred">v{0}</font>)<br>'.format(controller.version) if controller.version != '' else '<br>'
         html_string += '<b>Number of Cases:</b> ' + str(controller.ds.number_of_cases) + '<br>'
         html_string += '<b>System Signature:</b> [' + controller.ds.signature + ']<br><hr>'
         html_string += '<b>Equations:</b><br><br>'
