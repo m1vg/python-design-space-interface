@@ -272,6 +272,7 @@ def draw_2D_positive_roots(self, ax, p_vals, x_variable, y_variable, range_x,
             valid_cases = [i for i in valid_cases if i in included_cases]
         else:
             valid_cases = [i for i in included_cases if self(i).is_valid(p_bounds=p_bounds)]
+            valid_nonstrict = []
     else:
         valid_cases = self.valid_cases(p_bounds=p_bounds)
     ssystems = list()
@@ -376,6 +377,7 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
             valid_nonstrict = [i for i in valid_cases if i not in valid_cases]
         else:
             valid_cases = [i for i in included_cases if self(i).is_valid(p_bounds=p_bounds)]
+            valid_nonstrict = []
     else:
         valid_cases = self.valid_cases(p_bounds=p_bounds)
         valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
@@ -508,6 +510,7 @@ def draw_3D_slice(self, ax, p_vals, x_variable, y_variable,z_variable, range_x,
             valid_nonstrict = [i for i in valid_cases if i not in valid_cases]
         else:
             valid_cases = [i for i in included_cases if self(i).is_valid(p_bounds=p_bounds)]
+            valid_nonstrict = []
     else:
         valid_cases = self.valid_cases(p_bounds=p_bounds)
         valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
@@ -637,6 +640,7 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
             valid_cases = [i for i in valid_cases if i in included_cases]
         else:
             valid_cases = [i for i in included_cases if self(i).is_valid(p_bounds=p_bounds)]
+            valid_nonstrict = []
     else:
         valid_cases = self.valid_cases(p_bounds=p_bounds)
         valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
@@ -739,6 +743,7 @@ def draw_2D_dominant_eigenvalues(self, ax, p_vals, x_variable, y_variable,
             valid_cases = [i for i in valid_cases if i in included_cases]
         else:
             valid_cases = [i for i in included_cases if self(i).is_valid(p_bounds=p_bounds)]
+            valid_nonstrict = []
     else:
         valid_cases = self.valid_cases(p_bounds=p_bounds)
         valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
@@ -840,6 +845,7 @@ def draw_1D_slice(self, ax, p_vals, slice_variable, range_slice, color_dict=None
             valid_nonstrict = [i for i in valid_cases if i not in valid_cases]
         else:
             valid_cases = [i for i in included_cases if self(i).is_valid(p_bounds=p_bounds)]
+            valid_nonstrict = []
     else:
         valid_cases = self.valid_cases(p_bounds=p_bounds)
         valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
@@ -886,6 +892,7 @@ def draw_1D_ss_function(self, ax, function, p_vals,
             valid_nonstrict = [i for i in valid_cases if i not in valid_cases]
         else:
             valid_cases = [i for i in included_cases if self(i).is_valid(p_bounds=p_bounds)]
+            valid_nonstrict = []
     else:
         valid_cases = self.valid_cases(p_bounds=p_bounds)
         valid_nonstrict = self.valid_cases(p_bounds=p_bounds, strict=False)
