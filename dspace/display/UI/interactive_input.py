@@ -469,6 +469,7 @@ class SavePopupWidget(object):
         controller = self.controller
         controller.name = str(b.name_field.value)
         controller.version = str(b.version_field.value)
+        self.save_data.children = [HTML(value='<center><b>Saving Data</b></center>')]
         save = WidgetSavedData(controller)
         save.save_data()
         controller.display_system.update_display()

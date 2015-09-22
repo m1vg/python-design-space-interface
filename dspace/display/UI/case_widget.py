@@ -115,7 +115,7 @@ class DisplayCase(object):
         calculate_pvals = Button(description='Determine values for the parameters')
         calculate_pvals.visible = False
         calculate_pvals.on_click(self.identify_parameters)
-        if case.is_valid() is True:
+        if case.is_valid() is True and case.is_cyclical is False:
             if self.pvals is None:
                 calculate_pvals.visible = True
         close_button = Button(description='Close Tab')
@@ -243,6 +243,9 @@ class DisplayCase(object):
         case = self.case
         pvals = self.pvals
         if case.is_valid(p_bounds=pvals) is False:
+            self.bounding_box_table.children = []
+            return
+        if case.is_cyclical is True:
             self.bounding_box_table.children = []
             return            
         table = HTML()

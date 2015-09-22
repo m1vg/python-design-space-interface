@@ -335,12 +335,14 @@ class MakePlot(object):
         elif value == 'Design Space':
             intersections_widget = Dropdown(description='# Intersetcions', 
                                             values=['Single',
-                                                    'Single and Three',
+                                                    'Single and Triple',
+                                                    'Triple',
                                                     'All',],
                                             options=['Single',
-                                                     'Single and Three',
+                                                     'Single and Triple',
+                                                     'Triple',
                                                      'All',],
-                                            value='Single and Three')
+                                            value='Single and Triple')
             wi = VBox(children=[intersections_widget])
             wi.intersections = intersections_widget
             self.title.value = 'System design space'
@@ -440,7 +442,8 @@ class MakePlot(object):
         plot_data = self.plot_data.children[0]
         intersects = plot_data.intersections.value
         intersections_dict = {'Single':[1],
-                              'Single and Three':[1,3],
+                              'Single and Triple':[1,3],
+                              'Triple':[3],
                               'All':range(1, 100)}
         rangex, rangey = self.axes_ranges(b)
         ec = 'k' if b.boundaries.value is True else 'none'
