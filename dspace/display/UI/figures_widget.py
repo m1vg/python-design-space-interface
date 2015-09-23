@@ -25,9 +25,13 @@ if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
     from IPython.html.widgets import ImageWidget as Image
     VBox = Box
     HBox = Box
+    old_ipython = True
 else:
     from ipywidgets import *
-    Popup = HBox
+    from popup import Popup as PopupWidget
+    def Popup(children=[], **kwargs):
+        pop_widget = PopupWidget(children=[VBox(children=children)], **kwargs)
+    old_ipython = False
     
 from IPython.display import clear_output, display
 
@@ -448,23 +452,26 @@ class MakePlot(object):
         rangex, rangey = self.axes_ranges(b)
         ec = 'k' if b.boundaries.value is True else 'none'
         if str(b.ylabel.value) != 'None':
-            controller.ds.draw_2D_slice(ax, controller.pvals, str(b.xlabel.value), str(b.ylabel.value),
-                                        rangex, rangey,
-                                        intersections=intersections_dict[intersects],
-                                        included_cases=self.included_cases(b),
-                                        ec=ec)
+            colors=controller.ds.draw_2D_slice(ax, controller.pvals,
+                                               str(b.xlabel.value), str(b.ylabel.value),
+                                               rangex, rangey,
+                                               intersections=intersections_dict[intersects],
+                                               included_cases=self.included_cases(b),
+                                               ec=ec)
         else:
-            controller.ds.draw_1D_slice(ax, controller.pvals, str(b.xlabel.value),
-                                        rangex,
-                                        intersections=intersections_dict[intersects],
-                                        included_cases=self.included_cases(b))
+            colors=controller.ds.draw_1D_slice(ax, controller.pvals, str(b.xlabel.value),
+                                               rangex,
+                                               intersections=intersections_dict[intersects],
+                                               included_cases=self.included_cases(b))
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
         controller.figures.add_figure(data, 
                                       title=b.title.value,
-                                      caption=b.caption.value, pvals=b.pvals)
+                                      caption=b.caption.value,
+                                      pvals=b.pvals,
+                                      colors=colors)
         controller.options.update({'xaxis':str(b.xlabel.value),
                                    'yaxis':str(b.ylabel.value),
                                    'x_range':rangex, 
@@ -645,12 +652,12 @@ class DisplayFigures(object):
                                                          self.unsaved])
         controller.update_child('Figures', self.figures)
         
-    def add_figure(self, image_data, title='', caption = '', pvals=None):
+    def add_figure(self, image_data, title='', caption = '', pvals=None, colors=None):
         controller = self.controller
         if pvals is not None:
             caption += ' Figure generated with the following parameter values: '
             caption += '; '.join([i + ' = ' + str(controller.pvals[i]) for i in sorted(controller.pvals.keys())]) + '.'
-        self.add_figure_widget(image_data, title=title, caption = caption, pvals=pvals)
+        self.add_figure_widget(image_data, title=title, caption = caption, pvals=pvals, colors=colors)
         
     def remove_unsaved_figure(self, b):
         children = [i for i in self.unsaved.children] 
@@ -660,16 +667,17 @@ class DisplayFigures(object):
     def save_unsaved_figure(self, b):
         controller = self.controller
         self.remove_unsaved_figure(b)        
-        self.save_figure(b.image_data, title=b.title, caption=b.caption, pvals = b.pvals)
+        self.save_figure(b.image_data, title=b.title, caption=b.caption, pvals = b.pvals, colors=b.colors)
         controller.save_widget_data(b)
         
-    def save_figure(self, image_data, title='', caption = '', pvals=None):
+    def save_figure(self, image_data, title='', caption = '', pvals=None, colors=None):
         controller = self.controller
         figures = controller.figure_data
-        figures.append((image_data, title, caption, pvals))
-        self.save_figure_widget(image_data, title=title, caption = caption, pvals=pvals)
+        figures.append((image_data, title, caption, pvals, colors))
+        self.save_figure_widget(image_data, title=title, 
+                                caption=caption, pvals=pvals, colors=colors)
         
-    def add_figure_widget(self, image_data, title='', caption = '', pvals=None):
+    def add_figure_widget(self, image_data, title='', caption = '', pvals=None, colors=None):
         image_widget = Image()
         image_widget.value = image_data
         children = [i for i in self.unsaved.children]      
@@ -685,20 +693,58 @@ class DisplayFigures(object):
         save_button.caption = caption
         save_button.on_click(self.save_unsaved_figure)
         save_button.pvals = pvals
+        save_button.colors = colors
         close_button = Button(description='Remove Figure')
         close_button.on_click(self.remove_unsaved_figure)
         restore_pvals = Button(description='Restore Parameter Values')
         restore_pvals.pvals = pvals
         if pvals is None:
             restore_pvals.visible = False
+        tab_widget = VBox(children=[image_widget, html_widget])
+        if colors is not None:
+            html_widgets = self.colorbar_tabs(colors)
+            tab_widget.description='Figure'
+            tab_widget = Tab(children=[tab_widget]+html_widgets)
         restore_pvals.on_click(self.restore_figure_pvals)
-        wi = Popup(children=[close_button, save_button, image_widget, html_widget, restore_pvals])
+        wi = Popup(children=[close_button, save_button, tab_widget, restore_pvals])
         save_button.wi = wi
         close_button.wi = wi
         children.append(wi)
         self.unsaved.children = children
+        if colors is not None:
+            tab_widget.set_title(0, 'Figure')
+            tab_widget.set_title(1, 'Colorbar')
     
-    def save_figure_widget(self, image_data, title='', caption = '', pvals=None):
+    def colorbar_tabs(self, colors):
+        tab_dicts = {}
+        html_widgets = []
+        for i in colors:
+            key=len(i.split(','))
+            if key not in tab_dicts:
+                tab_dicts[key] = {}
+            tab_dicts[key][i]  = '#%02x%02x%02x' % tuple([j*255 for j in colors[i][:3]])
+        keys = sorted(tab_dicts)
+        labels = [sorted(tab_dicts[i]) for i in keys]
+        lengths = [len(tab_dicts[i]) for i in keys]
+        max_length = max(lengths)
+        html_str = '<table style="border:0;">'
+        for i in xrange(max_length):
+            html_str += '<tr style="border:0;">'
+            for j in xrange(len(labels)):
+                if i < lengths[j]:
+                    key = keys[j]
+                    label = labels[j][i]
+                    html_str += '<td style="border:0;width:20px;background-color:{0}" />'.format(tab_dicts[key][label])
+                    html_str += '<td style="border:0">'+label+'</td>'
+                else:
+                    html_str += '<td style="border:0;" />'
+                    html_str += '<td style="border:0l" />'
+            html_str += '</tr>'
+        html_str += '</table>'
+        html_widgets.append(HTML(value=html_str, description='Caption'))
+        return html_widgets
+        
+    def save_figure_widget(self, image_data, title='', caption = '', pvals=None, colors=None):
         image_widget = Image()
         image_widget.value = image_data
         children = [i for i in self.figures_widget.children]      
@@ -708,11 +754,23 @@ class DisplayFigures(object):
         restore_pvals.pvals = pvals
         if pvals is None:
             restore_pvals.visible = False
+        tab_widget = VBox(children=[image_widget, html_widget])
+        if colors is not None:
+            html_widgets = self.colorbar_tabs(colors)
+            tab_widget.description='Figure'
+            if old_ipython is True:
+                tab_widget = Tab(children=[tab_widget]+html_widgets)
+            else:
+                tab_widget = VBox(children=[tab_widget]+html_widgets)
         restore_pvals.on_click(self.restore_figure_pvals)
-        wi = Popup(children=[image_widget, html_widget, restore_pvals])
+        wi = Popup(children=[tab_widget, restore_pvals])
         children.append(wi)
         self.figures_widget.children = children
-        
+        if colors is not None:
+            if old_ipython is True:
+                tab_widget.set_title(0, 'Figure')
+                tab_widget.set_title(1, 'Colorbar')
+                
     def restore_figure_pvals(self, b):
         controller = self.controller
         controller.pvals = b.pvals
@@ -724,6 +782,8 @@ class DisplayFigures(object):
                 self.save_figure_widget(data[0], title=data[1], caption=data[2])
             elif len(data) == 4:
                 self.save_figure_widget(data[0], title=data[1], caption=data[2], pvals=data[3])
+            elif len(data) == 5:
+                self.save_figure_widget(data[0], title=data[1], caption=data[2], pvals=data[3], colors=data[4])
                 
         
         
