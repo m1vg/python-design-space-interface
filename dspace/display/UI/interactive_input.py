@@ -41,7 +41,7 @@ from figures_widget import MakePlot, DisplayFigures
 from tables_widget import DisplayTables
 from parameters_widget import EditParameters
 
-import pickle
+import cPickle as pickle
 import base64
 
 from os import listdir
@@ -161,8 +161,8 @@ class InteractiveInput(object):
         if parameters is not None:
             self.pvals = dspace.VariablePool(names = parameters.keys())
             self.pvals.update(parameters)
-           
-        display(self.widget)   
+        self.root = VBox(children=[self.widget])
+        display(self.root)   
         self.update_child('Main Menu', self.edit_equations_widget())
         
     def set_defaults(self, key, value):
@@ -176,7 +176,7 @@ class InteractiveInput(object):
         
     def reload_widgets(self):
         self.widget = Tab()
-        display(self.widget)
+        display(self.root)
         self.update_child('Main Menu', self.edit_equations_widget())
         if self.ds is None:
             return
@@ -246,7 +246,9 @@ class InteractiveInput(object):
         
     def save_widget_data(self, b):
         save_widget = SavePopupWidget(self)
-        display(save_widget.save_popup_widget())
+        widget_container = save_widget.save_popup_widget()
+        self.root.children = [self.widget, widget_container]
+        self.widget.visible = False
                 
     def modify_equations_widget(self, b):
         self.ds = None
@@ -456,25 +458,36 @@ class SavePopupWidget(object):
         save_button.name_field = name_field
         save_button.version_field = version_field
         cancel_button.on_click(self.cancel_save)
-        self.save_data = Popup(description='Save Data',
+        self.save_data = VBox(description='Save Data',
                                children=[VBox(children=[
+                                               HTML(value='<center width="100%"><b>Are you sure you want to save?</b></center>'),
                                                name_field,
                                                version_field,
                                                HBox(children=[
                                                      save_button, 
                                                      cancel_button])])])
+        self.save_data.box_style = 'warning'
+        self.save_data.overflow_x = 'auto'
+        self.save_data.overflow_y = 'auto'
+        self.save_data.width = '100vh'
         return self.save_data
     
     def save_widget_data(self, b):
         controller = self.controller
         controller.name = str(b.name_field.value)
         controller.version = str(b.version_field.value)
+        self.save_data.box_style = 'success'
         self.save_data.children = [HTML(value='<center><b>Saving Data</b></center>')]
         save = WidgetSavedData(controller)
         save.save_data()
         controller.display_system.update_display()
-        self.save_data.close()
+        controller = self.controller
+        controller.root.children = [controller.widget]
+        controller.widget.visible = True
         
     def cancel_save(self, b):
-        self.save_data.close()
+        controller = self.controller
+        controller.root.children = [controller.widget]
+        controller.widget.visible = True
+        
         

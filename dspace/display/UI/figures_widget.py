@@ -28,9 +28,7 @@ if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
     old_ipython = True
 else:
     from ipywidgets import *
-    from popup import Popup as PopupWidget
-    def Popup(children=[], **kwargs):
-        pop_widget = PopupWidget(children=[VBox(children=children)], **kwargs)
+    from popup import Popup
     old_ipython = False
     
 from IPython.display import clear_output, display
@@ -39,6 +37,7 @@ import matplotlib as mt
 import matplotlib.pyplot as plt
 
 import cStringIO
+import base64
 from matplotlib.backends.backend_agg import FigureCanvasAgg  
 
 from subprocess import call, Popen, PIPE
@@ -376,19 +375,36 @@ class MakePlot(object):
         controller = self.controller
         b.description = 'Creating plot... Please Wait.'
         b.disabled = True
-        b.pvals = controller.pvals.copy()
-        if b.plot_type.value == 'Design Space (interactive)':
-            self.make_interactive_plot(b)
-        elif b.plot_type.value == 'Design Space':
-            self.make_static_plot(b)
-        elif b.plot_type.value == 'Stability':
-            self.make_stability_plot(b)
-        elif b.plot_type.value == 'Eigenvalues':
-            self.make_eigenvalue_plot(b)
+        try:
+            b.pvals = controller.pvals.copy()
+            if b.plot_type.value == 'Design Space (interactive)':
+                self.make_interactive_plot(b)
+            elif b.plot_type.value == 'Design Space':
+                self.make_static_plot(b)
+            elif b.plot_type.value == 'Stability':
+                self.make_stability_plot(b)
+            elif b.plot_type.value == 'Eigenvalues':
+                self.make_eigenvalue_plot(b)
+            else:
+                self.make_function_plot(b)
+        except Exception as e:
+            close_button = Button(description="Close")
+            error_message = '<div width="200px" style="float:center; text-align:center;">'
+            error_message += '<b>An error occured while plotting</b></div>'
+            error_window = Popup(children=[HTML(value=error_message),close_button])
+            close_button.window = error_window
+            close_button.on_click(lambda x: x.window.close())
+            if old_ipython is False:
+                error_window.box_style='danger'
+                close_button.float = 'center'
+                error_window.width='250px'
+                error_window.height='150px'
+            display(error_window)
+            b.description = 'Add Plot'
+            b.disabled = False
         else:
-            self.make_function_plot(b)
-        b.description = 'Add Plot'
-        b.disabled = False
+            b.description = 'Add Plot'
+            b.disabled = False
     
     def axes_ranges(self, b):
         pvals = self.controller.pvals
@@ -420,6 +436,7 @@ class MakePlot(object):
         button.name = 'Interactive Plot (' + str(np.random.randint(0, 1000)) + ')'
         image_widget = Image()
         popup_widget = Popup(children=[image_widget])
+        image_widget.width='100%'
         rangex, rangey = self.axes_ranges(b)
         interactive_plot = controller.ds.draw_2D_slice_notebook(controller.pvals, str(b.xlabel.value),
                                                                 str(b.ylabel.value),
@@ -677,9 +694,53 @@ class DisplayFigures(object):
         self.save_figure_widget(image_data, title=title, 
                                 caption=caption, pvals=pvals, colors=colors)
         
+    def colorbar_tabs_html(self, colors, height=None):
+        tab_dicts = {}
+        html_widgets = []
+        for i in colors:
+            key=len(i.split(','))
+            if key not in tab_dicts:
+                tab_dicts[key] = {}
+            tab_dicts[key][i]  = '#%02x%02x%02x' % tuple([j*255 for j in colors[i][:3]])
+        keys = sorted(tab_dicts)
+        labels = [sorted(tab_dicts[i]) for i in keys]
+        lengths = [len(tab_dicts[i]) for i in keys]
+        max_length = max(lengths)
+        html_str = '<table style="border:0;"' + ('height="'+height+'">' if height is not None else '>')
+        for i in xrange(max_length):
+            html_str += '<tr style="border:0;">'
+            for j in xrange(len(labels)):
+                if i < lengths[j]:
+                    key = keys[j]
+                    label = labels[j][i]
+                    html_str += '<td style="border:0; background-color:{0}; padding:10px;" />'.format(tab_dicts[key][label])
+                    html_str += '<td style="border:0; white-space: nowrap; font-size:100%">'+label+'</td>'
+                else:
+                    html_str += '<td style="border:0;" />'
+                    html_str += '<td style="border:0;" />'
+            html_str += '</tr>'
+        html_str += '</table>'
+        return html_str
+    
+    def colorbar_tabs(self, colors):
+        html_str = self.colorbar_tabs_html(colors)
+        html_widgets = [HTML(value=html_str)]
+        return html_widgets
+
+    def _image_widget_new(self, image_data, colors=None):
+        b64_data = base64.b64encode(image_data)
+        if colors is None:
+            html_str = '<img src="data:image/png;base64,'+b64_data+'" width="100%" />'
+        else:
+            html_str = '<table style="border:0;" width="100%">'
+            html_str += '<tr style="border:0;"><td style="border:0;">'
+            html_str += '<img src="data:image/png;base64,'+b64_data+'" / width="100%"></td>'
+            html_str += '<td style="border:2px groove black;">'+self.colorbar_tabs_html(colors)+'</td></tr></table>'
+        image_widget = HTML(value=html_str)
+        image_widget.width='100%'
+        return image_widget
+        
     def add_figure_widget(self, image_data, title='', caption = '', pvals=None, colors=None):
-        image_widget = Image()
-        image_widget.value = image_data
         children = [i for i in self.unsaved.children]      
         if len(title) > 0:
             title = title + '.'
@@ -700,50 +761,33 @@ class DisplayFigures(object):
         restore_pvals.pvals = pvals
         if pvals is None:
             restore_pvals.visible = False
-        tab_widget = VBox(children=[image_widget, html_widget])
-        if colors is not None:
-            html_widgets = self.colorbar_tabs(colors)
-            tab_widget.description='Figure'
-            tab_widget = Tab(children=[tab_widget]+html_widgets)
+        if old_ipython is True:
+            image_widget = Image()
+            image_widget.value = image_data
+            tab_widget = VBox(children=[image_widget, html_widget])
+            if colors is not None:
+                html_widgets = self.colorbar_tabs(colors)
+                tab_widget.description='Figure'
+                tab_widget = Tab(children=[tab_widget]+html_widgets)
+        else:
+            image_widget = self._image_widget_new(image_data, colors=colors)
+            tab_widget = VBox(children=[image_widget, html_widget])
         restore_pvals.on_click(self.restore_figure_pvals)
-        wi = Popup(children=[close_button, save_button, tab_widget, restore_pvals])
+        if old_ipython is True:
+            wi = Popup(children=[close_button, save_button, tab_widget, restore_pvals])
+        else:
+            contents = VBox(children=[close_button, save_button, tab_widget, restore_pvals])
+            contents.width = '100%'
+            wi = Popup(children=[contents])
         save_button.wi = wi
         close_button.wi = wi
         children.append(wi)
         self.unsaved.children = children
         if colors is not None:
-            tab_widget.set_title(0, 'Figure')
-            tab_widget.set_title(1, 'Colorbar')
-    
-    def colorbar_tabs(self, colors):
-        tab_dicts = {}
-        html_widgets = []
-        for i in colors:
-            key=len(i.split(','))
-            if key not in tab_dicts:
-                tab_dicts[key] = {}
-            tab_dicts[key][i]  = '#%02x%02x%02x' % tuple([j*255 for j in colors[i][:3]])
-        keys = sorted(tab_dicts)
-        labels = [sorted(tab_dicts[i]) for i in keys]
-        lengths = [len(tab_dicts[i]) for i in keys]
-        max_length = max(lengths)
-        html_str = '<table style="border:0;">'
-        for i in xrange(max_length):
-            html_str += '<tr style="border:0;">'
-            for j in xrange(len(labels)):
-                if i < lengths[j]:
-                    key = keys[j]
-                    label = labels[j][i]
-                    html_str += '<td style="border:0;width:20px;background-color:{0}" />'.format(tab_dicts[key][label])
-                    html_str += '<td style="border:0">'+label+'</td>'
-                else:
-                    html_str += '<td style="border:0;" />'
-                    html_str += '<td style="border:0l" />'
-            html_str += '</tr>'
-        html_str += '</table>'
-        html_widgets.append(HTML(value=html_str, description='Caption'))
-        return html_widgets
-        
+            if old_ipython is True:
+                tab_widget.set_title(0, 'Figure')
+                tab_widget.set_title(1, 'Colorbar')
+            
     def save_figure_widget(self, image_data, title='', caption = '', pvals=None, colors=None):
         image_widget = Image()
         image_widget.value = image_data
@@ -761,7 +805,8 @@ class DisplayFigures(object):
             if old_ipython is True:
                 tab_widget = Tab(children=[tab_widget]+html_widgets)
             else:
-                tab_widget = VBox(children=[tab_widget]+html_widgets)
+                tab_widget = HBox(children=[tab_widget]+html_widgets)
+                tab_widget.width='100%'
         restore_pvals.on_click(self.restore_figure_pvals)
         wi = Popup(children=[tab_widget, restore_pvals])
         children.append(wi)

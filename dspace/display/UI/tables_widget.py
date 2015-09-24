@@ -25,9 +25,12 @@ if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
     from IPython.html.widgets import ImageWidget as Image
     VBox = Box
     HBox = Box
+    ipy_old = True
 else:
     from ipywidgets import *
-    Popup = HBox
+    from popup import Popup
+    ipy_old = False
+
     
 from IPython.display import clear_output, display
 
@@ -56,7 +59,8 @@ class DisplayTables(object):
     def add_table_widget(self, table_data):
         html_widget = HTML(value=table_data)
         wi = Popup(children=[html_widget])
-        wi.set_css('height', '300px')
+        if ipy_old is True:
+            wi.set_css('height', '300px')
         children = [i for i in self.tables_widget.children]      
         children.append(wi)
         self.tables_widget.children = children

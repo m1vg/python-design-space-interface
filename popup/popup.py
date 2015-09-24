@@ -39,6 +39,8 @@ class Popup(DOMWidget):
         kwargs['children'] = children
         super(Popup, self).__init__(**kwargs)
         self.on_displayed(Popup._fire_children_displayed)
+        self.width='45%'
+        self.height='45%'
 
     def _fire_children_displayed(self):
         for child in self.children:

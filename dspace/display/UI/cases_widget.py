@@ -16,11 +16,16 @@ if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
     from IPython.html.widgets import TextWidget as Text
     from IPython.html.widgets import TextareaWidget as Textarea
     from IPython.html.widgets import DropdownWidget as Dropdown
-    from IPython.html.widgets import RadioButtonsWidget as Select
+    from IPython.html.widgets import RadioButtonsWidget as RadioButtons
+    from IPython.html.widgets import PopupWidget as Popup
+    from IPython.html.widgets import LatexWidget as Latex
     VBox = Box
     HBox = Box
+    ipy_old = True
 else:
     from ipywidgets import *
+    from popup import Popup
+    ipy_old = False
     
 from IPython.display import clear_output, display, Latex
 
@@ -183,8 +188,13 @@ class CasesTable(object):
         save_table.table_data = s
         save_table.on_click(self.save_table)
         table_container = VBox(children=[save_table, 
-                                                        html_widget])
-        table_container.set_css('height', '300px')
+                                         html_widget])
+        if ipy_old is True:
+            table_container.set_css('height', '300px')
+        else:
+            table_container.height = '300px'
+            table_container.overflow_x = 'auto'
+            table_container.overflow_y = 'auto'
         self.table.children = [table_container]
         
     def save_table(self, b):
