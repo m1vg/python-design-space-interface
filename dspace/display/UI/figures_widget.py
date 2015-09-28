@@ -457,9 +457,14 @@ class MakePlot(object):
         
     def make_static_plot(self, b):
         controller = self.controller
-        fig = plt.figure(figsize=[7, 4], dpi=600, facecolor='w')
-        ax = fig.add_axes([0.1714, 0.2, 0.6, 0.7])
-        ax.set_title('Design Space plot')
+        if old_ipython is True:
+            fig = plt.figure(figsize=[7, 4], dpi=600, facecolor='w')
+            ax = fig.add_axes([0.1714, 0.2, 0.6, 0.7])
+            ax.set_title('Design Space plot')
+        else:
+            fig = plt.figure(figsize=[5, 4], dpi=600, facecolor='w')
+            ax = fig.add_axes([0.24, 0.2, 0.72, 0.7])
+            ax.set_title('Design Space plot')
         plot_data = self.plot_data.children[0]
         intersects = plot_data.intersections.value
         intersections_dict = {'Single':[1],
@@ -469,12 +474,14 @@ class MakePlot(object):
         rangex, rangey = self.axes_ranges(b)
         ec = 'k' if b.boundaries.value is True else 'none'
         if str(b.ylabel.value) != 'None':
+            colorbar = True if old_ipython is True else False
             colors=controller.ds.draw_2D_slice(ax, controller.pvals,
                                                str(b.xlabel.value), str(b.ylabel.value),
                                                rangex, rangey,
                                                intersections=intersections_dict[intersects],
                                                included_cases=self.included_cases(b),
-                                               ec=ec)
+                                               ec=ec,
+                                               colorbar=colorbar)
         else:
             colors=controller.ds.draw_1D_slice(ax, controller.pvals, str(b.xlabel.value),
                                                rangex,
@@ -732,10 +739,31 @@ class DisplayFigures(object):
         if colors is None:
             html_str = '<img src="data:image/png;base64,'+b64_data+'" width="100%" />'
         else:
-            html_str = '<table style="border:0;" width="100%">'
-            html_str += '<tr style="border:0;"><td style="border:0;">'
+            html_str = '''
+<style>.col1 {display: none; }
+.col2 {display: none; }
+.col3 {display: none; }
+table.show1 .col1 { display: table-cell; }
+table.show2 .col2 { display: table-cell; }
+table.show3 .col3 { display: table-cell; }
+</style>
+<script>
+function toggleColumn(el, n) {
+    var currentClass = el.parentElement.parentElement.parentElement.parentElement.className;
+    if (currentClass.indexOf("show"+n) != -1) {
+        el.parentElement.parentElement.parentElement.parentElement.className = currentClass.replace("show"+n, "");
+    }
+    else {
+        el.parentElement.parentElement.parentElement.parentElement.className += " " + "show"+n;
+    }
+}
+</script>
+'''
+            html_str += '<table style="border:0;" width="100%"><tr>'
+            html_str += '<th><button onclick="toggleColumn(this,2)">Toggle Colorbar</button></th><th></th></tr>'
+            html_str += '<tr style="border:0;paddding-right:5px;"><td style="border:0;">'
             html_str += '<img src="data:image/png;base64,'+b64_data+'" / width="100%"></td>'
-            html_str += '<td style="border:2px groove black;">'+self.colorbar_tabs_html(colors)+'</td></tr></table>'
+            html_str += '<td style="border:0;" class="col2">'+self.colorbar_tabs_html(colors)+'</td></tr></table>'
         image_widget = HTML(value=html_str)
         image_widget.width='100%'
         return image_widget
@@ -772,6 +800,8 @@ class DisplayFigures(object):
         else:
             image_widget = self._image_widget_new(image_data, colors=colors)
             tab_widget = VBox(children=[image_widget, html_widget])
+            toggle = Button(description='Hide')
+            
         restore_pvals.on_click(self.restore_figure_pvals)
         if old_ipython is True:
             wi = Popup(children=[close_button, save_button, tab_widget, restore_pvals])
@@ -779,6 +809,7 @@ class DisplayFigures(object):
             contents = VBox(children=[close_button, save_button, tab_widget, restore_pvals])
             contents.width = '100%'
             wi = Popup(children=[contents])
+            wi.border = '1px solid black'
         save_button.wi = wi
         close_button.wi = wi
         children.append(wi)
@@ -798,17 +829,25 @@ class DisplayFigures(object):
         restore_pvals.pvals = pvals
         if pvals is None:
             restore_pvals.visible = False
-        tab_widget = VBox(children=[image_widget, html_widget])
-        if colors is not None:
-            html_widgets = self.colorbar_tabs(colors)
-            tab_widget.description='Figure'
-            if old_ipython is True:
+        if old_ipython is True:
+            image_widget = Image()
+            image_widget.value = image_data
+            tab_widget = VBox(children=[image_widget, html_widget])
+            if colors is not None:
+                html_widgets = self.colorbar_tabs(colors)
+                tab_widget.description='Figure'
                 tab_widget = Tab(children=[tab_widget]+html_widgets)
-            else:
-                tab_widget = HBox(children=[tab_widget]+html_widgets)
-                tab_widget.width='100%'
+        else:
+            image_widget = self._image_widget_new(image_data, colors=colors)
+            tab_widget = VBox(children=[image_widget, html_widget])
         restore_pvals.on_click(self.restore_figure_pvals)
-        wi = Popup(children=[tab_widget, restore_pvals])
+        if old_ipython is True:
+            wi = Popup(children=[tab_widget, restore_pvals])
+        else:
+            contents = VBox(children=[tab_widget, restore_pvals])
+            contents.width = '100%'
+            wi = Popup(children=[contents])
+            wi.border = '1px solid black'
         children.append(wi)
         self.figures_widget.children = children
         if colors is not None:

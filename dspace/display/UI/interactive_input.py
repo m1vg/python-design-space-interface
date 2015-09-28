@@ -256,7 +256,7 @@ class InteractiveInput(object):
         self.table_data = []
         self.widget.close()
         self.widget = Tab()
-        display(self.widget)   
+        display(self.root)   
         self.update_child('Main Menu', self.edit_equations_widget(editing=True))
         
     def make_options_menu(self, b):

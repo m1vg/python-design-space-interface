@@ -36,13 +36,12 @@ define([
              * Called when view is rendered.
              */
 	    var that = this;
-	    this.$window = $('<div style="background-color:white;" />')
+	    this.$window = $('<div style="background-color:white; border:1px solid black;" />')
                 .addClass('modal widget-modal')
                 .appendTo($('#notebook-container'))
                 .css('border-radius', '4px')
                 .css('-moz-border-radius', '4px')
                 .css('-webkit-border-radius', '4px')
-                .css('border', '1px solid black')
                 .mousedown(function(){
                     that.bring_to_front();
                 });
@@ -106,7 +105,6 @@ define([
                               .css('padding', '8px 8px')
                        
                         that.$window
-                            .css('border', '0')
                             .draggable('destroy')
                             .resizable('destroy')
                             .removeClass('widget-modal modal')
@@ -136,6 +134,7 @@ define([
                                .css('padding', '8px 8px')
 
                         that.$window
+                            .css('border', '1px solid black')
                             .removeClass('docked-widget-modal')
                             .addClass('widget-modal modal')
                             .appendTo($('#notebook-container'))
@@ -144,7 +143,6 @@ define([
                                        snapMode: 'both',
                                        })
                             .resizable()
-                            .css('border', '1px solid black')
                             .children('.ui-resizable-handle').show();
                         that.$title_bar
                             .detach()
@@ -173,6 +171,7 @@ define([
                     .css('position', 'fixed')
                     .css('margin-left', that.$window.off.left)
                     .css('margin-top', that.$window.off.top)
+                    .css('border', '1px solid black')
                 that.$body.outerHeight(that.$window.innerHeight() - that.$title_bar.outerHeight());
                 that.$body.outerWidth(that.$window.innerWidth());
             });
@@ -208,16 +207,19 @@ define([
             this.$show_button.removeClass('btn-info');
         },
         
-        show: function() {
+    show: function() {
             // Called when the modal show button is clicked.
             this.$show_button.addClass('btn-info');
             this.$window.show();
             this.$body.show();
             if (this.popped_out) {
-                this.$window.css("positon", "fixed");
-                this.$window.css("width", "45%");
-                this.$window.css("height", "45%");
-                this.$window.css("top", "200px");
+                this.$window
+                    .css("positon", "fixed")
+                    .css("width", "45%")
+                    .css("height", "45%")
+                    .css("top", "200px")
+                    .css('border', '1px solid black')
+                
                 this.$window.css("left", Math.max(0, (($('body').outerWidth() - this.$window.outerWidth()) / 2) +
                     $(window).scrollLeft()) + "px");
                 this.$body.outerHeight(this.$window.innerHeight() - this.$title_bar.outerHeight());
