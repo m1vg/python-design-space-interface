@@ -286,6 +286,10 @@ DSVariablePoolPrint = _dspace_interface.DSVariablePoolPrint
 def DSVariablePoolValuesAsVector(*args):
   return _dspace_interface.DSVariablePoolValuesAsVector(*args)
 DSVariablePoolValuesAsVector = _dspace_interface.DSVariablePoolValuesAsVector
+
+def DSVariablePoolIndicesOfSubPool(*args):
+  return _dspace_interface.DSVariablePoolIndicesOfSubPool(*args)
+DSVariablePoolIndicesOfSubPool = _dspace_interface.DSVariablePoolIndicesOfSubPool
 M_DS_MAT_NULL = _dspace_interface.M_DS_MAT_NULL
 M_DS_MAT_OUTOFBOUNDS = _dspace_interface.M_DS_MAT_OUTOFBOUNDS
 M_DS_MAT_NOINTERNAL = _dspace_interface.M_DS_MAT_NOINTERNAL
@@ -1975,6 +1979,10 @@ DSDictionaryKeyAtIndex = _dspace_interface.DSDictionaryKeyAtIndex
 def DSSSystemPositiveRootsSWIG(*args):
   return _dspace_interface.DSSSystemPositiveRootsSWIG(*args)
 DSSSystemPositiveRootsSWIG = _dspace_interface.DSSSystemPositiveRootsSWIG
+
+def DSSSystemRouthArraySWIG(*args):
+  return _dspace_interface.DSSSystemRouthArraySWIG(*args)
+DSSSystemRouthArraySWIG = _dspace_interface.DSSSystemRouthArraySWIG
 
 def DSSWIGPythonPostWarning(*args):
   return _dspace_interface.DSSWIGPythonPostWarning(*args)

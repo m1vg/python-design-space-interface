@@ -3695,6 +3695,32 @@ extern PyObject * DSSSystemPositiveRootsSWIG(const DSSSystem *ssys, const DSVari
         return list;
 }
 
+extern PyObject * DSSSystemRouthArraySWIG(const DSSSystem *ssys, const DSVariablePool *Xi0) {
+        bool isMarginal = false;
+        DSMatrix * routhArray = NULL;
+        PyObject * list = NULL;
+        PyObject * pyRouthArray = NULL;
+        routhArray = DSSSystemRouthArray(ssys, Xi0, &isMarginal);
+        if (routhArray == NULL) {
+                Py_RETURN_NONE;
+        }
+        DSUInteger i, j;
+        PyObject *tuple = NULL;
+        pyRouthArray = PyList_New(DSMatrixRows(routhArray));
+        for (i = 0; i < DSMatrixRows(routhArray); i++) {
+                tuple = PyTuple_New(DSMatrixColumns(routhArray));
+                for (j = 0; j < DSMatrixColumns(routhArray); j++) {
+                        PyTuple_SetItem(tuple, j, PyFloat_FromDouble(DSMatrixDoubleValue(routhArray, i, j)));
+                }
+                PyList_SetItem(pyRouthArray, i, tuple);
+        }
+        DSMatrixFree(routhArray);
+        list = PyList_New(2);
+        PyList_SetItem(list, 0, pyRouthArray);
+        PyList_SetItem(list, 1, PyInt_FromLong((long int)isMarginal));
+        return list;
+}
+
         
 extern void DSSWIGPythonPostWarning(const char * errorString) {
         if (PyErr_Occurred() != NULL)
@@ -5140,6 +5166,37 @@ SWIGINTERN PyObject *_wrap_DSVariablePoolValuesAsVector(PyObject *SWIGUNUSEDPARM
     }
     DSMatrixFree(matrix);
   }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSVariablePoolIndicesOfSubPool(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSVariablePool *arg1 = (DSVariablePool *) 0 ;
+  DSVariablePool *arg2 = (DSVariablePool *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  DSUInteger *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSVariablePoolIndicesOfSubPool",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSVariablePoolIndicesOfSubPool" "', argument " "1"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg1 = (DSVariablePool *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSVariablePoolIndicesOfSubPool" "', argument " "2"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg2 = (DSVariablePool *)(argp2);
+  result = (DSUInteger *)DSVariablePoolIndicesOfSubPool((DSVariablePool const *)arg1,(DSVariablePool const *)arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSUInteger, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -19888,6 +19945,37 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSSSystemRouthArraySWIG(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSSSystem *arg1 = (DSSSystem *) 0 ;
+  DSVariablePool *arg2 = (DSVariablePool *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSSSystemRouthArraySWIG",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemRouthArraySWIG" "', argument " "1"" of type '" "DSSSystem const *""'"); 
+  }
+  arg1 = (DSSSystem *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSSSystemRouthArraySWIG" "', argument " "2"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg2 = (DSVariablePool *)(argp2);
+  result = (PyObject *)DSSSystemRouthArraySWIG((DSSSystem const *)arg1,(DSVariablePool const *)arg2);
+  resultobj = result;
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSSWIGPythonPostWarning(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   char *arg1 = (char *) 0 ;
@@ -19999,6 +20087,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSVariablePoolIndexOfVariableWithName", _wrap_DSVariablePoolIndexOfVariableWithName, METH_VARARGS, NULL},
 	 { (char *)"DSVariablePoolPrint", _wrap_DSVariablePoolPrint, METH_VARARGS, NULL},
 	 { (char *)"DSVariablePoolValuesAsVector", _wrap_DSVariablePoolValuesAsVector, METH_VARARGS, NULL},
+	 { (char *)"DSVariablePoolIndicesOfSubPool", _wrap_DSVariablePoolIndicesOfSubPool, METH_VARARGS, NULL},
 	 { (char *)"DSMatrixAlloc", _wrap_DSMatrixAlloc, METH_VARARGS, NULL},
 	 { (char *)"DSMatrixCalloc", _wrap_DSMatrixCalloc, METH_VARARGS, NULL},
 	 { (char *)"DSMatrixCopy", _wrap_DSMatrixCopy, METH_VARARGS, NULL},
@@ -20415,6 +20504,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCaseAtIndexOfArray", _wrap_DSCaseAtIndexOfArray, METH_VARARGS, NULL},
 	 { (char *)"DSDictionaryKeyAtIndex", _wrap_DSDictionaryKeyAtIndex, METH_VARARGS, NULL},
 	 { (char *)"DSSSystemPositiveRootsSWIG", _wrap_DSSSystemPositiveRootsSWIG, METH_VARARGS, NULL},
+	 { (char *)"DSSSystemRouthArraySWIG", _wrap_DSSSystemRouthArraySWIG, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGPythonPostWarning", _wrap_DSSWIGPythonPostWarning, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGPythonPostError", _wrap_DSSWIGPythonPostError, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGAssignErrorFunctions", _wrap_DSSWIGAssignErrorFunctions, METH_VARARGS, NULL},

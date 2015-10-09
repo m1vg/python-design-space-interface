@@ -222,7 +222,7 @@ class SSystem(GMASystem):
         
         if DSVariablePoolNumberOfVariables(DSSSystemXd_a(self._swigwrapper)) > 0:
             raise TypeError, 'S-System must be reduced to ODE only system'
-        return DSSSystemRouthArray(self._swigwrapper, parameter_values._swigwrapper)
+        return DSSSystemRouthArraySWIG(self._swigwrapper, parameter_values._swigwrapper)
         
     
         
