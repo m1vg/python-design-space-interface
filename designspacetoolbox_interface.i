@@ -482,6 +482,32 @@ extern PyObject * DSSSystemPositiveRootsSWIG(const DSSSystem *ssys, const DSVari
         return list;
 }
 
+extern PyObject * DSSSystemRouthArraySWIG(const DSSSystem *ssys, const DSVariablePool *Xi0) {
+        bool isMarginal = false;
+        DSMatrix * routhArray = NULL;
+        PyObject * list = NULL;
+        PyObject * pyRouthArray = NULL;
+        routhArray = DSSSystemRouthArray(ssys, Xi0, &isMarginal);
+        if (routhArray == NULL) {
+                Py_RETURN_NONE;
+        }
+        DSUInteger i, j;
+        PyObject *tuple = NULL;
+        pyRouthArray = PyList_New(DSMatrixRows(routhArray));
+        for (i = 0; i < DSMatrixRows(routhArray); i++) {
+                tuple = PyTuple_New(DSMatrixColumns(routhArray));
+                for (j = 0; j < DSMatrixColumns(routhArray); j++) {
+                        PyTuple_SetItem(tuple, j, PyFloat_FromDouble(DSMatrixDoubleValue(routhArray, i, j)));
+                }
+                PyList_SetItem(pyRouthArray, i, tuple);
+        }
+        DSMatrixFree(routhArray);
+        list = PyList_New(2);
+        PyList_SetItem(list, 0, pyRouthArray);
+        PyList_SetItem(list, 1, PyInt_FromLong((long int)isMarginal));
+        return list;
+}
+
         
 extern void DSSWIGPythonPostWarning(const char * errorString) {
         if (PyErr_Occurred() != NULL)
