@@ -177,6 +177,12 @@ class Case(Model):
                     slice_range = [x[0] for x in slice_range]
                     pvals[i] = 10**(slice_range[0] + (slice_range[1] - slice_range[0])/2)
         return pvals
+
+    def consistent_parameter_and_state(self):
+        variablepool = DSCaseConsistentParameterAndStateSet(self._swigwrapper)
+        pstate = VariablePool()
+        pstate.set_swigwrapper(variablepool)
+        return pstate
     
     def valid_parameter_and_state(self):
         variablepool = DSCaseValidParameterAndStateSet(self._swigwrapper)
