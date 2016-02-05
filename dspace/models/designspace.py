@@ -31,7 +31,9 @@ class DesignSpace(GMASystem):
     def __init__(self, equations,
                  parameter_dict=None, 
                  resolve_cycles=False,
-                 constraints=None, match_Xi=None,
+                 constraints=None,
+                 Xi=None,
+                 match_Xi=None,
                  latex_symbols=None,
                  resolve_codominance=False,
                  **kwargs):
@@ -54,7 +56,9 @@ class DesignSpace(GMASystem):
         '''
         if parameter_dict is not None:
             equations = equations.replace_symbols(parameter_dict)
-        super(DesignSpace, self).__init__(equations, match_Xi=match_Xi, 
+        super(DesignSpace, self).__init__(equations, 
+                                          Xi=Xi,
+                                          match_Xi=match_Xi, 
                                           latex_symbols=latex_symbols, **kwargs)
         setattr(self, '_resolve_cycles', False)
         if constraints is not None:
@@ -157,22 +161,28 @@ class DesignSpace(GMASystem):
                 cases = cases[0]
         return cases
             
-    def _parse_equations(self, match_Xi=None, **kwargs):
+    def _parse_equations(self, 
+                         Xi=None,
+                         match_Xi=None, 
+                         **kwargs):
         auxiliary_variables = self.auxiliary_variables
-        if match_Xi is None:
+        if Xi is not None:
+            Xi = [i for i in Xi]
+        elif match_Xi is not None:
+            Xi = match_Xi.independent_variables
+        if Xi is None:
             swigwrapper = DSSWIGDesignSpaceParseWrapper(self.equations.system,
                                                         len(self.equations),
                                                         auxiliary_variables,
                                                         len(auxiliary_variables)
                                                         )
         else:
-            xi_list = match_Xi.independent_variables
             swigwrapper = DSSWIGDesignSpaceParseWrapperWithXi(self.equations.system,
                                                               len(self.equations),
                                                               auxiliary_variables,
                                                               len(auxiliary_variables),
-                                                              xi_list,
-                                                              len(xi_list),
+                                                              Xi,
+                                                              len(Xi),
                                                               )
         self.set_swigwrapper(swigwrapper)
         gma = DSDesignSpaceGMASystem(self._swigwrapper)
