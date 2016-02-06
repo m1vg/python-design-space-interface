@@ -109,7 +109,7 @@ class InteractiveInput(object):
     def __init__(self, name='', version='', equations=None, parameters=None,
                  get_parameters=None, auxiliary_variables=[], constraints=[],
                  symbols={}, resolve_cycles=False, resolve_codominance=False,
-                 centered_axes=False, xaxis=None, yaxis=None,
+                 centered_axes=False, xaxis=None, yaxis=None, recast=True,
                  x_range=[1e-3, 1e3], y_range=[1e-3, 1e3],
                  zlim=None, by_signature=False, kinetic_orders=None,
                  included_cases=None, biological_constraints=[], resolution=100,
@@ -123,6 +123,7 @@ class InteractiveInput(object):
         setattr(self, 'pvals', None)
         setattr(self, 'cyclical', resolve_cycles)
         setattr(self, 'codominance', resolve_codominance)
+        setattr(self, 'recast', recast)
         setattr(self, 'auxiliary', [])
         setattr(self, 'constraints', [])
         setattr(self, 'kinetic_orders', [])
@@ -323,6 +324,8 @@ class InteractiveInput(object):
                             value = self.cyclical)
         codominance = Checkbox(description='Check for Co-dominance',
                                value = self.codominance)
+        recast = Checkbox(description='Recast Equations',
+                               value = self.recast)
         replacements=Textarea(description='Kinetic Orders',
                               value=', '.join(
                                [i for i in kinetic_orders]))
@@ -330,7 +333,7 @@ class InteractiveInput(object):
                             aux, html,
                             constraints, replacements,
                             options_html, cyclical,
-                            codominance,
+                            codominance,recast,
                             ])
         button = Button(value=False, 
                                       description='Create Design Space')
@@ -340,6 +343,7 @@ class InteractiveInput(object):
         button.constraints = constraints
         button.cyclical = cyclical
         button.codominance = codominance
+        button.recast = recast
         button.replacements = replacements
         button.wi = wi
         button.name = name
@@ -392,9 +396,12 @@ class InteractiveInput(object):
         self.constraints = [i.strip() for i in str(b.constraints.value).split(',') if len(i.strip()) > 0] 
         self.cyclical = b.cyclical.value
         self.codominance = b.codominance.value
+        self.recast = b.recast.value
         eq = dspace.Equations(self.equations,
                               auxiliary_variables=self.auxiliary, 
                               latex_symbols=self.symbols)
+        if self.recast:
+            eq = eq.recast()
         self.name = b.name.value
         constraints = self.constraints
         replacements = str(b.replacements.value).strip()
