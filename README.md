@@ -1,4 +1,4 @@
-Design Space Toolbox V2 (Python Interface)
+Design Space Toolbox V2 (Python Package)
 ==============================================
 
 Copyright (C) 2013-2015 Jason G. Lomnitz, Department of Biomedical Engineering,
@@ -12,14 +12,14 @@ The Design Space Toolbox V2 Python Interface is free software: you can redistrib
 Getting Started
 ---------------------
 
-To use the Design Space Toolbox V2 from Python, you must have Python 2.7.x, as well as a working version of the **Design Space Toolbox V2 C Library** (an open-source library to be released in 2015). Access to the Design Space Toolbox V2 C Library available upon request by contacting Jason G. Lomnitz (jlomn@ucdavis.edu). In addition, plot generation and data visualization depends on the NumPy (www.numpy.org), Scipy (www.scipy.org) and Matplotlib (www.matplotlib.org) packages.
+To use the Design Space Toolbox V2 from Python, you must have Python 2.7.x, as well as a working version of the **Design Space Toolbox V2 C Library** (an open-source library to be released early 2016). Access to the Design Space Toolbox V2 C Library available upon request by contacting Jason G. Lomnitz (jlomn@ucdavis.edu). In addition, plot generation and data visualization depends on the NumPy (www.numpy.org), Scipy (www.scipy.org) and Matplotlib (www.matplotlib.org) packages.
 
 The preferred installation process is using the Design Space Toolbox V2 update and installation script (see https://bitbucket.org/jglomnitz/toolbox-update-script for detailed instructions). This script manages the Git repositories associated with the C Library, Python Interface, as well as a modified version of the GNU Linear Programming Kit (GLPK) library used by the Design Space Toolbox Project.
 
 Examples of System Analysis Using the Design Space Toolbox
 ------------------------------------------------------------------------------------
 
-The Design Space Toolbox V2 Python Interface is a standard Python package. The current version of the interface lacks most of the documentation; however, there are examples available that highlight the array of objects and methods for the analysis of non-linear systems.
+The Design Space Toolbox V2 Python Package is a standard Python package that includes Python code and a Python-C bridge extension. The current version of the package lacks documentation; however, there are examples available that highlight the array of objects and methods for the analysis of non-linear systems.
 
 These examples are found in the `dspace.examples` sub-package, and can be imported directly into an interactive python shell. There are a total of 5 examples that highlight the following aspects of the software package.
 
@@ -44,6 +44,7 @@ E.g., for example 1:
 Once imported, you can obtain the path for the example's source by typing
 
     dspace.examples.example_1
+
 at the command prompt.	
 
 
