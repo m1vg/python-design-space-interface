@@ -183,6 +183,27 @@
         }
 }
 
+%typemap(in) const DSExpression ** {
+        /* Check if is a list */
+        if (PyList_Check($input)) {
+                int size = PyList_Size($input);
+                int i = 0;
+                $1 = (const DSExpression **) malloc((size+1)*sizeof(DSExpression *));
+                for (i = 0; i < size; i++) {
+                        PyObject *o = PyList_GetItem($input,i);
+                        if (SWIG_ConvertPtr(o, &($1[i]), $descriptor(DSExpression *), SWIG_POINTER_EXCEPTION) == -1) {
+                                PyErr_SetString(PyExc_TypeError,"list must contain DSExpression objects");
+                                free($1);
+                                return NULL;
+                        }
+                }
+                $1[i] = 0;
+        } else {
+                PyErr_SetString(PyExc_TypeError,"not a list");
+                return NULL;
+        }
+}
+
 %include "/usr/local/include/designspace/DSStd.h"
 %include "/usr/local/include/designspace/DSErrors.h"
 %include "/usr/local/include/designspace/DSIO.h"
@@ -205,6 +226,11 @@
 %inline %{
 
 typedef DSCase DSPseudoCase;
+        
+typedef struct {
+        int equationCount;
+        DSExpression ** expressionArray;
+} DSExpressionArray;
 //extern DSCase * DSSWIGPseudoCaseAsCase(DSPseudoCase * pseudo)
 //{
 //        return pseudo;
@@ -439,6 +465,22 @@ extern DSSSystem * DSSWIGSSystemParseWrapper(char ** const strings, const DSUInt
 extern DSExpression ** DSExpressionArrayFromVoid(void * pointer)
 {
         return pointer;
+}
+        
+extern DSExpressionArray * DSSWIGExpressionRecastSystemEquations(const DSExpression **equations, DSUInteger count, const char * prefix) {
+        DSUInteger i;
+        DSExpressionArray * list = DSSecureMalloc(sizeof(DSExpressionArray));
+        list->equationCount = count;
+        list->expressionArray = DSExpressionRecastSystemEquations(equations, &list->equationCount, prefix);
+        return list;
+}
+        
+extern DSUInteger DSSWIGExpressionArrayCount(DSExpressionArray * array) {
+        return array->equationCount;
+}
+
+extern DSExpression * DSSWIGExpressionArrayExpressionAtIndex(DSExpressionArray * array, DSUInteger index) {
+        return array->expressionArray[index];
 }
         
 extern DSExpression * DSExpressionAtIndexOfExpressionArray(DSExpression ** expressions, DSUInteger index)

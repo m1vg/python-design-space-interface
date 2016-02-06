@@ -17,7 +17,12 @@ SWIG_REQUIREMENTS = ['DSSSystemNumberOfEquations',
                      'DSGMASystemXd',
                      'DSSWIGGMASystemParseWrapper',
                      'DSExpressionAtIndexOfExpressionArray',
-                     'DSExpressionAsString'
+                     'DSExpressionAsString',
+                     'DSExpressionFree',
+                     'DSSWIGExpressionRecastSystemEquations',
+                     'DSSWIGExpressionArrayCount',
+                     'DSSWIGExpressionArrayExpressionAtIndex',
+                     'DSSecureFree'
                      ]
 
 module = __import__('dspace.SWIG.dspace_interface', fromlist=SWIG_REQUIREMENTS)
@@ -101,9 +106,21 @@ class Equations(object):
         
         eq = self.system
         for i in xrange(0, len(self._eq)):
-            for j in symbol_dict:
-                eq[i] = eq[i].replace(j, str(symbol_dict[j]))
+            eq[i] = str(self._eq[i].subst(symbol_dict))
         eqs = Equations(eq, self._auxiliary_variables)
+        return eqs
+    
+    def recast(self, prefix='XX'):
+        eq = [i._swigwrapper for i in self._eq]
+        eq_array = DSSWIGExpressionRecastSystemEquations(eq, len(eq), prefix)
+        count = DSSWIGExpressionArrayCount(eq_array)
+        strings = []
+        for i in xrange(count):
+            eqi = DSSWIGExpressionArrayExpressionAtIndex(eq_array, i)
+            strings.append(DSExpressionAsString(eqi))
+            DSExpressionFree(eqi)
+        DSSecureFree(eq_array)
+        eqs = Equations(strings, self._auxiliary_variables)
         return eqs
     
 

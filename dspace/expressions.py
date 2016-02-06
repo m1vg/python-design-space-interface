@@ -42,6 +42,23 @@ class Expression(object):
         expr._swigwrapper = DSExpressionByCompressingConstantVariables(self._swigwrapper,
                                                                        p_vals._swigwrapper)
         return expr
+    
+    def subst(self, replace_dict, **kwargs):
+        replace_dict = dict(replace_dict)
+        replace_dict.update(kwargs)
+        new_expression = Expression('0')
+        DSExpressionFree(new_expression._swigwrapper)
+        new_expression._swigwrapper = DSExpressionCopy(self._swigwrapper)
+        for key,value in replace_dict.iteritems():
+            target = Expression(str(key))
+            subs = Expression(str(value))
+            temp = DSExpressionByReplacingSubExpression(
+                    new_expression._swigwrapper,
+                    target._swigwrapper,
+                    subs._swigwrapper)
+            DSExpressionFree(new_expression._swigwrapper)
+            new_expression._swigwrapper = temp
+        return new_expression
         
     def eval_with_values(self, p_vals=None, **kwargs):
         
