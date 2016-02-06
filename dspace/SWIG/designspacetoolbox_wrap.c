@@ -2918,37 +2918,38 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 #define SWIGTYPE_p_DSDesignSpaceMessage swig_types[5]
 #define SWIGTYPE_p_DSDictionary swig_types[6]
 #define SWIGTYPE_p_DSExpression swig_types[7]
-#define SWIGTYPE_p_DSGMASystem swig_types[8]
-#define SWIGTYPE_p_DSGMASystemMessage swig_types[9]
-#define SWIGTYPE_p_DSMatrix swig_types[10]
-#define SWIGTYPE_p_DSMatrixArray swig_types[11]
-#define SWIGTYPE_p_DSMatrixArrayMessage swig_types[12]
-#define SWIGTYPE_p_DSMatrixMessage swig_types[13]
-#define SWIGTYPE_p_DSSSystem swig_types[14]
-#define SWIGTYPE_p_DSSSystemMessage swig_types[15]
-#define SWIGTYPE_p_DSStack swig_types[16]
-#define SWIGTYPE_p_DSUInteger swig_types[17]
-#define SWIGTYPE_p_DSVariable swig_types[18]
-#define SWIGTYPE_p_DSVariablePool swig_types[19]
-#define SWIGTYPE_p_DSVertices swig_types[20]
-#define SWIGTYPE_p_FILE swig_types[21]
-#define SWIGTYPE_p_bool swig_types[22]
-#define SWIGTYPE_p_char swig_types[23]
-#define SWIGTYPE_p_double swig_types[24]
-#define SWIGTYPE_p_double_complex swig_types[25]
-#define SWIGTYPE_p_f_double__double swig_types[26]
-#define SWIGTYPE_p_f_p_q_const__char__void swig_types[27]
-#define SWIGTYPE_p_f_p_q_const__char_v_______int swig_types[28]
-#define SWIGTYPE_p_int swig_types[29]
-#define SWIGTYPE_p_p_DSCase swig_types[30]
-#define SWIGTYPE_p_p_DSExpression swig_types[31]
-#define SWIGTYPE_p_p_DSVariable swig_types[32]
-#define SWIGTYPE_p_p_char swig_types[33]
-#define SWIGTYPE_p_p_void swig_types[34]
-#define SWIGTYPE_p_size_t swig_types[35]
-#define SWIGTYPE_p_void swig_types[36]
-static swig_type_info *swig_types[38];
-static swig_module_info swig_module = {swig_types, 37, 0, 0, 0, 0};
+#define SWIGTYPE_p_DSExpressionArray swig_types[8]
+#define SWIGTYPE_p_DSGMASystem swig_types[9]
+#define SWIGTYPE_p_DSGMASystemMessage swig_types[10]
+#define SWIGTYPE_p_DSMatrix swig_types[11]
+#define SWIGTYPE_p_DSMatrixArray swig_types[12]
+#define SWIGTYPE_p_DSMatrixArrayMessage swig_types[13]
+#define SWIGTYPE_p_DSMatrixMessage swig_types[14]
+#define SWIGTYPE_p_DSSSystem swig_types[15]
+#define SWIGTYPE_p_DSSSystemMessage swig_types[16]
+#define SWIGTYPE_p_DSStack swig_types[17]
+#define SWIGTYPE_p_DSUInteger swig_types[18]
+#define SWIGTYPE_p_DSVariable swig_types[19]
+#define SWIGTYPE_p_DSVariablePool swig_types[20]
+#define SWIGTYPE_p_DSVertices swig_types[21]
+#define SWIGTYPE_p_FILE swig_types[22]
+#define SWIGTYPE_p_bool swig_types[23]
+#define SWIGTYPE_p_char swig_types[24]
+#define SWIGTYPE_p_double swig_types[25]
+#define SWIGTYPE_p_double_complex swig_types[26]
+#define SWIGTYPE_p_f_double__double swig_types[27]
+#define SWIGTYPE_p_f_p_q_const__char__void swig_types[28]
+#define SWIGTYPE_p_f_p_q_const__char_v_______int swig_types[29]
+#define SWIGTYPE_p_int swig_types[30]
+#define SWIGTYPE_p_p_DSCase swig_types[31]
+#define SWIGTYPE_p_p_DSExpression swig_types[32]
+#define SWIGTYPE_p_p_DSVariable swig_types[33]
+#define SWIGTYPE_p_p_char swig_types[34]
+#define SWIGTYPE_p_p_void swig_types[35]
+#define SWIGTYPE_p_size_t swig_types[36]
+#define SWIGTYPE_p_void swig_types[37]
+static swig_type_info *swig_types[39];
+static swig_module_info swig_module = {swig_types, 38, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3418,6 +3419,11 @@ SWIG_From_char  (char c)
 
 
 typedef DSCase DSPseudoCase;
+        
+typedef struct {
+        int equationCount;
+        DSExpression ** expressionArray;
+} DSExpressionArray;
 //extern DSCase * DSSWIGPseudoCaseAsCase(DSPseudoCase * pseudo)
 //{
 //        return pseudo;
@@ -3652,6 +3658,22 @@ extern DSSSystem * DSSWIGSSystemParseWrapper(char ** const strings, const DSUInt
 extern DSExpression ** DSExpressionArrayFromVoid(void * pointer)
 {
         return pointer;
+}
+        
+extern DSExpressionArray * DSSWIGExpressionRecastSystemEquations(const DSExpression **equations, DSUInteger count, const char * prefix) {
+        DSUInteger i;
+        DSExpressionArray * list = DSSecureMalloc(sizeof(DSExpressionArray));
+        list->equationCount = count;
+        list->expressionArray = DSExpressionRecastSystemEquations(equations, &list->equationCount, prefix);
+        return list;
+}
+        
+extern DSUInteger DSSWIGExpressionArrayCount(DSExpressionArray * array) {
+        return array->equationCount;
+}
+
+extern DSExpression * DSSWIGExpressionArrayExpressionAtIndex(DSExpressionArray * array, DSUInteger index) {
+        return array->expressionArray[index];
 }
         
 extern DSExpression * DSExpressionAtIndexOfExpressionArray(DSExpression ** expressions, DSUInteger index)
@@ -8611,6 +8633,133 @@ SWIGINTERN PyObject *_wrap_DSExpressionByCompressingConstantVariables(PyObject *
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSExpression, 0 |  0 );
   return resultobj;
 fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSExpressionIsEqualToExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpression *arg1 = (DSExpression *) 0 ;
+  DSExpression *arg2 = (DSExpression *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSExpressionIsEqualToExpression",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSExpression, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSExpressionIsEqualToExpression" "', argument " "1"" of type '" "DSExpression const *""'"); 
+  }
+  arg1 = (DSExpression *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_DSExpression, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSExpressionIsEqualToExpression" "', argument " "2"" of type '" "DSExpression const *""'"); 
+  }
+  arg2 = (DSExpression *)(argp2);
+  result = (bool)DSExpressionIsEqualToExpression((DSExpression const *)arg1,(DSExpression const *)arg2);
+  resultobj = SWIG_From_bool((bool)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSExpressionByReplacingSubExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpression *arg1 = (DSExpression *) 0 ;
+  DSExpression *arg2 = (DSExpression *) 0 ;
+  DSExpression *arg3 = (DSExpression *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  DSExpression *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DSExpressionByReplacingSubExpression",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSExpression, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSExpressionByReplacingSubExpression" "', argument " "1"" of type '" "DSExpression const *""'"); 
+  }
+  arg1 = (DSExpression *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_DSExpression, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSExpressionByReplacingSubExpression" "', argument " "2"" of type '" "DSExpression const *""'"); 
+  }
+  arg2 = (DSExpression *)(argp2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_DSExpression, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DSExpressionByReplacingSubExpression" "', argument " "3"" of type '" "DSExpression const *""'"); 
+  }
+  arg3 = (DSExpression *)(argp3);
+  result = (DSExpression *)DSExpressionByReplacingSubExpression((DSExpression const *)arg1,(DSExpression const *)arg2,(DSExpression const *)arg3);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSExpression, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSExpressionRecastSystemEquations(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpression **arg1 = (DSExpression **) 0 ;
+  DSUInteger *arg2 = (DSUInteger *) 0 ;
+  char *arg3 = (char *) 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  DSExpression **result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DSExpressionRecastSystemEquations",&obj0,&obj1,&obj2)) SWIG_fail;
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj0)) {
+      int size = PyList_Size(obj0);
+      int i = 0;
+      arg1 = (const DSExpression **) malloc((size+1)*sizeof(DSExpression *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj0,i);
+        if (SWIG_ConvertPtr(o, &(arg1[i]), SWIGTYPE_p_DSExpression, SWIG_POINTER_EXCEPTION) == -1) {
+          PyErr_SetString(PyExc_TypeError,"list must contain DSExpression objects");
+          free(arg1);
+          return NULL;
+        }
+      }
+      arg1[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_DSUInteger, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSExpressionRecastSystemEquations" "', argument " "2"" of type '" "DSUInteger *""'"); 
+  }
+  arg2 = (DSUInteger *)(argp2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DSExpressionRecastSystemEquations" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = (char *)(buf3);
+  result = (DSExpression **)DSExpressionRecastSystemEquations((DSExpression const **)arg1,arg2,(char const *)arg3);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_p_DSExpression, 0 |  0 );
+  if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
+  return resultobj;
+fail:
+  if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
   return NULL;
 }
 
@@ -19131,6 +19280,151 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSExpressionArray_equationCount_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpressionArray *arg1 = (DSExpressionArray *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSExpressionArray_equationCount_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSExpressionArray, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSExpressionArray_equationCount_set" "', argument " "1"" of type '" "DSExpressionArray *""'"); 
+  }
+  arg1 = (DSExpressionArray *)(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DSExpressionArray_equationCount_set" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = (int)(val2);
+  if (arg1) (arg1)->equationCount = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSExpressionArray_equationCount_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpressionArray *arg1 = (DSExpressionArray *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSExpressionArray_equationCount_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSExpressionArray, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSExpressionArray_equationCount_get" "', argument " "1"" of type '" "DSExpressionArray *""'"); 
+  }
+  arg1 = (DSExpressionArray *)(argp1);
+  result = (int) ((arg1)->equationCount);
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSExpressionArray_expressionArray_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpressionArray *arg1 = (DSExpressionArray *) 0 ;
+  DSExpression **arg2 = (DSExpression **) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSExpressionArray_expressionArray_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSExpressionArray, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSExpressionArray_expressionArray_set" "', argument " "1"" of type '" "DSExpressionArray *""'"); 
+  }
+  arg1 = (DSExpressionArray *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_p_DSExpression, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSExpressionArray_expressionArray_set" "', argument " "2"" of type '" "DSExpression **""'"); 
+  }
+  arg2 = (DSExpression **)(argp2);
+  if (arg1) (arg1)->expressionArray = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSExpressionArray_expressionArray_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpressionArray *arg1 = (DSExpressionArray *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  DSExpression **result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSExpressionArray_expressionArray_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSExpressionArray, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSExpressionArray_expressionArray_get" "', argument " "1"" of type '" "DSExpressionArray *""'"); 
+  }
+  arg1 = (DSExpressionArray *)(argp1);
+  result = (DSExpression **) ((arg1)->expressionArray);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_p_DSExpression, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_DSExpressionArray(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpressionArray *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_DSExpressionArray")) SWIG_fail;
+  result = (DSExpressionArray *)calloc(1, sizeof(DSExpressionArray));
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSExpressionArray, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_DSExpressionArray(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpressionArray *arg1 = (DSExpressionArray *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_DSExpressionArray",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSExpressionArray, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_DSExpressionArray" "', argument " "1"" of type '" "DSExpressionArray *""'"); 
+  }
+  arg1 = (DSExpressionArray *)(argp1);
+  free((char *) arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *DSExpressionArray_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_DSExpressionArray, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
 SWIGINTERN PyObject *_wrap_DSSWIGDSCyclicalCaseEncodedBytes(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSCyclicalCase *arg1 = (DSCyclicalCase *) 0 ;
@@ -19821,6 +20115,109 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSSWIGExpressionRecastSystemEquations(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpression **arg1 = (DSExpression **) 0 ;
+  DSUInteger arg2 ;
+  char *arg3 = (char *) 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  DSExpressionArray *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DSSWIGExpressionRecastSystemEquations",&obj0,&obj1,&obj2)) SWIG_fail;
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj0)) {
+      int size = PyList_Size(obj0);
+      int i = 0;
+      arg1 = (const DSExpression **) malloc((size+1)*sizeof(DSExpression *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj0,i);
+        if (SWIG_ConvertPtr(o, &(arg1[i]), SWIGTYPE_p_DSExpression, SWIG_POINTER_EXCEPTION) == -1) {
+          PyErr_SetString(PyExc_TypeError,"list must contain DSExpression objects");
+          free(arg1);
+          return NULL;
+        }
+      }
+      arg1[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg2 = (DSUInteger) PyLong_AsUnsignedLongMask(obj1);
+  }
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DSSWIGExpressionRecastSystemEquations" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = (char *)(buf3);
+  result = (DSExpressionArray *)DSSWIGExpressionRecastSystemEquations((DSExpression const **)arg1,arg2,(char const *)arg3);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSExpressionArray, 0 |  0 );
+  if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
+  return resultobj;
+fail:
+  if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSSWIGExpressionArrayCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpressionArray *arg1 = (DSExpressionArray *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  DSUInteger result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DSSWIGExpressionArrayCount",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSExpressionArray, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSWIGExpressionArrayCount" "', argument " "1"" of type '" "DSExpressionArray *""'"); 
+  }
+  arg1 = (DSExpressionArray *)(argp1);
+  result = DSSWIGExpressionArrayCount(arg1);
+  {
+    resultobj = PyInt_FromLong((unsigned long)result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSSWIGExpressionArrayExpressionAtIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpressionArray *arg1 = (DSExpressionArray *) 0 ;
+  DSUInteger arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  DSExpression *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DSSWIGExpressionArrayExpressionAtIndex",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DSExpressionArray, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSWIGExpressionArrayExpressionAtIndex" "', argument " "1"" of type '" "DSExpressionArray *""'"); 
+  }
+  arg1 = (DSExpressionArray *)(argp1);
+  {
+    arg2 = (DSUInteger) PyLong_AsUnsignedLongMask(obj1);
+  }
+  result = (DSExpression *)DSSWIGExpressionArrayExpressionAtIndex(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSExpression, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSExpressionAtIndexOfExpressionArray(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSExpression **arg1 = (DSExpression **) 0 ;
@@ -20198,6 +20595,9 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSExpressionSubstractExpressions", _wrap_DSExpressionSubstractExpressions, METH_VARARGS, NULL},
 	 { (char *)"DSExpressionMultiplyExpressionByConstant", _wrap_DSExpressionMultiplyExpressionByConstant, METH_VARARGS, NULL},
 	 { (char *)"DSExpressionByCompressingConstantVariables", _wrap_DSExpressionByCompressingConstantVariables, METH_VARARGS, NULL},
+	 { (char *)"DSExpressionIsEqualToExpression", _wrap_DSExpressionIsEqualToExpression, METH_VARARGS, NULL},
+	 { (char *)"DSExpressionByReplacingSubExpression", _wrap_DSExpressionByReplacingSubExpression, METH_VARARGS, NULL},
+	 { (char *)"DSExpressionRecastSystemEquations", _wrap_DSExpressionRecastSystemEquations, METH_VARARGS, NULL},
 	 { (char *)"DSExpressionEvaluateWithVariablePool", _wrap_DSExpressionEvaluateWithVariablePool, METH_VARARGS, NULL},
 	 { (char *)"DSExpressionEvaluateComplexWithVariablePool", _wrap_DSExpressionEvaluateComplexWithVariablePool, METH_VARARGS, NULL},
 	 { (char *)"DSExpressionEquationLHSExpression", _wrap_DSExpressionEquationLHSExpression, METH_VARARGS, NULL},
@@ -20503,6 +20903,13 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSCyclicalCaseFromCyclicalCaseMessage", _wrap_DSCyclicalCaseFromCyclicalCaseMessage, METH_VARARGS, NULL},
 	 { (char *)"DSCyclicalCaseDecode", _wrap_DSCyclicalCaseDecode, METH_VARARGS, NULL},
 	 { (char *)"DSCaseNDVertexEnumeration", _wrap_DSCaseNDVertexEnumeration, METH_VARARGS, NULL},
+	 { (char *)"DSExpressionArray_equationCount_set", _wrap_DSExpressionArray_equationCount_set, METH_VARARGS, NULL},
+	 { (char *)"DSExpressionArray_equationCount_get", _wrap_DSExpressionArray_equationCount_get, METH_VARARGS, NULL},
+	 { (char *)"DSExpressionArray_expressionArray_set", _wrap_DSExpressionArray_expressionArray_set, METH_VARARGS, NULL},
+	 { (char *)"DSExpressionArray_expressionArray_get", _wrap_DSExpressionArray_expressionArray_get, METH_VARARGS, NULL},
+	 { (char *)"new_DSExpressionArray", _wrap_new_DSExpressionArray, METH_VARARGS, NULL},
+	 { (char *)"delete_DSExpressionArray", _wrap_delete_DSExpressionArray, METH_VARARGS, NULL},
+	 { (char *)"DSExpressionArray_swigregister", DSExpressionArray_swigregister, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGDSCyclicalCaseEncodedBytes", _wrap_DSSWIGDSCyclicalCaseEncodedBytes, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGDSCyclicalCaseDecodeFromByteArray", _wrap_DSSWIGDSCyclicalCaseDecodeFromByteArray, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGDSCaseEncodedBytes", _wrap_DSSWIGDSCaseEncodedBytes, METH_VARARGS, NULL},
@@ -20522,6 +20929,9 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"DSSWIGGMASystemParseWrapper", _wrap_DSSWIGGMASystemParseWrapper, METH_VARARGS, NULL},
 	 { (char *)"DSSWIGSSystemParseWrapper", _wrap_DSSWIGSSystemParseWrapper, METH_VARARGS, NULL},
 	 { (char *)"DSExpressionArrayFromVoid", _wrap_DSExpressionArrayFromVoid, METH_VARARGS, NULL},
+	 { (char *)"DSSWIGExpressionRecastSystemEquations", _wrap_DSSWIGExpressionRecastSystemEquations, METH_VARARGS, NULL},
+	 { (char *)"DSSWIGExpressionArrayCount", _wrap_DSSWIGExpressionArrayCount, METH_VARARGS, NULL},
+	 { (char *)"DSSWIGExpressionArrayExpressionAtIndex", _wrap_DSSWIGExpressionArrayExpressionAtIndex, METH_VARARGS, NULL},
 	 { (char *)"DSExpressionAtIndexOfExpressionArray", _wrap_DSExpressionAtIndexOfExpressionArray, METH_VARARGS, NULL},
 	 { (char *)"DSUIntegerAtIndexOfIntegerArray", _wrap_DSUIntegerAtIndexOfIntegerArray, METH_VARARGS, NULL},
 	 { (char *)"DSCaseAtIndexOfArray", _wrap_DSCaseAtIndexOfArray, METH_VARARGS, NULL},
@@ -20545,6 +20955,7 @@ static swig_type_info _swigt__p_DSDesignSpace = {"_p_DSDesignSpace", "DSDesignSp
 static swig_type_info _swigt__p_DSDesignSpaceMessage = {"_p_DSDesignSpaceMessage", "DSDesignSpaceMessage *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSDictionary = {"_p_DSDictionary", "DSDictionary *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSExpression = {"_p_DSExpression", "DSExpression *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_DSExpressionArray = {"_p_DSExpressionArray", "DSExpressionArray *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSGMASystem = {"_p_DSGMASystem", "DSGMASystem *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSGMASystemMessage = {"_p_DSGMASystemMessage", "DSGMASystemMessage *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSMatrix = {"_p_DSMatrix", "DSMatrix *", 0, 0, (void*)0, 0};
@@ -20584,6 +20995,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_DSDesignSpaceMessage,
   &_swigt__p_DSDictionary,
   &_swigt__p_DSExpression,
+  &_swigt__p_DSExpressionArray,
   &_swigt__p_DSGMASystem,
   &_swigt__p_DSGMASystemMessage,
   &_swigt__p_DSMatrix,
@@ -20623,6 +21035,7 @@ static swig_cast_info _swigc__p_DSDesignSpace[] = {  {&_swigt__p_DSDesignSpace, 
 static swig_cast_info _swigc__p_DSDesignSpaceMessage[] = {  {&_swigt__p_DSDesignSpaceMessage, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DSDictionary[] = {  {&_swigt__p_DSDictionary, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DSExpression[] = {  {&_swigt__p_DSExpression, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_DSExpressionArray[] = {  {&_swigt__p_DSExpressionArray, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DSGMASystem[] = {  {&_swigt__p_DSGMASystem, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DSGMASystemMessage[] = {  {&_swigt__p_DSGMASystemMessage, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DSMatrix[] = {  {&_swigt__p_DSMatrix, 0, 0, 0},{0, 0, 0, 0}};
@@ -20662,6 +21075,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_DSDesignSpaceMessage,
   _swigc__p_DSDictionary,
   _swigc__p_DSExpression,
+  _swigc__p_DSExpressionArray,
   _swigc__p_DSGMASystem,
   _swigc__p_DSGMASystemMessage,
   _swigc__p_DSMatrix,

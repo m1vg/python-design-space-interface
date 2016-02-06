@@ -652,6 +652,18 @@ def DSExpressionByCompressingConstantVariables(*args):
   return _dspace_interface.DSExpressionByCompressingConstantVariables(*args)
 DSExpressionByCompressingConstantVariables = _dspace_interface.DSExpressionByCompressingConstantVariables
 
+def DSExpressionIsEqualToExpression(*args):
+  return _dspace_interface.DSExpressionIsEqualToExpression(*args)
+DSExpressionIsEqualToExpression = _dspace_interface.DSExpressionIsEqualToExpression
+
+def DSExpressionByReplacingSubExpression(*args):
+  return _dspace_interface.DSExpressionByReplacingSubExpression(*args)
+DSExpressionByReplacingSubExpression = _dspace_interface.DSExpressionByReplacingSubExpression
+
+def DSExpressionRecastSystemEquations(*args):
+  return _dspace_interface.DSExpressionRecastSystemEquations(*args)
+DSExpressionRecastSystemEquations = _dspace_interface.DSExpressionRecastSystemEquations
+
 def DSExpressionEvaluateWithVariablePool(*args):
   return _dspace_interface.DSExpressionEvaluateWithVariablePool(*args)
 DSExpressionEvaluateWithVariablePool = _dspace_interface.DSExpressionEvaluateWithVariablePool
@@ -1887,6 +1899,28 @@ DSCyclicalCaseDecode = _dspace_interface.DSCyclicalCaseDecode
 def DSCaseNDVertexEnumeration(*args):
   return _dspace_interface.DSCaseNDVertexEnumeration(*args)
 DSCaseNDVertexEnumeration = _dspace_interface.DSCaseNDVertexEnumeration
+class DSExpressionArray(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, DSExpressionArray, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, DSExpressionArray, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["equationCount"] = _dspace_interface.DSExpressionArray_equationCount_set
+    __swig_getmethods__["equationCount"] = _dspace_interface.DSExpressionArray_equationCount_get
+    if _newclass:equationCount = _swig_property(_dspace_interface.DSExpressionArray_equationCount_get, _dspace_interface.DSExpressionArray_equationCount_set)
+    __swig_setmethods__["expressionArray"] = _dspace_interface.DSExpressionArray_expressionArray_set
+    __swig_getmethods__["expressionArray"] = _dspace_interface.DSExpressionArray_expressionArray_get
+    if _newclass:expressionArray = _swig_property(_dspace_interface.DSExpressionArray_expressionArray_get, _dspace_interface.DSExpressionArray_expressionArray_set)
+    def __init__(self): 
+        this = _dspace_interface.new_DSExpressionArray()
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _dspace_interface.delete_DSExpressionArray
+    __del__ = lambda self : None;
+DSExpressionArray_swigregister = _dspace_interface.DSExpressionArray_swigregister
+DSExpressionArray_swigregister(DSExpressionArray)
+cvar = _dspace_interface.cvar
+
 
 def DSSWIGDSCyclicalCaseEncodedBytes(*args):
   return _dspace_interface.DSSWIGDSCyclicalCaseEncodedBytes(*args)
@@ -1964,6 +1998,18 @@ def DSExpressionArrayFromVoid(*args):
   return _dspace_interface.DSExpressionArrayFromVoid(*args)
 DSExpressionArrayFromVoid = _dspace_interface.DSExpressionArrayFromVoid
 
+def DSSWIGExpressionRecastSystemEquations(*args):
+  return _dspace_interface.DSSWIGExpressionRecastSystemEquations(*args)
+DSSWIGExpressionRecastSystemEquations = _dspace_interface.DSSWIGExpressionRecastSystemEquations
+
+def DSSWIGExpressionArrayCount(*args):
+  return _dspace_interface.DSSWIGExpressionArrayCount(*args)
+DSSWIGExpressionArrayCount = _dspace_interface.DSSWIGExpressionArrayCount
+
+def DSSWIGExpressionArrayExpressionAtIndex(*args):
+  return _dspace_interface.DSSWIGExpressionArrayExpressionAtIndex(*args)
+DSSWIGExpressionArrayExpressionAtIndex = _dspace_interface.DSSWIGExpressionArrayExpressionAtIndex
+
 def DSExpressionAtIndexOfExpressionArray(*args):
   return _dspace_interface.DSExpressionAtIndexOfExpressionArray(*args)
 DSExpressionAtIndexOfExpressionArray = _dspace_interface.DSExpressionAtIndexOfExpressionArray
@@ -2002,5 +2048,4 @@ DSSWIGAssignErrorFunctions = _dspace_interface.DSSWIGAssignErrorFunctions
 VERSION = _dspace_interface.VERSION
 # This file is compatible with both classic and new-style classes.
 
-cvar = _dspace_interface.cvar
 
