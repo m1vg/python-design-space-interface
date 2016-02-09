@@ -107,10 +107,10 @@ class Equations(object):
         eq = self.system
         for i in xrange(0, len(self._eq)):
             eq[i] = str(self._eq[i].subst(symbol_dict))
-        eqs = Equations(eq, self._auxiliary_variables)
+        eqs = Equations(eq, self._auxiliary_variables, latex_symbols=self._latex)
         return eqs
     
-    def recast(self, prefix='XX'):
+    def recast(self, prefix='Xar'):
         eq = [i._swigwrapper for i in self._eq]
         eq_array = DSSWIGExpressionRecastSystemEquations(eq, len(eq), prefix)
         count = DSSWIGExpressionArrayCount(eq_array)
@@ -120,7 +120,7 @@ class Equations(object):
             strings.append(DSExpressionAsString(eqi))
             DSExpressionFree(eqi)
         DSSecureFree(eq_array)
-        eqs = Equations(strings, self._auxiliary_variables)
+        eqs = Equations(strings, self._auxiliary_variables, latex_symbols=self._latex)
         return eqs
     
 
