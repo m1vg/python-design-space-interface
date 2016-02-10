@@ -43,12 +43,21 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg
 from subprocess import call, Popen, PIPE
 from dspace.graphs.designspace_graph import GraphGenerator
 
-def eigenvalue_compare(eigenvalues, component='real', rank=1):
-    if component == 'real':
-        eig = eigenvalues.real
+def sort_eigenvalues(a, b):
+    if a.real > b.real:
+        return -1
+    elif b.real > a.real:
+        return 1
     else:
-        eig = eigenvalues.imag
-    value = sorted(eig)
+        return 0
+    
+def eigenvalue_compare(eigenvalues, component='real', rank=1):
+    eig = [(eigenvalues.real[i], eigenvalues.imag[i]) for i in range(len(eigenvalues))]
+    eig = sorted(eig, key = lambda i: i[0])
+    if component == 'real':
+        value = [i[0] for i in eig]
+    else:
+        value = [i[1] for i in eig]
     rank = min(rank, len(eig))
     return value[-rank]
 
