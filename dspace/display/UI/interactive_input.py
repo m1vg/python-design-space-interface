@@ -164,7 +164,9 @@ class InteractiveInput(object):
             self.pvals.update(parameters)
         self.root = VBox(children=[self.widget])
         display(self.root)   
+        self.update_child('About', self.help_widget())
         self.update_child('Main Menu', self.edit_equations_widget())
+
         
     def set_defaults(self, key, value):
         self.options[key] = value
@@ -293,7 +295,7 @@ class InteractiveInput(object):
             children = [i for i in actions_w.children] + [widget]
             actions_w.children = children
             actions_w.set_title(len(children)-1, title)
-        self.widget.selected_index = 0
+        self.widget.selected_index = 1
         
         
     def update_widgets(self):
@@ -304,6 +306,62 @@ class InteractiveInput(object):
         self.tables = DisplayTables(self)
         self.tables.create_tables_widget()
                 
+    def help_widget(self):
+        about_str = ['<p style="text-align:justify;"><font color="darkblue">',
+                     'You are using the Design Space Toolbox V2 Jupyter',
+                     'Notebook-based widget, a graphical interface for',
+                     'the Design Space Toolbox V2 created by Jason',
+                     'Lomnitz in the laboratory of Michael A. Savageau.',
+                     '<br><br>',
+                     'This software has been created for the analysis',
+                     'of mathematical models of biochemical systems.',
+                     'This library deconstructs a model into a series of',
+                     'sub-models that can be analyzed by applying a series',
+                     'of numerical and symbolic methods.',
+                     '<br><br>',
+                     'To begin, please enter the information in the required',
+                     'fields (marked by an "*") and optional fields.',
+                     'The Name field is used to save and load a model',
+                     'workspace,which includes the system equations, tables'
+                     ' and figures.  The primary input into the widget are the',
+                     'system equations, represented by a list of strings.',
+                     '<br><br></font>',
+                     'The equations must satisfy the following rules:<br>',
+                     '1. Each equation has to be explicitly stated as:<br>',
+                     '1.1 A differential equation, where the "." operator',
+                     'denotes the derivative with respect to time.<br>',
+                     '1.2 An algebraic constraint, where the left hand side',
+                     'is either a variable or a mathematical expression.',
+                     'Auxiliary variables associated with the cinstraint must',
+                     'be explicitly defined (unless the left-hand side is the',
+                     'auxiliary variable.',
+                     '<br><br>',
+                     '2. Multiplication is represented by the "*" operator.',
+                     '<br><br>',
+                     '3. Powers are represented by the "^" operator.',
+                     '<br><br>',
+                     '4. Architectural constraints are defined as inequalities,',
+                     'where both sides of the inequality are products of',
+                     'power-laws.<br><br>',
+                     '</p>']
+        report_str = ['<p style="text-align:center;">',
+                      'This software is a research tool and as such there are',
+                      'a number of known bugs and issues.  A complete list of',
+                      'open issues can be found online in the',
+                      '<a target="_blank"',
+                      'href="https://bitbucket.org/jglomnitz/design-space-toolbox/issues?status=new&status=open">',
+                      'Project Issue Tracker</a>.<br>',
+                      '<font color="red"><b>If you found a new bug or would',
+                      'like to request an enhancement that has not yet',
+                      'been reported, please report it here:</b></font>',
+                      '<a target="_blank"',
+                      'href="https://bitbucket.org/jglomnitz/design-space-toolbox/issues/new?title=Issue%20name">',
+                      'REPORT BUG</a>',      
+                      '</p>']
+                         
+        html = HTML(value=' '.join(report_str)+' '.join(about_str))
+        return VBox(children=[html])
+        
     def edit_equations_widget(self, editing=False):
         kinetic_orders = self.options['kinetic_orders']
         if kinetic_orders is None:
