@@ -62,23 +62,30 @@ class CasesTable(object):
         constraints = Textarea(description='Biological constraints:',
                                              value=bio_constraints)
         add_column = Button(description='Add column')
+        add_filter = Button(description='Add filter')
         remove_column = Button(description='Remove column')
         remove_column.visible = False
         add_column.remove_column = remove_column
         extra_columns = VBox(children=[])
+        filters = VBox(children=[])
         add_column.on_click(self.add_cases_column)
+        add_filter.on_click(self.add_cases_filter)
         add_column.column_block = extra_columns
+        add_filter.column_block = extra_columns
+        add_filter.filters = filters
         remove_column.on_click(self.remove_cases_column)
         remove_column.column_block = extra_columns
         case_id = Text(description='Report for case:')
         wi = VBox(children=[options,
-                                               cases,
-                                               by_signature,
-                                               constraints, 
-                                               add_column,
-                                               extra_columns, 
-                                               remove_column
-                                               ])
+                            cases,
+                            by_signature,
+                            constraints, 
+                            add_column,
+                            extra_columns, 
+                            remove_column,
+                            filters,
+                            add_filter
+                           ])
         button = Button(value=False, description='Create/modify cases table')
         button.on_click(self.show_cases)
         button.wi = wi
@@ -87,10 +94,42 @@ class CasesTable(object):
         button.by_signature = by_signature
         button.extra_columns = extra_columns
         button.constraints = constraints
+        button.filters = filters
         cases_table = VBox(description='Cases Table', children=[wi, button, self.table])
         wi.visible = False
         return ('Phenotypic Repertoire', cases_table)
     
+    def add_cases_filter(self, b):
+        controller = self.controller
+        children = [i for i in b.filters.children]
+        new_filter = [Dropdown(description='Column #', 
+                               values=[str(i+1) for i in range(2+len(b.column_block.children))],
+                               options=[str(i+1) for i in range(2+len(b.column_block.children))],
+                               value='1'),
+                      Dropdown(description='Condition', 
+                               values=['==', '>', '<', '>=', '<='],
+                               options=['==', '>', '<', '>=', '<=']),
+                      Text(description='Value'),
+                      Button(description='X')]
+        new_filter[3].on_click(self.remove_cases_filter)
+        current = HBox(children=new_filter)
+        new_filter[3].current = current
+        new_filter[3].filters = b.filters
+        children.append(current)
+        b.filters.children = children
+    
+    #def update_cases_filter(self, filters, columns):
+        
+    def remove_cases_filter(self, b):
+        controller = self.controller
+        if len(b.filters.children) == 0:
+            return
+        children = [i for i in b.filters.children]
+        for i,child in enumerate(children):
+            if b.current == child:
+                children.pop(i)
+        b.filters.children = children
+        
     def add_cases_column(self, b):
         controller = self.controller
         children = [i for i in b.column_block.children]
@@ -176,10 +215,16 @@ class CasesTable(object):
                                   constraints=constraints)
             
         for c in cases:
+            #self.show_case(c, b.extra_columns)
+            values = [c.case_number, c.signature]
+            values += [self.value_for_extra_column(c, column) for column in b.extra_columns.children]
+            if self.show_case(values, b.extra_columns.children, b.filters) is False:
+                continue
             s += '<tr align=center><td style="padding:0 15px 0 15px;">{0}</td><td style="padding:0 15px 0 15px;">{1}</td>'.format(c.case_number,c.signature)
             for column in b.extra_columns.children:
-                s += self.html_for_extra_column(c, column)
+                s += self.html_for_extra_column(c, column)    
             s += '</tr>\n'
+            
         s += '</table><caption>'
         s += 'Note: # of eigenvalues w/ positive real part is calculated using a representative set of parameter values, and may not be reflective of all potential behaviors.'
         s += '</caption></div>'
@@ -204,8 +249,66 @@ class CasesTable(object):
         controller.tables.add_table(html_string)
         controller.save_widget_data(b)
         
-        
+    def show_case(self, values, columns, filters):
+        showCase = True
+
+        for filter_box in filters.children:
+            a_filter = filter_box.children
+            column_number = int(a_filter[0].value)
+            if column_number == 1:
+                rhs = int(a_filter[2].value)
+                lhs = int(values[column_number-1])
+            elif column_number == 2:
+                rhs = str(a_filter[2].value)
+                lhs = str(values[column_number-1])
+            else:
+                column_type = columns[column_number-3].header.value
+                if column_type == 'Validity':
+                    rhs = str(a_filter[2].value)
+                    lhs = str(values[column_number-1])
+                else:
+                    rhs = float(a_filter[2].value)
+                    lhs = float(values[column_number-1])
+            if a_filter[1].value == '==' and lhs != rhs:
+                showCase = False
+                break
+            if a_filter[1].value == '>=' and lhs < rhs:
+                showCase = False
+                break
+            if a_filter[1].value == '<=' and lhs > rhs:
+                showCase = False
+                break
+            if a_filter[1].value == '>' and lhs <= rhs:
+                showCase = False
+                break
+            if a_filter[1].value == '<' and lhs >= rhs:
+                showCase = False
+                break
+        return showCase
     
+    def value_for_extra_column(self, case, column):
+        controller = self.controller
+        s = '<td style="padding:0 15px 0 15px;">'
+        cyclical = False
+        if case.is_cyclical is True:
+            cyclical = True
+            case = case.original_case
+        if case.is_valid() is False:
+            if cyclical is True:
+                value = '*'
+            else:
+                value = '-'
+            return value
+        if column.header.value == 'Validity':
+            value = '+'
+        elif column.header.value == '# eigenvalues w/ positive real part':
+            value = case.positive_roots(controller.pvals)
+        else:
+            xd = str(column.dependent.value)
+            xi = str(column.independent.value)
+            value = case.ssystem.log_gain(xd, xi)
+        return value
+        
     def html_for_extra_column(self, case, column):
         controller = self.controller
         s = '<td style="padding:0 15px 0 15px;">'
