@@ -267,6 +267,9 @@ class CasesTable(object):
                     rhs = str(a_filter[2].value)
                     lhs = str(values[column_number-1])
                 else:
+                    if values[column_number-1] == '-' or values[column_number-1] == '*':
+                        showCase = False
+                        break
                     rhs = float(a_filter[2].value)
                     lhs = float(values[column_number-1])
             if a_filter[1].value == '==' and lhs != rhs:
