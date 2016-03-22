@@ -37,6 +37,7 @@ from symbols_widget import EditSymbols
 from cases_widget import CasesTable
 from case_widget import CaseReport
 from co_localize_widget import CaseColocalization
+from case_intersection_widget import CaseIntersection
 from figures_widget import MakePlot, DisplayFigures
 from tables_widget import DisplayTables
 from parameters_widget import EditParameters
@@ -229,6 +230,12 @@ class InteractiveInput(object):
                                          self.defaults('by_signature'))
         return case_report.colocalization_widget()
     
+    def case_intersect_menu(self, b):
+        case_report = CaseIntersection(self,
+                                       self.defaults('by_signature'))
+        return case_report.case_intersection_widget()
+
+    
     def create_plot_menu(self, b):
         plot = MakePlot(self)
         return plot.create_plot_widget()
@@ -269,6 +276,7 @@ class InteractiveInput(object):
         b.load.visible = False
         actions = [('Enumerate Phenotypes', self.enumerate_phenotypes_menu),
                    ('Analyze Case', self.case_report_menu),
+                   ('Intersect Phenotypes', self.case_intersect_menu),
                    ('Co-localize Phenotypes', self.co_localize_menu),
                    ('Create Plot', self.create_plot_menu)]
         actions_h = HTML(value='<b>Actions</b>')
