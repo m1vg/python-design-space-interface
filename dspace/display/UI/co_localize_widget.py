@@ -25,10 +25,12 @@ if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
     from IPython.html.widgets import ImageWidget as Image
     VBox = Box
     HBox = Box
+    old_ipython = True
 else:
     from ipywidgets import *
-    Popup = HBox
-    
+    from popup import Popup
+    old_ipython = False
+        
 from IPython.display import clear_output, display
 
 import matplotlib as mt
@@ -124,6 +126,7 @@ class DisplayColocalization(object):
         ss_options = ['log('+ i + ')' for i in controller.ds.dependent_variables]
         self.y_dropdown = Dropdown(description='y-axis',
                                    values=ss_options,
+                                   options=ss_options,
                                    value=self.y_variable)
         self.make_plot = Button(description='Create Plot')
         self.make_plot.on_click(self.change_y_axis)
@@ -146,7 +149,13 @@ class DisplayColocalization(object):
                             self.make_plot,
                             self.global_tolerance,
                             close_button])
-        wi.set_css('height', '400px')
+        if old_ipython is True:
+            wi.set_css('height', '400px')
+        else:
+            wi.height='400px'
+            wi.overflow_x = 'auto'
+            wi.overflow_y = 'auto'
+
         self.update_display()
         controller.update_child(self.name, wi)
                 
@@ -168,6 +177,7 @@ class DisplayColocalization(object):
         index = ss_old.index(self.y_variable)
         self.y_variable = ss_new[index]
         self.y_dropdown.values = ss_options
+        self.y_dropdown.options = ss_options
         self.y_dropdown.value = unicode(self.y_variable)
         self.update_display()
         

@@ -24,9 +24,7 @@ if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
     ipy_old = True
 else:
     from ipywidgets import *
-    from popup import Popup as PopupWidget
-    def Popup(children=[], **kwargs):
-        return PopupWidget(children=[VBox(children=children)], **kwargs)
+    from popup import Popup
     ipy_old = False
     
 from IPython.display import clear_output, display
@@ -146,6 +144,7 @@ class DisplayCase(object):
     def save_parameters(self, b):
         controller = self.controller
         controller.pvals.update(self.pvals)
+        self.parameter_table.box_style="success"
 
     def update_display(self):
         self.update_info()

@@ -30,8 +30,11 @@ class CyclicalCase(Case):
         sub=DSCyclicalCaseCyclicalSubcaseWithCaseNumber(self._swigwrapper, case)
         if sub is None:
             return None
-        case = Case(self, DSCyclicalCaseSubcaseWithCaseNumber(self._swigwrapper, case), name)
-        eq6=Equations(case.equations.system, case.auxiliary_variables)
+        case = Case(self, 
+                    DSCyclicalCaseSubcaseWithCaseNumber(self._swigwrapper, case), 
+                    name=name,
+                    latex_symbols=self._latex)
+        eq6=Equations(case.equations.system, case.auxiliary_variables, latex_symbols=self._latex)
         return CyclicalCase(eq6, sub, name = case.name)
 
     def __call__(self, index_or_iterable):
@@ -50,7 +53,10 @@ class CyclicalCase(Case):
                 name = self.name + ': Subcase ' + str(index)
                 case = self._cyclical_case(index, name)
                 if case is None:
-                    case = Case(self, DSCyclicalCaseSubcaseWithCaseNumber(self._swigwrapper, index), name=name)
+                    case = Case(self,
+                                DSCyclicalCaseSubcaseWithCaseNumber(self._swigwrapper, index), 
+                                name=name,
+                                latex_symbols=self._latex)
                 cases.append(case)
             elif isinstance(index, str) is True:
                 indices = index.split('_')
