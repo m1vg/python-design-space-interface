@@ -19,6 +19,7 @@ if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
     from IPython.html.widgets import RadioButtonsWidget as RadioButtons
     from IPython.html.widgets import PopupWidget as Popup
     from IPython.html.widgets import LatexWidget as Latex
+    Select = RadioButtons
     VBox = Box
     HBox = Box
     ipy_old = True
