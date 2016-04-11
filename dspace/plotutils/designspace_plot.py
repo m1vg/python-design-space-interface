@@ -651,7 +651,7 @@ def draw_2D_ss_function(self, ax, function, p_vals, x_variable, y_variable,
     constant_vars.pop(x_variable)
     constant_vars.pop(y_variable)
     expr = Expression(function)
-    expr = expr.subst(**constant_vars)
+    ## expr = expr.subst(**constant_vars)
     all_cases = list()
     for case in valid_cases+valid_nonstrict:
         if case in valid_nonstrict:
