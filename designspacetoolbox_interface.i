@@ -5,6 +5,8 @@
 #include <DSStd.h>
 #include <DSSSystem.h>
 #include <DSTypes.h>
+#include <DSDataSerialization.pb-c.h>
+        
 %}
 
 /* Type Map Data */
@@ -157,7 +159,11 @@
                 }
                 PyList_SetItem($result, i, tuple);
         }
+<<<<<<< HEAD
         DSMatrixFree(matrix);
+=======
+//        DSMatrixFree(matrix);
+>>>>>>> develop
 }
 
 %typemap(in) const DSCase ** {
@@ -165,7 +171,7 @@
         if (PyList_Check($input)) {
                 int size = PyList_Size($input);
                 int i = 0;
-                $1 = (const DSCase **) malloc((size+1)*sizeof(char *));
+                $1 = (const DSCase **) malloc((size+1)*sizeof(DSCase *));
                 for (i = 0; i < size; i++) {
                         PyObject *o = PyList_GetItem($input,i);
                         if (SWIG_ConvertPtr(o, &($1[i]), $descriptor(DSCase *), SWIG_POINTER_EXCEPTION) == -1) {
@@ -181,8 +187,30 @@
         }
 }
 
+%typemap(in) const DSExpression ** {
+        /* Check if is a list */
+        if (PyList_Check($input)) {
+                int size = PyList_Size($input);
+                int i = 0;
+                $1 = (const DSExpression **) malloc((size+1)*sizeof(DSExpression *));
+                for (i = 0; i < size; i++) {
+                        PyObject *o = PyList_GetItem($input,i);
+                        if (SWIG_ConvertPtr(o, &($1[i]), $descriptor(DSExpression *), SWIG_POINTER_EXCEPTION) == -1) {
+                                PyErr_SetString(PyExc_TypeError,"list must contain DSExpression objects");
+                                free($1);
+                                return NULL;
+                        }
+                }
+                $1[i] = 0;
+        } else {
+                PyErr_SetString(PyExc_TypeError,"not a list");
+                return NULL;
+        }
+}
+
 %include "/usr/local/include/designspace/DSStd.h"
 %include "/usr/local/include/designspace/DSErrors.h"
+%include "/usr/local/include/designspace/DSIO.h"
 %include "/usr/local/include/designspace/DSMemoryManager.h"
 %include "/usr/local/include/designspace/DSVariable.h"
 %include "/usr/local/include/designspace/DSMatrix.h"
@@ -200,6 +228,121 @@
 
 
 %inline %{
+
+typedef DSCase DSPseudoCase;
+        
+typedef struct {
+        int equationCount;
+        DSExpression ** expressionArray;
+} DSExpressionArray;
+//extern DSCase * DSSWIGPseudoCaseAsCase(DSPseudoCase * pseudo)
+//{
+//        return pseudo;
+//}
+        
+extern PyObject * DSSWIGDSCyclicalCaseEncodedBytes(DSCyclicalCase * aCase)
+{
+        PyObject * pyBuf = NULL;
+        DSCyclicalCaseMessage * message;
+        size_t length;
+        unsigned char * buffer;
+        message = DSCyclicalCaseEncode(aCase);
+        if (message == NULL) {
+                goto bail;
+        }
+        length = dscyclical_case_message__get_packed_size(message);
+        buffer = DSSecureMalloc(sizeof(char)*length);
+        dscyclical_case_message__pack(message, buffer);
+        pyBuf = PyByteArray_FromStringAndSize(buffer, length);
+        DSSecureFree(buffer);
+        dscyclical_case_message__free_unpacked(message, NULL);
+bail:
+        return pyBuf;
+}
+        
+extern DSCyclicalCase * DSSWIGDSCyclicalCaseDecodeFromByteArray(PyObject * byteArray)
+{
+        DSCyclicalCase * aCase = NULL;
+        size_t length;
+        const char * buffer;
+        if (PyByteArray_Check(byteArray) == 0) {
+                goto bail;
+        }
+        length = PyByteArray_Size(byteArray);
+        buffer = PyByteArray_AsString(byteArray);
+        aCase = DSCyclicalCaseDecode(length, buffer);
+bail:
+        return aCase;
+}
+        
+extern PyObject * DSSWIGDSCaseEncodedBytes(DSCase * aCase)
+{
+        PyObject * pyBuf = NULL;
+        DSCaseMessage * message;
+        size_t length;
+        unsigned char * buffer;
+        message = DSCaseEncode(aCase);
+        if (message == NULL) {
+                goto bail;
+        }
+        length = dscase_message__get_packed_size(message);
+        buffer = DSSecureMalloc(sizeof(char)*length);
+        dscase_message__pack(message, buffer);
+        pyBuf = PyByteArray_FromStringAndSize(buffer, length);
+        DSSecureFree(buffer);
+        dscase_message__free_unpacked(message, NULL);
+bail:
+        return pyBuf;
+}
+        
+extern DSCase * DSSWIGDSCaseDecodeFromByteArray(PyObject * byteArray)
+{
+        DSCase * aCase = NULL;
+        size_t length;
+        const char * buffer;
+        if (PyByteArray_Check(byteArray) == 0) {
+                goto bail;
+        }
+        length = PyByteArray_Size(byteArray);
+        buffer = PyByteArray_AsString(byteArray);
+        aCase = DSCaseDecode(length, buffer);
+bail:
+        return aCase;
+}
+        
+extern PyObject * DSSWIGDSDesignSpaceEncodedBytes(DSDesignSpace * ds) {
+        PyObject * pyBuf = NULL;
+        DSDesignSpaceMessage * message;
+        size_t length;
+        unsigned char * buffer;
+        message = DSDesignSpaceEncode(ds);
+        if (message == NULL) {
+                goto bail;
+        }
+        length = dsdesign_space_message__get_packed_size(message);
+        buffer = DSSecureMalloc(sizeof(char)*length);
+        dsdesign_space_message__pack(message, buffer);
+        pyBuf = PyByteArray_FromStringAndSize(buffer, length);
+        DSSecureFree(buffer);
+        dsdesign_space_message__free_unpacked(message, NULL);
+bail:
+        return pyBuf;
+}
+
+extern DSDesignSpace * DSSWIGDSDesignSpaceDecodeFromByteArray(PyObject * byteArray)
+{
+        DSDesignSpace * ds = NULL;
+        size_t length;
+        const char * buffer;
+        if (PyByteArray_Check(byteArray) == 0) {
+                goto bail;
+        }
+        length = PyByteArray_Size(byteArray);
+        buffer = PyByteArray_AsString(byteArray);
+        ds = DSDesignSpaceDecode(length, buffer);
+bail:
+        return ds;
+}
 
 extern DSDictionary * DSSWIGDSDictionaryFromPyDict(PyObject * pydict) {
         DSDictionary * dictionary = NULL;
@@ -255,6 +398,21 @@ extern DSExpression * DSSWIGVoidAsExpression(void * ptr)
         return ptr;
 }
         
+extern DSPseudoCase * DSSWIGPseudoCaseFromIntersectionOfCases(const DSUInteger numberOfCases, const DSCase ** cases)
+{
+        DSPseudoCase * pseudoCase = DSPseudoCaseFromIntersectionOfCases(numberOfCases, cases);
+        DSSecureFree ((DSCase **)cases);
+        return pseudoCase;
+}
+
+extern DSPseudoCase * DSSWIGPseudoCaseFromIntersectionOfCasesExcludingSlice(const DSUInteger numberOfCases, const DSCase ** cases, const DSUInteger numberOfExceptions, const char ** exceptionVarNames) {
+        DSPseudoCase * pseudoCase = DSPseudoCaseFromIntersectionOfCasesExcludingSlice(numberOfCases, cases, numberOfExceptions, exceptionVarNames);
+        DSSecureFree (cases);
+        DSSecureFree (exceptionVarNames);
+        return pseudoCase;
+}
+
+        
 extern DSDesignSpace * DSSWIGDesignSpaceParseWrapper(char ** const strings, const DSUInteger numberOfEquations, char ** Xd_list, const DSUInteger numberOfXd)
 {
         DSUInteger i;
@@ -308,6 +466,27 @@ extern DSSSystem * DSSWIGSSystemParseWrapper(char ** const strings, const DSUInt
         return ssys;
 }
 
+extern DSExpression ** DSExpressionArrayFromVoid(void * pointer)
+{
+        return pointer;
+}
+        
+extern DSExpressionArray * DSSWIGExpressionRecastSystemEquations(const DSExpression **equations, DSUInteger count, const char * prefix) {
+        DSUInteger i;
+        DSExpressionArray * list = DSSecureMalloc(sizeof(DSExpressionArray));
+        list->equationCount = count;
+        list->expressionArray = DSExpressionRecastSystemEquations(equations, &list->equationCount, prefix);
+        return list;
+}
+        
+extern DSUInteger DSSWIGExpressionArrayCount(DSExpressionArray * array) {
+        return array->equationCount;
+}
+
+extern DSExpression * DSSWIGExpressionArrayExpressionAtIndex(DSExpressionArray * array, DSUInteger index) {
+        return array->expressionArray[index];
+}
+        
 extern DSExpression * DSExpressionAtIndexOfExpressionArray(DSExpression ** expressions, DSUInteger index)
 {
         DSExpression * expression = NULL;
@@ -348,6 +527,56 @@ extern PyObject * DSSSystemPositiveRootsSWIG(const DSSSystem *ssys, const DSVari
         PyList_SetItem(list, 1, PyInt_FromLong((long int)isMarginal));
         return list;
 }
+
+extern PyObject * DSSSystemRouthArraySWIG(const DSSSystem *ssys, const DSVariablePool *Xi0) {
+        bool isMarginal = false;
+        DSMatrix * routhArray = NULL;
+        PyObject * list = NULL;
+        PyObject * pyRouthArray = NULL;
+        routhArray = DSSSystemRouthArray(ssys, Xi0, &isMarginal);
+        if (routhArray == NULL) {
+                Py_RETURN_NONE;
+        }
+        DSUInteger i, j;
+        PyObject *tuple = NULL;
+        pyRouthArray = PyList_New(DSMatrixRows(routhArray));
+        for (i = 0; i < DSMatrixRows(routhArray); i++) {
+                tuple = PyTuple_New(DSMatrixColumns(routhArray));
+                for (j = 0; j < DSMatrixColumns(routhArray); j++) {
+                        PyTuple_SetItem(tuple, j, PyFloat_FromDouble(DSMatrixDoubleValue(routhArray, i, j)));
+                }
+                PyList_SetItem(pyRouthArray, i, tuple);
+        }
+        DSMatrixFree(routhArray);
+        list = PyList_New(2);
+        PyList_SetItem(list, 0, pyRouthArray);
+        PyList_SetItem(list, 1, PyInt_FromLong((long int)isMarginal));
+        return list;
+}
+
+        
+extern void DSSWIGPythonPostWarning(const char * errorString) {
+        if (PyErr_Occurred() != NULL)
+                goto bail;
+        PyErr_WarnEx(PyExc_Warning, errorString, 1);
+bail:
+        return;
+}
+
+
+extern void DSSWIGPythonPostError(const char * errorString) {
+        if (PyErr_Occurred() != NULL)
+                goto bail;
+        PyErr_SetString(PyExc_RuntimeError, errorString);
+bail:
+        return;
+}
+        
+extern void DSSWIGAssignErrorFunctions(void) {
+        DSIOSetPostWarningFunction(DSSWIGPythonPostWarning);
+        DSIOSetPostErrorFunction(DSSWIGPythonPostError);
+}
+
         
 %}
 

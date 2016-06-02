@@ -17,7 +17,12 @@ SWIG_REQUIREMENTS = ['DSSSystemNumberOfEquations',
                      'DSGMASystemXd',
                      'DSSWIGGMASystemParseWrapper',
                      'DSExpressionAtIndexOfExpressionArray',
-                     'DSExpressionAsString'
+                     'DSExpressionAsString',
+                     'DSExpressionFree',
+                     'DSSWIGExpressionRecastSystemEquations',
+                     'DSSWIGExpressionArrayCount',
+                     'DSSWIGExpressionArrayExpressionAtIndex',
+                     'DSSecureFree'
                      ]
 
 module = __import__('dspace.SWIG.dspace_interface', fromlist=SWIG_REQUIREMENTS)
@@ -86,14 +91,36 @@ class Equations(object):
     def __repr__(self):
         string = '\n'.join([str(i) for i in self._eq])
         return string
+    
+    def __getstate__(self):
+        odict = self.__dict__.copy()
+        odict['_eq'] = self.system
+        return odict
+    
+    def __setstate__(self, state):
+        self.__init__(state['_eq'], 
+                      auxiliary_variables=state['_auxiliary_variables'],
+                      latex_symbols=state['_latex'])
         
     def replace_symbols(self, symbol_dict):
         
         eq = self.system
         for i in xrange(0, len(self._eq)):
-            for j in symbol_dict:
-                eq[i] = eq[i].replace(j, str(symbol_dict[j]))
-        eqs = Equations(eq, self._auxiliary_variables)
+            eq[i] = str(self._eq[i].subst(symbol_dict))
+        eqs = Equations(eq, self._auxiliary_variables, latex_symbols=self._latex)
+        return eqs
+    
+    def recast(self, prefix='Xar'):
+        eq = [i._swigwrapper for i in self._eq]
+        eq_array = DSSWIGExpressionRecastSystemEquations(eq, len(eq), prefix)
+        count = DSSWIGExpressionArrayCount(eq_array)
+        strings = []
+        for i in xrange(count):
+            eqi = DSSWIGExpressionArrayExpressionAtIndex(eq_array, i)
+            strings.append(DSExpressionAsString(eqi))
+            DSExpressionFree(eqi)
+        DSSecureFree(eq_array)
+        eqs = Equations(strings, self._auxiliary_variables, latex_symbols=self._latex)
         return eqs
     
 
@@ -112,6 +139,7 @@ class Model(object):
             description = ''
         setattr(self, '_description', description)
         setattr(self, '_latex', dict())
+        ## setattr(self, '_dependent_variables', self._equations.dependent_variables)
         if latex_symbols is not None:
             self._latex.update(latex_symbols)
         else:
@@ -132,7 +160,7 @@ class Model(object):
     
     @property
     def dependent_variables(self):
-        return self._equations.dependent_variables
+        return self._equations.dependent_variables()
     
     def __repr__(self):
         string = 'Model: ' + self.name 

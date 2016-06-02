@@ -25,7 +25,7 @@ module = __import__('dspace.SWIG.dspace_interface', fromlist=SWIG_REQUIREMENTS)
 for function in SWIG_REQUIREMENTS:
     globals()[function] = getattr(module,function)
 
-class VariablePool(OrderedDict):
+class VariablePool(dict):
     ''' A python class that serves as a wrapper to the DSVariablePool object
         in the designspace C library. The Variable Pool object is a subclass of
         dict and is used to reference dependent and independent variables, as 
@@ -41,6 +41,7 @@ class VariablePool(OrderedDict):
         '''
         super(VariablePool, self).__init__()
         setattr(self, '_swigwrapper', None)
+        setattr(self, '_keys', list())
         if isinstance(names, list) is True:
             names = OrderedDict([(key,1.) for key in names])
         self.update(names=names, **kwargs)
@@ -72,26 +73,49 @@ class VariablePool(OrderedDict):
         ''' Restricts the attribute modification. The VariablePool can only have a
             _swigwrapper attribute, which is immutable once assigned. '''
         super(VariablePool, self).__setattr__(name, value)
-
-
+    
+    def __getstate__(self):
+        odict = [(i,self[i]) for i in self.keys()]
+        return odict
+    
+    def __setstate__(self, state):
+        setattr(self, '_swigwrapper', None)
+        for key, value in state:
+            self[key] = value
+        
     def __setitem__(self, name, value):
+        if hasattr(self, '_swigwrapper') is False:
+            setattr(self, '_swigwrapper', None)
+        if hasattr(self, '_keys') is False:
+            setattr(self, '_keys', list())
         if self._swigwrapper == None:
             self._swigwrapper = DSVariablePoolAlloc()
         if isinstance(name, str) is False:
             raise TypeError, 'VariablePool keys must be strings'
         if DSVariablePoolHasVariableWithName(self._swigwrapper, name) == False:
             DSVariablePoolAddVariableWithName(self._swigwrapper, name)
+        if name not in self._keys:
+            self._keys.append(name)
         value = float(value)
         DSVariablePoolSetValueForVariableWithName(self._swigwrapper,
                                                   name,
                                                   value)
         super(VariablePool, self).__setitem__(name, value)
-
+    
+    def keys(self):
+        keys = list()
+        return keys+[i for i in self._keys]
+    
+    def iterkeys(self):
+        return iter(i for i in self.keys())
+        
+    def viewkeys(self):
+        return self.iterkeys()
+                    
     def copy(self):
         newPool = VariablePool()
-        if self._swigwrapper is not None:
-            for key,value in self.iteritems():
-                newPool[key] = value
+        for i in self._keys:
+            newPool[i] = self[i]
         return newPool
 
     def index(self, name):

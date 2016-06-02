@@ -91,6 +91,67 @@ A_DS_KILLNOW = _dspace_interface.A_DS_KILLNOW
 def DSErrorFunction(*args):
   return _dspace_interface.DSErrorFunction(*args)
 DSErrorFunction = _dspace_interface.DSErrorFunction
+DS_CASE_JSON_NO_SSYSTEM = _dspace_interface.DS_CASE_JSON_NO_SSYSTEM
+DS_CASE_JSON_NO_CASE_SIGNATURE = _dspace_interface.DS_CASE_JSON_NO_CASE_SIGNATURE
+DS_CASE_JSON_NO_CONDITIONS = _dspace_interface.DS_CASE_JSON_NO_CONDITIONS
+DS_SSYSTEM_JSON_NO_SOLUTION = _dspace_interface.DS_SSYSTEM_JSON_NO_SOLUTION
+DS_SSYSTEM_JSON_NO_SINGULAR = _dspace_interface.DS_SSYSTEM_JSON_NO_SINGULAR
+
+def DSIOSetErrorFile(*args):
+  return _dspace_interface.DSIOSetErrorFile(*args)
+DSIOSetErrorFile = _dspace_interface.DSIOSetErrorFile
+
+def DSIOSetPrintFunction(*args):
+  return _dspace_interface.DSIOSetPrintFunction(*args)
+DSIOSetPrintFunction = _dspace_interface.DSIOSetPrintFunction
+
+def DSIOSetPostWarningFunction(*args):
+  return _dspace_interface.DSIOSetPostWarningFunction(*args)
+DSIOSetPostWarningFunction = _dspace_interface.DSIOSetPostWarningFunction
+
+def DSIOSetPostErrorFunction(*args):
+  return _dspace_interface.DSIOSetPostErrorFunction(*args)
+DSIOSetPostErrorFunction = _dspace_interface.DSIOSetPostErrorFunction
+
+def DSIOSetPostFatalErrorFunction(*args):
+  return _dspace_interface.DSIOSetPostFatalErrorFunction(*args)
+DSIOSetPostFatalErrorFunction = _dspace_interface.DSIOSetPostFatalErrorFunction
+
+def DSIOSetCaseJSONOptions(*args):
+  return _dspace_interface.DSIOSetCaseJSONOptions(*args)
+DSIOSetCaseJSONOptions = _dspace_interface.DSIOSetCaseJSONOptions
+
+def DSIOSetSSystemJSONOptions(*args):
+  return _dspace_interface.DSIOSetSSystemJSONOptions(*args)
+DSIOSetSSystemJSONOptions = _dspace_interface.DSIOSetSSystemJSONOptions
+
+def DSVariablePoolStringInJSONFormat(*args):
+  return _dspace_interface.DSVariablePoolStringInJSONFormat(*args)
+DSVariablePoolStringInJSONFormat = _dspace_interface.DSVariablePoolStringInJSONFormat
+
+def DSMatrixStringInJSONFormat(*args):
+  return _dspace_interface.DSMatrixStringInJSONFormat(*args)
+DSMatrixStringInJSONFormat = _dspace_interface.DSMatrixStringInJSONFormat
+
+def DSMatrixArrayStringInJSONFormat(*args):
+  return _dspace_interface.DSMatrixArrayStringInJSONFormat(*args)
+DSMatrixArrayStringInJSONFormat = _dspace_interface.DSMatrixArrayStringInJSONFormat
+
+def DSSSystemStringInJSONFormat(*args):
+  return _dspace_interface.DSSSystemStringInJSONFormat(*args)
+DSSSystemStringInJSONFormat = _dspace_interface.DSSSystemStringInJSONFormat
+
+def DSCaseStringInJSONFormat(*args):
+  return _dspace_interface.DSCaseStringInJSONFormat(*args)
+DSCaseStringInJSONFormat = _dspace_interface.DSCaseStringInJSONFormat
+
+def DSIOReadBinaryData(*args):
+  return _dspace_interface.DSIOReadBinaryData(*args)
+DSIOReadBinaryData = _dspace_interface.DSIOReadBinaryData
+
+def DSIOWriteBinaryData(*args):
+  return _dspace_interface.DSIOWriteBinaryData(*args)
+DSIOWriteBinaryData = _dspace_interface.DSIOWriteBinaryData
 
 def DSSecureMalloc(*args):
   return _dspace_interface.DSSecureMalloc(*args)
@@ -225,6 +286,10 @@ DSVariablePoolPrint = _dspace_interface.DSVariablePoolPrint
 def DSVariablePoolValuesAsVector(*args):
   return _dspace_interface.DSVariablePoolValuesAsVector(*args)
 DSVariablePoolValuesAsVector = _dspace_interface.DSVariablePoolValuesAsVector
+
+def DSVariablePoolIndicesOfSubPool(*args):
+  return _dspace_interface.DSVariablePoolIndicesOfSubPool(*args)
+DSVariablePoolIndicesOfSubPool = _dspace_interface.DSVariablePoolIndicesOfSubPool
 M_DS_MAT_NULL = _dspace_interface.M_DS_MAT_NULL
 M_DS_MAT_OUTOFBOUNDS = _dspace_interface.M_DS_MAT_OUTOFBOUNDS
 M_DS_MAT_NOINTERNAL = _dspace_interface.M_DS_MAT_NOINTERNAL
@@ -377,6 +442,14 @@ def DSMatrixSwitchColumns(*args):
   return _dspace_interface.DSMatrixSwitchColumns(*args)
 DSMatrixSwitchColumns = _dspace_interface.DSMatrixSwitchColumns
 
+def DSMatrixClearRow(*args):
+  return _dspace_interface.DSMatrixClearRow(*args)
+DSMatrixClearRow = _dspace_interface.DSMatrixClearRow
+
+def DSMatrixClearColumns(*args):
+  return _dspace_interface.DSMatrixClearColumns(*args)
+DSMatrixClearColumns = _dspace_interface.DSMatrixClearColumns
+
 def DSMatrixWithUniqueRows(*args):
   return _dspace_interface.DSMatrixWithUniqueRows(*args)
 DSMatrixWithUniqueRows = _dspace_interface.DSMatrixWithUniqueRows
@@ -445,6 +518,10 @@ def DSMatrixSVD(*args):
   return _dspace_interface.DSMatrixSVD(*args)
 DSMatrixSVD = _dspace_interface.DSMatrixSVD
 
+def DSMatrixQRD(*args):
+  return _dspace_interface.DSMatrixQRD(*args)
+DSMatrixQRD = _dspace_interface.DSMatrixQRD
+
 def DSMatrixRightNullspace(*args):
   return _dspace_interface.DSMatrixRightNullspace(*args)
 DSMatrixRightNullspace = _dspace_interface.DSMatrixRightNullspace
@@ -452,6 +529,10 @@ DSMatrixRightNullspace = _dspace_interface.DSMatrixRightNullspace
 def DSMatrixLeftNullspace(*args):
   return _dspace_interface.DSMatrixLeftNullspace(*args)
 DSMatrixLeftNullspace = _dspace_interface.DSMatrixLeftNullspace
+
+def DSMatrixIdenticalRows(*args):
+  return _dspace_interface.DSMatrixIdenticalRows(*args)
+DSMatrixIdenticalRows = _dspace_interface.DSMatrixIdenticalRows
 
 def DSMatrixPLUDecomposition(*args):
   return _dspace_interface.DSMatrixPLUDecomposition(*args)
@@ -480,6 +561,18 @@ DSMatrixRowsForGLPK = _dspace_interface.DSMatrixRowsForGLPK
 def DSMatrixColumnsForGLPK(*args):
   return _dspace_interface.DSMatrixColumnsForGLPK(*args)
 DSMatrixColumnsForGLPK = _dspace_interface.DSMatrixColumnsForGLPK
+
+def DSMatrixEncode(*args):
+  return _dspace_interface.DSMatrixEncode(*args)
+DSMatrixEncode = _dspace_interface.DSMatrixEncode
+
+def DSMatrixFromMatrixMessage(*args):
+  return _dspace_interface.DSMatrixFromMatrixMessage(*args)
+DSMatrixFromMatrixMessage = _dspace_interface.DSMatrixFromMatrixMessage
+
+def DSMatrixDecode(*args):
+  return _dspace_interface.DSMatrixDecode(*args)
+DSMatrixDecode = _dspace_interface.DSMatrixDecode
 
 def DSMatrixArrayAlloc():
   return _dspace_interface.DSMatrixArrayAlloc()
@@ -512,11 +605,24 @@ DSMatrixArrayDoubleWithIndices = _dspace_interface.DSMatrixArrayDoubleWithIndice
 def DSMatrixArrayPrint(*args):
   return _dspace_interface.DSMatrixArrayPrint(*args)
 DSMatrixArrayPrint = _dspace_interface.DSMatrixArrayPrint
+
+def DSMatrixArrayEncode(*args):
+  return _dspace_interface.DSMatrixArrayEncode(*args)
+DSMatrixArrayEncode = _dspace_interface.DSMatrixArrayEncode
+
+def DSMatrixArrayFromMatrixArrayMessage(*args):
+  return _dspace_interface.DSMatrixArrayFromMatrixArrayMessage(*args)
+DSMatrixArrayFromMatrixArrayMessage = _dspace_interface.DSMatrixArrayFromMatrixArrayMessage
+
+def DSMatrixArrayDecode(*args):
+  return _dspace_interface.DSMatrixArrayDecode(*args)
+DSMatrixArrayDecode = _dspace_interface.DSMatrixArrayDecode
 DS_EXPRESSION_TYPE_UNDEFINED = _dspace_interface.DS_EXPRESSION_TYPE_UNDEFINED
 DS_EXPRESSION_TYPE_OPERATOR = _dspace_interface.DS_EXPRESSION_TYPE_OPERATOR
 DS_EXPRESSION_TYPE_CONSTANT = _dspace_interface.DS_EXPRESSION_TYPE_CONSTANT
 DS_EXPRESSION_TYPE_VARIABLE = _dspace_interface.DS_EXPRESSION_TYPE_VARIABLE
 DS_EXPRESSION_TYPE_FUNCTION = _dspace_interface.DS_EXPRESSION_TYPE_FUNCTION
+DSExpressionImaginaryNumber = _dspace_interface.DSExpressionImaginaryNumber
 
 def DSExpressionFree(*args):
   return _dspace_interface.DSExpressionFree(*args)
@@ -538,13 +644,33 @@ def DSExpressionSubstractExpressions(*args):
   return _dspace_interface.DSExpressionSubstractExpressions(*args)
 DSExpressionSubstractExpressions = _dspace_interface.DSExpressionSubstractExpressions
 
+def DSExpressionMultiplyExpressionByConstant(*args):
+  return _dspace_interface.DSExpressionMultiplyExpressionByConstant(*args)
+DSExpressionMultiplyExpressionByConstant = _dspace_interface.DSExpressionMultiplyExpressionByConstant
+
 def DSExpressionByCompressingConstantVariables(*args):
   return _dspace_interface.DSExpressionByCompressingConstantVariables(*args)
 DSExpressionByCompressingConstantVariables = _dspace_interface.DSExpressionByCompressingConstantVariables
 
+def DSExpressionIsEqualToExpression(*args):
+  return _dspace_interface.DSExpressionIsEqualToExpression(*args)
+DSExpressionIsEqualToExpression = _dspace_interface.DSExpressionIsEqualToExpression
+
+def DSExpressionByReplacingSubExpression(*args):
+  return _dspace_interface.DSExpressionByReplacingSubExpression(*args)
+DSExpressionByReplacingSubExpression = _dspace_interface.DSExpressionByReplacingSubExpression
+
+def DSExpressionRecastSystemEquations(*args):
+  return _dspace_interface.DSExpressionRecastSystemEquations(*args)
+DSExpressionRecastSystemEquations = _dspace_interface.DSExpressionRecastSystemEquations
+
 def DSExpressionEvaluateWithVariablePool(*args):
   return _dspace_interface.DSExpressionEvaluateWithVariablePool(*args)
 DSExpressionEvaluateWithVariablePool = _dspace_interface.DSExpressionEvaluateWithVariablePool
+
+def DSExpressionEvaluateComplexWithVariablePool(*args):
+  return _dspace_interface.DSExpressionEvaluateComplexWithVariablePool(*args)
+DSExpressionEvaluateComplexWithVariablePool = _dspace_interface.DSExpressionEvaluateComplexWithVariablePool
 
 def DSExpressionEquationLHSExpression(*args):
   return _dspace_interface.DSExpressionEquationLHSExpression(*args)
@@ -569,6 +695,14 @@ DSExpressionAsLatexString = _dspace_interface.DSExpressionAsLatexString
 def DSExpressionPrint(*args):
   return _dspace_interface.DSExpressionPrint(*args)
 DSExpressionPrint = _dspace_interface.DSExpressionPrint
+
+def DSExpressionFromPowerlawInMatrixForm(*args):
+  return _dspace_interface.DSExpressionFromPowerlawInMatrixForm(*args)
+DSExpressionFromPowerlawInMatrixForm = _dspace_interface.DSExpressionFromPowerlawInMatrixForm
+
+def DSExpressionFromLogPowerlawInMatrixForm(*args):
+  return _dspace_interface.DSExpressionFromLogPowerlawInMatrixForm(*args)
+DSExpressionFromLogPowerlawInMatrixForm = _dspace_interface.DSExpressionFromLogPowerlawInMatrixForm
 M_DS_GMA_NULL = _dspace_interface.M_DS_GMA_NULL
 
 def DSGMASystemCopy(*args):
@@ -686,7 +820,26 @@ DSGMASystemFluxDictionary = _dspace_interface.DSGMASystemFluxDictionary
 def DSGMASystemPrecursorProductRelationships(*args):
   return _dspace_interface.DSGMASystemPrecursorProductRelationships(*args)
 DSGMASystemPrecursorProductRelationships = _dspace_interface.DSGMASystemPrecursorProductRelationships
+
+def DSGMASystemEquivalentFluxes(*args):
+  return _dspace_interface.DSGMASystemEquivalentFluxes(*args)
+DSGMASystemEquivalentFluxes = _dspace_interface.DSGMASystemEquivalentFluxes
+
+def DSGMASystemEncode(*args):
+  return _dspace_interface.DSGMASystemEncode(*args)
+DSGMASystemEncode = _dspace_interface.DSGMASystemEncode
+
+def DSGMASystemFromGMASystemMessage(*args):
+  return _dspace_interface.DSGMASystemFromGMASystemMessage(*args)
+DSGMASystemFromGMASystemMessage = _dspace_interface.DSGMASystemFromGMASystemMessage
+
+def DSGMASystemDecode(*args):
+  return _dspace_interface.DSGMASystemDecode(*args)
+DSGMASystemDecode = _dspace_interface.DSGMASystemDecode
 M_DS_SSYS_NULL = _dspace_interface.M_DS_SSYS_NULL
+DS_SSYSTEM_FLAG_SINGULAR = _dspace_interface.DS_SSYSTEM_FLAG_SINGULAR
+DS_SSYSTEM_FLAG_FREE_XD = _dspace_interface.DS_SSYSTEM_FLAG_FREE_XD
+DS_SSYSTEM_FLAG_FREE_XI = _dspace_interface.DS_SSYSTEM_FLAG_FREE_XI
 
 def DSSSystemCopy(*args):
   return _dspace_interface.DSSSystemCopy(*args)
@@ -707,6 +860,10 @@ DSSSystemByParsingStringList = _dspace_interface.DSSSystemByParsingStringList
 def DSSSystemByParsingStrings(*args):
   return _dspace_interface.DSSSystemByParsingStrings(*args)
 DSSSystemByParsingStrings = _dspace_interface.DSSSystemByParsingStrings
+
+def DSSSystemSolvedAuxiliaryVariableMatrices(*args):
+  return _dspace_interface.DSSSystemSolvedAuxiliaryVariableMatrices(*args)
+DSSSystemSolvedAuxiliaryVariableMatrices = _dspace_interface.DSSSystemSolvedAuxiliaryVariableMatrices
 
 def DSSSystemByRemovingAlgebraicConstraints(*args):
   return _dspace_interface.DSSSystemByRemovingAlgebraicConstraints(*args)
@@ -892,6 +1049,34 @@ def DSSSystemIsSingular(*args):
   return _dspace_interface.DSSSystemIsSingular(*args)
 DSSSystemIsSingular = _dspace_interface.DSSSystemIsSingular
 
+def DSSSystemShouldFreeXd(*args):
+  return _dspace_interface.DSSSystemShouldFreeXd(*args)
+DSSSystemShouldFreeXd = _dspace_interface.DSSSystemShouldFreeXd
+
+def DSSSystemShouldFreeXi(*args):
+  return _dspace_interface.DSSSystemShouldFreeXi(*args)
+DSSSystemShouldFreeXi = _dspace_interface.DSSSystemShouldFreeXi
+
+def DSSSystemSetIsSingular(*args):
+  return _dspace_interface.DSSSystemSetIsSingular(*args)
+DSSSystemSetIsSingular = _dspace_interface.DSSSystemSetIsSingular
+
+def DSSSystemSetShouldFreeXd(*args):
+  return _dspace_interface.DSSSystemSetShouldFreeXd(*args)
+DSSSystemSetShouldFreeXd = _dspace_interface.DSSSystemSetShouldFreeXd
+
+def DSSSystemSetShouldFreeXi(*args):
+  return _dspace_interface.DSSSystemSetShouldFreeXi(*args)
+DSSSystemSetShouldFreeXi = _dspace_interface.DSSSystemSetShouldFreeXi
+
+def DSSSystemRecalculateSolution(*args):
+  return _dspace_interface.DSSSystemRecalculateSolution(*args)
+DSSSystemRecalculateSolution = _dspace_interface.DSSSystemRecalculateSolution
+
+def DSSSystemWithQuasiSteadyStates(*args):
+  return _dspace_interface.DSSSystemWithQuasiSteadyStates(*args)
+DSSSystemWithQuasiSteadyStates = _dspace_interface.DSSSystemWithQuasiSteadyStates
+
 def DSSSystemPrint(*args):
   return _dspace_interface.DSSSystemPrint(*args)
 DSSSystemPrint = _dspace_interface.DSSSystemPrint
@@ -907,6 +1092,18 @@ DSSSystemPrintSolution = _dspace_interface.DSSSystemPrintSolution
 def DSSSystemPrintLogarithmicSolution(*args):
   return _dspace_interface.DSSSystemPrintLogarithmicSolution(*args)
 DSSSystemPrintLogarithmicSolution = _dspace_interface.DSSSystemPrintLogarithmicSolution
+
+def DSSSystemEncode(*args):
+  return _dspace_interface.DSSSystemEncode(*args)
+DSSSystemEncode = _dspace_interface.DSSSystemEncode
+
+def DSSSystemFromSSystemMessage(*args):
+  return _dspace_interface.DSSSystemFromSSystemMessage(*args)
+DSSSystemFromSSystemMessage = _dspace_interface.DSSSystemFromSSystemMessage
+
+def DSSSystemDecode(*args):
+  return _dspace_interface.DSSSystemDecode(*args)
+DSSSystemDecode = _dspace_interface.DSSSystemDecode
 M_DS_CASE_NULL = _dspace_interface.M_DS_CASE_NULL
 DS_CASE_NUMBER_BIG_ENDIAN = _dspace_interface.DS_CASE_NUMBER_BIG_ENDIAN
 DS_CASE_NUMBER_SMALL_ENDIAN = _dspace_interface.DS_CASE_NUMBER_SMALL_ENDIAN
@@ -983,6 +1180,10 @@ def DSCaseNumber(*args):
   return _dspace_interface.DSCaseNumber(*args)
 DSCaseNumber = _dspace_interface.DSCaseNumber
 
+def DSCaseIdentifier(*args):
+  return _dspace_interface.DSCaseIdentifier(*args)
+DSCaseIdentifier = _dspace_interface.DSCaseIdentifier
+
 def DSCaseSignature(*args):
   return _dspace_interface.DSCaseSignature(*args)
 DSCaseSignature = _dspace_interface.DSCaseSignature
@@ -995,6 +1196,22 @@ def DSCaseLogarithmicGain(*args):
   return _dspace_interface.DSCaseLogarithmicGain(*args)
 DSCaseLogarithmicGain = _dspace_interface.DSCaseLogarithmicGain
 
+def DSCaseXd(*args):
+  return _dspace_interface.DSCaseXd(*args)
+DSCaseXd = _dspace_interface.DSCaseXd
+
+def DSCaseXd_a(*args):
+  return _dspace_interface.DSCaseXd_a(*args)
+DSCaseXd_a = _dspace_interface.DSCaseXd_a
+
+def DSCaseXi(*args):
+  return _dspace_interface.DSCaseXi(*args)
+DSCaseXi = _dspace_interface.DSCaseXi
+
+def DSCaseRecalculateBoundaryMatrices(*args):
+  return _dspace_interface.DSCaseRecalculateBoundaryMatrices(*args)
+DSCaseRecalculateBoundaryMatrices = _dspace_interface.DSCaseRecalculateBoundaryMatrices
+
 def DSCaseDoubleValueBoundariesAtPoint(*args):
   return _dspace_interface.DSCaseDoubleValueBoundariesAtPoint(*args)
 DSCaseDoubleValueBoundariesAtPoint = _dspace_interface.DSCaseDoubleValueBoundariesAtPoint
@@ -1002,6 +1219,10 @@ DSCaseDoubleValueBoundariesAtPoint = _dspace_interface.DSCaseDoubleValueBoundari
 def DSCaseAddConstraints(*args):
   return _dspace_interface.DSCaseAddConstraints(*args)
 DSCaseAddConstraints = _dspace_interface.DSCaseAddConstraints
+
+def DSCaseRemoveRedundantBoundaries(*args):
+  return _dspace_interface.DSCaseRemoveRedundantBoundaries(*args)
+DSCaseRemoveRedundantBoundaries = _dspace_interface.DSCaseRemoveRedundantBoundaries
 
 def DSCaseConditionsAreValid(*args):
   return _dspace_interface.DSCaseConditionsAreValid(*args)
@@ -1011,6 +1232,10 @@ def DSCaseIsValid(*args):
   return _dspace_interface.DSCaseIsValid(*args)
 DSCaseIsValid = _dspace_interface.DSCaseIsValid
 
+def DSCaseIsConsistent(*args):
+  return _dspace_interface.DSCaseIsConsistent(*args)
+DSCaseIsConsistent = _dspace_interface.DSCaseIsConsistent
+
 def DSCaseIsValidInStateSpace(*args):
   return _dspace_interface.DSCaseIsValidInStateSpace(*args)
 DSCaseIsValidInStateSpace = _dspace_interface.DSCaseIsValidInStateSpace
@@ -1019,6 +1244,10 @@ def DSCaseIsValidAtPoint(*args):
   return _dspace_interface.DSCaseIsValidAtPoint(*args)
 DSCaseIsValidAtPoint = _dspace_interface.DSCaseIsValidAtPoint
 
+def DSCaseIsConsistentAtPoint(*args):
+  return _dspace_interface.DSCaseIsConsistentAtPoint(*args)
+DSCaseIsConsistentAtPoint = _dspace_interface.DSCaseIsConsistentAtPoint
+
 def DSCaseIsValidInStateSpaceAtPoint(*args):
   return _dspace_interface.DSCaseIsValidInStateSpaceAtPoint(*args)
 DSCaseIsValidInStateSpaceAtPoint = _dspace_interface.DSCaseIsValidInStateSpaceAtPoint
@@ -1026,6 +1255,10 @@ DSCaseIsValidInStateSpaceAtPoint = _dspace_interface.DSCaseIsValidInStateSpaceAt
 def DSCaseIsValidAtSlice(*args):
   return _dspace_interface.DSCaseIsValidAtSlice(*args)
 DSCaseIsValidAtSlice = _dspace_interface.DSCaseIsValidAtSlice
+
+def DSCaseIsConsistentAtSlice(*args):
+  return _dspace_interface.DSCaseIsConsistentAtSlice(*args)
+DSCaseIsConsistentAtSlice = _dspace_interface.DSCaseIsConsistentAtSlice
 
 def DSCaseVerticesForSlice(*args):
   return _dspace_interface.DSCaseVerticesForSlice(*args)
@@ -1047,6 +1280,10 @@ def DSCaseVerticesFor2DSlice(*args):
   return _dspace_interface.DSCaseVerticesFor2DSlice(*args)
 DSCaseVerticesFor2DSlice = _dspace_interface.DSCaseVerticesFor2DSlice
 
+def DSCaseVertexEquationsFor2DSlice(*args):
+  return _dspace_interface.DSCaseVertexEquationsFor2DSlice(*args)
+DSCaseVertexEquationsFor2DSlice = _dspace_interface.DSCaseVertexEquationsFor2DSlice
+
 def DSCaseFacesFor3DSliceAndConnectivity(*args):
   return _dspace_interface.DSCaseFacesFor3DSliceAndConnectivity(*args)
 DSCaseFacesFor3DSliceAndConnectivity = _dspace_interface.DSCaseFacesFor3DSliceAndConnectivity
@@ -1063,13 +1300,41 @@ def DSCaseVerticesForNDSlice(*args):
   return _dspace_interface.DSCaseVerticesForNDSlice(*args)
 DSCaseVerticesForNDSlice = _dspace_interface.DSCaseVerticesForNDSlice
 
+def DSCaseConsistentParameterAndStateSet(*args):
+  return _dspace_interface.DSCaseConsistentParameterAndStateSet(*args)
+DSCaseConsistentParameterAndStateSet = _dspace_interface.DSCaseConsistentParameterAndStateSet
+
+def DSCaseValidParameterAndStateSet(*args):
+  return _dspace_interface.DSCaseValidParameterAndStateSet(*args)
+DSCaseValidParameterAndStateSet = _dspace_interface.DSCaseValidParameterAndStateSet
+
 def DSCaseValidParameterSet(*args):
   return _dspace_interface.DSCaseValidParameterSet(*args)
 DSCaseValidParameterSet = _dspace_interface.DSCaseValidParameterSet
 
+def DSCaseValidParameterSetByOptimizingFunction(*args):
+  return _dspace_interface.DSCaseValidParameterSetByOptimizingFunction(*args)
+DSCaseValidParameterSetByOptimizingFunction = _dspace_interface.DSCaseValidParameterSetByOptimizingFunction
+
 def DSCaseValidParameterSetAtSlice(*args):
   return _dspace_interface.DSCaseValidParameterSetAtSlice(*args)
 DSCaseValidParameterSetAtSlice = _dspace_interface.DSCaseValidParameterSetAtSlice
+
+def DSCaseValidParameterSetAtSliceByOptimizingFunction(*args):
+  return _dspace_interface.DSCaseValidParameterSetAtSliceByOptimizingFunction(*args)
+DSCaseValidParameterSetAtSliceByOptimizingFunction = _dspace_interface.DSCaseValidParameterSetAtSliceByOptimizingFunction
+
+def DSCaseParseOptimizationFunction(*args):
+  return _dspace_interface.DSCaseParseOptimizationFunction(*args)
+DSCaseParseOptimizationFunction = _dspace_interface.DSCaseParseOptimizationFunction
+
+def DSPseudoCaseFromIntersectionOfCases(*args):
+  return _dspace_interface.DSPseudoCaseFromIntersectionOfCases(*args)
+DSPseudoCaseFromIntersectionOfCases = _dspace_interface.DSPseudoCaseFromIntersectionOfCases
+
+def DSPseudoCaseFromIntersectionOfCasesExcludingSlice(*args):
+  return _dspace_interface.DSPseudoCaseFromIntersectionOfCasesExcludingSlice(*args)
+DSPseudoCaseFromIntersectionOfCasesExcludingSlice = _dspace_interface.DSPseudoCaseFromIntersectionOfCasesExcludingSlice
 
 def DSCaseIntersectionListIsValid(*args):
   return _dspace_interface.DSCaseIntersectionListIsValid(*args)
@@ -1110,6 +1375,18 @@ DSCaseIntersectionExceptSliceValidParameterSetWithConstraints = _dspace_interfac
 def DSCaseIntersectionExceptSliceValidParameterSetAtSlice(*args):
   return _dspace_interface.DSCaseIntersectionExceptSliceValidParameterSetAtSlice(*args)
 DSCaseIntersectionExceptSliceValidParameterSetAtSlice = _dspace_interface.DSCaseIntersectionExceptSliceValidParameterSetAtSlice
+
+def DSCaseIntersectionExceptSliceValidParameterSetByOptimizingFunction(*args):
+  return _dspace_interface.DSCaseIntersectionExceptSliceValidParameterSetByOptimizingFunction(*args)
+DSCaseIntersectionExceptSliceValidParameterSetByOptimizingFunction = _dspace_interface.DSCaseIntersectionExceptSliceValidParameterSetByOptimizingFunction
+
+def DSCaseIntersectionExceptSliceValidParameterSetWithConstraintsByOptimizingFunction(*args):
+  return _dspace_interface.DSCaseIntersectionExceptSliceValidParameterSetWithConstraintsByOptimizingFunction(*args)
+DSCaseIntersectionExceptSliceValidParameterSetWithConstraintsByOptimizingFunction = _dspace_interface.DSCaseIntersectionExceptSliceValidParameterSetWithConstraintsByOptimizingFunction
+
+def DSCaseIntersectionExceptSliceValidParameterSetAtSliceByOptimizingFunction(*args):
+  return _dspace_interface.DSCaseIntersectionExceptSliceValidParameterSetAtSliceByOptimizingFunction(*args)
+DSCaseIntersectionExceptSliceValidParameterSetAtSliceByOptimizingFunction = _dspace_interface.DSCaseIntersectionExceptSliceValidParameterSetAtSliceByOptimizingFunction
 
 def DSCaseNumberForSignature(*args):
   return _dspace_interface.DSCaseNumberForSignature(*args)
@@ -1154,7 +1431,26 @@ DSCasePrintBoundaries = _dspace_interface.DSCasePrintBoundaries
 def DSCasePrintLogarithmicBoundaries(*args):
   return _dspace_interface.DSCasePrintLogarithmicBoundaries(*args)
 DSCasePrintLogarithmicBoundaries = _dspace_interface.DSCasePrintLogarithmicBoundaries
+
+def DSCaseEncode(*args):
+  return _dspace_interface.DSCaseEncode(*args)
+DSCaseEncode = _dspace_interface.DSCaseEncode
+
+def DSCaseFromCaseMessage(*args):
+  return _dspace_interface.DSCaseFromCaseMessage(*args)
+DSCaseFromCaseMessage = _dspace_interface.DSCaseFromCaseMessage
+
+def DSCaseDecode(*args):
+  return _dspace_interface.DSCaseDecode(*args)
+DSCaseDecode = _dspace_interface.DSCaseDecode
+
+def DSCaseEigenSubspaces(*args):
+  return _dspace_interface.DSCaseEigenSubspaces(*args)
+DSCaseEigenSubspaces = _dspace_interface.DSCaseEigenSubspaces
 M_DS_DESIGN_SPACE_NULL = _dspace_interface.M_DS_DESIGN_SPACE_NULL
+DS_DESIGN_SPACE_FLAG_SERIAL = _dspace_interface.DS_DESIGN_SPACE_FLAG_SERIAL
+DS_DESIGN_SPACE_FLAG_CYCLICAL = _dspace_interface.DS_DESIGN_SPACE_FLAG_CYCLICAL
+DS_DESIGN_SPACE_FLAG_RESOLVE_CO_DOMINANCE = _dspace_interface.DS_DESIGN_SPACE_FLAG_RESOLVE_CO_DOMINANCE
 
 def DSDesignSpaceAlloc():
   return _dspace_interface.DSDesignSpaceAlloc()
@@ -1183,6 +1479,30 @@ DSDesignSpaceSetGMA = _dspace_interface.DSDesignSpaceSetGMA
 def DSDesignSpaceAddConditions(*args):
   return _dspace_interface.DSDesignSpaceAddConditions(*args)
 DSDesignSpaceAddConditions = _dspace_interface.DSDesignSpaceAddConditions
+
+def DSDesignSpaceSetSerial(*args):
+  return _dspace_interface.DSDesignSpaceSetSerial(*args)
+DSDesignSpaceSetSerial = _dspace_interface.DSDesignSpaceSetSerial
+
+def DSDesignSpaceSetCyclical(*args):
+  return _dspace_interface.DSDesignSpaceSetCyclical(*args)
+DSDesignSpaceSetCyclical = _dspace_interface.DSDesignSpaceSetCyclical
+
+def DSDesignSpaceSetResolveCoDominance(*args):
+  return _dspace_interface.DSDesignSpaceSetResolveCoDominance(*args)
+DSDesignSpaceSetResolveCoDominance = _dspace_interface.DSDesignSpaceSetResolveCoDominance
+
+def DSDesignSpaceSerial(*args):
+  return _dspace_interface.DSDesignSpaceSerial(*args)
+DSDesignSpaceSerial = _dspace_interface.DSDesignSpaceSerial
+
+def DSDesignSpaceCyclical(*args):
+  return _dspace_interface.DSDesignSpaceCyclical(*args)
+DSDesignSpaceCyclical = _dspace_interface.DSDesignSpaceCyclical
+
+def DSDesignSpaceResolveCoDominance(*args):
+  return _dspace_interface.DSDesignSpaceResolveCoDominance(*args)
+DSDesignSpaceResolveCoDominance = _dspace_interface.DSDesignSpaceResolveCoDominance
 
 def DSDesignSpaceXi(*args):
   return _dspace_interface.DSDesignSpaceXi(*args)
@@ -1216,6 +1536,10 @@ def DSDesignSpaceCaseWithCaseNumber(*args):
   return _dspace_interface.DSDesignSpaceCaseWithCaseNumber(*args)
 DSDesignSpaceCaseWithCaseNumber = _dspace_interface.DSDesignSpaceCaseWithCaseNumber
 
+def DSDesignSpaceCaseWithCaseIdentifier(*args):
+  return _dspace_interface.DSDesignSpaceCaseWithCaseIdentifier(*args)
+DSDesignSpaceCaseWithCaseIdentifier = _dspace_interface.DSDesignSpaceCaseWithCaseIdentifier
+
 def DSDesignSpaceCaseWithCaseSignature(*args):
   return _dspace_interface.DSDesignSpaceCaseWithCaseSignature(*args)
 DSDesignSpaceCaseWithCaseSignature = _dspace_interface.DSDesignSpaceCaseWithCaseSignature
@@ -1235,6 +1559,10 @@ DSDesignSpaceGMASystem = _dspace_interface.DSDesignSpaceGMASystem
 def DSDesignSpaceCyclicalCaseDictionary(*args):
   return _dspace_interface.DSDesignSpaceCyclicalCaseDictionary(*args)
 DSDesignSpaceCyclicalCaseDictionary = _dspace_interface.DSDesignSpaceCyclicalCaseDictionary
+
+def DSDesignSpaceCasePrefix(*args):
+  return _dspace_interface.DSDesignSpaceCasePrefix(*args)
+DSDesignSpaceCasePrefix = _dspace_interface.DSDesignSpaceCasePrefix
 
 def DSDesignSpaceTermListForAllStrings(*args):
   return _dspace_interface.DSDesignSpaceTermListForAllStrings(*args)
@@ -1276,6 +1604,10 @@ def DSDesignSpaceCalculateAllValidCasesForSlice(*args):
   return _dspace_interface.DSDesignSpaceCalculateAllValidCasesForSlice(*args)
 DSDesignSpaceCalculateAllValidCasesForSlice = _dspace_interface.DSDesignSpaceCalculateAllValidCasesForSlice
 
+def DSDesignSpaceCalculateAllValidCasesForSliceNonStrict(*args):
+  return _dspace_interface.DSDesignSpaceCalculateAllValidCasesForSliceNonStrict(*args)
+DSDesignSpaceCalculateAllValidCasesForSliceNonStrict = _dspace_interface.DSDesignSpaceCalculateAllValidCasesForSliceNonStrict
+
 def DSDesignSpaceNumberOfCyclicalCases(*args):
   return _dspace_interface.DSDesignSpaceNumberOfCyclicalCases(*args)
 DSDesignSpaceNumberOfCyclicalCases = _dspace_interface.DSDesignSpaceNumberOfCyclicalCases
@@ -1283,6 +1615,10 @@ DSDesignSpaceNumberOfCyclicalCases = _dspace_interface.DSDesignSpaceNumberOfCycl
 def DSDesignSpaceCyclicalCaseWithCaseNumber(*args):
   return _dspace_interface.DSDesignSpaceCyclicalCaseWithCaseNumber(*args)
 DSDesignSpaceCyclicalCaseWithCaseNumber = _dspace_interface.DSDesignSpaceCyclicalCaseWithCaseNumber
+
+def DSDesignSpaceCyclicalCaseWithCaseIdentifier(*args):
+  return _dspace_interface.DSDesignSpaceCyclicalCaseWithCaseIdentifier(*args)
+DSDesignSpaceCyclicalCaseWithCaseIdentifier = _dspace_interface.DSDesignSpaceCyclicalCaseWithCaseIdentifier
 
 def DSDesignSpaceCalculateCyclicalCase(*args):
   return _dspace_interface.DSDesignSpaceCalculateCyclicalCase(*args)
@@ -1295,6 +1631,22 @@ DSDesignSpaceCalculateCyclicalCases = _dspace_interface.DSDesignSpaceCalculateCy
 def DSDesignSpaceCalculateValidityOfCases(*args):
   return _dspace_interface.DSDesignSpaceCalculateValidityOfCases(*args)
 DSDesignSpaceCalculateValidityOfCases = _dspace_interface.DSDesignSpaceCalculateValidityOfCases
+
+def DSDesignSpaceCalculateValidityOfCaseSet(*args):
+  return _dspace_interface.DSDesignSpaceCalculateValidityOfCaseSet(*args)
+DSDesignSpaceCalculateValidityOfCaseSet = _dspace_interface.DSDesignSpaceCalculateValidityOfCaseSet
+
+def DSDesignSpaceEncode(*args):
+  return _dspace_interface.DSDesignSpaceEncode(*args)
+DSDesignSpaceEncode = _dspace_interface.DSDesignSpaceEncode
+
+def DSDesignSpaceFromDesignSpaceMessage(*args):
+  return _dspace_interface.DSDesignSpaceFromDesignSpaceMessage(*args)
+DSDesignSpaceFromDesignSpaceMessage = _dspace_interface.DSDesignSpaceFromDesignSpaceMessage
+
+def DSDesignSpaceDecode(*args):
+  return _dspace_interface.DSDesignSpaceDecode(*args)
+DSDesignSpaceDecode = _dspace_interface.DSDesignSpaceDecode
 M_DS_VERTICES_NULL = _dspace_interface.M_DS_VERTICES_NULL
 
 def DSVerticesAlloc(*args):
@@ -1488,6 +1840,10 @@ def DSCyclicalCaseNumber(*args):
   return _dspace_interface.DSCyclicalCaseNumber(*args)
 DSCyclicalCaseNumber = _dspace_interface.DSCyclicalCaseNumber
 
+def DSCyclicalCaseIdentifier(*args):
+  return _dspace_interface.DSCyclicalCaseIdentifier(*args)
+DSCyclicalCaseIdentifier = _dspace_interface.DSCyclicalCaseIdentifier
+
 def DSCyclicalCaseSignature(*args):
   return _dspace_interface.DSCyclicalCaseSignature(*args)
 DSCyclicalCaseSignature = _dspace_interface.DSCyclicalCaseSignature
@@ -1528,9 +1884,67 @@ def DSCyclicalCaseVerticesFor2DSlice(*args):
   return _dspace_interface.DSCyclicalCaseVerticesFor2DSlice(*args)
 DSCyclicalCaseVerticesFor2DSlice = _dspace_interface.DSCyclicalCaseVerticesFor2DSlice
 
+def DSCyclicalCaseEncode(*args):
+  return _dspace_interface.DSCyclicalCaseEncode(*args)
+DSCyclicalCaseEncode = _dspace_interface.DSCyclicalCaseEncode
+
+def DSCyclicalCaseFromCyclicalCaseMessage(*args):
+  return _dspace_interface.DSCyclicalCaseFromCyclicalCaseMessage(*args)
+DSCyclicalCaseFromCyclicalCaseMessage = _dspace_interface.DSCyclicalCaseFromCyclicalCaseMessage
+
+def DSCyclicalCaseDecode(*args):
+  return _dspace_interface.DSCyclicalCaseDecode(*args)
+DSCyclicalCaseDecode = _dspace_interface.DSCyclicalCaseDecode
+
 def DSCaseNDVertexEnumeration(*args):
   return _dspace_interface.DSCaseNDVertexEnumeration(*args)
 DSCaseNDVertexEnumeration = _dspace_interface.DSCaseNDVertexEnumeration
+class DSExpressionArray(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, DSExpressionArray, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, DSExpressionArray, name)
+    __repr__ = _swig_repr
+    __swig_setmethods__["equationCount"] = _dspace_interface.DSExpressionArray_equationCount_set
+    __swig_getmethods__["equationCount"] = _dspace_interface.DSExpressionArray_equationCount_get
+    if _newclass:equationCount = _swig_property(_dspace_interface.DSExpressionArray_equationCount_get, _dspace_interface.DSExpressionArray_equationCount_set)
+    __swig_setmethods__["expressionArray"] = _dspace_interface.DSExpressionArray_expressionArray_set
+    __swig_getmethods__["expressionArray"] = _dspace_interface.DSExpressionArray_expressionArray_get
+    if _newclass:expressionArray = _swig_property(_dspace_interface.DSExpressionArray_expressionArray_get, _dspace_interface.DSExpressionArray_expressionArray_set)
+    def __init__(self): 
+        this = _dspace_interface.new_DSExpressionArray()
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _dspace_interface.delete_DSExpressionArray
+    __del__ = lambda self : None;
+DSExpressionArray_swigregister = _dspace_interface.DSExpressionArray_swigregister
+DSExpressionArray_swigregister(DSExpressionArray)
+cvar = _dspace_interface.cvar
+
+
+def DSSWIGDSCyclicalCaseEncodedBytes(*args):
+  return _dspace_interface.DSSWIGDSCyclicalCaseEncodedBytes(*args)
+DSSWIGDSCyclicalCaseEncodedBytes = _dspace_interface.DSSWIGDSCyclicalCaseEncodedBytes
+
+def DSSWIGDSCyclicalCaseDecodeFromByteArray(*args):
+  return _dspace_interface.DSSWIGDSCyclicalCaseDecodeFromByteArray(*args)
+DSSWIGDSCyclicalCaseDecodeFromByteArray = _dspace_interface.DSSWIGDSCyclicalCaseDecodeFromByteArray
+
+def DSSWIGDSCaseEncodedBytes(*args):
+  return _dspace_interface.DSSWIGDSCaseEncodedBytes(*args)
+DSSWIGDSCaseEncodedBytes = _dspace_interface.DSSWIGDSCaseEncodedBytes
+
+def DSSWIGDSCaseDecodeFromByteArray(*args):
+  return _dspace_interface.DSSWIGDSCaseDecodeFromByteArray(*args)
+DSSWIGDSCaseDecodeFromByteArray = _dspace_interface.DSSWIGDSCaseDecodeFromByteArray
+
+def DSSWIGDSDesignSpaceEncodedBytes(*args):
+  return _dspace_interface.DSSWIGDSDesignSpaceEncodedBytes(*args)
+DSSWIGDSDesignSpaceEncodedBytes = _dspace_interface.DSSWIGDSDesignSpaceEncodedBytes
+
+def DSSWIGDSDesignSpaceDecodeFromByteArray(*args):
+  return _dspace_interface.DSSWIGDSDesignSpaceDecodeFromByteArray(*args)
+DSSWIGDSDesignSpaceDecodeFromByteArray = _dspace_interface.DSSWIGDSDesignSpaceDecodeFromByteArray
 
 def DSSWIGDSDictionaryFromPyDict(*args):
   return _dspace_interface.DSSWIGDSDictionaryFromPyDict(*args)
@@ -1556,6 +1970,14 @@ def DSSWIGVoidAsExpression(*args):
   return _dspace_interface.DSSWIGVoidAsExpression(*args)
 DSSWIGVoidAsExpression = _dspace_interface.DSSWIGVoidAsExpression
 
+def DSSWIGPseudoCaseFromIntersectionOfCases(*args):
+  return _dspace_interface.DSSWIGPseudoCaseFromIntersectionOfCases(*args)
+DSSWIGPseudoCaseFromIntersectionOfCases = _dspace_interface.DSSWIGPseudoCaseFromIntersectionOfCases
+
+def DSSWIGPseudoCaseFromIntersectionOfCasesExcludingSlice(*args):
+  return _dspace_interface.DSSWIGPseudoCaseFromIntersectionOfCasesExcludingSlice(*args)
+DSSWIGPseudoCaseFromIntersectionOfCasesExcludingSlice = _dspace_interface.DSSWIGPseudoCaseFromIntersectionOfCasesExcludingSlice
+
 def DSSWIGDesignSpaceParseWrapper(*args):
   return _dspace_interface.DSSWIGDesignSpaceParseWrapper(*args)
 DSSWIGDesignSpaceParseWrapper = _dspace_interface.DSSWIGDesignSpaceParseWrapper
@@ -1571,6 +1993,22 @@ DSSWIGGMASystemParseWrapper = _dspace_interface.DSSWIGGMASystemParseWrapper
 def DSSWIGSSystemParseWrapper(*args):
   return _dspace_interface.DSSWIGSSystemParseWrapper(*args)
 DSSWIGSSystemParseWrapper = _dspace_interface.DSSWIGSSystemParseWrapper
+
+def DSExpressionArrayFromVoid(*args):
+  return _dspace_interface.DSExpressionArrayFromVoid(*args)
+DSExpressionArrayFromVoid = _dspace_interface.DSExpressionArrayFromVoid
+
+def DSSWIGExpressionRecastSystemEquations(*args):
+  return _dspace_interface.DSSWIGExpressionRecastSystemEquations(*args)
+DSSWIGExpressionRecastSystemEquations = _dspace_interface.DSSWIGExpressionRecastSystemEquations
+
+def DSSWIGExpressionArrayCount(*args):
+  return _dspace_interface.DSSWIGExpressionArrayCount(*args)
+DSSWIGExpressionArrayCount = _dspace_interface.DSSWIGExpressionArrayCount
+
+def DSSWIGExpressionArrayExpressionAtIndex(*args):
+  return _dspace_interface.DSSWIGExpressionArrayExpressionAtIndex(*args)
+DSSWIGExpressionArrayExpressionAtIndex = _dspace_interface.DSSWIGExpressionArrayExpressionAtIndex
 
 def DSExpressionAtIndexOfExpressionArray(*args):
   return _dspace_interface.DSExpressionAtIndexOfExpressionArray(*args)
@@ -1591,6 +2029,22 @@ DSDictionaryKeyAtIndex = _dspace_interface.DSDictionaryKeyAtIndex
 def DSSSystemPositiveRootsSWIG(*args):
   return _dspace_interface.DSSSystemPositiveRootsSWIG(*args)
 DSSSystemPositiveRootsSWIG = _dspace_interface.DSSSystemPositiveRootsSWIG
+
+def DSSSystemRouthArraySWIG(*args):
+  return _dspace_interface.DSSSystemRouthArraySWIG(*args)
+DSSSystemRouthArraySWIG = _dspace_interface.DSSSystemRouthArraySWIG
+
+def DSSWIGPythonPostWarning(*args):
+  return _dspace_interface.DSSWIGPythonPostWarning(*args)
+DSSWIGPythonPostWarning = _dspace_interface.DSSWIGPythonPostWarning
+
+def DSSWIGPythonPostError(*args):
+  return _dspace_interface.DSSWIGPythonPostError(*args)
+DSSWIGPythonPostError = _dspace_interface.DSSWIGPythonPostError
+
+def DSSWIGAssignErrorFunctions():
+  return _dspace_interface.DSSWIGAssignErrorFunctions()
+DSSWIGAssignErrorFunctions = _dspace_interface.DSSWIGAssignErrorFunctions
 VERSION = _dspace_interface.VERSION
 # This file is compatible with both classic and new-style classes.
 

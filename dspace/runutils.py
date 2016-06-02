@@ -47,9 +47,16 @@ class Input(object):
                 
             version (str): String representation of a version number. 
             
-            get_parameters (int or str) : An int or str indicating the case
+            get_parameters (int or str): An int or str indicating the case
                 number, subcase number or case signature marker for which an
                 internal parameter set will be obtained.
+            
+            minimize_function(st): A function in string form to optimize when
+                automatically getting parameters for a case.
+
+            maximize_function(st): A function in string form to optimize when
+                automatically getting parameters for a case. Adding this will
+                override the minimize function.
             
             parameters (dict): A dictionary of the system parameters.
                          
@@ -90,6 +97,9 @@ class Input(object):
             plot_stability (bool): Specifies if the local stability will be 
                 plotted. Default is False.
                 
+            plot_log_gains (list): A list of tupples of string of the form 
+                `(<dependent variable>, <independent variable>).
+                
             draw_cases (list): A list of cases that will be the only ones
                 drawn.  If all cases should be drawn, value should be None.
             
@@ -103,11 +113,16 @@ class Input(object):
         f_str = options['equations']
         aux = []
         constraints = None
+        latex_symbols = dict()
         if 'auxiliary_variables' in options:
             aux = options['auxiliary_variables']
         if 'zlim' not in options:
             options['zlim'] = None
-        eq = dspace.Equations(f_str, auxiliary_variables=aux)
+        if 'latex_symbols' in options:
+            latex_symbols.update(options['latex_symbols'])
+        eq = dspace.Equations(f_str,
+                              auxiliary_variables=aux,
+                              latex_symbols=latex_symbols)
         options.pop('equations')
         ds = dspace.DesignSpace(eq, **options)
         setattr(self, '_ds', ds)
@@ -115,6 +130,7 @@ class Input(object):
         self._process_state(options)
         self._interactive_plot(options)
         self._plot_designspace(options)
+        self._plot_log_gains(options)
         self._plot_steady_states(options)
         self._plot_fluxes(options)
         self._plot_stability(options)
@@ -127,6 +143,7 @@ class Input(object):
         yaxis = None
         x_range = None
         y_range = None
+        is_colocalization = False
         setattr(self, '_pvals', pvals)
         setattr(self, '_xaxis', xaxis)
         setattr(self, '_yaxis', yaxis)
@@ -135,8 +152,33 @@ class Input(object):
         setattr(self, '_included_cases', None)
         if 'get_parameters' in options:
             case_id = options['get_parameters']
-            case = self._ds(case_id)
-            parameters = case.valid_interior_parameter_set(distance=1e3)
+            if isinstance(case_id, list):
+                if 'colocalize_cases' in options:
+                    if options['colocalize_cases'] is True:
+                        case = dspace.CaseColocalization(self._ds(case_id), [options['xaxis'], options['yaxis']])
+                        is_colocalization = True
+                    else:
+                        case = dspace.CaseIntersection(self._ds(case_id))
+                else:
+                    case = dspace.CaseIntersection(self._ds(case_id))
+            else:
+                case = self._ds(case_id)
+            if 'objective_bounds' in options:
+                pbounds = options['objective_bounds']
+            else:
+                pbounds=None
+            if 'maximize_function' in options:
+                parameters = case.valid_parameter_set(optimize=options['maximize_function'],
+                                                      p_bounds=pbounds,
+                                                      minimize=False)
+            elif 'minimize_function' in options and 'objective_bounds' in options:
+                parameters = case.valid_parameter_set(optimize=options['minimize_function'],
+                                                      p_bounds=pbounds,
+                                                      minimize=True)
+            else:
+                parameters = case.valid_interior_parameter_set(distance=1e3)
+            if is_colocalization is True:
+                parameters = parameters[parameters.keys()[0]]
             options['parameters'] = parameters
             for i in pvals:
                 print str(i) + ': ' + str(parameters[i])
@@ -180,7 +222,11 @@ class Input(object):
             return
         if options['print_valid_cases'] is not True:
             return
-        cases = self._ds.valid_cases()
+        if 'draw_cases' in options:
+            cases = options['draw_cases']
+            cases = [case.case_number for case in self._ds(cases) if case.is_valid() is True]
+        else:
+            cases = self._ds.valid_cases()
         case_string = 'Valid Cases:\n'
         for i in cases:
             case = self._ds(i)
@@ -203,6 +249,8 @@ class Input(object):
         
     def _plot_designspace(self, options):
         
+        show_vertices = []
+        vertex_font_size=10
         if 'plot_designspace' not in options:
             return
         if options['plot_designspace'] is not True:
@@ -215,22 +263,12 @@ class Input(object):
             colorbar = options['colorbar']
         else:
             colorbar = 'auto'
-        ## if ds.number_of_cases > 1e5 and self._included_cases is not None:
-        ##     colors = dict()
-        ##     j = 0
-        ##     for i in self._included_cases:
-        ##         case = self._ds(i)
-        ##         colors[i] = cm.hsv(j/len(self._included_cases))
-        ##         case.draw_2D_slice(plt.gca(), self._pvals,
-        ##                            self._xaxis, self._yaxis,
-        ##                            self._xrange, self._yrange,
-        ##                            fc=colors[i], ec='none'
-        ##                            )
-        ##         j += 1
-        ##     c_ax,kw=mt.colorbar.make_axes(plt.gca())
-        ##     c_ax.set_aspect(15)
-        ##     self._ds.draw_region_colorbar(c_ax, colors)
-        ##     return
+        if 'vertex_font_size' in options:
+            vertex_font_size = options['vertex_font_size']
+        if 'show_vertices' in options:
+            show_vertices = options['show_vertices']
+            if isinstance(show_vertices, list) is False:
+                show_vertices = [show_vertices]
         fig = plt.figure()
         plt.clf()
         ax = plt.gca()
@@ -241,6 +279,13 @@ class Input(object):
                                intersections=intersections,
                                colorbar=colorbar
                                )
+        for case_num in show_vertices:
+            case = self._ds(case_num)
+            case.draw_2D_slice(plt.gca(), self._pvals,
+                               self._xaxis, self._yaxis,
+                               self._xrange, self._yrange,
+                               show_equations=True, fontsize=vertex_font_size,
+                               fc='none', ec='none')
         ax.set_title('Design space plot')
         
     def _plot_stability(self, options):
@@ -249,22 +294,6 @@ class Input(object):
             return
         if options['plot_stability'] is not True:
             return
-        ## if ds.number_of_cases > 1e5 and self._included_cases is not None:
-        ##     colors = dict()
-        ##     j = 0
-        ##     for i in self._included_cases:
-        ##         case = self._ds(i)
-        ##         colors[i] = cm.hsv(j/len(self._included_cases))
-        ##         case.draw_2D_slice(plt.gca(), self._pvals,
-        ##                            self._xaxis, self._yaxis,
-        ##                            self._xrange, self._yrange,
-        ##                            fc=colors[i], ec='none'
-        ##                            )
-        ##         j += 1
-        ##     c_ax,kw=mt.colorbar.make_axes(plt.gca())
-        ##     c_ax.set_aspect(15)
-        ##     self._ds.draw_region_colorbar(c_ax, colors)
-        ##     return
         fig = plt.figure()
         plt.clf()
         ax = plt.gca()
@@ -294,10 +323,37 @@ class Input(object):
                                          self._xaxis, self._yaxis,
                                          self._xrange, self._yrange,
                                          resolution=resolution,
-                                         log_linear=False,
+                                         log_linear=True,
                                          included_cases=self._included_cases,
                                          zlim=options['zlim'])
-            ax.set_title('[$'+dependent+'$] plot')
+            ax.set_title(r'[$\log_{10}('+dependent+')$] plot')
+            
+    def _plot_log_gains(self, options):
+        
+        if 'plot_log_gains' not in options:
+            return
+        resolution=100
+        try:
+            resolution = options['resolution']
+        except:
+            pass
+        for dependent, independent in options['plot_log_gains']: 
+            if dependent not in self._ds.dependent_variables:
+                raise NameError, 'No variable named: ' + dependent
+            if independent not in self._ds.independent_variables:
+                raise NameError, 'No variable named: ' + independent
+            fig = plt.figure()
+            plt.clf()
+            ax = plt.gca()
+            self._ds.draw_2D_ss_function(plt.gca(), '$L_'+dependent +'_'+independent,
+                                         self._pvals,
+                                         self._xaxis, self._yaxis,
+                                         self._xrange, self._yrange,
+                                         resolution=resolution,
+                                         log_linear=True,
+                                         included_cases=self._included_cases,
+                                         zlim=options['zlim'])
+            ax.set_title('[$L('+dependent+','+independent+')$] plot')
         
     def _plot_fluxes(self, options):
         
@@ -319,7 +375,7 @@ class Input(object):
                                          self._xaxis, self._yaxis,
                                          self._xrange, self._yrange,
                                          resolution=resolution,
-                                         log_linear=False,
+                                         log_linear=True,
                                          included_cases=self._included_cases,
                                          zlim=options['zlim'])
             ax.set_title(r'$V_{'+dependent+'}$ plot')

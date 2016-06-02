@@ -9,6 +9,7 @@ from dspace.models.base import Equations,Model
 from dspace.models.gma import GMASystem
 from dspace.expressions import Expression
 
+import numpy as np
         
 class SSystem(GMASystem):
 
@@ -49,7 +50,45 @@ class SSystem(GMASystem):
         return Equations(solution, latex_symbols=self._latex)
     
     @property
+    def m(self):
+        return DSSSystemM(self._swigwrapper)
+    
+    @property
+    def Ad(self):
+        return DSSSystemAd(self._swigwrapper)
+    
+    @property
+    def Ai(self):
+        return DSSSystemAi(self._swigwrapper)
+    
+    @property
+    def Gd(self):
+        return DSSSystemGd(self._swigwrapper)
+
+    @property
+    def Hd(self):
+        return DSSSystemHd(self._swigwrapper)
+
+    @property
+    def alpha(self):
+        return DSSSystemAlpha(self._swigwrapper)
+
+    @property
+    def beta(self):
+        return DSSSystemBeta(self._swigwrapper)
+
+    @property
+    def Gi(self):
+        return DSSSystemGi(self._swigwrapper)
+
+    @property
+    def Hi(self):
+        return DSSSystemHi(self._swigwrapper)
+
+    @property
     def solution(self):
+        if DSSSystemHasSolution(self._swigwrapper) is False:
+            return None
         sol = DSSSystemSolution(self._swigwrapper)
         solution = list()
         for i in xrange(0, len(self.equations)):
@@ -61,6 +100,8 @@ class SSystem(GMASystem):
     
     @property
     def solution_log(self):
+        if DSSSystemHasSolution(self._swigwrapper) is False:
+            return None
         sol = DSSSystemLogarithmicSolution(self._swigwrapper)
         solution = list()
         for i in xrange(0, len(self.equations)):
@@ -124,6 +165,8 @@ class SSystem(GMASystem):
                        latex_symbols=self._latex)
         
     def steady_state(self, parameter_values, log_out=False):
+        if DSSSystemHasSolution(self._swigwrapper) is False:
+            return None
         Xd = VariablePool()
         Xd.set_swigwrapper(DSSSystemXd(self._swigwrapper))
         steady_states = DSSSystemSteadyStateValues(self._swigwrapper, parameter_values._swigwrapper)
@@ -178,6 +221,9 @@ class SSystem(GMASystem):
         p_vals = parameter_values.copy()
         p_vals.update(self.steady_state(parameter_values, log_out=False))
         p_vals.update(self.steady_state_flux(parameter_values, log_out=False))
+        for i in self.dependent_variables:
+            for j in self.independent_variables:
+                p_vals['$L_'+i+'_'+j] = self.log_gain(i,j)
         value = expr.eval_with_values(p_vals=p_vals)
         return value
 
@@ -186,10 +232,21 @@ class SSystem(GMASystem):
         if DSVariablePoolNumberOfVariables(DSSSystemXd_a(self._swigwrapper)) > 0:
             raise TypeError, 'S-System must be reduced to ODE-only system'
         [positive_roots, has_marginal] = DSSSystemPositiveRootsSWIG(self._swigwrapper,
-                                                                   parameter_values._swigwrapper)
+                                                                    parameter_values._swigwrapper)
         if has_marginal > 0:
             positive_roots = str(positive_roots) + '*'
         return positive_roots
+        
+    def eigenvalues(self, parameter_values):
+        
+        if DSVariablePoolNumberOfVariables(DSSSystemXd_a(self._swigwrapper)) > 0:
+            raise TypeError, 'S-System must be reduced to ODE-only system'
+        ss = self.steady_state(parameter_values)
+        fluxes = self.steady_state_flux(parameter_values)
+        turnover = np.array(zip([fluxes['V_'+i]/ss[i] for i in self.dependent_variables]))
+        FAd = turnover * np.array(self.Ad)
+        eigenvalues = np.linalg.eig(FAd)[0]
+        return eigenvalues
     
     def routh_index(self, parameter_values):
         
@@ -201,7 +258,7 @@ class SSystem(GMASystem):
         
         if DSVariablePoolNumberOfVariables(DSSSystemXd_a(self._swigwrapper)) > 0:
             raise TypeError, 'S-System must be reduced to ODE only system'
-        return DSSSystemRouthArray(self._swigwrapper, parameter_values._swigwrapper)
+        return DSSSystemRouthArraySWIG(self._swigwrapper, parameter_values._swigwrapper)
         
     
         

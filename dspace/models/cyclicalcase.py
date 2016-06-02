@@ -20,6 +20,7 @@ class CyclicalCase(Case):
         setattr(self, '_ssystem', None)
         setattr(self, '_independent_variables', None)
         setattr(self, '_reduced_ssystem', None)
+        setattr(self, '_freeData', False)
         self.set_swigwrapper(swigwrapper)
         
     def _cyclical_case(self, case, name):
@@ -29,8 +30,11 @@ class CyclicalCase(Case):
         sub=DSCyclicalCaseCyclicalSubcaseWithCaseNumber(self._swigwrapper, case)
         if sub is None:
             return None
-        case = Case(self, DSCyclicalCaseSubcaseWithCaseNumber(self._swigwrapper, case), name)
-        eq6=Equations(case.equations.system, case.auxiliary_variables)
+        case = Case(self, 
+                    DSCyclicalCaseSubcaseWithCaseNumber(self._swigwrapper, case), 
+                    name=name,
+                    latex_symbols=self._latex)
+        eq6=Equations(case.equations.system, case.auxiliary_variables, latex_symbols=self._latex)
         return CyclicalCase(eq6, sub, name = case.name)
 
     def __call__(self, index_or_iterable):
@@ -49,7 +53,10 @@ class CyclicalCase(Case):
                 name = self.name + ': Subcase ' + str(index)
                 case = self._cyclical_case(index, name)
                 if case is None:
-                    case = Case(self, DSCyclicalCaseSubcaseWithCaseNumber(self._swigwrapper, index), name=name)
+                    case = Case(self,
+                                DSCyclicalCaseSubcaseWithCaseNumber(self._swigwrapper, index), 
+                                name=name,
+                                latex_symbols=self._latex)
                 cases.append(case)
             elif isinstance(index, str) is True:
                 indices = index.split('_')
@@ -76,8 +83,24 @@ class CyclicalCase(Case):
         return cases
     
     def __del__(self):
+        if self._freeData is True:
+            DSCyclicalCaseFree(self._swigwrapper)
         return
     
+    def __getstate__(self):
+        odict = self.__dict__.copy()
+        odict['_swigwrapper'] = DSSWIGDSCyclicalCaseEncodedBytes(self._swigwrapper)
+        del odict['_ssystem']
+        del odict['_independent_variables']
+        del odict['_dependent_variables']
+        return odict
+    
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        encoded = state['_swigwrapper']
+        self.set_swigwrapper(DSSWIGDSCyclicalCaseDecodeFromByteArray(encoded)) 
+        self._freeData = True
+        
     @property
     def equations(self):
         eqs = DSCyclicalCaseEquations(self._swigwrapper)
@@ -87,7 +110,7 @@ class CyclicalCase(Case):
             equations.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
         DSSecureFree(eqs)
-        return Equations(equations)
+        return Equations(equations, latex_symbols=self._latex)
     
     @property
     def augmented_equations(self):
@@ -98,7 +121,7 @@ class CyclicalCase(Case):
             equations.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
         DSSecureFree(eqs)
-        return Equations(equations)
+        return Equations(equations, latex_symbols=self._latex)
     
     @property
     def ssystem(self):
@@ -127,7 +150,7 @@ class CyclicalCase(Case):
 
     @property
     def case_number(self):
-        return DSCyclicalCaseNumber(self._swigwrapper)
+        return DSCyclicalCaseIdentifier(self._swigwrapper)
     
     @property
     def signature(self):
@@ -141,7 +164,7 @@ class CyclicalCase(Case):
             conditions.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
-        return Equations(conditions)
+        return Equations(conditions, latex_symbols=self._latex)
         
     @property
     def conditions_log(self):
@@ -151,7 +174,7 @@ class CyclicalCase(Case):
             conditions.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
-        return Equations(conditions)
+        return Equations(conditions, latex_symbols=self._latex)
     
     @property
     def boundaries(self):
@@ -164,6 +187,11 @@ class CyclicalCase(Case):
     @property
     def number_of_subcases(self):
         return DSCyclicalCaseNumberOfSubcases(self._swigwrapper)
+        
+    @property
+    def original_case(self):
+        case = Case(self, DSCaseCopy(DSCyclicalCaseOriginalCase(self._swigwrapper)), self.name + ' [original]')
+        return case
 
     def set_swigwrapper(self, swigwrapper):
         self._swigwrapper = swigwrapper
@@ -246,6 +274,12 @@ class CyclicalCase(Case):
         cases.sort()
         return cases
     
+    def is_valid(self, p_bounds=None, strict=True):
+        valid_subcases = self.valid_subcases(p_bounds=p_bounds)
+        if len(valid_subcases) > 0:
+            return True
+        return False
+
     def vertices_2D_slice(self, p_vals, x_variable, y_variable, range_x=None, range_y=None,
                           log_out=False):
         lower = p_vals.copy()
