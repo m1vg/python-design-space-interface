@@ -181,7 +181,7 @@ class Input(object):
                 parameters = parameters[parameters.keys()[0]]
             options['parameters'] = parameters
             for i in pvals:
-                print str(i) + ': ' + str(parameters[i])
+                print(str(i) + ': ' + str(parameters[i]))
         try:
             pvals.update(options['parameters'])
         except:
@@ -215,7 +215,7 @@ class Input(object):
         parameter_test[self._yaxis] = self._yrange
         valid_test = self._ds.valid_cases(p_bounds=parameter_test)
         if len(valid_test) == 0:
-            raise ValueError, 'Slice of parameter space does not produce valid cases' 
+            raise ValueError('Slice of parameter space does not produce valid cases')
 
     def _print_valid_cases(self, options):
         if 'print_valid_cases' not in options:
@@ -231,7 +231,7 @@ class Input(object):
         for i in cases:
             case = self._ds(i)
             case_string += str(i) + ': ' + case.signature + '\n'
-        print case_string
+        print(case_string)
             
     def _interactive_plot(self, options):
         
@@ -239,7 +239,7 @@ class Input(object):
             return
         slider_dict = options['plot_interactive']
         if isinstance(slider_dict, dict) is False:
-            raise TypeError, 'Interactive plot requires a dictionary of parameter : range pairs.'
+            raise TypeError('Interactive plot requires a dictionary of parameter : range pairs.')
         self._ds.draw_2D_slice_interactive(self._pvals,
                                            self._xaxis, self._yaxis,
                                            self._xrange, self._yrange,
@@ -314,7 +314,7 @@ class Input(object):
             pass
         for dependent in options['plot_steady_states']: 
             if dependent not in self._ds.dependent_variables:
-                raise NameError, 'No variable named: ' + dependent
+                raise NameError('No variable named: ' + dependent)
             fig = plt.figure()
             plt.clf()
             ax = plt.gca()
@@ -339,9 +339,9 @@ class Input(object):
             pass
         for dependent, independent in options['plot_log_gains']: 
             if dependent not in self._ds.dependent_variables:
-                raise NameError, 'No variable named: ' + dependent
+                raise NameError('No variable named: ' + dependent)
             if independent not in self._ds.independent_variables:
-                raise NameError, 'No variable named: ' + independent
+                raise NameError('No variable named: ' + independent)
             fig = plt.figure()
             plt.clf()
             ax = plt.gca()
@@ -366,7 +366,7 @@ class Input(object):
             pass
         for dependent in options['plot_fluxes']: 
             if dependent not in self._ds.dependent_variables:
-                raise NameError, 'No variable named: ' + dependent
+                raise NameError('No variable named: ' + dependent)
             fig = plt.figure()
             plt.clf()
             ax = plt.gca()

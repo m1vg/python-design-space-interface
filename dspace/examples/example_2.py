@@ -70,7 +70,7 @@ valid_cases = ds.valid_cases(p_bounds={'alpha':10,
                                        'X3':[1e-3, 1e3],
                                        'X4':[1e-3, 1e3]})
 
-print 'All valid cases in slice: ' + str(valid_cases)
+print ('All valid cases in slice: ' + str(valid_cases))
 
 ## Plot
 # We define a nominal point in parameter space.  
@@ -127,7 +127,7 @@ sca(ax)
 
 case4 = ds(4)
 vertices = case4.vertices_2D_slice(pvals, 'X3', 'X4')
-print vertices
+print (vertices)
 
 ## Create a Bounding Box in higher domensions
 # A bounding box is calculated for case 4. The result is given as lower and 
@@ -135,7 +135,7 @@ print vertices
 # coordinates).
 
 box = case4.bounding_box(log_out=True)
-print box
+print (box)
 
 # A bounding box can be obtained with specific constraints on the parameters,
 # by passing parameter values or parameter ranges.
@@ -145,7 +145,7 @@ box = case4.bounding_box(p_bounds={'alpha':10,
                                    'X3':[1e-3, 1e3],
                                    'X4':[1e-3, 1e3]}, 
                          log_out=True);
-print box
+print (box)
 
 ##
 # The box is plotted in the previous figure, where the bounds (in
@@ -168,7 +168,7 @@ pvals['X4'] = 1
 # respecively (in Cartesian coordinates).
 
 tol = case4.measure_tolerance(pvals, log_out=True);
-print tol
+print (tol)
 
 # The operating point is plotted and the tolerance (in logarithmic coordinates) 
 # can be visually confirmed.  We make a new plot with only the case of interest,

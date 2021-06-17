@@ -1,6 +1,7 @@
 import dspace
 import dspace.plotutils
 import dspace.display
+from pprint import pprint
 
 import numpy as np
 
@@ -158,6 +159,8 @@ class DisplayColocalization(object):
 
         self.update_display()
         controller.update_child(self.name, wi)
+        check_box.value = False
+
                 
     def update_display(self):
         self.update_info()
@@ -288,7 +291,13 @@ class DisplayColocalization(object):
             caption += 'Bottom bar shows 1D design space slice showing valid cases '
             caption += 'as shown by the colorbar.'
             caption += ' Figure generated with the following parameter values: '
-            caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis]]) + '.'
+            caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis]])
+            # expand caption here. Add kinetic order and constraints.
+            if str(controller.replacements_caption.value) != '':
+                caption += ';' + ' Kinetic order(s): ' + str(controller.replacements_caption.value)
+            if str(controller.constraints_caption.value) != '':
+                caption += ';' + ' Parameteric constraints: ' + str(controller.constraints_caption.value)
+            caption += '.'
         elif len(self.slice_variables) == 2:
             options = []
             fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
@@ -311,7 +320,13 @@ class DisplayColocalization(object):
             caption += 'on the z-axis and identified by color.  '
             caption += 'Circles represent automatically determined values for each phenotype.'                
             caption += ' Figure generated with the following parameter values: '
-            caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis, yaxis]]) + '.'
+            caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis, yaxis]])
+            # expand caption here. Add kinetic order and constraints.
+            if str(controller.replacements_caption.value) != '':
+                caption += ';' + ' Kinetic order(s): ' + str(controller.replacements_caption.value)
+            if str(controller.constraints_caption.value) != '':
+                caption += ';' + ' Parameteric constraints: ' + str(controller.constraints_caption.value)
+            caption += '.'
         elif len(self.slice_variables) == 3:
             options = []
             fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
@@ -331,7 +346,13 @@ class DisplayColocalization(object):
             caption = 'Enumerated co-localized qualitatively-distinct phenotypes represented '
             caption += 'on the z-axis and identified by color.  '
             caption += ' Figure generated with the following parameter values: '
-            caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis, yaxis]]) + '.'
+            caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in [xaxis, yaxis]])
+            # expand caption here. Add kinetic order and constraints.
+            if str(controller.replacements_caption.value) != '':
+                caption += ';' + ' Kinetic order(s): ' + str(controller.replacements_caption.value)
+            if str(controller.constraints_caption.value) != '':
+                caption += ';' + ' Parameteric constraints: ' + str(controller.constraints_caption.value)
+            caption += '.'
         else:
             options = []
             slice_variables = self.slice_variables
@@ -367,7 +388,13 @@ class DisplayColocalization(object):
             caption = 'The y-axis represents value for the slice variable on the'
             caption += ' x-axis for a case identified by color.'
             caption += ' Figure generated with the following parameter values: '
-            caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in slice_variables]) + '.'
+            caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals) if i not in slice_variables])
+            # expand caption here. Add kinetic order and constraints.
+            if str(controller.replacements_caption.value) != '':
+                caption += ';' + ' Kinetic order(s): ' + str(controller.replacements_caption.value)
+            if str(controller.constraints_caption.value) != '':
+                caption += ';' + ' Parameteric constraints: ' + str(controller.constraints_caption.value)
+            caption += '.'
         canvas = FigureCanvasAgg(fig) 
         plt.close()
         buf = cStringIO.StringIO()

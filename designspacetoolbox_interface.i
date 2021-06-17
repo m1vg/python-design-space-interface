@@ -215,12 +215,14 @@
 %include "/usr/local/include/designspace/DSGMASystem.h"
 %include "/usr/local/include/designspace/DSSSystem.h"
 %include "/usr/local/include/designspace/DSCase.h"
+%include "/usr/local/include/designspace/DSUnstableCase.h"
 %include "/usr/local/include/designspace/DSDesignSpace.h"
 %include "/usr/local/include/designspace/DSVertices.h"
 %include "/usr/local/include/designspace/DSDictionary.h"
 %include "/usr/local/include/designspace/DSStack.h"
 %include "/usr/local/include/designspace/DSCyclicalCase.h"
 %include "/usr/local/include/designspace/DSNVertexEnumeration.h"
+%include "/usr/local/include/designspace/DSPopulationDynamics.h"
 
 
 %inline %{
@@ -397,7 +399,8 @@ extern DSExpression * DSSWIGVoidAsExpression(void * ptr)
 extern DSPseudoCase * DSSWIGPseudoCaseFromIntersectionOfCases(const DSUInteger numberOfCases, const DSCase ** cases)
 {
         DSPseudoCase * pseudoCase = DSPseudoCaseFromIntersectionOfCases(numberOfCases, cases);
-        DSSecureFree ((DSCase **)cases);
+        if ((DSCase **)cases != NULL)
+            DSSecureFree ((DSCase **)cases);
         return pseudoCase;
 }
 
@@ -442,6 +445,7 @@ extern DSGMASystem * DSSWIGGMASystemParseWrapper(char ** const strings, const DS
 {
         DSUInteger i;
         DSVariablePool * Xd = DSVariablePoolAlloc();
+        
         for (i = 0; i < numberOfXd; i++) {
                 DSVariablePoolAddVariableWithName(Xd, Xd_list[i]);
         }

@@ -79,7 +79,7 @@ def routh_data(case, p_vals, x_variable, y_variable, points, x, y, path):
 
     f_val = list()
     params = VariablePool(p_vals)
-    V = zip(*points)    
+    V = list(zip(*points))
     X,Y = np.meshgrid(x, y)
     Z = mt.mlab.griddata(V[0], V[1], np.repeat(1, len(V[0])), X, Y)
     levels = list()
@@ -577,12 +577,12 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable, range_x, range_y,
         V = [(log10(i[0][0]), log10(i[0][1])) for i in vertices]
     if len(V) == 0:
         return
-    V = zip(*V)
+    V = list(zip(*V))
     ax.fill(V[0], V[1], **kwargs)
     ax.set_xlim(np.log10(range_x))
     ax.set_ylim(np.log10(range_y))
     if show_equations is True:
-        for i in xrange(len(vertices)):
+        for i in range(len(vertices)):
             x = log10(vertices[i][0][0])
             y = log10(vertices[i][0][1])
             s = '\n'.join(['$'+j.latex(self._latex)+'$' for j in vertices[i][1]])
@@ -625,7 +625,7 @@ def draw_1D_ss_function(self, ax, function, p_vals, slice_variable, range_slice,
     V = self.vertices_1D_slice(params, slice_variable, range_slice=range_slice, log_out=True)
     if len(V) == 0:
         return None
-    V = zip(*V)[0]
+    V = list(zip(*V))[0]
     if len(V) == 1:
         return None
     X = np.linspace(V[0], V[1], resolution)
@@ -643,7 +643,7 @@ def draw_1D_slice(self, ax, p_vals, slice_variable, range_slice, **kwargs):
     V = self.vertices_1D_slice(p_vals, slice_variable, range_slice=range_slice, log_out=True)
     if len(V) == 0:
         return None
-    V = zip(*V)[0]
+    V = list(zip(*V))[0]
     if len(V) == 1:
         return None
     pt = ax.fill([V[0], V[1], V[1], V[0]], [0, 0, 1, 1], **kwargs)

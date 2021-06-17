@@ -35,8 +35,8 @@ def routh_data(case, p_vals, x_variable, y_variable, points, x, y, path):
 
     f_val = list()
     params = VariablePool(p_vals)
-    V = zip(*points)    
-    X,Y = np.meshgrid(x, y)
+    V = list(zip(*points))
+    X, Y = np.meshgrid(x, y)
     Z = mt.mlab.griddata(V[0], V[1], np.repeat(1, len(V[0])), X, Y)
     levels = list()
     ssystem = case.ssystem.remove_algebraic_constraints()
@@ -85,14 +85,14 @@ def interpolated_data(cyclicalcase, subcase, function, p_vals, x_variable, y_var
     for key in params:
         params[key] = p_vals[key]
     clim = None
-    for (x_value,y_value) in points:
+    for (x_value, y_value) in points:
         params[x_variable] = 10**x_value
         params[y_variable] = 10**y_value
         f_vals = cyclicalcase.steady_state_function(function, params)
         value = f_vals[str(subcase)]
         f_val.append(value)
-    V = zip(*points)
-    X,Y = np.meshgrid(x, y)
+    V = list(zip(*points))
+    X, Y = np.meshgrid(x, y)
     Z = mt.mlab.griddata(V[0], V[1], f_val, X, Y, interp='linear')
     for (i, yi) in enumerate(y):
         for (j, xj) in enumerate(x):
@@ -108,7 +108,7 @@ def sampled_data(cyclicalcase, subcase, function, p_vals, x_variable, y_variable
 
     f_val = list()
     params = VariablePool(p_vals)
-    V = zip(*points)    
+    V = list(zip(*points))
     X,Y = np.meshgrid(x, y)
     Z = mt.mlab.griddata(V[0], V[1], np.repeat(1, len(V[0])), X, Y)
     clim = None
@@ -181,7 +181,7 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable, range_x, range_y,
                                       range_x=range_x, range_y=range_y,
                                       log_out=True)
     for case in subcases:
-        V = zip(*subcases[case])
+        V = list(zip(*subcases[case]))
         ax.fill(V[0], V[1], **kwargs)
     ax.set_xlim(np.log10(range_x))
     ax.set_ylim(np.log10(range_y))
@@ -192,7 +192,7 @@ def draw_1D_ss_function(self, ax, function, p_vals, slice_variable, range_slice,
     
     params = VariablePool(p_vals)
     V = self.vertices_1D_slice(params, slice_variable, range_slice=range_slice, log_out=True)
-    V = zip(*V)[0]
+    V = list(zip(*V))[0]
     X = np.linspace(V[0], V[1], resolution)
     f_val = list()
     for x in X:
@@ -207,7 +207,7 @@ def draw_1D_ss_function(self, ax, function, p_vals, slice_variable, range_slice,
 def draw_1D_slice(self, ax, p_vals, slice_variable, range_slice, **kwargs):
     
     V = self.vertices_1D_slice(p_vals, slice_variable, range_slice=range_slice, log_out=True)
-    V = zip(*V)[0]
+    V = list(zip(*V))[0]
     pt = ax.fill([V[0], V[1], V[1], V[0]], [0, 0, 1, 1], **kwargs)
     #pt = ax.plot(V, [0, 0], **kwargs)
     return pt

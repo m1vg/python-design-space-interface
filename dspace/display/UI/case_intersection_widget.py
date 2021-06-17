@@ -1,6 +1,7 @@
 import dspace
 import dspace.plotutils
 import dspace.display
+from dspace.SWIG.dspace_interface import *
 
 import numpy as np
 
@@ -160,13 +161,55 @@ class DisplayCaseIntersection(object):
         controller = self.controller
         self.log_coordinates = value
         self.update_display()
-        
+
+    def show_shared_boundaries(self, b):
+
+        content = Box()
+        shared_indices = b.shared_indices
+
+        title1 = HTML(value='<b> Shared Boundaries: Case {} </b>'.format(self.cases[0]))
+
+        boundaries_1 = Latex()
+        b1_string = [str(self.cases[0].boundaries[int(el[0])]) for el in shared_indices]
+        boundaries_1.value = dspace.Equations(b1_string, latex_symbols = self.controller.symbols)._repr_latex_()
+
+        title2 = HTML(value='<b> Shared Boundaries: Case {} </b>'.format(self.cases[1]))
+        boundaries_2 = Latex()
+        b2_string = [str(self.cases[1].boundaries[int(el[1])]) for el in shared_indices]
+        boundaries_2.value = dspace.Equations(b2_string, latex_symbols = self.controller.symbols)._repr_latex_()
+
+        close_button = Button(description='Close')
+        content.children = [title1, boundaries_1, title2, boundaries_2, close_button]
+
+        p = Popup(description='Shared Boundaries')
+        p.children = [content]
+
+        close_button.window = p
+        close_button.on_click(lambda x: x.window.close())
+
+        if old_ipython is True:
+            p.set_css('height', '300px')
+        else:
+            p.height = '300px'
+            p.overflow_x = 'auto'
+            p.overflow_y = 'auto'
+
+        display(p)
         
     def update_info(self):
         
         title = HTML(value='<b> Cases to Co-localize </b>')
         buttons = []
-        html_str = '<div><b>Is Valid: {0}</b></div>'.format(self.ci.is_valid())
+        html_str = '<div><b>Is Valid: {0}</b>'.format(self.ci.is_valid())
+        shared_indices = self.cases[0].shared_boundaries_indices(self.cases[1])
+        html_str += '<br><b>Number of Shared Boundaries: {0}</b>'.format(len(shared_indices) if shared_indices is not None else 0)
+
+        shared_button = Button(description="Show Shared Boundaries", visible=True)
+        shared_button.shared_indices = shared_indices
+        shared_button.on_click(self.show_shared_boundaries)
+        if shared_indices is None:
+            shared_button.visible = False
+
         valid = HTML(value = html_str)
         pset = self.ci.valid_interior_parameter_set()
         for i in self.cases:
@@ -175,7 +218,7 @@ class DisplayCaseIntersection(object):
             buttons.append(case_button)
             case_button.pvals = pset[key] if key in pset else None
             case_button.on_click(self.open_case)
-        self.info.children = [title] + buttons + [valid]
+        self.info.children = [title] + buttons + [valid] + [shared_button]
         
     def update_constraints(self):
         constraints_widget = Textarea(description='Constraints',
@@ -206,18 +249,23 @@ class DisplayCaseIntersection(object):
         controller = self.controller
         ds = controller.ds
         ci = self.ci
-        if ci.is_valid() is False:
+        shared_indices = self.cases[0].shared_boundaries_indices(self.cases[1])
+        shared_indices = shared_indices if shared_indices is not None else 0
+        if ci.is_valid() is False and shared_indices == 0:
             self.global_tolerance.children = []
             return
-        pvals = self.ci.valid_interior_parameter_set()
-        if pvals is None:
+        if shared_indices != 0:
+            pvals = self.ci.valid_interior_parameter_set(shared_boundaries=True)
+        else:
+            pvals = self.ci.valid_interior_parameter_set()
+        if pvals is None or not bool(pvals):
             self.global_tolerance.children = []
             return
         table = HTML()
         html_str = '<div><table>\n<caption>Global tolerances determined for ' + self.name + ' showing fold-difference to a large qualitative change{0}. </caption>\n'.format(' in log-coordinates' if self.log_coordinates is True else '') 
         html_str += '<tr ><th align=center  rowspan=2 style="padding:0 15px 0 15px;"> Parameters </th><th colspan=2> Tolerance </th></tr>'
         html_str += '<tr><td style="padding:0 15px 0 15px;"><b> Lower bound</b></td><td style="padding:0 15px 0 15px;"><b> Upper bound</b></td></tr>'
-        tolerances = ci.measure_tolerance(pvals, log_out=self.log_coordinates)
+        tolerances = ci.measure_tolerance(pvals, log_out=self.log_coordinates, shared_boundaries=True)
         for xi in sorted(pvals.keys()):
             lower_th = 1e-15 if self.log_coordinates is False else -15
             upper_th = 1e15 if self.log_coordinates is False else 15

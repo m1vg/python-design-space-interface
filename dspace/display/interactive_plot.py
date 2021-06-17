@@ -51,22 +51,71 @@ else:
     
 from IPython.display import clear_output, display
 import cStringIO
-from matplotlib.backends.backend_agg import FigureCanvasAgg  
+from matplotlib.backends.backend_agg import FigureCanvasAgg
 
+
+def colorbar_tabs_html(colors, height=None):
+    tab_dicts = {}
+    html_widgets = []
+    for i in colors:
+        key = len(i.split(','))
+        if key not in tab_dicts:
+            tab_dicts[key] = {}
+        tab_dicts[key][i] = '#%02x%02x%02x' % tuple([j * 255 for j in colors[i][:3]])
+    keys = sorted(tab_dicts)
+    labels = [sorted(tab_dicts[i]) for i in keys]
+    lengths = [len(tab_dicts[i]) for i in keys]
+    max_length = max(lengths)
+    html_str = '<table style="border:0;"' + ('height="' + height + '">' if height is not None else '>')
+    for i in xrange(max_length):
+        html_str += '<tr style="border:0;">'
+        for j in xrange(len(labels)):
+            if i < lengths[j]:
+                key = keys[j]
+                label = labels[j][i]
+                html_str += '<td style="border:0; background-color:{0}; padding:10px;" />'.format(tab_dicts[key][label])
+                html_str += '<td style="border:0; white-space: nowrap; font-size:100%">' + label + '</td>'
+            else:
+                html_str += '<td style="border:0;" />'
+                html_str += '<td style="border:0;" />'
+        html_str += '</tr>'
+    html_str += '</table>'
+    return html_str
+
+
+def colorbar_tabs(colors):
+    html_str = colorbar_tabs_html(colors)
+    return html_str
 
 def make_2D_slice(ds=None, p_vals=None, x_variable=None, y_variable=None,
                   range_x=None, range_y=None, intersections=None, image_widget=None, highlight='', **kwargs):
+    colors = None
+    image_widget_colorbar =[]
     for i in kwargs:
         p_vals[str(i)] = 10**kwargs[str(i)]
     x_range = range_x
     y_range = range_y
-    fig = plt.Figure(figsize=[6, 4], dpi=600, facecolor='w')
-    fig=plt.gcf()
-    ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
+
+    if image_widget.description == 'Figure_No_Colorbar':
+        fig = plt.Figure(figsize=(5, 4), dpi=600, facecolor='w')
+        ax = fig.add_axes([0.2, 0.2, 0.6, 0.7])
+    else:
+        fig = plt.Figure(figsize=(5, 4), dpi=600, facecolor='w')
+        ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
+
+    fig = plt.gcf()
     ax = plt.gca()
-    ds.draw_2D_slice(ax, p_vals, str(x_variable), str(y_variable),
-                             x_range, y_range,
-                     intersections=intersections)
+
+    if image_widget.description == 'Figure_No_Colorbar':
+        colors = ds.draw_2D_slice(ax, p_vals, str(x_variable), str(y_variable),
+                                 x_range, y_range,
+                         intersections=intersections, colorbar=False)
+    else:
+        ds.draw_2D_slice(ax, p_vals, str(x_variable), str(y_variable),
+                         x_range, y_range,
+                         intersections=intersections)
+
+
     highlight = str(highlight)
     if highlight != '':
         try:
@@ -80,44 +129,60 @@ def make_2D_slice(ds=None, p_vals=None, x_variable=None, y_variable=None,
         except:
             pass
     ax.plot(log10(p_vals[x_variable]), log10(p_vals[y_variable]), 'k.')
+    if colors is not None:
+        image_widget_colorbar = colorbar_tabs(colors)
     if image_widget is not None:
         fig = plt.gcf()
         canvas = FigureCanvasAgg(fig) 
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
-        image_widget.value = data
+        if image_widget.description != 'Figure_No_Colorbar':
+            image_widget.value = data
+        else:
+            image_ = image_widget.children[0].children[0]
+            color_bar = image_widget.children[1]
+            image_.value = data
+            color_bar.value = image_widget_colorbar
+
         plt.close()
+
+
     return
     
 @monkeypatch_method(dspace.models.designspace.DesignSpace)   
-def draw_2D_slice_notebook(self, p_vals, x_variable, y_variable,
-                           range_x, range_y, slider_ranges,
-                           image_container=None, **kwargs):
+def draw_2D_slice_notebook(self, p_vals, x_variable, y_variable, range_x, range_y, slider_ranges, image_container=None, **kwargs):
+
+    # image_container.selected_index = 1
+    # image_container.set_title(0, 'Figure')
+    # image_container.set_title(1, 'Colorbar')
+    # image_container.selected_index = 0
+
     plot_widget = interactive(make_2D_slice, ds=fixed(self), 
                               p_vals=fixed(p_vals),
                               x_variable=fixed(x_variable),
                               y_variable=fixed(y_variable), 
                               range_x=fixed(range_x),
                               range_y=fixed(range_y),
-                              intersections={'Single':[1],
-                                             'Single and Triple':[1,3],
-                                             'Triple':[3],
-                                             'All':range(1, 100)},
+                              intersections={'Single': [1],
+                                             'Triple': [3],
+                                             'Single and Triple': [1, 3],
+                                             'All': range(1, 100),
+                                             },
                               highlight=Text(value=''),
                               image_widget=fixed(image_container),
                               **{i:FloatSlider(min=log10(slider_ranges[i][0]),
-                                                             max=log10(slider_ranges[i][1]),
-                                                             step=log10(slider_ranges[i][1]/slider_ranges[i][0])/20,
-                                                             value=log10(p_vals[i]))
-                                                             for i in slider_ranges
-                                                             }
+                                               max=log10(slider_ranges[i][1]),
+                                               step=log10(slider_ranges[i][1]/slider_ranges[i][0])/20,
+                                               value=log10(slider_ranges[i][0]*slider_ranges[i][1])/2 if log10(p_vals[i])==0 else log10(p_vals[i]))   #value=log10(p_vals[i]))
+                              for i in slider_ranges}
+                              )
 
-                                 )
     make_2D_slice(ds=self, p_vals=p_vals,
                   x_variable=x_variable, y_variable=y_variable,
                   range_x=range_x, range_y=range_y, 
-                  intersections=range(1, 100), image_widget=image_container, 
-                  highlight='')
+                  image_widget=image_container, #intersections=range(1,100) # intersections=range(1, 100),  for single and triple [1, 3]
+                  highlight='', **kwargs)
     return plot_widget
     
+

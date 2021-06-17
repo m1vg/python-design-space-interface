@@ -54,9 +54,9 @@ ds = dspace.DesignSpace(eq)
  
 valid_cases = ds.valid_cases()
 cases = ds(valid_cases)
-print 'Valid Cases:'
+print ('Valid Cases:')
 for i in cases:
-    print str(i.case_number) + ':' + i.signature
+    print (str(i.case_number) + ':' + i.signature)
 
 ## Parameter set
 # We define a nominal point in parameter space.  
@@ -83,7 +83,7 @@ pvals['X4'] = 1  # Will be a variable on an axis, value wont be affect plot
 # intersecting cases (1, 2, and 4) is obtained.
 
 intersections = ds.intersecting_cases(3, ds.valid_cases())
-print intersections
+print (intersections)
 
 ##
 # We make the design space object plot a 2D slice with a specified x and

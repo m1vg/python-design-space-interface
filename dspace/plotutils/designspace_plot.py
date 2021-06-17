@@ -8,6 +8,7 @@ from __future__ import division
 import itertools
 
 import numpy as np
+from time import sleep
 import matplotlib as mt
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
@@ -26,9 +27,10 @@ from dspace.models.designspace import DesignSpace
 import dspace.plotutils.case_plot
 from dspace.models.designspace import sort_cases
 
-import StringIO
+import io as StringIO
 from subprocess import call, Popen, PIPE
 from dspace.graphs.designspace_graph import GraphGenerator
+from functools import cmp_to_key
 
 
 
@@ -88,9 +90,9 @@ class SliderCallback(object):
         for i in self.c_axs:
             i.clear()
         color_dict.update(self.ds.draw_2D_slice(*self.args, **self.kwargs))
-        labels = color_dict.keys()
+        labels = list(color_dict.keys())
         try:
-            labels.sort(cmp=key_sort_function)
+            labels.sort(key=cmp_to_key(key_sort_function))
         except:
             pass
         labels.reverse()
@@ -114,9 +116,9 @@ def draw_region_colorbar(self, ax, color_dict, **kwargs):
     
     i = 0
     increment = 1./len(color_dict)
-    labels = color_dict.keys()
+    labels = list(color_dict.keys())
     try:
-        labels.sort(cmp=key_sort_function)
+        labels.sort(key=cmp_to_key(key_sort_function))
     except:
         pass
     labels.reverse()
@@ -207,10 +209,10 @@ def draw_2D_routh_index(self, ax, p_vals, x_variable, y_variable, range_x, range
     values = dict()
     params = VariablePool(p_vals)
     Zj = set()
-    for i in xrange(len(y)):
+    for i in range(len(y)):
         yi = y[i]
         params[y_variable] = 10**yi
-        for j in xrange(len(x)):
+        for j in range(len(x)):
             xj = x[j]
             params[x_variable] = 10**xj
             Zj.clear()
@@ -221,7 +223,7 @@ def draw_2D_routh_index(self, ax, p_vals, x_variable, y_variable, range_x, range
             if len(nums) == 0:
                 continue
             key = str(nums[0])
-            for index in xrange(1, len(nums)):
+            for index in range(1, len(nums)):
                 key += ','+str(nums[index])
             try:
                 Z[i,j] = values[key]
@@ -233,9 +235,9 @@ def draw_2D_routh_index(self, ax, p_vals, x_variable, y_variable, range_x, range
         colors[values[i]] = cmap(values[i]/(len(values)))
         if i in color_dict:
             colors[values[i]] = color_dict[i]
-    fc = [colors[i] for i in xrange(len(values))]
+    fc = [colors[i] for i in range(len(values))]
     cf=ax.contourf(X, Y, Z, cmap=None,
-                   levels=[-1] + [i for i in xrange(len(values)+1)],
+                   levels=[-1] + [i for i in range(len(values)+1)],
                    colors = fc + ['k'])
     colors = {key:colors[values[key]] for key in values}
     if colorbar is True:
@@ -300,10 +302,10 @@ def draw_2D_positive_roots(self, ax, p_vals, x_variable, y_variable, range_x,
     Z = Z - 1
     values = dict()
     params = VariablePool(p_vals)
-    for i in xrange(len(y)):
+    for i in range(len(y)):
         yi = y[i]
         params[y_variable] = 10**yi
-        for j in xrange(len(x)):
+        for j in range(len(x)):
             xj = x[j]
             params[x_variable] = 10**xj
             Zj = []
@@ -320,7 +322,7 @@ def draw_2D_positive_roots(self, ax, p_vals, x_variable, y_variable, range_x,
             if len(nums) == 0:
                 continue
             key = str(nums[0])
-            for index in xrange(1, len(nums)):
+            for index in range(1, len(nums)):
                 key += ','+str(nums[index])
             try:
                 Z[i,j] = values[key]
@@ -332,9 +334,9 @@ def draw_2D_positive_roots(self, ax, p_vals, x_variable, y_variable, range_x,
         colors[values[i]] = cmap(values[i]/(len(values)))
         if i in color_dict:
             colors[values[i]] = color_dict[i]
-    fc = [colors[i] for i in xrange(len(values))]
+    fc = [colors[i] for i in range(len(values))]
     cf=ax.contourf(X, Y, Z, cmap=None,
-                   levels=[-2, -1] + [i for i in xrange(len(values)+1)],
+                   levels=[-2, -1] + [i for i in range(len(values)+1)],
                    colors = ['k'] + fc + ['k'])
     colors = {key:colors[values[key]] for key in values}
     if colorbar is True:
@@ -359,7 +361,7 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
                   colorbar=True, cmap=mt.cm.gist_rainbow, **kwargs):
     pvals = dspace.VariablePool(names=self.independent_variables)
     if set(pvals.keys()) != set(p_vals.keys()):
-        raise ValueError, 'Incomplete parameter set'
+        raise ValueError('Incomplete parameter set')
     pvals.update(p_vals)
     p_vals = pvals 
     p_bounds = dict(p_vals)
@@ -385,7 +387,7 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
     if len(valid_cases)+len(valid_nonstrict) == 0:
         # fill black
         return
-    case_int_list = self.intersecting_cases(intersections, valid_cases+valid_nonstrict, 
+    case_int_list = self.intersecting_cases(intersections, valid_cases+valid_nonstrict,
                                             p_bounds=p_bounds, strict=False)
     colors = dict()
     if color_dict is None:
@@ -401,7 +403,7 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
     for case_int in case_int_list:
         key = str(case_int)
         case_nums = key.split(', ')
-        for i in xrange(len(case_nums)):
+        for i in range(len(case_nums)):
             if expand_cycles is False:
                 case_nums[i] = str(case_nums[i]).split('_')[0]
             if case_nums[i] in valid_nonstrict:
@@ -409,8 +411,8 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
         key = ', '.join(case_nums)
         if key not in color_dict:
             color_dict[key] = cmap((1.*case_int_list.index(case_int))/len(case_int_list))
-        V = case_int.draw_2D_slice(ax, p_vals, x_variable, y_variable,
-                                   range_x, range_y, fc=color_dict[key], **kwargs)
+            V = case_int.draw_2D_slice(ax, p_vals, x_variable, y_variable,
+                                       range_x, range_y, fc=color_dict[key], **kwargs)
         colors[key] = color_dict[key]
     ax.set_xlim([log10(min(range_x)), log10(max(range_x))])
     ax.set_ylim([log10(min(range_y)), log10(max(range_y))])
@@ -423,9 +425,9 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
     if colorbar is False:
         return color_dict
     if colorbar is True or colorbar == 'auto':
-        labels = colors.keys()
+        labels = list(colors.keys())
         try:
-            labels.sort(cmp=key_sort_function)
+            labels.sort(key=cmp_to_key(key_sort_function))
         except:
             pass
         labels.reverse()
@@ -438,9 +440,9 @@ def draw_2D_slice(self, ax, p_vals, x_variable, y_variable,
             num += 20
         plt.sca(ax)
     elif colorbar == 'single':
-        labels = colors.keys()
+        labels = list(colors.keys())
         try:
-            labels.sort(cmp=key_sort_function)
+            labels.sort(key=cmp_to_key(key_sort_function))
         except:
             pass
         labels.reverse()
@@ -492,7 +494,7 @@ def draw_3D_slice(self, ax, p_vals, x_variable, y_variable,z_variable, range_x,
                   colorbar=True, cmap=mt.cm.gist_rainbow, **kwargs):
     pvals = dspace.VariablePool(names=self.independent_variables)
     if set(pvals.keys()) != set(p_vals.keys()):
-        raise ValueError, 'Incomplete parameter set'
+        raise ValueError('Incomplete parameter set')
     pvals.update(p_vals)
     p_vals = pvals 
     p_bounds = dict(p_vals)
@@ -997,7 +999,7 @@ def draw_network_graph(self, ax, graph_type='dot', p_vals=None,
                 stdin=PIPE, stdout=PIPE, stderr=PIPE)
     data, err = cmd.communicate(input=dot_string)
     if len(err) > 0:
-        raise OSError, err
+        raise OSError(err)
     if 'limits' in dot_data:
         if colorbar is True:
             c_ax,kw=mt.colorbar.make_axes(ax)

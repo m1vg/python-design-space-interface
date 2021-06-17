@@ -49,7 +49,7 @@ ds = dspace.DesignSpace(eq)
 # The term signature, or number of positive and negative terms in each
 # equation, is important throughout the analysis.
 
-print 'Terms: ' + ds.signature
+print('Terms: ' + ds.signature)
 
 ## Retrieve Cases
 # A design space is completely characterized by a set of dominant S-systems
@@ -63,7 +63,7 @@ case_1 = ds(1)
 # Alternatively a list of case can be retrieved, and the list can be unpacked.
 
 cases = ds([2, 3, 4])
-print cases[0].equations
+print(cases[0].equations)
 
 case_2, case_3, case_4 = cases
 
@@ -75,9 +75,9 @@ case_1121 = ds('1121', by_signature=True)
 # The dominant S-systems and conditions for each case can be printed to the
 # command window.  Here, only the first case is shown.
 
-print 'Equations: '+str(case_1.equations)
-print 'Conditions: '+str(case_1.conditions_log)
-print 'Boundaries: '+str(case_1.boundaries_log)
+print('Equations: '+str(case_1.equations))
+print('Conditions: '+str(case_1.conditions_log))
+print('Boundaries: '+str(case_1.boundaries_log))
 
 ## Test for Validity
 # Some sets of boundaries are mutually exclusive, or invalid.  Under certain
@@ -86,7 +86,7 @@ print 'Boundaries: '+str(case_1.boundaries_log)
 # We obtain a list of case numbers that are valid.
  
 valid_cases = ds.valid_cases()
-print 'All valid cases: ' + str(valid_cases)
+print('All valid cases: ' + str(valid_cases))
 
 # In some cases we want to restrict parameter values to a range or a fixed value
 # and test for validity within these constraints.
@@ -95,7 +95,7 @@ valid_cases = ds.valid_cases(p_bounds={'alpha':10,
                                        'X3':[1e-3, 1e3],
                                        'X4':[1e-3, 1e3]
                                        })
-print 'All valid cases within bounds: ' + str(valid_cases)
+print('All valid cases within bounds: ' + str(valid_cases))
 
 ##
 # The dominant terms in each case can be printed to the command window.
@@ -106,7 +106,7 @@ for case_number in valid_cases:
     # Get the case object
     case = ds(case_number)
     # Print the case signature
-    print str(case.case_number) + ':' + case.signature
+    print(str(case.case_number) + ':' + case.signature)
 
 ## Plot
 

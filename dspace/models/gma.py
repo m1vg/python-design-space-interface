@@ -32,7 +32,7 @@ class GMASystem(Model):
         Xd.set_swigwrapper(DSGMASystemXd(gma_swigwrapper))
         for i in VariablePool():
             if i not in self.dependent_variables:
-                raise NameError, 'Dependent Variables are inconsistent'
+                raise NameError('Dependent Variables are inconsistent')
 
         Xi = VariablePool()
         Xi.set_swigwrapper(DSVariablePoolCopy(DSGMASystemXi(gma_swigwrapper)))
@@ -50,7 +50,7 @@ class GMASystem(Model):
         self.set_swigwrapper(swigwrapper)
         eqs = DSGMASystemEquations(self._swigwrapper)
         equation_list = list()
-        for i in xrange(0, DSGMASystemNumberOfEquations(self._swigwrapper)):
+        for i in range(0, DSGMASystemNumberOfEquations(self._swigwrapper)):
             expr = DSExpressionAtIndexOfExpressionArray(eqs, i)
             equation_list.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
@@ -65,7 +65,7 @@ class GMASystem(Model):
     def update_latex_symbols(self, symbols):
         self._latex.update(symbols)
         equation_list = list()
-        for i in xrange(0, DSGMASystemNumberOfEquations(self._swigwrapper)):
+        for i in range(0, DSGMASystemNumberOfEquations(self._swigwrapper)):
             expr = DSExpressionAtIndexOfExpressionArray(eqs, i)
             equation_list.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)

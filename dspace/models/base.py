@@ -41,7 +41,7 @@ class Equations(object):
         
         The equations object is initialized with strings representing
         the equations or system of equations. Its current use is primarily for
-        defining models, but it is intended to be a much more robus class that
+        defining models, but it is intended to be a much more robust class that
         serves as a front-end to the design space toolbox algebra system.
         '''
         setattr(self, '_eq', list())
@@ -50,18 +50,18 @@ class Equations(object):
         if isinstance(system, list) is False:
             system = [system]
         if isinstance(auxiliary_variables, list) is False:
-            auxiliary_variables = [auxiliary_variables]            
+            auxiliary_variables = [auxiliary_variables]
         for i in system:
             if isinstance(i, str) is False:
-                raise TypeError, 'ODE must be a string'
+                raise TypeError('ODE must be a string')
             self._eq.append(Expression(i))
         for i in auxiliary_variables:
             if isinstance(i, str) is False:
-                raise TypeError, 'ODE must be a string'
+                raise TypeError('ODE must be a string')
             self._auxiliary_variables.append(i)
         if latex_symbols is not None:
             self._latex.update(latex_symbols)
-    
+
     @property                    
     def system(self):
         return [str(i) for i in self._eq]
@@ -103,9 +103,8 @@ class Equations(object):
                       latex_symbols=state['_latex'])
         
     def replace_symbols(self, symbol_dict):
-        
         eq = self.system
-        for i in xrange(0, len(self._eq)):
+        for i in range(0, len(self._eq)):
             eq[i] = str(self._eq[i].subst(symbol_dict))
         eqs = Equations(eq, self._auxiliary_variables, latex_symbols=self._latex)
         return eqs
@@ -115,7 +114,7 @@ class Equations(object):
         eq_array = DSSWIGExpressionRecastSystemEquations(eq, len(eq), prefix)
         count = DSSWIGExpressionArrayCount(eq_array)
         strings = []
-        for i in xrange(count):
+        for i in range(count):
             eqi = DSSWIGExpressionArrayExpressionAtIndex(eq_array, i)
             strings.append(DSExpressionAsString(eqi))
             DSExpressionFree(eqi)
@@ -140,6 +139,7 @@ class Model(object):
         setattr(self, '_description', description)
         setattr(self, '_latex', dict())
         ## setattr(self, '_dependent_variables', self._equations.dependent_variables)
+
         if latex_symbols is not None:
             self._latex.update(latex_symbols)
         else:

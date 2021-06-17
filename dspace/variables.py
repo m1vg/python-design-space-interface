@@ -48,16 +48,16 @@ class VariablePool(dict):
             
     def update(self, names=None, **kwargs):        
         if names is not None:
-            for key,value in names.iteritems():
+            for key, value in names.items():
                 self[key] = value
-        for key,value in kwargs.iteritems():
+        for key, value in kwargs.items():
             self[key] = value
     
     def set_swigwrapper(self, swigwrapper):
         self._swigwrapper = swigwrapper
         if self._swigwrapper is None:
             return
-        for i in xrange(0, DSVariablePoolNumberOfVariables(swigwrapper)):
+        for i in range(0, DSVariablePoolNumberOfVariables(swigwrapper)):
                 variable = DSVariablePoolVariableAtIndex(swigwrapper, i)
                 self[variable[0]] = variable[1]
 
@@ -91,7 +91,7 @@ class VariablePool(dict):
         if self._swigwrapper == None:
             self._swigwrapper = DSVariablePoolAlloc()
         if isinstance(name, str) is False:
-            raise TypeError, 'VariablePool keys must be strings'
+            raise TypeError('VariablePool keys must be strings')
         if DSVariablePoolHasVariableWithName(self._swigwrapper, name) == False:
             DSVariablePoolAddVariableWithName(self._swigwrapper, name)
         if name not in self._keys:

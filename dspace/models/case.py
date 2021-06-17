@@ -4,14 +4,17 @@
 '''
 
 from __future__ import division
+from itertools import chain
 from dspace.SWIG.dspace_interface import *
 from dspace.variables import VariablePool
 from dspace.models.base import Equations,Model
 from dspace.models.gma import GMASystem
 from dspace.models.ssystem import SSystem
 from dspace.expressions import Expression
-
+import numpy as np
+import itertools
 from math import *
+import random
 
 
 class Case(Model):
@@ -71,17 +74,20 @@ class Case(Model):
         Xd.set_swigwrapper(DSVariablePoolCopy(DSSSystemXd(DSCaseSSystem(case_swigwrapper))))
         for i in VariablePool():
             if i not in self.dependent_variables:
-                raise NameError, 'Dependent Variables are inconsistent'
+                raise NameError('Dependent Variables are inconsistent')
         self._dependent_variables = Xd
         Xi = VariablePool()
         Xi.set_swigwrapper(DSVariablePoolCopy(DSSSystemXi(DSCaseSSystem(case_swigwrapper))))
         self._independent_variables = Xi
         eqs = list()
         eqs_expr = DSSSystemEquations(DSCaseSSystem(case_swigwrapper))
-        for i in xrange(0, len(super(Case, self).equations)):
+
+        #for i in xrange(0, len(super(Case, self).equations)): #revert this! Eventually use DSVariablePoolNumberOfVariables(DSCaseXd(aCase))
+        for i in range(0, DSVariablePoolNumberOfVariables(DSCaseXd(case_swigwrapper))):
             eqs.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
+
         self._ssystem = SSystem(self._equations,
                                 name=self.name,
                                 swigwrapper=DSCaseSSystem(case_swigwrapper),
@@ -95,7 +101,7 @@ class Case(Model):
     def equations(self):
         eqs = DSCaseEquations(self._swigwrapper)
         equations = list()
-        for i in xrange(0, DSCaseNumberOfEquations(self._swigwrapper)):
+        for i in range(0, DSCaseNumberOfEquations(self._swigwrapper)):
             expr = DSExpressionAtIndexOfExpressionArray(eqs, i)
             equations.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
@@ -139,7 +145,7 @@ class Case(Model):
         pvals.set_swigwrapper(variablepool)
         return pvals
     
-    def valid_parameter_set(self, p_bounds=None, optimize=None, minimize=True, strict=True):
+    def valid_parameter_set(self, p_bounds=None, optimize=None, minimize=True, strict=True, **kwargs):
         if p_bounds is not None:
             pvals = self._valid_parameter_set_bounded(p_bounds, 
                                                       optimize=optimize,
@@ -150,33 +156,127 @@ class Case(Model):
                                                                        optimize,
                                                                        minimize)
         else:
-            variablepool = DSCaseValidParameterSet(self._swigwrapper)
+            if 'shared_boundaries' in kwargs:
+                variablepool = DSCaseSharedBoundariesValidParameterSet(self._swigwrapper)
+            else:
+                variablepool = DSCaseValidParameterSet(self._swigwrapper)
         pvals = VariablePool()
         pvals.set_swigwrapper(variablepool)
         for i in pvals:
-            if pvals[i] == 0.0 or pvals[i] == float('inf'):
-                return self._valid_parameter_set_bounded({i:[1e-20, 1e20] for i in self.independent_variables}, 
+            # if pvals[i] == 0.0 or pvals[i] == float('inf'): #jason original
+            if pvals[i] == 0.0 or pvals[i] > 1e20 or pvals[i] < 1e-20:  # Miguel edit
+                return self._valid_parameter_set_bounded({i: [1e-20, 1e20] for i in self.independent_variables},
                                                          optimize=optimize,
                                                          minimize=minimize)
+
         return pvals
     
     def valid_interior_parameter_set(self, p_bounds=None, distance=50, **kwargs):
+
         pvals = self.valid_parameter_set(p_bounds=p_bounds, **kwargs)
-        for j in xrange(0, 2):
+
+        for j in range(0, 2):
             for i in pvals:
                 if p_bounds is not None:
                     if i not in p_bounds:
                         continue
                     if isinstance(p_bounds[i], list) is False:
                         continue
-                    slice_range = self.vertices_1D_slice(pvals, i, 
-                                                         range_slice=[max([pvals[i]*(2*distance)**-1, min(p_bounds[i])]), 
+                    slice_range = self.vertices_1D_slice(pvals, i,
+                                                         range_slice=[max([pvals[i]*(2*distance)**-1, min(p_bounds[i])]),
                                                                       min([pvals[i]*2*distance, max(p_bounds[i])])],
                                                          log_out=True
                                                          )
                     slice_range = [x[0] for x in slice_range]
-                    pvals[i] = 10**(slice_range[0] + (slice_range[1] - slice_range[0])/2)
+                    if len(slice_range) > 1:
+                        pvals[i] = 10**(slice_range[0] + (slice_range[1] - slice_range[0])/2)
+                    else:
+                        pvals[i] = slice_range[0]
+
         return pvals
+
+
+    def valid_interior_parameter_bounding_box(self, p_bounds=None, log_out=False):
+        tolerances = self.bounding_box(p_bounds=p_bounds, log_out=True)
+        pvals = VariablePool(names=self.independent_variables)
+        for key, values in tolerances.items():
+            pvals[key] = (values[0] + values[1])/2
+            if log_out is False:
+                pvals[key] = 10**pvals[key]
+        return pvals
+
+    def valid_interior_parameter_set_vertex_enumeration(self, p_bounds=None, log_out=False):
+        pvals = VariablePool(names=self.independent_variables)
+        lb = pvals.copy()
+        ub = pvals.copy()
+        for key in lb.keys():
+            if p_bounds is None:
+                lb[key] = 1e-20
+                ub[key] = 1e20
+            else:
+                lb[key] = p_bounds[key][0]
+                ub[key] = p_bounds[key][1]
+        maxVertices = 0
+        limitVertices = False
+        op_swig = DSCaseCentroid_qhull(self._swigwrapper,
+                                       lb._swigwrapper,
+                                       ub._swigwrapper,
+                                       maxVertices,
+                                       limitVertices)
+
+        operating_point = VariablePool(names=self.independent_variables)
+        for var in operating_point.keys():
+            operating_point[var] = DSVariablePoolValueForVariableWithName(op_swig, var)
+        DSVariablePoolFree(op_swig)
+
+        for key, values in operating_point.items():
+            if log_out is True:
+                pvals[key] = operating_point[key]
+            else:
+                pvals[key] = 10**operating_point[key]
+
+        return pvals
+
+    def valid_interior_parameter_set_vertex_enumeration_average_centroid(self, p_bounds=None, log_out=False):
+        pvals = VariablePool(names=self.independent_variables)
+        lb = pvals.copy()
+        ub = pvals.copy()
+        for key in lb.keys():
+            if p_bounds is None:
+                lb[key] = 1e-20
+                ub[key] = 1e20
+            else:
+                lb[key] = p_bounds[key][0]
+                ub[key] = p_bounds[key][1]
+        maxVertices = 0
+        limitVertices = False
+        volume, nr_vertices, vertices_matrix, operating_point = self.volume_lrs(lb,
+                                                                                 ub,
+                                                                                 maxVertices,
+                                                                                 limitVertices,
+                                                                                 return_vertices_matrix=True)
+        for key, values in operating_point.items():
+            if log_out is True:
+                pvals[key] = operating_point[key]
+            else:
+                pvals[key] = 10**operating_point[key]
+
+        return pvals
+
+
+    def valid_interior_parameter_geometric_mean_t_bb(self, p_bounds=None, log_out=False, distance=50, **kwargs):
+        pvals_tolerance = self.valid_interior_parameter_set(p_bounds=p_bounds,
+                                                            log_out=log_out,
+                                                            distance=distance,
+                                                            **kwargs)
+        pvals_bb = self.valid_interior_parameter_bounding_box(p_bounds=p_bounds,
+                                                              log_out=log_out)
+
+        pvals_gmean = pvals_tolerance.copy()
+        for key in pvals_gmean:
+            pvals_gmean[key] = (pvals_tolerance[key]*pvals_bb[key])**0.5
+        return pvals_gmean
+
 
     def consistent_parameter_and_state(self):
         variablepool = DSCaseConsistentParameterAndStateSet(self._swigwrapper)
@@ -189,7 +289,155 @@ class Case(Model):
         pstate = VariablePool()
         pstate.set_swigwrapper(variablepool)
         return pstate
-          
+
+    def volume(self, ignore_unbounded=True, log_coordinate=False, shared_boundaries=False, method='Tolerances',
+               **kwargs):
+
+        neg_vol = False
+
+        # 06 April 2021. Including p_bounds in the identification of pvals guarantees that the operating point of
+        # the system for which tolerances are calculated is located within the boundaries being analyzed.
+
+        if 'lowerBounds' in kwargs.keys() and 'upperBounds' in kwargs.keys():
+            lowerBounds = kwargs['lowerBounds']
+            upperBounds = kwargs['upperBounds']
+            p_bounds = dict((i, [lowerBounds, upperBounds]) for i in self.independent_variables)
+            asymmetrical = False
+        elif 'p_bounds' in kwargs.keys():
+            p_bounds = kwargs['p_bounds']
+            asymmetrical = True
+        else:
+            raise NameError('Individual bounds (upperBounds and lowerBounds) or p_bounds should be provided')
+
+        pvals = self.valid_interior_parameter_set(p_bounds=p_bounds,
+                                                  shared_boundaries=shared_boundaries)
+
+        if method == 'Tolerances':
+            try:
+                tolerances = self.measure_tolerance(pvals,
+                                                    log_out=log_coordinate,
+                                                    shared_boundaries=shared_boundaries)
+            except:
+                try:
+                    p_bounds = dict((i, [10**-20, 10**20]) for i in pvals)
+                    pvals = self.valid_interior_parameter_set(p_bounds=p_bounds, shared_boundaries=shared_boundaries)
+                    tolerances = self.measure_tolerance(pvals, log_out=log_coordinate,
+                                                        shared_boundaries=shared_boundaries)
+                except:
+                    print("Calculation of tolerances for case {} failed. Assuming a volume of 1".format(self.case_number))
+                    volume = 1
+                    return volume
+
+        elif method == 'Bounding Box':
+            tolerances = self.bounding_box(log_out=log_coordinate)
+
+        elif method == 'Geometric Mean T. & BB.':
+
+            volume_tol = self.volume(ignore_unbounded=ignore_unbounded,
+                                 log_coordinate=log_coordinate,
+                                 shared_boundaries=shared_boundaries,
+                                 method='Tolerances',
+                                 **kwargs)
+            volume_bb = self.volume(ignore_unbounded=ignore_unbounded,
+                                 log_coordinate=log_coordinate,
+                                 shared_boundaries=shared_boundaries,
+                                 method='Bounding Box',
+                                 **kwargs)
+
+            vol = (volume_tol * volume_bb)**0.5
+            return vol
+        else:                                           #lrs library
+            maxVertices = kwargs['maxVertices']
+            limitVertices = kwargs['limitVertices']
+            lb = pvals.copy()
+            ub = pvals.copy()
+            for key in lb.keys():
+                if asymmetrical is False:
+                    lb[key] = lowerBounds
+                    ub[key] = upperBounds
+                else:
+                    lb[key] = min(p_bounds[key])
+                    ub[key] = max(p_bounds[key])
+            volume, vertices = self.volume_lrs(lb, ub, maxVertices, limitVertices)
+            return volume
+
+        volume = 1
+        for xi in sorted(pvals.keys()):
+
+            if asymmetrical is True:
+                lowerBounds = min(p_bounds[xi])
+                upperBounds = max(p_bounds[xi])
+
+            lower_th = lowerBounds if log_coordinate is False else log10(lowerBounds)  # 1e-15
+            upper_th = upperBounds if log_coordinate is False else log10(upperBounds)   # 1e15
+            lower, upper = tolerances[xi]
+
+            if method == 'Tolerances':
+                lower = lower*pvals[xi] if log_coordinate is False else lower + log10(pvals[xi])
+                upper = upper*pvals[xi] if log_coordinate is False else upper + log10(pvals[xi])
+
+            lower_value = lower if lower > lower_th else lower_th
+            upper_value = upper if upper < upper_th else upper_th
+
+            ratio = upper_value/lower_value if log_coordinate is False else upper_value - lower_value
+
+            if ratio < 0.0:
+                neg_vol = True
+            if shared_boundaries is True and ratio == 0.0:
+                ratio = 1
+                print("Case {}: Changing ratio for the variable {} from zero to {}".format(self.case_number, xi, ratio))
+            if ignore_unbounded is True:
+                if lower > lower_th and upper < upper_th:
+                    volume = volume*ratio
+            else:
+                volume = volume * ratio
+        volume = round_sig(volume) if neg_vol is False and volume != 0.0 else 0.0
+        return volume
+
+    def volume_geometric_mean(self, ignore_unbounded=True, log_coordinate=False):
+        pvals = self.valid_interior_parameter_set()
+        tolerances = self.measure_tolerance(pvals, log_out=log_coordinate)
+        parameter_count = 0
+        volume = 1
+        for xi in sorted(pvals.keys()):
+            lower_th = 1e-15 if log_coordinate is False else -15
+            upper_th = 1e15 if log_coordinate is False else 15
+            lower, upper = tolerances[xi]
+            if log_coordinate is False:
+                lower_value = lower if lower > lower_th else 1e-3
+                upper_value = upper if upper < upper_th else 1e3
+            else:
+                lower_value = lower if lower > lower_th else -3
+                upper_value = upper if upper < upper_th else 3
+            ratio = upper_value / lower_value if log_coordinate is False else upper_value - lower_value
+            if ignore_unbounded is True:
+                if lower > lower_th and upper < upper_th:
+                    volume = volume*ratio
+                    parameter_count += 1
+            else:
+                volume = volume * ratio
+                parameter_count += 1
+        if parameter_count == 0:
+            parameter_count = 1
+        geometric_mean = round_sig(volume**(1.0/parameter_count))
+        return geometric_mean
+
+    def volume_lrs(self, lowerBounds, upperBounds, maxVertices, limitVertices, return_vertices_matrix=False):
+        vol_structure = DSCaseVolume_lrs(self._swigwrapper, lowerBounds._swigwrapper,
+                                upperBounds._swigwrapper, maxVertices, limitVertices, return_vertices_matrix)
+        volume = DSCaseVolumeGetVolume(vol_structure)
+        nr_vertices = DSCaseVolumeGetVertices(vol_structure)
+
+        if return_vertices_matrix is False:
+            return volume, nr_vertices
+        else:
+            vertices_matrix = DSCaseVolumeGetVerticesMatrix(vol_structure)
+            op_swig = DSCaseVolumeGetOperatingPoint2D(vol_structure)
+            operating_point = lowerBounds.copy()
+            for var in operating_point:
+                operating_point.update({var: DSVariablePoolValueForVariableWithName(op_swig, var)})
+            return volume, nr_vertices, vertices_matrix, operating_point
+
     @property
     def case_number(self):
         return DSCaseIdentifier(self._swigwrapper)
@@ -206,8 +454,8 @@ class Case(Model):
         conditions = list()
         eqs_expr = DSCaseConditions(self._swigwrapper)
         if eqs_expr is None:
-            return
-        for i in xrange(0, DSCaseNumberOfConditions(self._swigwrapper)):
+            return None
+        for i in range(0, DSCaseNumberOfConditions(self._swigwrapper)):
             conditions.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
@@ -218,8 +466,8 @@ class Case(Model):
         conditions = list()
         eqs_expr = DSCaseLogarithmicConditions(self._swigwrapper)
         if eqs_expr is None:
-            return
-        for i in xrange(0, DSCaseNumberOfConditions(self._swigwrapper)):
+            return None
+        for i in range(0, DSCaseNumberOfConditions(self._swigwrapper)):
             conditions.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
@@ -231,7 +479,7 @@ class Case(Model):
         eqs_expr = DSCaseBoundaries(self._swigwrapper)
         if eqs_expr is None:
             return
-        for i in xrange(0, DSCaseNumberOfBoundaries(self._swigwrapper)):
+        for i in range(0, DSCaseNumberOfBoundaries(self._swigwrapper)):
             boundaries.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
@@ -243,7 +491,7 @@ class Case(Model):
         eqs_expr = DSCaseLogarithmicBoundaries(self._swigwrapper)
         if eqs_expr is None:
             return
-        for i in xrange(0, DSCaseNumberOfBoundaries(self._swigwrapper)):
+        for i in range(0, DSCaseNumberOfBoundaries(self._swigwrapper)):
             boundaries.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
@@ -252,6 +500,14 @@ class Case(Model):
     @property
     def is_cyclical(self):
         return False
+
+    @property
+    def is_unstable(self):
+        return DSSSystemIsUnstable(DSCaseSSystem(self._swigwrapper))
+
+    @property
+    def is_false_blowing(self):
+        return DSSSystemIsFalseBlowing(DSCaseSSystem(self._swigwrapper))
     
     def _is_valid_slice(self, p_bounds, strict=True):
 
@@ -260,14 +516,14 @@ class Case(Model):
         for i in lower:
             lower[i] = 1E-20
             upper[i] = 1E20
-        for (key,value) in p_bounds.iteritems():
+        for (key, value) in p_bounds.items():
             try:
-                min_value,max_value = value
+                min_value, max_value = value
             except TypeError:
                 min_value = value
                 max_value = value
             if min_value > max_value:
-                raise ValueError, 'parameter slice bounds are inverted: min is larger than max'
+                raise ValueError('parameter slice bounds are inverted: min is larger than max')
             lower[key] = min_value
             upper[key] = max_value
         return DSCaseIsValidAtSlice(self._swigwrapper,
@@ -344,7 +600,7 @@ class Case(Model):
             lower[key] = 1e-20
             upper[key] = 1e20
         if p_bounds is not None:
-            for key,value in p_bounds.iteritems():
+            for key, value in p_bounds.items():
                 if key not in lower:
                     continue;
                 try:
@@ -354,7 +610,7 @@ class Case(Model):
                     max_value = value
                     boundkeys.remove(key)
                 if min_value > max_value:
-                    raise ValueError, 'Min cannot be larger than max'
+                    raise ValueError('Min cannot be larger than max')
                 lower[key] = min_value
                 upper[key] = max_value
         box = {}
@@ -369,22 +625,33 @@ class Case(Model):
                 box[key] = [i[0] for i in box[key]]
         return box
             
-    def measure_tolerance(self, pvals, log_out=False):
-        tolerances={}
+    def measure_tolerance(self, pvals, log_out=False, shared_boundaries=False):
+        tolerances = {}
         for key in self.independent_variables:
             tolerances[key] = self.vertices_1D_slice(pvals, key, log_out=log_out)
+            dimension = len(tolerances[key])
+            if shared_boundaries is True and dimension == 1:
+                tolerances[key] = [tolerances[key][0], tolerances[key][0]]
             if log_out is False:
                 tolerances[key] = (tolerances[key][0][0]/pvals[key], tolerances[key][1][0]/pvals[key])
             if log_out is True:
                 tolerances[key] = (tolerances[key][0][0]-log10(pvals[key]), tolerances[key][1][0]-log10(pvals[key]))
         return tolerances
+
+    def double_value_boundaries_at_point(self, pvals, log_out=False):
+        boundaries = list(chain(*DSCaseDoubleValueBoundariesAtPointSortXi(self._swigwrapper, pvals._swigwrapper)))
+        if log_out is True:
+            return boundaries
+        else:
+            boundaries_cartesian = [pow(10, i) for i in boundaries]
+            return boundaries_cartesian
               
     def vertices_1D_slice(self, p_vals, slice_variable, range_slice=None, log_out=False):
         lower = p_vals.copy()
         upper = p_vals.copy()
         if range_slice is None:
-            lower[slice_variable] = 1E-20
-            upper[slice_variable] = 1E20
+            lower[slice_variable] = 1E-20 # original values were 1e-20 // modified values were 1e-25
+            upper[slice_variable] = 1E20  # original values were 1e20 // modified values were 1e20
         else:
             lower[slice_variable] = min(range_slice)
             upper[slice_variable] = max(range_slice)
@@ -404,7 +671,7 @@ class Case(Model):
             
             params = VariablePool(p_vals)
             V = self.vertices_1D_slice(params, slice_variable, range_slice=range_slice, log_out=True)
-            V = zip(*V)[0]
+            V = list(zip(*V))[0]
             step =(V[1]-V[0])/resolution
             X = [V[0]+step*i for i in range(resolution+1)]
             f_val = list()
@@ -442,15 +709,15 @@ class Case(Model):
             for vertex in log_vertices:
                 vertices.append([10**coordinate for coordinate in vertex])
             if log_out is True:
-                vertices=log_vertices
+                vertices = log_vertices
         if vtype.lower() == 'analytical' or vtype.lower() == 'a':
-            vertices=self._vertex_equations_2D_slice(p_vals, x_variable, y_variable,
+            vertices = self._vertex_equations_2D_slice(p_vals, x_variable, y_variable,
                                             range_x, range_y, log_out)
         if vtype.lower() == 'both' or vtype.lower() == 'b':
             
-            eqs=self._vertex_equations_2D_slice(p_vals, x_variable, y_variable,
+            eqs = self._vertex_equations_2D_slice(p_vals, x_variable, y_variable,
                                                 range_x, range_y, log_out)
-            vertices=[(vertices[i],eqs[i]) for i in xrange(len(vertices))]
+            vertices = [(vertices[i],eqs[i]) for i in range(len(vertices))]
         return vertices
 
     def _vertex_equations_2D_slice(self, p_vals, x_variable, y_variable, range_x, range_y,
@@ -468,7 +735,7 @@ class Case(Model):
                                                 y_variable,
                                                 log_out)
         vertices = []
-        for i in xrange(DSStackCount(stack)):
+        for i in range(DSStackCount(stack)):
             expressions = DSExpressionArrayFromVoid(DSStackPop(stack))
             expr0 = Expression(None)
             expr0._swigwrapper = DSExpressionAtIndexOfExpressionArray(expressions, 0)
@@ -549,7 +816,7 @@ class Case(Model):
                                                         x_variable,
                                                         y_variable,
                                                         z_variable)
-        for i in xrange(DSMatrixArrayNumberOfMatrices(faces_data)):
+        for i in range(DSMatrixArrayNumberOfMatrices(faces_data)):
             log_vertices = DSMatrixArrayMatrix(faces_data, i)
             if log_out is False:
                 vertices = list()
@@ -589,7 +856,7 @@ class Case(Model):
         vertices_raw = DSMatrixArrayMatrix(vertices_data, 0)
         vertices=[]
         for v in vertices_raw:
-            vertices.append([v[i] for i in xrange(len(v)) if i in free_variables])
+            vertices.append([v[i] for i in range(len(v)) if i in free_variables])
         connectivity = DSMatrixArrayMatrix(vertices_data, 1)
         return keys, vertices, connectivity
     
@@ -597,12 +864,30 @@ class Case(Model):
         ssys = self.ssystem.remove_algebraic_constraints()
         roots = ssys.positive_roots(parameter_values)
         return roots
+
+    def positive_roots_numpy(self, parameter_values):
+        ssys = self.ssystem.remove_algebraic_constraints()
+        # try:
+        roots = ssys.positive_roots_numpy(parameter_values)
+        # except:
+        #     print("Case {} caused the routine positive_roots_numpy to crash".format(self.case_number))
+        #     return 0
+        return roots
+
+    def has_complex_conjugates(self, parameter_values):
+        ssys = self.ssystem.remove_algebraic_constraints()
+        try:
+            complex_conjugates = ssys.has_complex_conjugates(parameter_values)
+        except:
+            print("Case {} caused the routine has_complex_conjugates to crash".format(self.case_number))
+            return False
+        return complex_conjugates
     
     def eigen_spaces(self):
         ds_swig = DSCaseEigenSubspaces(self._swigwrapper)
         eqs = DSDesignSpaceEquations(ds_swig)
         equations = list()
-        for i in xrange(0, DSDesignSpaceNumberOfEquations(ds_swig)):
+        for i in range(0, DSDesignSpaceNumberOfEquations(ds_swig)):
             expr = DSExpressionAtIndexOfExpressionArray(eqs, i)
             equations.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
@@ -612,6 +897,183 @@ class Case(Model):
                                      latex_symbols=self._latex,
                                      swigwrapper=ds_swig)
         return ds
+
+    def shared_boundaries_indices(self, case2, intersecting=False):
+        return DSCaseSharedBoundaries(self._swigwrapper, case2._swigwrapper, intersecting)
+
+    def share_boundaries_with(self, case2, intersecting=False):
+        return DSCaseHasSharedBoundaries(self._swigwrapper, case2._swigwrapper, intersecting)
+
+    def shared_boundaries_number_of_vertices(self, case2, lowerBounds, upperBounds, maxVertices, limitVertices):
+        return DSCaseSharedBoundariesNumberOfVertices(self._swigwrapper, case2._swigwrapper,
+                                                      lowerBounds._swigwrapper,
+                                                      upperBounds._swigwrapper,
+                                                      maxVertices,
+                                                      limitVertices)
+
+    def shared_boundaries_is_valid(self, case2):
+        return DSCasesSharedBoundariesIsValid(self._swigwrapper, case2._swigwrapper)
+
+    def calculate_distance_to_case(self, case2):
+        p1 = self.valid_interior_parameter_set()
+        p2 = case2.valid_interior_parameter_set()
+        return DSVariablePoolDistanceToPool(p1._swigwrapper, p2._swigwrapper)
+
+    def dimension(self, lowerBounds, upperBounds):
+        return DSCaseDimension(self._swigwrapper, lowerBounds._swigwrapper, upperBounds._swigwrapper)
+
+    def neighbors_signature(self, controller):
+        neighbors_vector = DSCaseGetSignatureNeighbors(self._swigwrapper, controller._swigwrapper)
+        neighbors_list = [str(DSUIntegerVectorValueAtIndex(neighbors_vector, i)) for i in range(DSUIntegerVectorDimension(neighbors_vector))]
+        return neighbors_list
+
+    def sample_valid_points(self, p_bounds=None, nr_points=10):
+        # 1. Generate a list containing bounding box in each dimension.
+        box = self.bounding_box(p_bounds=p_bounds, log_out=True)
+        variables = self.independent_variables
+
+        # 2. generate a list of coordinates for each dimension to sample the space
+        coordinates_seed = []
+        for key in variables:
+            coordinates_seed.append(np.linspace(box[key][0], box[key][1], nr_points))
+
+        # 3. Use the itertools.product function to generate list of points
+        points = itertools.product(*coordinates_seed)
+
+        valid_points = []
+        # 4. Check for validity
+        for point in points:
+            validity, p = self.generate_pool_validity(point)
+            if validity is True:
+                valid_points.append(p)
+
+        return valid_points
+
+    def generate_pool_validity(self, point):
+        variables = self.independent_variables
+        pvals = VariablePool(names=variables)
+        for index, variable in enumerate(variables):
+            pvals[variable] = 10 ** point[index]
+        validity = self.is_valid(p_bounds=pvals, strict=True)
+        return validity, pvals
+
+    def mutation_rate_to_phenotype_grid(self, case2, identity,
+                                        lamb=1.0,
+                                        delta=2.0,
+                                        p_bounds=None,
+                                        nr_points=0,
+                                        average_method='Average'):
+
+        # 1Get the bounding box and sample nr_points. Let us create a function for that. Do this for both case1
+        # and case2.
+        valid_p1 = self.sample_valid_points(p_bounds=p_bounds, nr_points=nr_points)
+        valid_p2 = case2.sample_valid_points(p_bounds=p_bounds, nr_points=nr_points)
+
+        #  For each point in valid_p1, calculate mutation rate for valid_p2.
+        mutation_rate = 0
+        total_points = 0
+
+        if average_method == 'Average':
+                for p1 in valid_p1:
+                    # validity, p1 = self.generate_pool_validity(point1)
+                    # if validity is False:
+                    #     continue
+                    for p2 in valid_p2:
+                        # validity, p2 = case2.generate_pool_validity(point2)
+                        # if validity is False:
+                        #     continue
+                        mutation = DSPopDynamicsMutationRateForTransition(p1._swigwrapper,
+                                                                          p2._swigwrapper,
+                                                                          lamb,
+                                                                          delta,
+                                                                          identity._swigwrapper)
+                        mutation_rate += mutation
+                        total_points += 1
+                mutation_rate = mutation_rate/total_points
+        else:
+                for p1 in valid_p1:
+                    # validity, p1 = self.generate_pool_validity(point1)
+                    # if validity is False:
+                    #     continue
+                    for p2 in valid_p2:
+                        # validity, p2 = case2.generate_pool_validity(point2)
+                        # if validity is False:
+                        #     continue
+                        mutation = DSPopDynamicsMutationRateForTransition(p1._swigwrapper,
+                                                                          p2._swigwrapper,
+                                                                          lamb,
+                                                                          delta,
+                                                                          identity._swigwrapper)
+                        mutation_rate += log10(mutation)
+                        total_points += 1
+                mutation_rate = 10**(mutation_rate/total_points)
+
+        print("{} total mutation rates analyzed".format(total_points))
+        print("The mutation rate is: ", mutation_rate)
+        return mutation_rate
+
+    def mutation_rate_to_phenotype(self, case2, identity,
+                                   lamb=1.0,
+                                   delta=1.5,
+                                   method='Tolerances',
+                                   p_bounds=None,
+                                   nr_points=0,
+                                   average_method='Average'):
+
+        if identity is None:
+            raise ValueError("Please set the identity of each parameter in the Edit Parameters tab")
+
+        if method == 'Tolerances':
+            p1 = self.valid_interior_parameter_set(p_bounds=p_bounds)
+            p2 = case2.valid_interior_parameter_set(p_bounds=p_bounds)
+        elif method == 'Bounding Box':
+            p1 = self.valid_interior_parameter_bounding_box(p_bounds=p_bounds)
+            p2 = case2.valid_interior_parameter_bounding_box(p_bounds=p_bounds)
+        elif method == 'Vertex Enumeration':
+            p1 = self.valid_interior_parameter_set_vertex_enumeration(p_bounds=p_bounds)
+            p2 = case2.valid_interior_parameter_set_vertex_enumeration(p_bounds=p_bounds)
+        elif method == 'Geometric Mean T. & BB.':
+            p1 = self.valid_interior_parameter_geometric_mean_t_bb(p_bounds=p_bounds)
+            p2 = case2.valid_interior_parameter_geometric_mean_t_bb(p_bounds=p_bounds)
+        elif method == 'Grid':
+            return self.mutation_rate_to_phenotype_grid(case2, identity,
+                                                        lamb=lamb,
+                                                        delta=delta,
+                                                        p_bounds=p_bounds,
+                                                        nr_points=nr_points,
+                                                        average_method=average_method)
+
+        mutation = DSPopDynamicsMutationRateForTransition(p1._swigwrapper,
+                                                          p2._swigwrapper,
+                                                          lamb,
+                                                          delta,
+                                                          identity._swigwrapper)
+
+        return mutation
+
+    def mutation_key_to_case(self, case2, symbol=None):
+        key = 'k'
+
+        try:
+            if int(self.case_number) < 10:
+                key += '0' + str(self.case_number)
+            else:
+                key += str(self.case_number)
+        except:
+            key += str(self.case_number)
+
+        if symbol is not None:
+            key += str(symbol)
+
+        try:
+            if int(case2.case_number) < 10:
+                key += '0' + str(case2.case_number)
+            else:
+                key += str(case2.case_number)
+        except:
+            key += str(case2.case_number)
+
+        return key
 
 
 class CaseIntersection(Case):
@@ -626,7 +1088,7 @@ class CaseIntersection(Case):
             cases= [cases]
         for case in cases:
             if isinstance(case, Case) is False:
-                raise TypeError, 'must be an instance of the Case class'
+                raise TypeError('must be an instance of the Case class')
         self._latex = case._latex
         new_cases = []
         if constraints is not None:
@@ -659,7 +1121,7 @@ class CaseIntersection(Case):
         Xd.set_swigwrapper(DSVariablePoolCopy(DSCaseXd(case_swigwrapper)))
         for i in VariablePool():
             if i not in self.dependent_variables:
-                raise NameError, 'Dependent Variables are inconsistent'
+                raise NameError('Dependent Variables are inconsistent')
         Xi = VariablePool()
         Xi.set_swigwrapper(DSVariablePoolCopy(DSCaseXi(case_swigwrapper)))
         self._independent_variables = Xi
@@ -687,7 +1149,7 @@ class CaseColocalization(CaseIntersection):
             slice_variables = [slice_variables]
         for case in cases:
             if isinstance(case, Case) is False:
-                raise TypeError, 'must be an instance of the Case class'
+                raise TypeError('must be an instance of the Case class')
         self._latex = case._latex
         new_cases = []
         if constraints is not None:
@@ -731,7 +1193,7 @@ class CaseColocalization(CaseIntersection):
         Xd.set_swigwrapper(DSVariablePoolCopy(DSCaseXd(case_swigwrapper)))
         for i in VariablePool():
             if i not in self.dependent_variables:
-                raise NameError, 'Dependent Variables are inconsistent'
+                raise NameError('Dependent Variables are inconsistent')
         Xi = VariablePool()
         Xi.set_swigwrapper(DSVariablePoolCopy(DSCaseXi(case_swigwrapper)))
         self._independent_variables = Xi
@@ -743,7 +1205,7 @@ class CaseColocalization(CaseIntersection):
     def __repr__(self):
         return 'CaseColocalization: Cases ' + str(self)
         
-    def valid_parameter_set(self, p_bounds=None, optimize=None, minimize=True, project=True):
+    def valid_parameter_set(self, p_bounds=None, optimize=None, minimize=True, project=True, **kwargs):
         psetHD = super(CaseIntersection, self).valid_parameter_set(
                                           p_bounds=p_bounds,
                                           optimize=optimize,
@@ -787,3 +1249,7 @@ class CaseColocalization(CaseIntersection):
             p_sets[str(i)] = pvals
             index += 1
         return p_sets
+
+
+def round_sig(x, sig=3):
+    return round(x, sig-int(floor(log10(abs(x))))-1)

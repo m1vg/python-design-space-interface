@@ -1,6 +1,8 @@
 import dspace
 import dspace.plotutils
 import dspace.display
+#from InteractiveInput import load_widget
+import cPickle as pickle
 
 import numpy as np
 
@@ -23,6 +25,7 @@ if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
     from IPython.html.widgets import LatexWidget as Latex
     from IPython.html.widgets import FloatTextWidget as FloatText
     from IPython.html.widgets import ImageWidget as Image
+    from IPython.html.widgets import IntSliderWidget as Slider
     VBox = Box
     HBox = Box
     old_ipython = True
@@ -140,6 +143,7 @@ class MakePlot(object):
             i.on_trait_change(self.update_field, 'value')    
         plot_type.widget_container = wi
         button = Button(value=False, description='Add Plot')
+
         button.on_click(self.make_plot)
         button.xlabel = xlabel
         button.ylabel = ylabel
@@ -154,6 +158,8 @@ class MakePlot(object):
         button.caption = caption_widget
         button.included = included_widget
         button.wi = wi
+        self.show_colorbar = Checkbox(description='Split Colorbar', value=False)
+        button.show_colorbar = self.show_colorbar
         self.title = title_widget
         self.caption = caption_widget
         self.boundaries = boundaries
@@ -164,10 +170,19 @@ class MakePlot(object):
         self.ymax = ymax
         self.xmin = xmin
         self.xmax = xmax
+        self.button_make_interactive = button # Added by Miguel
+        
+        self.button_make_interactive.upper_title = 'Design Space Plot'
+        self.button_make_interactive.colorbar = False
+        self.button_make_interactive.highlight_flag = False
+
+        box_add_plot = Box()
+        box_add_plot.children = [button]
+        
         add_plot = VBox(description='Add Plot',
                                            children=[wi,
                                                      self.plot_data, 
-                                                     button])
+                                                     box_add_plot])
         self.update_plot_widget('value', 'Design Space (Interactive)')
         return ('Create Plot', add_plot)
         
@@ -193,8 +208,10 @@ class MakePlot(object):
     def stability_2D_plot_widget(self):
         controller = self.controller
         resolution_widget = FloatText(description='Resolution', value=controller.defaults('resolution'))
-        wi = VBox(children=[resolution_widget])
+        colorbar_widget = Checkbox(description='Show colorbar', value=True)
+        wi = VBox(children=[resolution_widget, colorbar_widget])
         wi.resolution = resolution_widget
+        wi.colorbar_widget = colorbar_widget
         self.plot_data.children = [wi]
         self.title.value = 'System design space showing stability of the fixed points'
         self.caption.value = 'Number of eigenvalues with positive real part represented as a heat map on the z-axis.'
@@ -202,9 +219,10 @@ class MakePlot(object):
     
     def stability_1D_plot_widget(self):
         controller = self.controller
+        stability_1D_options = ['log('+ i + ')' for i in controller.ds.dependent_variables]
         zlim = controller.defaults('zlim')
-        function_widget = Text(description='* Y-Axis', 
-                                             value = 'log('+controller.ds.dependent_variables[0]+')')
+        function_widget = Dropdown(description='* Y-Axis',
+                               values=stability_1D_options, value=stability_1D_options[0]) #Modified by Miguel to fix drop-down menu. #value = 'log('+controller.ds.dependent_variables[0]+')')
         resolution_widget = FloatText(description='Resolution', value=controller.defaults('resolution'))
         zlim_auto = (zlim is None)
         zlim_widget = Checkbox(description='Automatic Y-Lim', value=zlim_auto)
@@ -224,8 +242,8 @@ class MakePlot(object):
         self.title.value = 'System design space showing stability of the fixed points'
         self.caption.value = 'Number of eigenvalues with positive real part represented by line style: '
         self.caption.value += '0 eigenvalues w/ positive real part (solid); '
-        self.caption.value += '1 eigenvalues w/ positive real part  (red dashed); '
-        self.caption.value += '2 eigenvalues w/ positive real part (yellow dotted).'
+        self.caption.value += '1 eigenvalues w/ positive real part  (red dotted); '
+        self.caption.value += '2 eigenvalues w/ positive real part (green dashed).'
         return
         
     def eigenvalue_2D_plot_widget(self):
@@ -276,7 +294,7 @@ class MakePlot(object):
         log_linear_widget = Checkbox(description='Function is log linear',
                                                    value=True)
         if value == 'Steady State Flux':
-            flux_options = ['log(V_'+ i + ')' for i in controller.ds.dependent_variables]
+            flux_options = ['log(V_'+ i + ')' for i in controller.ds.dependent_variables_no_algebraic_constraints]
             function_widget = Dropdown(values=flux_options,
                                        options=flux_options)
             self.title.value = 'System design space showing a steady state flux'
@@ -287,7 +305,7 @@ class MakePlot(object):
             self.title.value = 'System design space showing a function at steady state'
             self.caption.value = 'Steady state function shown as a heat map on the z-axis.'
         else:
-            ss_options = ['log('+ i + ')' for i in controller.ds.dependent_variables]
+            ss_options = ['log('+ i + ')' for i in controller.ds.dependent_variables_no_algebraic_constraints]
             function_widget = Dropdown(values=ss_options,
                                        options=ss_options)
             self.title.value = 'System Design Space showing a steady state concentration'
@@ -340,12 +358,12 @@ class MakePlot(object):
         zlim = controller.defaults('zlim')
         value = str(self.plot_type.value)
         if value == 'Design Space (interactive)':
-            wi = VBox(children=[])
+            wi = VBox(children=[self.show_colorbar])
             self.plot_data.children = [wi]
             self.title.value = 'System design space'
             self.caption.value = 'System design space with the enumerated qualitatively-distinct phenotypes represented on the z-axis, identified by color.'                
         elif value == 'Design Space':
-            intersections_widget = Dropdown(description='# Intersetcions', 
+            intersections_widget = Dropdown(description='# Intersections',
                                             values=['Single',
                                                     'Single and Triple',
                                                     'Triple',
@@ -354,8 +372,30 @@ class MakePlot(object):
                                                      'Single and Triple',
                                                      'Triple',
                                                      'All',],
-                                            value='Single and Triple')
-            wi = VBox(children=[intersections_widget])
+                                            value='Single')
+            
+            ### Add Advanced Settings buttons. Create a container and place all buttons here.
+            advanced_button = Button(description='Open Advanced Settings')
+            advanced_button.on_click(self.expand_advanced_settings)
+            highlight_phenotypes = Text(description = 'Highlight Phenotype:', visible = False)
+            figure_title = Text(description= 'Upper Figure Title', value='Design Space Plot', visible = False)
+            show_colorbar = Checkbox(description='Show color bar', value=False, visible = False)
+            accept_advanced = Button(description='Accept Changes', visible = False)
+            advanced_container = Box(children = [highlight_phenotypes, figure_title, show_colorbar, accept_advanced, advanced_button])
+            # Attach widgets to advanced_button
+            advanced_button.phenotypes = highlight_phenotypes
+            advanced_button.title = figure_title
+            advanced_button.show_colorbar = show_colorbar
+            advanced_button.accept = accept_advanced
+            advanced_button.state = 'open'
+            ## Attach widgets to accept_advanced button and define on_click action.
+            accept_advanced.phenotypes = highlight_phenotypes
+            accept_advanced.title = figure_title
+            accept_advanced.colorbar = show_colorbar
+            accept_advanced.advanced_button = advanced_button
+            accept_advanced.on_click(self.update_static_variables)
+            
+            wi = VBox(children=[intersections_widget, advanced_container])
             wi.intersections = intersections_widget
             self.title.value = 'System design space'
             self.caption.value = 'Enumerated qualitatively-distinct phenotypes represented on the z-axis and identified by color.'                
@@ -379,11 +419,52 @@ class MakePlot(object):
         if controller.name != '':
             title = 'Analysis of the ' + controller.name + ' by ' + self.title.value.lower()
             self.title.value = title
-            
+        
+        
+    def expand_advanced_settings(self, b): # Miguel
+
+        if b.state == 'open':
+            b.description = 'Cancel'
+            b.phenotypes.visible = True
+            b.title.visible = True
+            b.show_colorbar.visible = True
+            b.accept.visible = True
+            b.state = 'close'
+        else:
+            b.description = 'Advanced Settings'
+            b.visible = True
+            b.phenotypes.visible = False
+            b.title.visible = False
+            b.show_colorbar.visible = False
+            b.accept.visible = False
+            b.state = 'open'
+
+    def update_static_variables(self,b):
+        # close advanced settings menu
+        b.phenotypes.visible = False
+        b.included = b.phenotypes
+        b.title.visible = False
+        b.colorbar.visible = False
+        b.visible = False
+        b.advanced_button.description = 'Open Advanced Settings'
+        b.advanced_button.state = 'open'
+        
+        # Update Fields
+        self.button_make_interactive.upper_title = b.title.value
+        # show color bar
+        self.button_make_interactive.colorbar = b.colorbar.value
+        # Hihlight cases
+        self.button_make_interactive.highlight_cases = b.phenotypes.value
+        if str(self.button_make_interactive.highlight_cases) != '':
+            self.button_make_interactive.highlight_flag = True
+        else:
+            self.button_make_interactive.highlight_flag = False
+
     def make_plot(self, b):
         controller = self.controller
         b.description = 'Creating plot... Please Wait.'
         b.disabled = True
+        # if 1 == 1:
         try:
             b.pvals = controller.pvals.copy()
             if b.plot_type.value == 'Design Space (interactive)':
@@ -397,9 +478,14 @@ class MakePlot(object):
             else:
                 self.make_function_plot(b)
         except Exception as e:
+            print(e)    # print exception for debugging purposes.
             close_button = Button(description="Close")
             error_message = '<div width="200px" style="float:center; text-align:center;">'
-            error_message += '<b>An error occured while plotting</b></div>'
+            error_message += '<b>An error occured while plotting'
+            if str(e).count('Case') == 1:
+                error_message += ': ' + str(e) + '</b></div>'
+            else:
+                error_message += '</b></div>'
             error_window = Popup(children=[HTML(value=error_message),close_button])
             close_button.window = error_window
             close_button.on_click(lambda x: x.window.close())
@@ -411,10 +497,10 @@ class MakePlot(object):
             display(error_window)
             b.description = 'Add Plot'
             b.disabled = False
-        else:
+        finally:
             b.description = 'Add Plot'
             b.disabled = False
-    
+
     def axes_ranges(self, b):
         pvals = self.controller.pvals
         ranges = [[b.xmin.value, b.xmax.value],[b.ymin.value, b.ymax.value]]
@@ -441,35 +527,76 @@ class MakePlot(object):
         if str(b.ylabel.value) == 'None':
             return
         button = Button(description='Stop interactive plot')
+        button2 = Button(description='Adjust Sliders')
+        self.sliders_menu = Box()
+        self.sliders_menu.children = [button2]
+        button2.on_click(self.customize_sliders)
         button.on_click(self.remove_plot)
         button.name = 'Interactive Plot (' + str(np.random.randint(0, 1000)) + ')'
-        image_widget = Image()
+        self.button_make_interactive.name = button.name
+
+        if self.show_colorbar.value is True:
+            image_widget_fig = Image()
+            image_widget_color = HTML()
+            image_widget_fig.description = 'Figure'
+            image_widget_fig.width = '100%'
+            image_widget_color.description = 'Colorbar'
+            image_widget = Tab(children=[VBox(children=[image_widget_fig]), image_widget_color])
+            image_widget.set_title(0, 'Figure')
+            image_widget.set_title(1, 'Colorbar')
+            image_widget.selected_index = 0
+            image_widget.description = 'Figure_No_Colorbar'
+        else:
+            image_widget = Image()
+            image_widget.width = '100%'
+            image_widget.description = 'Figure'
+
         popup_widget = Popup(children=[image_widget])
-        image_widget.width='100%'
         rangex, rangey = self.axes_ranges(b)
+        
+        # initialize dictionary
+        slider_dictionary = {i: [1e-5, 1e5] for i in controller.ds.independent_variables}
+        
+        # Update values for x
+        #slider_dictionary.update({b.xlabel.value:[b.xmin.value, b.xmax.value]})
+
+        # update values for y
+        #slider_dictionary.update({b.ylabel.value:[b.ymin.value, b.ymax.value]})
+        
+        # if sliders were modified, update dictionary.
+        if hasattr(b, "modify_sliders") and b.modify_sliders is True:
+            #update slider dictionary.
+            #slider_dictionary.update({b.sliders_variable.value:[10**b.sliders_min.value , 10**b.sliders_max.value]})
+            slider_dictionary.update(b.sliders_update_dictionary)
+            
         interactive_plot = controller.ds.draw_2D_slice_notebook(controller.pvals, str(b.xlabel.value),
                                                                 str(b.ylabel.value),
                                                                 rangex, rangey,
-                                                                {i:[1e-5, 1e5] for i in
-                                                                 controller.pvals},
-                                                                intersections=[1],
+                                                                slider_dictionary,
+                                                                intersections=[1, 3], #[1, 3]
                                                                 image_container=image_widget)
         wi = VBox(description=button.name,
-                                     children=[interactive_plot, 
-                                               button,
-                                               popup_widget])
-        controller.options.update({'xaxis':str(b.xlabel.value),
-                                   'yaxis':str(b.ylabel.value),
-                                   'x_range':rangex, 
-                                   'y_range':rangey})
+                  children=[interactive_plot,
+                            button, self.sliders_menu,
+                            popup_widget])
+        controller.options.update({'xaxis': str(b.xlabel.value),
+                                   'yaxis': str(b.ylabel.value),
+                                   'x_range': rangex,
+                                   'y_range': rangey})
         controller.update_child(button.name, wi)
         
     def make_static_plot(self, b):
+        if hasattr(b, 'update'):
+            b = b.b
         controller = self.controller
         if old_ipython is True:
-            fig = plt.figure(figsize=[7, 4], dpi=600, facecolor='w')
+            if self.button_make_interactive.colorbar is False:
+                fig = plt.figure(figsize=[5.5698, 4], dpi=600, facecolor='w') # original size of figure is 7,4
+            else:
+                fig = plt.figure(figsize=[7, 4], dpi=600, facecolor='w')
+            
             ax = fig.add_axes([0.1714, 0.2, 0.6, 0.7])
-            ax.set_title('Design Space plot')
+            ax.set_title(b.upper_title) # 'Design Space plot'
         else:
             fig = plt.figure(figsize=[5, 4], dpi=600, facecolor='w')
             ax = fig.add_axes([0.24, 0.2, 0.72, 0.7])
@@ -477,20 +604,24 @@ class MakePlot(object):
         plot_data = self.plot_data.children[0]
         intersects = plot_data.intersections.value
         intersections_dict = {'Single':[1],
-                              'Single and Triple':[1,3],
+                              'Single and Triple': [1, 3],
                               'Triple':[3],
                               'All':range(1, 100)}
         rangex, rangey = self.axes_ranges(b)
         ec = 'k' if b.boundaries.value is True else 'none'
         if str(b.ylabel.value) != 'None':
-            colorbar = True if old_ipython is True else False
+            colorbar = self.button_make_interactive.colorbar if old_ipython is True else False
             colors=controller.ds.draw_2D_slice(ax, controller.pvals,
                                                str(b.xlabel.value), str(b.ylabel.value),
                                                rangex, rangey,
                                                intersections=intersections_dict[intersects],
                                                included_cases=self.included_cases(b),
                                                ec=ec,
-                                               colorbar=colorbar)
+                                               colorbar=colorbar) # changed from colorbar=colorbar to colorbar = False
+            if self.button_make_interactive.highlight_flag:
+                case = controller.ds(str(self.button_make_interactive.highlight_cases))
+                case.draw_2D_slice(ax, controller.pvals, str(b.xlabel.value), str(b.ylabel.value),
+                                       rangex, rangey, fc='none', ec='k', lw='2.')
         else:
             colors=controller.ds.draw_1D_slice(ax, controller.pvals, str(b.xlabel.value),
                                                rangex,
@@ -514,7 +645,14 @@ class MakePlot(object):
         
     def make_stability_plot(self, b):
         controller = self.controller
-        fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
+        if hasattr(self.plot_data.children[0], 'colorbar_widget'):
+            show_colorbar = self.plot_data.children[0].colorbar_widget.value
+        else:
+            show_colorbar = True
+        if show_colorbar is True:
+            fig = plt.figure(figsize=[6, 4], dpi=600, facecolor='w')
+        else:
+            fig = plt.figure(figsize=[6*0.8, 4], dpi=600, facecolor='w')
         ax = fig.add_axes([0.2, 0.2, 0.7, 0.7])
         ax.set_title('Stability plot')
         plot_data = self.plot_data.children[0]
@@ -522,11 +660,13 @@ class MakePlot(object):
         rangex, rangey = self.axes_ranges(b)
         ec = 'k' if b.boundaries.value is True else 'none'
         if str(b.ylabel.value) != 'None':
-            controller.ds.draw_2D_positive_roots(ax, controller.pvals, str(b.xlabel.value), str(b.ylabel.value),
-                                                 rangex, rangey,
-                                                 resolution=resolution,
-                                                 included_cases=self.included_cases(b)
-                                                 )
+            cf, colors = controller.ds.draw_2D_positive_roots(ax, controller.pvals,
+                                                              str(b.xlabel.value), str(b.ylabel.value),
+                                                              rangex, rangey,
+                                                              colorbar=show_colorbar,
+                                                              resolution=resolution,
+                                                              included_cases=self.included_cases(b)
+                                                             )
             if ec == 'k':
                 controller.ds.draw_2D_slice(ax, controller.pvals, str(b.xlabel.value), str(b.ylabel.value),
                                             rangex, rangey,
@@ -549,7 +689,13 @@ class MakePlot(object):
         buf = cStringIO.StringIO()
         canvas.print_png(buf)
         data = buf.getvalue()
-        controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value, pvals=b.pvals)
+
+        if show_colorbar is False and str(b.ylabel.value) != 'None':
+            controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value, pvals=b.pvals,
+                                          colors=colors)
+        else:
+            controller.figures.add_figure(data, title=b.title.value, caption=b.caption.value, pvals=b.pvals)
+
         plt.close()
         controller.options.update({'xaxis':str(b.xlabel.value),
                                    'yaxis':str(b.ylabel.value),
@@ -665,32 +811,109 @@ class MakePlot(object):
     def remove_plot(self, b):
         controller = self.controller
         controller.update_child(b.name, None)
+
+    def customize_sliders(self, b):
+        controller = self.controller
+        selectVariable = Dropdown(description = 'Select Variable', values=controller.ds.independent_variables, options=controller.ds.independent_variables)  ## Figure out how to sort this!
+        selectMin = FloatText(description='Min value (log scale)', value=-5)
+        selectMax = FloatText(description='Max value (log scale)', value=5)
+        selectStep = FloatText(description='Step (log scale)', value=0.5)
+
+        accept_button = Button(description='Accept')
+        accept_button.selectMin = selectMin
+        accept_button.selectMax = selectMax
+        accept_button.selectStep = selectStep
+        accept_button.variable = selectVariable
+        accept_button.on_click(self.adjustslider)
         
+        cancel_button = Button(description='Cancel')
+        cancel_button.on_click(self.redoslidersbutton)
         
-class DisplayFigures(object):
+        self.sliders_menu.children = [selectVariable,selectMin, selectMax, accept_button, cancel_button] # step option was removed. add selectStep to consider it again.
+
+    def redoslidersbutton(self,b):
     
+        button2 = Button(description ='Adjust Sliders')
+        self.sliders_menu.children = [button2]
+        button2.on_click(self.customize_sliders)
+
+    def adjustslider(self,b):  #Tag
+        #Stop interactive plot
+        self.remove_plot(self.button_make_interactive)
+        
+        # Extract values from button.
+        min_value = b.selectMin
+        max_value = b.selectMax
+        variable = b.variable
+        
+        # calculate step if not provided
+        if b.selectStep.value == 0:
+            b.selectStep.value = (float(max_value) - float(min_value))/20
+            step = b.selectStep.value
+        else:
+            step = b.selectStep.value
+        
+        # pass slider parameters
+        self.button_make_interactive.sliders_min = min_value
+        self.button_make_interactive.sliders_max = max_value
+        self.button_make_interactive.sliders_step = step
+        self.button_make_interactive.modify_sliders = True
+        self.button_make_interactive.sliders_variable = b.variable
+        
+        if not hasattr(self.button_make_interactive, "sliders_update_dictionary"):
+            setattr(self.button_make_interactive, 'sliders_update_dictionary',{})
+        self.button_make_interactive.sliders_update_dictionary.update({variable.value: [10**min_value.value, 10**max_value.value]})
+        
+        # Generate Widget
+        self.make_interactive_plot(self.button_make_interactive)
+
+
+
+class DisplayFigures(object):
+                         
     def __init__(self, controller):
         setattr(self, 'controller', controller)
         setattr(self, 'figures_widget', None)
         setattr(self, 'unsaved', None)
+        setattr(self, 'delete_menu', None)
         
     def create_figures_widget(self):
         
         controller = self.controller
         self.figures_widget = VBox()
         self.unsaved = VBox()
+        self.delete_figures_button = Button (description = "Delete Selected Figures")   #Miguel
+        self.delete_menu = VBox(children = [self.delete_figures_button])                #Miguel
+        self.delete_figures_button.on_click(self.open_delete_menu)                      #Miguel
         unsaved = '<center><b style="color:red;">Figures that will not be saved:</b></center><br><hr>'
-        self.figures = VBox(children=[self.figures_widget,
+        self.figures = VBox(children=[self.delete_menu, self.figures_widget, #Miguel
                                                          HTML(value=unsaved),
                                                          self.unsaved])
         controller.update_child('Figures', self.figures)
         
     def add_figure(self, image_data, title='', caption = '', pvals=None, colors=None):
+        
         controller = self.controller
-        if pvals is not None:
+        
+        if pvals is not None and len(pvals) <= 40:
             caption += ' Figure generated with the following parameter values: '
-            caption += '; '.join([i + ' = ' + str(controller.pvals[i]) for i in sorted(controller.pvals.keys())]) + '.'
-        self.add_figure_widget(image_data, title=title, caption = caption, pvals=pvals, colors=colors)
+#            # if the length of the dictionary pvals is different from controller.pvals, list the elements of pvals, otherwise, list elements of controller.pvals.
+#            if len(pvals) != len(controller.pvals):
+#                caption += '; '.join([i + ' = ' + str(pvals[i]) for i in sorted(pvals.keys())])
+#            else:
+            caption += '; '.join([i + ' = ' + str(controller.pvals[i]) for i in sorted(controller.pvals.keys())])
+            # expand caption here. Add kinetic order and constraints.
+            if str(controller.replacements_caption.value) != '':
+                caption += ';' + ' Kinetic order(s): ' + str(controller.replacements_caption.value)
+            if str(controller.constraints_caption.value) != '':
+                caption += ';' + ' Parametric constraints: ' + str(controller.constraints_caption.value)
+            caption += '.'
+            if hasattr(controller, 'initial_conditions_caption'):
+                if controller.initial_conditions_caption != '':
+                    caption += ' Initial conditions are: ' + controller.initial_conditions_caption + '.'
+                    controller.initial_conditions_caption = ''
+
+        self.add_figure_widget(image_data, title=title, caption=caption, pvals=pvals, colors=colors)
         
     def remove_unsaved_figure(self, b):
         children = [i for i in self.unsaved.children] 
@@ -723,9 +946,9 @@ class DisplayFigures(object):
         lengths = [len(tab_dicts[i]) for i in keys]
         max_length = max(lengths)
         html_str = '<table style="border:0;"' + ('height="'+height+'">' if height is not None else '>')
-        for i in xrange(max_length):
+        for i in range(max_length):
             html_str += '<tr style="border:0;">'
-            for j in xrange(len(labels)):
+            for j in range(len(labels)):
                 if i < lengths[j]:
                     key = keys[j]
                     label = labels[j][i]
@@ -740,7 +963,9 @@ class DisplayFigures(object):
     
     def colorbar_tabs(self, colors):
         html_str = self.colorbar_tabs_html(colors)
-        html_widgets = [HTML(value=html_str)]
+        html_ob = HTML(value=html_str)
+        html_ob.set_css('height', '400px')
+        html_widgets = [html_ob]
         return html_widgets
 
     def _image_widget_new(self, image_data, colors=None):
@@ -806,12 +1031,14 @@ function toggleColumn(el, n) {
                 html_widgets = self.colorbar_tabs(colors)
                 tab_widget.description='Figure'
                 tab_widget = Tab(children=[tab_widget]+html_widgets)
+                # tab_widget.set_css('height', '500px')
         else:
             image_widget = self._image_widget_new(image_data, colors=colors)
             tab_widget = VBox(children=[image_widget, html_widget])
             toggle = Button(description='Hide')
             
         restore_pvals.on_click(self.restore_figure_pvals)
+        
         if old_ipython is True:
             wi = Popup(children=[close_button, save_button, tab_widget, restore_pvals])
         else:
@@ -867,7 +1094,7 @@ function toggleColumn(el, n) {
     def restore_figure_pvals(self, b):
         controller = self.controller
         controller.pvals = b.pvals
-        
+
     def load_widgets(self):
         controller = self.controller
         for data in controller.figure_data:
@@ -877,6 +1104,75 @@ function toggleColumn(el, n) {
                 self.save_figure_widget(data[0], title=data[1], caption=data[2], pvals=data[3])
             elif len(data) == 5:
                 self.save_figure_widget(data[0], title=data[1], caption=data[2], pvals=data[3], colors=data[4])
-                
+
+    def open_delete_menu(self, b): #Miguel
+        description = Latex()
+        description.value = "Specify figures to delete. Please note that deleted items cannot be recovered!"
+        indText = Textarea(description="Individual figures (comma separated values)")
+        rangeText = Textarea(description="Range of figures (e.g 1-2)")
+        deleteButton = Button(description="Delete figures")
+        cancelButton = Button(description="Cancel")
+        self.delete_menu.children = [description, indText, rangeText, deleteButton, cancelButton]
+        deleteButton.indValue = indText
+        deleteButton.rangeValue = rangeText
+        deleteButton.on_click(self.updatefile)
+        cancelButton.on_click(self.cancelDelete)
+    
+    def cancelDelete(self, b):
+        self.delete_menu.children = [self.delete_figures_button]
+
+    def updatefile(self, b):    #Miguel
+        
+        # load file dsipy
+        controller = self.controller
+        version = controller.version
+        if version == '':
+            file_name = controller.name + ".dsipy"
+        else:
+            file_name = controller.name + '-V' + str(version) + ".dsipy"
+        f = open(file_name, "r")
+        saved_data = pickle.load(f)
+        f.close()
+
+        Figures = saved_data.saved["figure_data"]
+        
+        #Extract Single Figures
+        string = b.indValue.value
+        string = string.split(',')
+        if b.indValue.value:
+            figID = [int(s) for s in string]
+        else:
+            figID = []
+        
+        if len(figID) > 0:
+            for s in figID:
+                del Figures[s-1]
+                del controller.figure_data[s-1]
+        
+        #Extract Range
+        string = b.rangeValue.value
+        string = string.split('-')
+        if b.rangeValue.value:
+            indicesRange =[int(s) for s in string]
+        else:
+            indicesRange = []
+        
+        if len(indicesRange) == 2:
+            del Figures[indicesRange[0]-1:indicesRange[1]]
+            del controller.figure_data[indicesRange[0]-1:indicesRange[1]]
+
+        saved_data.saved["figure_data"] = Figures
+        
+        # controller.figure_data = Figures
+
+        f = open(file_name,"w")
+        pickle.dump(saved_data, f)
+        f.close()
+        sucessMessage = Latex()
+        sucessMessage.value = "Figures were deleted and file was updated!"
+        self.delete_menu.children = [sucessMessage, self.delete_figures_button]
         
         
+        controller.figures.create_figures_widget()
+        self.load_widgets()
+

@@ -26,7 +26,7 @@ class CyclicalCase(Case):
     def _cyclical_case(self, case, name):
         
         if isinstance(case, int) is False:
-            raise TypeError, 'case must be indicated by its case number'
+            raise TypeError('case must be indicated by its case number')
         sub=DSCyclicalCaseCyclicalSubcaseWithCaseNumber(self._swigwrapper, case)
         if sub is None:
             return None
@@ -63,7 +63,7 @@ class CyclicalCase(Case):
                 name = self.name + ': Subcase ' + indices[0]
                 case = self._cyclical_case(int(indices[0]), name)
                 if case is None:
-                    raise ValueError, 'Subcase ' + str(indices[0]) + ' is not cyclical'
+                    raise ValueError('Subcase ' + str(indices[0]) + ' is not cyclical')
                 indices.pop(0)
                 last_index = int(indices[-1])
                 indices.pop(-1)
@@ -72,12 +72,12 @@ class CyclicalCase(Case):
                     subindex = int(i)
                     case = case._cyclical_case(subindex, name)
                     if case is None:
-                        raise ValueError, 'Subcase is not cyclical'
+                        raise ValueError('Subcase is not cyclical')
                 name = name + ': Subcase ' + str(last_index)
                 subcase = case(last_index)
                 cases.append(subcase)
             else:
-                raise TypeError, 'input argument must be a case number'
+                raise TypeError('input argument must be a case number')
         if isinstance(index_or_iterable, (int, str)) is True:
             return cases[0]
         return cases
@@ -105,7 +105,7 @@ class CyclicalCase(Case):
     def equations(self):
         eqs = DSCyclicalCaseEquations(self._swigwrapper)
         equations = list()
-        for i in xrange(0, DSCyclicalCaseNumberOfEquations(self._swigwrapper)):
+        for i in range(0, DSCyclicalCaseNumberOfEquations(self._swigwrapper)):
             expr = DSExpressionAtIndexOfExpressionArray(eqs, i)
             equations.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
@@ -116,7 +116,7 @@ class CyclicalCase(Case):
     def augmented_equations(self):
         eqs = DSDesignSpaceEquations(DSCyclicalCaseInternalDesignSpace(self._swigwrapper))
         equations = list()
-        for i in xrange(0, DSCyclicalCaseNumberOfEquations(self._swigwrapper)):
+        for i in range(0, DSCyclicalCaseNumberOfEquations(self._swigwrapper)):
             expr = DSExpressionAtIndexOfExpressionArray(eqs, i)
             equations.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
@@ -160,7 +160,7 @@ class CyclicalCase(Case):
     def conditions(self):
         conditions = list()
         eqs_expr = DSCyclicalCaseConditions(self._swigwrapper)
-        for i in xrange(0, DSCyclicalCaseNumberOfConditions(self._swigwrapper)):
+        for i in range(0, DSCyclicalCaseNumberOfConditions(self._swigwrapper)):
             conditions.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
@@ -170,7 +170,7 @@ class CyclicalCase(Case):
     def conditions_log(self):
         conditions = list()
         eqs_expr = DSCyclicalCaseLogarithmicConditions(self._swigwrapper)
-        for i in xrange(0, DSCyclicalCaseNumberOfConditions(self._swigwrapper)):
+        for i in range(0, DSCyclicalCaseNumberOfConditions(self._swigwrapper)):
             conditions.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
@@ -183,11 +183,37 @@ class CyclicalCase(Case):
     @property
     def boundaries_log(self):
         return None
-    
+
     @property
     def number_of_subcases(self):
         return DSCyclicalCaseNumberOfSubcases(self._swigwrapper)
-        
+
+    @property
+    def number_of_valid_subcases(self):
+        return DSCyclicalCaseNumberOfValidSubcases(self._swigwrapper)
+
+    @property
+    def number_of_valid_blowing_cases(self):
+        return DSCyclicalCaseNumberOfValidBlowingSubcases(self._swigwrapper)
+
+    @property
+    def number_of_cycles(self):
+        return DSCyclicalCaseNumberOfCycles(self._swigwrapper)
+
+    def main_cyclical_variables(self, cycle):
+        if cycle > self.number_of_cycles:
+            return None
+        main_variables = VariablePool()
+        main_variables.set_swigwrapper(DSCyclicalCaseMainCycleVariables(self._swigwrapper, cycle))
+        return main_variables
+
+    def secondary_cyclical_variables(self, cycle):
+        if cycle > self.number_of_cycles:
+            return None
+        secondary_variables = VariablePool()
+        secondary_variables.set_swigwrapper(DSCyclicalCaseSecondaryCycleVariables(self._swigwrapper, cycle))
+        return secondary_variables
+
     @property
     def original_case(self):
         case = Case(self, DSCaseCopy(DSCyclicalCaseOriginalCase(self._swigwrapper)), self.name + ' [original]')
@@ -201,7 +227,7 @@ class CyclicalCase(Case):
         Xd.set_swigwrapper(DSCyclicalCaseXd(swigwrapper))
         for i in VariablePool():
             if i not in self.dependent_variables:
-                raise NameError, 'Dependent Variables are inconsistent'
+                raise NameError('Dependent Variables are inconsistent')
         Xi = VariablePool()
         Xi.set_swigwrapper(DSCyclicalCaseXi(swigwrapper))
         self._independent_variables = Xi.copy()
@@ -210,7 +236,7 @@ class CyclicalCase(Case):
         Xi.set_swigwrapper(None)
         eqs = list()
         eqs_expr = DSSSystemEquations(DSCyclicalCaseSSystem(self._swigwrapper))
-        for i in xrange(0, DSCyclicalCaseNumberOfEquations(self._swigwrapper)):
+        for i in range(0, DSCyclicalCaseNumberOfEquations(self._swigwrapper)):
             eqs.append(DSExpressionAsString(DSExpressionAtIndexOfExpressionArray(eqs_expr, i)))
             DSExpressionFree(DSExpressionAtIndexOfExpressionArray(eqs_expr, i))
         DSSecureFree(eqs_expr)
@@ -233,7 +259,7 @@ class CyclicalCase(Case):
         for i in lower:
             lower[i] = 1E-20
             upper[i] = 1E20
-        for (key,value) in p_bounds.iteritems():
+        for (key,value) in p_bounds.items():
             if key not in lower:
                 continue
             try:
@@ -242,7 +268,7 @@ class CyclicalCase(Case):
                 min_value = value
                 max_value = value
             if min_value > max_value:
-                raise ValueError, 'parameter slice bounds are inverted: min is larger than max'
+                raise ValueError('parameter slice bounds are inverted: min is larger than max')
             lower[key] = min_value
             upper[key] = max_value
         valid_cases = DSCyclicalCaseCalculateAllValidSubcasesForSlice(self._swigwrapper,
@@ -250,7 +276,7 @@ class CyclicalCase(Case):
                                                                       upper._swigwrapper)
         number_of_cases = DSDictionaryCount(valid_cases)
         cases = list()
-        keys = [DSDictionaryKeyAtIndex(valid_cases, i) for i in xrange(0, number_of_cases)]
+        keys = [DSDictionaryKeyAtIndex(valid_cases, i) for i in range(0, number_of_cases)]
         for key in keys:
             case_swigwrapper = DSSWIGVoidAsCase(DSDictionaryValueForName(valid_cases, key))
             cases.append(key.split('_')[1])
@@ -265,7 +291,7 @@ class CyclicalCase(Case):
         valid_cases = DSCyclicalCaseCalculateAllValidSubcases(self._swigwrapper)
         number_of_cases = DSDictionaryCount(valid_cases)
         cases = list()
-        keys = [DSDictionaryKeyAtIndex(valid_cases, i) for i in xrange(0, number_of_cases)]
+        keys = [DSDictionaryKeyAtIndex(valid_cases, i) for i in range(0, number_of_cases)]
         for key in keys:
             case_swigwrapper = DSSWIGVoidAsCase(DSDictionaryValueForName(valid_cases, key))
             cases.append(key.split('_')[1])
@@ -303,7 +329,7 @@ class CyclicalCase(Case):
                                                     y_variable)
         number_of_cases = DSDictionaryCount(dictionary)
         all_vertices = dict()
-        keys = [DSDictionaryKeyAtIndex(dictionary, i) for i in xrange(0, number_of_cases)]
+        keys = [DSDictionaryKeyAtIndex(dictionary, i) for i in range(0, number_of_cases)]
         for key in keys:
             log_vertices = DSSWIGVoidAsVertices(DSDictionaryValueForName(dictionary, key))
             if log_out is True:
@@ -329,9 +355,9 @@ class CyclicalCase(Case):
             ss = DSSSystemSteadyStateValues(ssys._swigwrapper, parameter_values._swigwrapper)
             var_names = Xd.keys()
             if log_out is False:
-                steady_states[str(i)] = {var_names[j]:10**ss[j][0] for j in xrange(len(var_names))}
+                steady_states[str(i)] = {var_names[j]:10**ss[j][0] for j in range(len(var_names))}
             else:
-                steady_states[str(i)] = {var_names[j]:ss[j][0] for j in xrange(len(var_names))}
+                steady_states[str(i)] = {var_names[j]:ss[j][0] for j in range(len(var_names))}
         return steady_states
         
     def steady_state_flux(self, parameter_values, log_out=False):
@@ -346,9 +372,9 @@ class CyclicalCase(Case):
                                                                                parameter_values._swigwrapper)
             var_names = Xd.keys()
             if log_out is False:
-                flux = {('V_' + var_names[j]):10**flux[j][0] for j in xrange(len(var_names))}
+                flux = {('V_' + var_names[j]):10**flux[j][0] for j in range(len(var_names))}
             else:
-                flux = {('V_' + var_names[j]):flux[j][0] for j in xrange(len(var_names))}
+                flux = {('V_' + var_names[j]):flux[j][0] for j in range(len(var_names))}
             fluxes[i] = flux
         return fluxes
     

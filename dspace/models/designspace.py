@@ -3,6 +3,7 @@
 
 '''
 import itertools
+import sys
 
 from dspace.SWIG.dspace_interface import *
 from dspace.variables import VariablePool
@@ -12,11 +13,17 @@ from dspace.models.ssystem import SSystem
 from dspace.models.case import Case, CaseIntersection, CaseColocalization
 from dspace.models.cyclicalcase import CyclicalCase
 from dspace.expressions import Expression
+import time
+import numpy as np
+from functools import cmp_to_key
+
 
 def sort_cases(x, y):
+    x = x.replace('.' , '_')
+    y = y.replace('.' , '_')
     x = x.split('_')
     y = y.split('_')
-    for i in xrange(min(len(x), len(y))):
+    for i in range(min(len(x), len(y))):
         xi = int(x[i])
         yi = int(y[i])
         if xi < yi:
@@ -31,6 +38,9 @@ class DesignSpace(GMASystem):
     def __init__(self, equations,
                  parameter_dict=None, 
                  resolve_cycles=False,
+                 resolve_instability=False,
+                 resolve_conservations=False,
+                 number_conservations=0,
                  constraints=None,
                  Xi=None,
                  match_Xi=None,
@@ -52,38 +62,46 @@ class DesignSpace(GMASystem):
             
             resolve_cycles (bool): A flag indicating if cycles should be
                automatically resolved. Setting this to true adds significant
-               overhead.
+               overhead._valid_cases_expand_cyclesDSDesignSpaceCalculateAllValidCases
         '''
+
         if parameter_dict is not None:
             equations = equations.replace_symbols(parameter_dict)
-        super(DesignSpace, self).__init__(equations, 
+        super(DesignSpace, self).__init__(equations,
                                           Xi=Xi,
-                                          match_Xi=match_Xi, 
+                                          match_Xi=match_Xi,
                                           latex_symbols=latex_symbols, **kwargs)
+
         setattr(self, '_resolve_cycles', False)
         if constraints is not None:
             if isinstance(constraints, list) is False:
                 constraints = [constraints]
             DSDesignSpaceAddConstraints(self._swigwrapper, constraints, len(constraints))
+        if resolve_instability is True:
+            DSDesignSpaceSetUnstable(self._swigwrapper, True)
+        if resolve_conservations is True:
+            DSDesignSpaceSetResolveConservations(self._swigwrapper, True)
+            DSDesignSpaceSetNumberOfConservations(self._swigwrapper, number_conservations)
         if resolve_codominance is True:
-            DSDesignSpaceSetResolveCoDominance(self._swigwrapper, True)    
+            DSDesignSpaceSetResolveCoDominance(self._swigwrapper, True)
         if resolve_cycles == True:
             setattr(self, '_resolve_cycles', True)
             DSDesignSpaceCalculateCyclicalCases(self._swigwrapper)
+
         
     def __del__(self):
         if self._swigwrapper is not None:
             DSDesignSpaceFree(self._swigwrapper)
-            
+
     def __len__(self):
-        return DSDesignSpaceNumberOfCases(self._swigwrapper)+1        
-    
+        return DSDesignSpaceNumberOfCases(self._swigwrapper)+1
+
     def __getstate__(self):
         odict = self.__dict__.copy()
         odict['_swigwrapper'] = DSSWIGDSDesignSpaceEncodedBytes(self._swigwrapper)
         del odict['_independent_variables']
         return odict
-    
+
     def __setstate__(self, state):
         self.__dict__.update(state)
         encoded = state['_swigwrapper']
@@ -108,7 +126,7 @@ class DesignSpace(GMASystem):
                 siglist.append(int(signature[start:i]))
             elif signature[i] == '*':
                 num_wild = int(self.signature[i])
-                for j in xrange(num_wild):
+                for j in range(num_wild):
                     new_sig = signature.replace('*', str(j+1), 1)
                     wild_cards += self._case_with_signature(new_sig, constraints)
                 return wild_cards
@@ -117,6 +135,24 @@ class DesignSpace(GMASystem):
             i+=1
         index = DSCaseNumberForSignature(siglist, DSDesignSpaceGMASystem(self._swigwrapper))
         return [self(str(index)+subcase, constraints=constraints)]
+
+    def case_number_for_signature(self, signature):
+        siglist = []
+        i = 0
+        if signature == 'Negativevaluefound!':
+            return None
+
+        while i < len(signature):
+            if signature[i] == '(':
+                start = i + 1
+                while signature[i] != ')':
+                    i += 1
+                siglist.append(int(signature[start:i]))
+            else:
+                siglist.append(int(signature[i]))
+            i += 1
+        index = DSCaseNumberForSignature(siglist, DSDesignSpaceGMASystem(self._swigwrapper))
+        return index
     
     def __call__(self, index_or_iterable, by_signature=False, constraints=None):
         if isinstance(index_or_iterable, (int, str)) is True:
@@ -138,24 +174,24 @@ class DesignSpace(GMASystem):
                     continue
                 case_swig = DSDesignSpaceCaseWithCaseIdentifier(self._swigwrapper, index)
                 if case_swig is None:
-                    raise ValueError, 'Case "' + index + '" does not exits'
+                    raise ValueError('Case "' + index + '" does not exist')
                 name = self.name + ': Case ' + index
                 case = Case(self,
                             case_swig,
-                            name, 
+                            name,
                             constraints=constraints)
                 eq=Equations(case.equations.system,
                               case.auxiliary_variables)
                 cyclical_swig = DSDesignSpaceCyclicalCaseWithCaseIdentifier(self._swigwrapper, index)
                 if cyclical_swig is not None:
                     cyclical = CyclicalCase(eq, cyclical_swig,
-                                            name = case.name + ' (cyclical)',
+                                            name=case.name + ' (cyclical)',
                                             latex_symbols=self._latex)
                     cases.append(cyclical)
                 else:
                     cases.append(case)
             else:
-                raise TypeError, 'input argument must be a case identifier or case signature'
+                raise TypeError('input argument must be a case identifier or case signature')
         if len(cases) == 1:
             if isinstance(index_or_iterable, str) or isinstance(index_or_iterable, int):
                 cases = cases[0]
@@ -188,7 +224,7 @@ class DesignSpace(GMASystem):
         gma = DSDesignSpaceGMASystem(self._swigwrapper)
         eqs = DSGMASystemEquations(gma)
         equation_list = list()
-        for i in xrange(0, DSGMASystemNumberOfEquations(gma)):
+        for i in range(0, DSGMASystemNumberOfEquations(gma)):
             expr = DSExpressionAtIndexOfExpressionArray(eqs, i)
             equation_list.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
@@ -199,13 +235,13 @@ class DesignSpace(GMASystem):
                               auxiliary_variables=Xda.keys(), 
                               latex_symbols=self._latex)
         self._equations = equations
-    
+
     def update_latex_symbols(self, symbols):
         self._latex.update(symbols)
         gma = DSDesignSpaceGMASystem(self._swigwrapper)
         eqs = DSGMASystemEquations(gma)
         equation_list = list()
-        for i in xrange(0, DSGMASystemNumberOfEquations(gma)):
+        for i in range(0, DSGMASystemNumberOfEquations(gma)):
             expr = DSExpressionAtIndexOfExpressionArray(eqs, i)
             equation_list.append(DSExpressionAsString(expr))
             DSExpressionFree(expr)
@@ -231,11 +267,25 @@ class DesignSpace(GMASystem):
         Xi.set_swigwrapper(DSDesignSpaceXi(ds_swigwrapper))
         self._independent_variables = Xi.copy()
         Xi.set_swigwrapper(None)
-        
+
+        Xd_t = VariablePool()
+        Xd_t.set_swigwrapper(DSGMASystemXd_t(DSDesignSpaceGMASystem(ds_swigwrapper)))
+        self._dependent_variables_no_algebraic = Xd_t.copy()
+        Xd_t.set_swigwrapper(None)
+
+
     @property
     def dependent_variables(self):
         return self._dependent_variables.keys()
-            
+
+    @property
+    def instability(self):
+        return DSDesignSpaceUnstable(self._swigwrapper)
+
+    @property
+    def dependent_variables_no_algebraic_constraints(self):
+        return self._dependent_variables_no_algebraic.keys()
+
     @property
     def number_of_cases(self):
         return DSDesignSpaceNumberOfCases(self._swigwrapper)
@@ -243,12 +293,19 @@ class DesignSpace(GMASystem):
     @property
     def signature(self):
         return DSDesignSpaceSignatureToString(self._swigwrapper)
-    
+
+    @property
+    def is_conserved(self):
+        return DSDesignSpaceConserved(self._swigwrapper)
+    @property
+    def number_conservations(self):
+        return DSDesignSpaceNumberOfConservations(self._swigwrapper)
+
     @property
     def _signature(self):
         signature_internal = DSDesignSpaceSignature(self._swigwrapper)
         signature = list()
-        for i in xrange(len(self.equations)*2):
+        for i in range(len(self.equations)*2):
             signature.append(DSUIntegerAtIndexOfIntegerArray(signature_internal, i))
         return signature
 
@@ -258,14 +315,14 @@ class DesignSpace(GMASystem):
         for i in lower:
             lower[i] = 1E-20
             upper[i] = 1E20
-        for (key,value) in p_bounds.iteritems():
+        for (key,value) in p_bounds.items():
             try:
                 min_value,max_value = value
             except TypeError:
                 min_value = value
                 max_value = value
             if min_value > max_value:
-                raise ValueError, 'parameter slice bounds are inverted: min is larger than max'
+                raise ValueError('parameter slice bounds are inverted: min is larger than max')
             lower[key] = min_value
             upper[key] = max_value
         if strict is True:
@@ -278,80 +335,95 @@ class DesignSpace(GMASystem):
                                                                                upper._swigwrapper)
         number_of_cases = DSDictionaryCount(valid_cases)
         cases = list()
-        keys = [DSDictionaryKeyAtIndex(valid_cases, i) for i in xrange(0, number_of_cases)]
+        keys = [DSDictionaryKeyAtIndex(valid_cases, i) for i in range(0, number_of_cases)]
         for key in keys:
             case_swigwrapper = DSSWIGVoidAsCase(DSDictionaryValueForName(valid_cases, key))
             cases.append(DSCaseIdentifier(case_swigwrapper))
             DSCaseFree(case_swigwrapper)
         DSDictionaryFree(valid_cases)
-        cases.sort(cmp=sort_cases)
+        cases.sort(key=cmp_to_key(sort_cases))
         return cases
 
-    def _valid_cases_expanded_bounded(self, p_bounds):
+    def _valid_cases_expanded_bounded(self, p_bounds, strict=True):
         lower = VariablePool(names=self.independent_variables)
         upper = VariablePool(names=self.independent_variables)
         for i in lower:
             lower[i] = 1E-20
             upper[i] = 1E20
-        for (key,value) in p_bounds.iteritems():
+        for (key,value) in p_bounds.items():
             try:
                 min_value,max_value = value
             except TypeError:
                 min_value = value
                 max_value = value
             if min_value > max_value:
-                raise ValueError, 'parameter slice bounds are inverted: min is larger than max'
+                raise ValueError('parameter slice bounds are inverted: min is larger than max')
             lower[key] = min_value
             upper[key] = max_value
         valid_cases = DSDesignSpaceCalculateAllValidCasesForSliceByResolvingCyclicalCases(
                        self._swigwrapper,
                        lower._swigwrapper,
-                       upper._swigwrapper)
+                       upper._swigwrapper,
+                       strict)
         number_of_cases = DSDictionaryCount(valid_cases)
         cases = list()
-        keys = [DSDictionaryKeyAtIndex(valid_cases, i) for i in xrange(0, number_of_cases)]
+        keys = [DSDictionaryKeyAtIndex(valid_cases, i) for i in range(0, number_of_cases)]
+
+        for key in keys:
+            case_swigwrapper = DSSWIGVoidAsCase(DSDictionaryValueForName(valid_cases, key))
+            cases.append(DSCaseIdentifier(case_swigwrapper))
+            DSCaseFree(case_swigwrapper)
+
+        DSDictionaryFree(valid_cases)
+        cases.sort(key=cmp_to_key(sort_cases))
+        return cases
+      
+    def _valid_cases_expand_cycles(self, p_bounds, strict=True):
+        if p_bounds is not None:
+            return self._valid_cases_expanded_bounded(p_bounds, strict=strict)
+        valid_cases = DSDesignSpaceCalculateAllValidCasesByResolvingCyclicalCases(self._swigwrapper)
+        number_of_cases = DSDictionaryCount(valid_cases)
+        cases = list()
+        keys = [DSDictionaryKeyAtIndex(valid_cases, i) for i in range(0, number_of_cases)]
         for key in keys:
             case_swigwrapper = DSSWIGVoidAsCase(DSDictionaryValueForName(valid_cases, key))
             cases.append(DSCaseIdentifier(case_swigwrapper))
             DSCaseFree(case_swigwrapper)
         DSDictionaryFree(valid_cases)
-        cases.sort(cmp=sort_cases)
+        cases.sort(key=cmp_to_key(sort_cases))
         return cases
 
-      
-    def _valid_cases_expand_cycles(self, p_bounds):
-        if p_bounds is not None:
-            return self._valid_cases_expanded_bounded(p_bounds)
-        valid_cases = DSDesignSpaceCalculateAllValidCasesByResolvingCyclicalCases(
-                       self._swigwrapper)
-        number_of_cases = DSDictionaryCount(valid_cases)
-        cases = list()
-        keys = [DSDictionaryKeyAtIndex(valid_cases, i) for i in xrange(0, number_of_cases)]
-        for key in keys:
-            case_swigwrapper = DSSWIGVoidAsCase(DSDictionaryValueForName(valid_cases, key))
-            cases.append(DSCaseIdentifier(case_swigwrapper))
-            DSCaseFree(case_swigwrapper)
-        DSDictionaryFree(valid_cases)
-        cases.sort(cmp=sort_cases)
+    def _valid_cases_unstable_subcases(self, cases, case_swigwrapper):
+
+        all_subcases = DSUnstableCaseListAllSubcases(case_swigwrapper, self._swigwrapper)
+        number_subcases_valid = DSUnstableCaseSubcasesCount(case_swigwrapper, self._swigwrapper)
+        for w in range(0, number_subcases_valid):
+            subcase_swigwrapper = DSSWIGVoidAsCase(DSCaseAtIndexOfArray(all_subcases, w))
+            #subcase_swigwrapper = DSCaseAtIndexOfArray(all_subcases, w)
+            cases.append(DSCaseIdentifier(subcase_swigwrapper))
+            DSCaseFree(subcase_swigwrapper)
+        if all_subcases is not None:
+            DSSecureFree(all_subcases)
         return cases
-    
-    def valid_cases(self, p_bounds=None, expand_cycles=True, strict = True):
+
+    def valid_cases(self, p_bounds=None, expand_cycles=True, strict=True):
         if self._resolve_cycles is False:
             expand_cycles = False
         if expand_cycles is True:
-            return self._valid_cases_expand_cycles(p_bounds)
+            return self._valid_cases_expand_cycles(p_bounds, strict=strict)
         if p_bounds is not None:
             return self._valid_cases_bounded(p_bounds, strict)
         all_cases = DSDesignSpaceCalculateAllValidCases(self._swigwrapper)
-        number_valid = DSDesignSpaceNumberOfValidCases(self._swigwrapper)
+        number_valid = DSDesignSpaceNumberOfValidCases(self._swigwrapper) + DSDesignSpaceNumberOfValidBlowingCases(self._swigwrapper, True)
         cases = list()
-        for i in xrange(0, number_valid):
+        for i in range(0, number_valid):
             case_swigwrapper = DSCaseAtIndexOfArray(all_cases, i)
             cases.append(DSCaseIdentifier(case_swigwrapper))
             DSCaseFree(case_swigwrapper)
+
         if all_cases is not None:
             DSSecureFree(all_cases)
-        cases.sort(cmp=sort_cases)
+        cases.sort(key=cmp_to_key(sort_cases))
         return cases
     
     def _cyclical_case_as_subcases(self, case_num, case_numbers):
@@ -391,20 +463,20 @@ class DesignSpace(GMASystem):
             for key in lower:
                 lower[key] = 1e-20
                 upper[key] = 1e20
-                for (key,value) in p_bounds.iteritems():
+                for (key,value) in p_bounds.items():
                     try:
                         min_value,max_value = value
                     except TypeError:
                         min_value = value
                         max_value = value
                     if min_value > max_value:
-                        raise ValueError, 'parameter slice bounds are inverted: min is larger than max'
+                        raise ValueError('parameter slice bounds are inverted: min is larger than max')
                         lower[key] = min_value
                         upper[key] = max_value
         if 1 in intersects:
             [intersections.append(i) for i in case_numbers if self(i).is_valid(p_bounds=p_bounds, strict=strict) is True]
         sets = [set([i]) for i in valid_cases]
-        for i in xrange(2, max(intersects)+1):
+        for i in range(2, max(intersects)+1):
             sets_to_check = sets
             sets = []
             identifiers = range(0, len(sets_to_check))
@@ -444,7 +516,7 @@ class DesignSpace(GMASystem):
             return None
         intersections = list()        
         Cases = self(case_numbers)
-        for i in xrange(len(Cases)):
+        for i in range(len(Cases)):
             case = Cases[i]
             case_num = case.case_number
             case_numbers = self._cyclical_case_as_subcases(case_num, case_numbers)
@@ -455,19 +527,19 @@ class DesignSpace(GMASystem):
             for key in lower:
                 lower[key] = 1e-20
                 upper[key] = 1e20
-                for (key,value) in p_bounds.iteritems():
+                for (key,value) in p_bounds.items():
                     try:
                         min_value,max_value = value
                     except TypeError:
                         min_value = value
                         max_value = value
                     if min_value > max_value:
-                        raise ValueError, 'parameter slice bounds are inverted: min is larger than max'
+                        raise ValueError('parameter slice bounds are inverted: min is larger than max')
                         lower[key] = min_value
                         upper[key] = max_value
         ## [intersections.append(i) for i in case_numbers if self(i).is_valid()is True]
         sets = [set([i]) for i in valid_cases]
-        for i in xrange(2, len(case_numbers)+1):
+        for i in range(2, len(case_numbers)+1):
             new = True
             sets_to_check = sets
             sets = []
@@ -501,7 +573,7 @@ class DesignSpace(GMASystem):
     def _cyclical_case(self, case, name):
         
         if isinstance(case, int) is False:
-            raise TypeError, 'case must be indicated by its case number'
+            raise TypeError('case must be indicated by its case number')
         sub=DSDesignSpaceCyclicalCaseWithCaseNumber(self._swigwrapper, case)
         if sub is None:
             return None
@@ -534,7 +606,7 @@ class DesignSpace(GMASystem):
             for j in unique_R:
                 x = list()
                 y = list()
-                for k in xrange(len(X)):
+                for k in range(len(X)):
                     if R[k] != j:
                         if len(x):
                             lines.append((x, y, j))
@@ -585,4 +657,31 @@ class DesignSpace(GMASystem):
             behavior_set.add((x, y, eigen))
         if cases is True:
             return case_dict
-        return behavior_set              
+        return behavior_set
+
+    def dominant_signature(self, xi, results_dic, n):
+
+        # 1. Get keys of results_dic
+        keys_dic = results_dic.keys()
+        if len(keys_dic) == 0:
+            return None
+
+        xd = VariablePool(names=self.dependent_variables)
+        dom_sig = []
+
+        # 1.1 If the system has conservations, complement the results_dic with vectors for Xc1, ...Xcn
+        if self.number_conservations != 0:
+            for c in range(self.number_conservations):
+                results_dic.update({'Xc'+str(c+1): np.ones(n)})
+                keys_dic = results_dic.keys()
+
+        # 2. Get first element of key and loop over its contents to update the dictionary of dependent variables.
+        for ndx in range(n):
+            n_dic = {element: results_dic[element][ndx] for element in keys_dic}
+            xd.update(n_dic)
+            dom_sig.append(DSDesignSpaceDominantSignature(self._swigwrapper, xi._swigwrapper, xd._swigwrapper))
+
+        return dom_sig
+
+
+

@@ -49,7 +49,7 @@ class Expression(object):
         new_expression = Expression('0')
         DSExpressionFree(new_expression._swigwrapper)
         new_expression._swigwrapper = DSExpressionCopy(self._swigwrapper)
-        for key,value in replace_dict.iteritems():
+        for key,value in replace_dict.items():
             target = Expression(str(key))
             subs = Expression(str(value))
             temp = DSExpressionByReplacingSubExpression(
@@ -91,4 +91,5 @@ class Expression(object):
         pv = VariablePool()
         pv.set_swigwrapper(vp)
         return pv.keys()
+
     

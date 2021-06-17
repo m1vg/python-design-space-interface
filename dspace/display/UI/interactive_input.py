@@ -5,6 +5,7 @@ import dspace.display
 from distutils.version import LooseVersion, StrictVersion
 
 import IPython
+import time
 
 if StrictVersion(IPython.__version__) < StrictVersion('4.0.0'):
     from IPython.html.widgets import interact, interactive, fixed
@@ -41,6 +42,8 @@ from case_intersection_widget import CaseIntersection
 from figures_widget import MakePlot, DisplayFigures
 from tables_widget import DisplayTables
 from parameters_widget import EditParameters
+from fullsystem_widget import FullSystem
+from evolution_widget import Evolution
 
 import cPickle as pickle
 import base64
@@ -79,7 +82,7 @@ class WidgetSavedData(object):
     
     def __init__(self, interactive):
         setattr(self, 'saved', {})
-        save_fields = ['ds', 
+        save_fields = ['ds' if interactive.save_data_structures is True else '',
                        'equations',
                        'name',
                        'version',
@@ -107,10 +110,10 @@ class WidgetSavedData(object):
 
 class InteractiveInput(object):
     
-    def __init__(self, name='', version='', equations=None, parameters=None,
+    def __init__(self, name='', version='', equations=None, conservations=None, parameters=None,
                  get_parameters=None, auxiliary_variables=[], constraints=[],
-                 symbols={}, resolve_cycles=False, resolve_codominance=False,
-                 centered_axes=False, xaxis=None, yaxis=None, recast=True,
+                 symbols={}, resolve_cycles=False, resolve_codominance=False, resolve_instability=False,
+                 centered_axes=False, xaxis=None, yaxis=None, recast=False, #Changed recast to False
                  x_range=[1e-3, 1e3], y_range=[1e-3, 1e3],
                  zlim=None, by_signature=False, kinetic_orders=None,
                  included_cases=None, biological_constraints=[], resolution=100,
@@ -119,12 +122,16 @@ class InteractiveInput(object):
         '''
         setattr(self, 'ds', None)
         setattr(self, 'equations', [])
+        setattr(self, 'conservations', [])
         setattr(self, 'name', name)
         setattr(self, 'version', version)
         setattr(self, 'pvals', None)
+        setattr(self, 'pidentity', None)
         setattr(self, 'cyclical', resolve_cycles)
         setattr(self, 'codominance', resolve_codominance)
         setattr(self, 'recast', recast)
+        setattr(self, 'instability', resolve_instability)
+        setattr(self, 'conserved', False)
         setattr(self, 'auxiliary', [])
         setattr(self, 'constraints', [])
         setattr(self, 'kinetic_orders', [])
@@ -149,6 +156,11 @@ class InteractiveInput(object):
             self.equations = equations
             if isinstance(equations, list) is False:
                 self.equations = [equations]
+        if conservations is not None:
+            self.conservations = conservations
+            self.conserved = True
+            if isinstance(conservations, list) is False:
+                self.conservations = [conservations]
         
         if auxiliary_variables is not None:
             self.auxiliary = auxiliary_variables
@@ -189,7 +201,7 @@ class InteractiveInput(object):
         
     def child_with_name(self, name):
         children = self.widget.children
-        for i in xrange(len(children)):
+        for i in range(len(children)):
             if children[i].description == name:
                 return self.widget.children[i]
         return None
@@ -198,7 +210,7 @@ class InteractiveInput(object):
         previous_children = self.widget.children
         children = [i for i in self.widget.children]
         added = False
-        for i in xrange(len(children)):
+        for i in range(len(children)):
             if children[i].description == name:
                 self.widget._titles = {}
                 old = children.pop(i)
@@ -234,6 +246,14 @@ class InteractiveInput(object):
         case_report = CaseIntersection(self,
                                        self.defaults('by_signature'))
         return case_report.case_intersection_widget()
+    
+    def full_system_menu(self,b):
+        fullsystem = FullSystem(self)
+        return fullsystem.fullsystem_widget()
+
+    def evolution_menu(self,b):
+        evolution = Evolution(self)
+        return evolution.create_evolution_widget()
 
     
     def create_plot_menu(self, b):
@@ -246,6 +266,10 @@ class InteractiveInput(object):
         saved = WidgetSavedData.load_widget_data(self)
         b.wi.visible = True
         if self.ds is None:
+            self.update_widgets()
+            self.figures.load_widgets()
+            self.tables.load_widgets()
+            self.widget.selected_index = 0
             return
         self.make_options_menu(b.button)
         self.update_widgets()
@@ -278,7 +302,10 @@ class InteractiveInput(object):
                    ('Analyze Case', self.case_report_menu),
                    ('Intersect Phenotypes', self.case_intersect_menu),
                    ('Co-localize Phenotypes', self.co_localize_menu),
-                   ('Create Plot', self.create_plot_menu)]
+                   ('Create Plot', self.create_plot_menu),
+                   ('Full System', self.full_system_menu),
+                   ('Evolutionary Studies', self.evolution_menu)
+                   ]
         actions_h = HTML(value='<b>Actions</b>')
         options_h = HTML(value='<b>Options</b>')
         options = [('Edit Symbols', self.create_edit_symbols),
@@ -293,9 +320,9 @@ class InteractiveInput(object):
             if method is None:
                 button.disabled = True
             options_w.append(button)
-        edit = Button(description='Modify System')
+        edit = Button(description='Modify System', visible=False)
         edit.on_click(self.modify_equations_widget)
-        warning = HTML()
+        warning = HTML(visible=False)
         warning.value = '<font color="red"><b>Warning! Modifying system erases saved figures and tables.</b></font>'
         wi.children = [actions_h, actions_w] + [options_h] + options_w + [edit, warning]
         for title, method in actions:
@@ -313,24 +340,25 @@ class InteractiveInput(object):
         self.figures.create_figures_widget()
         self.tables = DisplayTables(self)
         self.tables.create_tables_widget()
-                
+
     def help_widget(self):
         about_str = ['<p style="text-align:justify;"><font color="darkblue">',
-                     'You are using the Design Space Toolbox V2 Jupyter',
+                     'You are using the Design Space Toolbox V3 iPython',
                      'Notebook-based widget, a graphical interface for',
-                     'the Design Space Toolbox V2 created by Jason',
-                     'Lomnitz in the laboratory of Michael A. Savageau.',
+                     'the Design Space Toolbox V3 originally created by Jason',
+                     'Lomnitz in the laboratory of Michael A. Savageau and ',
+                     'further developed by Miguel A. Valderrama-Gomez',
                      '<br><br>',
                      'This software has been created for the analysis',
                      'of mathematical models of biochemical systems.',
                      'This library deconstructs a model into a series of',
-                     'sub-models that can be analyzed by applying a series',
-                     'of numerical and symbolic methods.',
+                     'sub-models that can be analyzed by applying ',
+                     'numerical and symbolic methods.',
                      '<br><br>',
                      'To begin, please enter the information in the required',
                      'fields (marked by an "*") and optional fields.',
                      'The Name field is used to save and load a model',
-                     'workspace,which includes the system equations, tables'
+                     'workspace, which includes the system equations, tables'
                      ' and figures.  The primary input into the widget are the',
                      'system equations, represented by a list of strings.',
                      '<br><br></font>',
@@ -354,19 +382,24 @@ class InteractiveInput(object):
                      '</p>']
         report_str = ['<p style="text-align:center;">',
                       'This software is a still under active development and may',
-                      'contain a number of bugs and issues.  A complete list of',
-                      'known open issues can be found online here: ',
-                      '<a target="_blank"',
-                      'href="https://bitbucket.org/jglomnitz/design-space-toolbox/issues?status=new&status=open">',
-                      'Project Issue Tracker</a>.<br>',
+                      'contain a number of bugs and issues. '
+                      # 'A complete list of',
+                      # 'known open issues can be found online here: ',
+                      # '<a target="_blank"',
+                      # 'href="https://bitbucket.org/jglomnitz/design-space-toolbox/issues?status=new&status=open">',
+                      # 'Project Issue Tracker</a>.<br>',
                       '<font color="red"><b>If you found a new bug in the stable',
-                      'or release version of the design space toolbox; or would',
+                      'or experimental version of the design space toolbox; or would',
                       'like to request an enhancement that has not yet',
-                      'been reported, please report it here:</b></font>',
-                      '<a target="_blank"',
-                      'href="https://bitbucket.org/jglomnitz/design-space-toolbox/issues/new?title=Issue%20name">',
-                      'REPORT BUG</a>',      
-                      '</p>']
+                      'been reported, please report it via email at mavalderramagomez@ucdavis.edu</b></font>'
+                      ''
+                      # 'here:</b></font>',
+                      # '<a target="_blank"',
+                      # 'href="https://bitbucket.org/jglomnitz/design-space-toolbox/issues/new?title=Issue%20name">',
+                      # 'REPORT BUG</a>',
+                      # '</p>'
+
+                      ]
                          
         html = HTML(value=' '.join(report_str)+' '.join(about_str))
         return VBox(children=[html])
@@ -378,39 +411,49 @@ class InteractiveInput(object):
         name = Text(description='* Name', value=self.name)
         version = Text(description='Version', value=self.version)
         self.version_field = version
-        equations=Textarea(description='* Equations',
+        equations = Textarea(description='* Equations',
                                          value='\n'.join(self.equations))
-        aux=Textarea(description='Auxiliary Variables',
+        conservations = Textarea(description='Conservations',
+                                          value='\n'.join(self.conservations))
+        aux = Textarea(description='Auxiliary Variables',
                                    value=', '.join(self.auxiliary))
         html = HTML(value='<b>Architectural Constraints</b>')
-        constraints=Textarea(description='Parameters',
-                             value=', '.join(self.constraints)
-                             )
+        constraints = Textarea(description='Parameters',
+                               value=', '.join(self.constraints)
+                               )
         options_html = HTML(value='<b>Additional Options</b>')
         cyclical = Checkbox(description='Check for Cycles',
-                            value = self.cyclical)
+                            value=self.cyclical)
         codominance = Checkbox(description='Check for Co-dominance',
-                               value = self.codominance)
+                               value=self.codominance,
+                               visible=True)
         recast = Checkbox(description='Recast Equations',
-                               value = self.recast)
-        replacements=Textarea(description='Kinetic Orders',
-                              value=', '.join(
-                               [i for i in kinetic_orders]))
-        wi = VBox(children=[equations, 
-                            aux, html,
+                          value=self.recast)
+        instability = Checkbox(description='Check for Blowups',
+                               value=self.instability)
+        replacements = Textarea(description='Kinetic Orders',
+                                value=', '.join(
+                                [i for i in kinetic_orders]))
+        # Attach kinetic orders and parameters so that it is available to others objects. 
+        self.replacements_caption = replacements
+        self.constraints_caption = constraints
+        wi = VBox(children=[equations,
+                            aux, conservations, html,
                             constraints, replacements,
-                            options_html, cyclical,
-                            codominance,recast,
+                            options_html, cyclical, instability,
+                            codominance, #recast
                             ])
         button = Button(value=False, 
-                                      description='Create Design Space')
+                        description='Create Design Space')
         button.on_click(self.make_design_space)
         button.equations = equations
+        button.conservations = conservations
         button.aux = aux
         button.constraints = constraints
         button.cyclical = cyclical
         button.codominance = codominance
         button.recast = recast
+        button.instability = instability
         button.replacements = replacements
         button.wi = wi
         button.name = name
@@ -419,6 +462,7 @@ class InteractiveInput(object):
                       description='Load Data')
         load.on_click(self.load_widget)
         load.equations = equations
+        load.conservations = conservations
         ## load.version = version
         load.aux = aux
         load.constraints = constraints
@@ -457,13 +501,22 @@ class InteractiveInput(object):
             b.wi.visible = True
             b.description = 'Done'
             return
+        if b.equations.value == '':
+            return
         self.version_field.visible = False
         self.equations = [i.strip() for i in str(b.equations.value).split('\n') if len(i.strip()) > 0]
-        self.auxiliary = [i.strip() for i in str(b.aux.value).split(',') if len(i.strip()) > 0] 
+        self.conservations = [i.strip() for i in str(b.conservations.value).split('\n') if len(i.strip()) > 0]
+        self.equations = self.equations+self.conservations
+        self.auxiliary = [i.strip() for i in str(b.aux.value).split(',') if len(i.strip()) > 0]
+        number_conservations = len(self.conservations)
+        if number_conservations != 0:
+            conservation_var = ['Xc' + str(el+1) for el in range(number_conservations)]
+            self.auxiliary = self.auxiliary + conservation_var
         self.constraints = [i.strip() for i in str(b.constraints.value).split(',') if len(i.strip()) > 0] 
         self.cyclical = b.cyclical.value
         self.codominance = b.codominance.value
         self.recast = b.recast.value
+        self.instability = b.instability.value
         eq = dspace.Equations(self.equations,
                               auxiliary_variables=self.auxiliary, 
                               latex_symbols=self.symbols)
@@ -481,10 +534,13 @@ class InteractiveInput(object):
             parameter_dict = {}
         if len(constraints) == 0:
             constraints = None
-        self.ds = dspace.DesignSpace(eq, name=b.name.value, 
+        self.ds = dspace.DesignSpace(eq, name=b.name.value,
                                      constraints=constraints,
-                                     resolve_cycles=self.cyclical, 
+                                     resolve_cycles=self.cyclical,
                                      resolve_codominance=self.codominance,
+                                     resolve_instability=self.instability,
+                                     resolve_conservations=True if number_conservations != 0 else False,
+                                     number_conservations=number_conservations,
                                      parameter_dict=parameter_dict)
         if self.pvals == None:
             self.pvals = dspace.VariablePool(
@@ -506,6 +562,7 @@ class InteractiveInput(object):
         self.ds.update_latex_symbols(self.symbols)
         self.update_widgets()
         self.make_options_menu(b)
+
     
     def create_edit_symbols(self, b):
         Edit = EditSymbols(self)
@@ -528,6 +585,8 @@ class SavePopupWidget(object):
         name_field = Text(description='* Name', value=controller.name)
         version_field = Text(description='Version', 
                              value=controller.version)
+        data_structures = Checkbox(description='Save Data Structures', value=True)
+        save_button.data_structures = data_structures
         save_button.on_click(self.save_widget_data)
         save_button.name_field = name_field
         save_button.version_field = version_field
@@ -537,6 +596,7 @@ class SavePopupWidget(object):
                                                HTML(value='<center width="100%"><b>Are you sure you want to save?</b></center>'),
                                                name_field,
                                                version_field,
+                                               data_structures,
                                                HBox(children=[
                                                      save_button, 
                                                      cancel_button])])])
@@ -550,6 +610,7 @@ class SavePopupWidget(object):
         controller = self.controller
         controller.name = str(b.name_field.value)
         controller.version = str(b.version_field.value)
+        controller.save_data_structures = b.data_structures.value
         self.save_data.box_style = 'success'
         self.save_data.children = [HTML(value='<center><b>Saving Data</b></center>')]
         save = WidgetSavedData(controller)

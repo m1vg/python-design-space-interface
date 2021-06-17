@@ -1,3 +1,3 @@
-import case_plot
-import cyclicalcase_plot
-import designspace_plot
+from dspace.plotutils import case_plot
+from dspace.plotutils import cyclicalcase_plot
+from dspace.plotutils import designspace_plot

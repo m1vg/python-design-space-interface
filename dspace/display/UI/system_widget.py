@@ -42,7 +42,7 @@ class DisplaySystem(object):
         setattr(self, 'html', None)
         setattr(self, 'html_equations', None)
         setattr(self, 'latex', None)
-        
+
     def create_system_widget(self):
         controller = self.controller 
         if controller.ds is None:
@@ -54,9 +54,10 @@ class DisplaySystem(object):
                                  value=True)
         self.checkbox.on_trait_change(self.changed_check_box, 'value')
         wi = VBox(children=[self.html,
-                                    self.checkbox,
-                                    self.html_equations,
-                                    self.latex])
+                            self.checkbox,
+                            self.html_equations,
+                            self.latex,
+                            ])
         self.update_display()
         controller.update_child('System', wi)
         
