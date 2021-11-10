@@ -2647,42 +2647,44 @@ SWIGINTERN PyObject *SWIG_PyStaticMethod_New(PyObject *SWIGUNUSEDPARM(self), PyO
 #define SWIGTYPE_p_DSExtensionDataMessage swig_types[11]
 #define SWIGTYPE_p_DSGMASystem swig_types[12]
 #define SWIGTYPE_p_DSGMASystemMessage swig_types[13]
-#define SWIGTYPE_p_DSMatrix swig_types[14]
-#define SWIGTYPE_p_DSMatrixArray swig_types[15]
-#define SWIGTYPE_p_DSMatrixArrayMessage swig_types[16]
-#define SWIGTYPE_p_DSMatrixMessage swig_types[17]
-#define SWIGTYPE_p_DSSSystem swig_types[18]
-#define SWIGTYPE_p_DSSSystemMessage swig_types[19]
-#define SWIGTYPE_p_DSStack swig_types[20]
-#define SWIGTYPE_p_DSUInteger swig_types[21]
-#define SWIGTYPE_p_DSUIntegerVector swig_types[22]
-#define SWIGTYPE_p_DSUnstableCase swig_types[23]
-#define SWIGTYPE_p_DSVariable swig_types[24]
-#define SWIGTYPE_p_DSVariablePool swig_types[25]
-#define SWIGTYPE_p_DSVectorMessage swig_types[26]
-#define SWIGTYPE_p_DSVertices swig_types[27]
-#define SWIGTYPE_p_DSuIntegerMatrix swig_types[28]
-#define SWIGTYPE_p_DSuIntegerMatrixMessage swig_types[29]
-#define SWIGTYPE_p_FILE swig_types[30]
-#define SWIGTYPE_p_bool swig_types[31]
-#define SWIGTYPE_p_char swig_types[32]
-#define SWIGTYPE_p_coordT swig_types[33]
-#define SWIGTYPE_p_double swig_types[34]
-#define SWIGTYPE_p_double_complex swig_types[35]
-#define SWIGTYPE_p_f_double__double swig_types[36]
-#define SWIGTYPE_p_f_p_q_const__char__void swig_types[37]
-#define SWIGTYPE_p_f_p_q_const__char_v_______int swig_types[38]
-#define SWIGTYPE_p_glp_prob swig_types[39]
-#define SWIGTYPE_p_int swig_types[40]
-#define SWIGTYPE_p_p_DSCase swig_types[41]
-#define SWIGTYPE_p_p_DSExpression swig_types[42]
-#define SWIGTYPE_p_p_DSVariable swig_types[43]
-#define SWIGTYPE_p_p_char swig_types[44]
-#define SWIGTYPE_p_p_void swig_types[45]
-#define SWIGTYPE_p_size_t swig_types[46]
-#define SWIGTYPE_p_void swig_types[47]
-static swig_type_info *swig_types[49];
-static swig_module_info swig_module = {swig_types, 48, 0, 0, 0, 0};
+#define SWIGTYPE_p_DSMassBalanceData swig_types[14]
+#define SWIGTYPE_p_DSMassBalanceDataMessage swig_types[15]
+#define SWIGTYPE_p_DSMatrix swig_types[16]
+#define SWIGTYPE_p_DSMatrixArray swig_types[17]
+#define SWIGTYPE_p_DSMatrixArrayMessage swig_types[18]
+#define SWIGTYPE_p_DSMatrixMessage swig_types[19]
+#define SWIGTYPE_p_DSSSystem swig_types[20]
+#define SWIGTYPE_p_DSSSystemMessage swig_types[21]
+#define SWIGTYPE_p_DSStack swig_types[22]
+#define SWIGTYPE_p_DSUInteger swig_types[23]
+#define SWIGTYPE_p_DSUIntegerVector swig_types[24]
+#define SWIGTYPE_p_DSUnstableCase swig_types[25]
+#define SWIGTYPE_p_DSVariable swig_types[26]
+#define SWIGTYPE_p_DSVariablePool swig_types[27]
+#define SWIGTYPE_p_DSVectorMessage swig_types[28]
+#define SWIGTYPE_p_DSVertices swig_types[29]
+#define SWIGTYPE_p_DSuIntegerMatrix swig_types[30]
+#define SWIGTYPE_p_DSuIntegerMatrixMessage swig_types[31]
+#define SWIGTYPE_p_FILE swig_types[32]
+#define SWIGTYPE_p_bool swig_types[33]
+#define SWIGTYPE_p_char swig_types[34]
+#define SWIGTYPE_p_coordT swig_types[35]
+#define SWIGTYPE_p_double swig_types[36]
+#define SWIGTYPE_p_double_complex swig_types[37]
+#define SWIGTYPE_p_f_double__double swig_types[38]
+#define SWIGTYPE_p_f_p_q_const__char__void swig_types[39]
+#define SWIGTYPE_p_f_p_q_const__char_v_______int swig_types[40]
+#define SWIGTYPE_p_glp_prob swig_types[41]
+#define SWIGTYPE_p_int swig_types[42]
+#define SWIGTYPE_p_p_DSCase swig_types[43]
+#define SWIGTYPE_p_p_DSExpression swig_types[44]
+#define SWIGTYPE_p_p_DSVariable swig_types[45]
+#define SWIGTYPE_p_p_char swig_types[46]
+#define SWIGTYPE_p_p_void swig_types[47]
+#define SWIGTYPE_p_size_t swig_types[48]
+#define SWIGTYPE_p_void swig_types[49]
+static swig_type_info *swig_types[51];
+static swig_module_info swig_module = {swig_types, 50, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -5484,6 +5486,69 @@ SWIGINTERN PyObject *_wrap_DSMatrixByParsingString(PyObject *SWIGUNUSEDPARM(self
   return resultobj;
 fail:
   if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSMatrixFromStringVector(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  char **arg1 = (char **) 0 ;
+  DSUInteger arg2 ;
+  DSUInteger arg3 ;
+  PyObject *swig_obj[3] ;
+  DSMatrix *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "DSMatrixFromStringVector", 3, 3, swig_obj)) SWIG_fail;
+  {
+    /* Check if is a list */
+    if (PyList_Check(swig_obj[0])) {
+      int size = PyList_Size(swig_obj[0]);
+      int i = 0;
+      arg1 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(swig_obj[0],i);
+        if (PyString_Check(o))
+        arg1[i] = PyString_AsString(PyList_GetItem(swig_obj[0],i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg1);
+          return NULL;
+        }
+      }
+      arg1[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg2 = (DSUInteger) PyLong_AsUnsignedLongMask(swig_obj[1]);
+  }
+  {
+    arg3 = (DSUInteger) PyLong_AsUnsignedLongMask(swig_obj[2]);
+  }
+  result = (DSMatrix *)DSMatrixFromStringVector((char const **)arg1,arg2,arg3);
+  {
+    DSUInteger i, j;
+    PyObject *tuple = NULL;
+    DSMatrix *matrix = result;
+    if (matrix == NULL) {
+      Py_RETURN_NONE;
+      //                resultobj = NULL;
+      //                return NULL;
+    }
+    resultobj = PyList_New(DSMatrixRows(matrix));
+    for (i = 0; i < DSMatrixRows(matrix); i++) {
+      tuple = PyTuple_New(DSMatrixColumns(matrix));
+      for (j = 0; j < DSMatrixColumns(matrix); j++) {
+        PyTuple_SetItem(tuple, j, PyFloat_FromDouble(DSMatrixDoubleValue(matrix, i, j)));
+      }
+      PyList_SetItem(resultobj, i, tuple);
+    }
+    DSMatrixFree(matrix);
+  }
+  return resultobj;
+fail:
   return NULL;
 }
 
@@ -9026,6 +9091,72 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSStringIsEqualToStringIgnoringOrder(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  char *arg1 = (char *) 0 ;
+  char *arg2 = (char *) 0 ;
+  int res1 ;
+  char *buf1 = 0 ;
+  int alloc1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "DSStringIsEqualToStringIgnoringOrder", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_AsCharPtrAndSize(swig_obj[0], &buf1, NULL, &alloc1);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSStringIsEqualToStringIgnoringOrder" "', argument " "1"" of type '" "char const *""'");
+  }
+  arg1 = (char *)(buf1);
+  res2 = SWIG_AsCharPtrAndSize(swig_obj[1], &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSStringIsEqualToStringIgnoringOrder" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = (char *)(buf2);
+  result = (bool)DSStringIsEqualToStringIgnoringOrder((char const *)arg1,(char const *)arg2);
+  resultobj = SWIG_From_bool((bool)(result));
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
+  return resultobj;
+fail:
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSExpressionIsEqualToExpressionIgnoringOrder(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpression *arg1 = (DSExpression *) 0 ;
+  DSExpression *arg2 = (DSExpression *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "DSExpressionIsEqualToExpressionIgnoringOrder", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSExpression, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSExpressionIsEqualToExpressionIgnoringOrder" "', argument " "1"" of type '" "DSExpression const *""'"); 
+  }
+  arg1 = (DSExpression *)(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_DSExpression, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSExpressionIsEqualToExpressionIgnoringOrder" "', argument " "2"" of type '" "DSExpression const *""'"); 
+  }
+  arg2 = (DSExpression *)(argp2);
+  result = (bool)DSExpressionIsEqualToExpressionIgnoringOrder((DSExpression const *)arg1,(DSExpression const *)arg2);
+  resultobj = SWIG_From_bool((bool)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSExpressionByReplacingSubExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSExpression *arg1 = (DSExpression *) 0 ;
@@ -9276,6 +9407,63 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSExpressionBranchAtIndexAsString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpression *arg1 = (DSExpression *) 0 ;
+  DSUInteger arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[2] ;
+  char *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "DSExpressionBranchAtIndexAsString", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSExpression, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSExpressionBranchAtIndexAsString" "', argument " "1"" of type '" "DSExpression const *""'"); 
+  }
+  arg1 = (DSExpression *)(argp1);
+  {
+    arg2 = (DSUInteger) PyLong_AsUnsignedLongMask(swig_obj[1]);
+  }
+  result = (char *)DSExpressionBranchAtIndexAsString((DSExpression const *)arg1,arg2);
+  {
+    if (result == NULL) {
+      return NULL;
+    }
+    resultobj = PyString_FromFormat("%s", result);
+    DSSecureFree(result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSExpressionNumberOfTerms(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpression *arg1 = (DSExpression *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  DSUInteger result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSExpression, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSExpressionNumberOfTerms" "', argument " "1"" of type '" "DSExpression const *""'"); 
+  }
+  arg1 = (DSExpression *)(argp1);
+  result = DSExpressionNumberOfTerms((DSExpression const *)arg1);
+  {
+    resultobj = PyInt_FromLong((unsigned long)result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSExpressionAsLatexString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSExpression *arg1 = (DSExpression *) 0 ;
@@ -9388,6 +9576,115 @@ SWIGINTERN PyObject *_wrap_DSExpressionFromPowerlawInMatrixForm(PyObject *SWIGUN
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSExpression, 0 |  0 );
   return resultobj;
 fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSExpressionSimplifyExpressionAsString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpression *arg1 = (DSExpression *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  char *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSExpression, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSExpressionSimplifyExpressionAsString" "', argument " "1"" of type '" "DSExpression const *""'"); 
+  }
+  arg1 = (DSExpression *)(argp1);
+  result = (char *)DSExpressionSimplifyExpressionAsString((DSExpression const *)arg1);
+  {
+    if (result == NULL) {
+      return NULL;
+    }
+    resultobj = PyString_FromFormat("%s", result);
+    DSSecureFree(result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSExpressionSimplifyExpressionAsExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSExpression *arg1 = (DSExpression *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  DSExpression *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSExpression, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSExpressionSimplifyExpressionAsExpression" "', argument " "1"" of type '" "DSExpression const *""'"); 
+  }
+  arg1 = (DSExpression *)(argp1);
+  result = (DSExpression *)DSExpressionSimplifyExpressionAsExpression((DSExpression const *)arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSExpression, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSExpressionByParsingStringSimplifyExpressionAsExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  char *arg1 = (char *) 0 ;
+  int res1 ;
+  char *buf1 = 0 ;
+  int alloc1 = 0 ;
+  PyObject *swig_obj[1] ;
+  DSExpression *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_AsCharPtrAndSize(swig_obj[0], &buf1, NULL, &alloc1);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSExpressionByParsingStringSimplifyExpressionAsExpression" "', argument " "1"" of type '" "char const *""'");
+  }
+  arg1 = (char *)(buf1);
+  result = (DSExpression *)DSExpressionByParsingStringSimplifyExpressionAsExpression((char const *)arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSExpression, 0 |  0 );
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  return resultobj;
+fail:
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSExpressionByParsingStringSimplifyExpressionAsString(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  char *arg1 = (char *) 0 ;
+  int res1 ;
+  char *buf1 = 0 ;
+  int alloc1 = 0 ;
+  PyObject *swig_obj[1] ;
+  char *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_AsCharPtrAndSize(swig_obj[0], &buf1, NULL, &alloc1);
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSExpressionByParsingStringSimplifyExpressionAsString" "', argument " "1"" of type '" "char const *""'");
+  }
+  arg1 = (char *)(buf1);
+  result = (char *)DSExpressionByParsingStringSimplifyExpressionAsString((char const *)arg1);
+  {
+    if (result == NULL) {
+      return NULL;
+    }
+    resultobj = PyString_FromFormat("%s", result);
+  }
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
+  return resultobj;
+fail:
+  if (alloc1 == SWIG_NEWOBJ) free((char*)buf1);
   return NULL;
 }
 
@@ -11880,6 +12177,47 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSSSystemAlphaAdjusted(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSSSystem *arg1 = (DSSSystem *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  DSMatrix *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemAlphaAdjusted" "', argument " "1"" of type '" "DSSSystem const *""'"); 
+  }
+  arg1 = (DSSSystem *)(argp1);
+  result = (DSMatrix *)DSSSystemAlphaAdjusted((DSSSystem const *)arg1);
+  {
+    DSUInteger i, j;
+    PyObject *tuple = NULL;
+    DSMatrix *matrix = result;
+    if (matrix == NULL) {
+      Py_RETURN_NONE;
+      //                resultobj = NULL;
+      //                return NULL;
+    }
+    resultobj = PyList_New(DSMatrixRows(matrix));
+    for (i = 0; i < DSMatrixRows(matrix); i++) {
+      tuple = PyTuple_New(DSMatrixColumns(matrix));
+      for (j = 0; j < DSMatrixColumns(matrix); j++) {
+        PyTuple_SetItem(tuple, j, PyFloat_FromDouble(DSMatrixDoubleValue(matrix, i, j)));
+      }
+      PyList_SetItem(resultobj, i, tuple);
+    }
+    //        DSMatrixFree(matrix);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSSSystemBeta(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSSSystem *arg1 = (DSSSystem *) 0 ;
@@ -12871,6 +13209,29 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSSSystemAdjustCodominantStoichiometry(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSSSystem *arg1 = (DSSSystem *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemAdjustCodominantStoichiometry" "', argument " "1"" of type '" "DSSSystem const *""'"); 
+  }
+  arg1 = (DSSSystem *)(argp1);
+  result = (bool)DSSSystemAdjustCodominantStoichiometry((DSSSystem const *)arg1);
+  resultobj = SWIG_From_bool((bool)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSSSystemShouldFreeXd(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSSSystem *arg1 = (DSSSystem *) 0 ;
@@ -12997,6 +13358,35 @@ SWIGINTERN PyObject *_wrap_DSSSystemSetIsUnstable(PyObject *SWIGUNUSEDPARM(self)
   } 
   arg2 = (bool)(val2);
   DSSSystemSetIsUnstable(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSSSystemSetAdjustCodominantStoichiometry(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSSSystem *arg1 = (DSSSystem *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "DSSSystemSetAdjustCodominantStoichiometry", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemSetAdjustCodominantStoichiometry" "', argument " "1"" of type '" "DSSSystem *""'"); 
+  }
+  arg1 = (DSSSystem *)(argp1);
+  ecode2 = SWIG_AsVal_bool(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DSSSystemSetAdjustCodominantStoichiometry" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = (bool)(val2);
+  DSSSystemSetAdjustCodominantStoichiometry(arg1,arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -13221,6 +13611,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSSSystemAdjustStoichiometryOfCodominantCase(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSSSystem *arg1 = (DSSSystem *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSSSystem, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSSSystemAdjustStoichiometryOfCodominantCase" "', argument " "1"" of type '" "DSSSystem *""'"); 
+  }
+  arg1 = (DSSSystem *)(argp1);
+  DSSSystemAdjustStoichiometryOfCodominantCase(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSSSystemEncode(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSSSystem *arg1 = (DSSSystem *) 0 ;
@@ -13390,6 +13802,28 @@ SWIGINTERN PyObject *_wrap_DSCaseVolumeFree(PyObject *SWIGUNUSEDPARM(self), PyOb
   }
   arg1 = (DSCaseVolume *)(argp1);
   DSCaseVolumeFree(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseMassBalanceDataFree(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseMassBalanceDataFree" "', argument " "1"" of type '" "DSCase *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  DSCaseMassBalanceDataFree(arg1);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -14030,6 +14464,93 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSCaseNumberOfMassBalances(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  DSUInteger result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseNumberOfMassBalances" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  result = DSCaseNumberOfMassBalances((DSCase const *)arg1);
+  {
+    resultobj = PyInt_FromLong((unsigned long)result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseDominantFinAtIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  DSUInteger arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[2] ;
+  char *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "DSCaseDominantFinAtIndex", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseDominantFinAtIndex" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  {
+    arg2 = (DSUInteger) PyLong_AsUnsignedLongMask(swig_obj[1]);
+  }
+  result = (char *)DSCaseDominantFinAtIndex((DSCase const *)arg1,arg2);
+  {
+    if (result == NULL) {
+      return NULL;
+    }
+    resultobj = PyString_FromFormat("%s", result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseDominantFoutAtIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  DSUInteger arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[2] ;
+  char *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "DSCaseDominantFoutAtIndex", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseDominantFoutAtIndex" "', argument " "1"" of type '" "DSCase const *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  {
+    arg2 = (DSUInteger) PyLong_AsUnsignedLongMask(swig_obj[1]);
+  }
+  result = (char *)DSCaseDominantFoutAtIndex((DSCase const *)arg1,arg2);
+  {
+    if (result == NULL) {
+      return NULL;
+    }
+    resultobj = PyString_FromFormat("%s", result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSCaseRecalculateBoundaryMatrices(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSCase *arg1 = (DSCase *) 0 ;
@@ -14211,6 +14732,123 @@ SWIGINTERN PyObject *_wrap_DSCaseRemoveRedundantBoundaries(PyObject *SWIGUNUSEDP
   }
   arg1 = (DSCase *)(argp1);
   DSCaseRemoveRedundantBoundaries(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseAdjustStoichiometryOfCodominantCase(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseAdjustStoichiometryOfCodominantCase" "', argument " "1"" of type '" "DSCase *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  DSCaseAdjustStoichiometryOfCodominantCase(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSCaseCodominantCaseFulfillMassBalances(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  DSCase *arg2 = (DSCase *) 0 ;
+  DSUInteger arg3 ;
+  DSUInteger *arg4 = (DSUInteger *) 0 ;
+  DSUInteger *arg5 = (DSUInteger *) 0 ;
+  double *arg6 = (double *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
+  void *argp6 = 0 ;
+  int res6 = 0 ;
+  PyObject *swig_obj[6] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "DSCaseCodominantCaseFulfillMassBalances", 6, 6, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSCaseCodominantCaseFulfillMassBalances" "', argument " "1"" of type '" "DSDesignSpace const *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DSCaseCodominantCaseFulfillMassBalances" "', argument " "2"" of type '" "DSCase *""'"); 
+  }
+  arg2 = (DSCase *)(argp2);
+  {
+    arg3 = (DSUInteger) PyLong_AsUnsignedLongMask(swig_obj[2]);
+  }
+  res4 = SWIG_ConvertPtr(swig_obj[3], &argp4,SWIGTYPE_p_DSUInteger, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "DSCaseCodominantCaseFulfillMassBalances" "', argument " "4"" of type '" "DSUInteger *""'"); 
+  }
+  arg4 = (DSUInteger *)(argp4);
+  res5 = SWIG_ConvertPtr(swig_obj[4], &argp5,SWIGTYPE_p_DSUInteger, 0 |  0 );
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "DSCaseCodominantCaseFulfillMassBalances" "', argument " "5"" of type '" "DSUInteger *""'"); 
+  }
+  arg5 = (DSUInteger *)(argp5);
+  res6 = SWIG_ConvertPtr(swig_obj[5], &argp6,SWIGTYPE_p_double, 0 |  0 );
+  if (!SWIG_IsOK(res6)) {
+    SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "DSCaseCodominantCaseFulfillMassBalances" "', argument " "6"" of type '" "double const *""'"); 
+  }
+  arg6 = (double *)(argp6);
+  result = (bool)DSCaseCodominantCaseFulfillMassBalances((DSDesignSpace const *)arg1,arg2,arg3,arg4,arg5,(double const *)arg6);
+  resultobj = SWIG_From_bool((bool)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_dsCyclicalDesignSpaceCodominantCaseAdjustConditionMatrices_DominantInput(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSCase *arg1 = (DSCase *) 0 ;
+  DSExpression *arg2 = (DSExpression *) 0 ;
+  double arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  double val3 ;
+  int ecode3 = 0 ;
+  PyObject *swig_obj[3] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "dsCyclicalDesignSpaceCodominantCaseAdjustConditionMatrices_DominantInput", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSCase, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "dsCyclicalDesignSpaceCodominantCaseAdjustConditionMatrices_DominantInput" "', argument " "1"" of type '" "DSCase *""'"); 
+  }
+  arg1 = (DSCase *)(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2,SWIGTYPE_p_DSExpression, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "dsCyclicalDesignSpaceCodominantCaseAdjustConditionMatrices_DominantInput" "', argument " "2"" of type '" "DSExpression const *""'"); 
+  }
+  arg2 = (DSExpression *)(argp2);
+  ecode3 = SWIG_AsVal_double(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "dsCyclicalDesignSpaceCodominantCaseAdjustConditionMatrices_DominantInput" "', argument " "3"" of type '" "double""'");
+  } 
+  arg3 = (double)(val3);
+  dsCyclicalDesignSpaceCodominantCaseAdjustConditionMatrices_DominantInput(arg1,(DSExpression const *)arg2,arg3);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -18786,6 +19424,122 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_DSDesignSpaceSetAdjustCodominantStoichiometry(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "DSDesignSpaceSetAdjustCodominantStoichiometry", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceSetAdjustCodominantStoichiometry" "', argument " "1"" of type '" "DSDesignSpace *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  ecode2 = SWIG_AsVal_bool(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DSDesignSpaceSetAdjustCodominantStoichiometry" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = (bool)(val2);
+  DSDesignSpaceSetAdjustCodominantStoichiometry(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceSetSkipOverlappingCodominantPhenotypes(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "DSDesignSpaceSetSkipOverlappingCodominantPhenotypes", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceSetSkipOverlappingCodominantPhenotypes" "', argument " "1"" of type '" "DSDesignSpace *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  ecode2 = SWIG_AsVal_bool(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DSDesignSpaceSetSkipOverlappingCodominantPhenotypes" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = (bool)(val2);
+  DSDesignSpaceSetSkipOverlappingCodominantPhenotypes(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceSetShouldConsiderMassBalances(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "DSDesignSpaceSetShouldConsiderMassBalances", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceSetShouldConsiderMassBalances" "', argument " "1"" of type '" "DSDesignSpace *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  ecode2 = SWIG_AsVal_bool(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DSDesignSpaceSetShouldConsiderMassBalances" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = (bool)(val2);
+  DSDesignSpaceSetShouldConsiderMassBalances(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceSetAdjustCodominantBoundaries(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "DSDesignSpaceSetAdjustCodominantBoundaries", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceSetAdjustCodominantBoundaries" "', argument " "1"" of type '" "DSDesignSpace *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  ecode2 = SWIG_AsVal_bool(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DSDesignSpaceSetAdjustCodominantBoundaries" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = (bool)(val2);
+  DSDesignSpaceSetAdjustCodominantBoundaries(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_DSDesignSpaceSetUnstable(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
@@ -18891,6 +19645,162 @@ SWIGINTERN PyObject *_wrap_DSDesignSpaceSetNumberOfInheritedConservations(PyObje
   }
   arg2 = (DSDesignSpace *)(argp2);
   DSDesignSpaceSetNumberOfInheritedConservations(arg1,(DSDesignSpace const *)arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceInitializeMassBalances(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  char **arg2 = (char **) 0 ;
+  char **arg3 = (char **) 0 ;
+  char **arg4 = (char **) 0 ;
+  DSUInteger arg5 ;
+  DSVariablePool *arg6 = (DSVariablePool *) 0 ;
+  char **arg7 = (char **) 0 ;
+  DSUInteger arg8 ;
+  DSUInteger arg9 ;
+  char **arg10 = (char **) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp6 = 0 ;
+  int res6 = 0 ;
+  PyObject *swig_obj[10] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "DSDesignSpaceInitializeMassBalances", 10, 10, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceInitializeMassBalances" "', argument " "1"" of type '" "DSDesignSpace *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  {
+    /* Check if is a list */
+    if (PyList_Check(swig_obj[1])) {
+      int size = PyList_Size(swig_obj[1]);
+      int i = 0;
+      arg2 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(swig_obj[1],i);
+        if (PyString_Check(o))
+        arg2[i] = PyString_AsString(PyList_GetItem(swig_obj[1],i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg2);
+          return NULL;
+        }
+      }
+      arg2[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(swig_obj[2])) {
+      int size = PyList_Size(swig_obj[2]);
+      int i = 0;
+      arg3 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(swig_obj[2],i);
+        if (PyString_Check(o))
+        arg3[i] = PyString_AsString(PyList_GetItem(swig_obj[2],i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg3);
+          return NULL;
+        }
+      }
+      arg3[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(swig_obj[3])) {
+      int size = PyList_Size(swig_obj[3]);
+      int i = 0;
+      arg4 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(swig_obj[3],i);
+        if (PyString_Check(o))
+        arg4[i] = PyString_AsString(PyList_GetItem(swig_obj[3],i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg4);
+          return NULL;
+        }
+      }
+      arg4[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg5 = (DSUInteger) PyLong_AsUnsignedLongMask(swig_obj[4]);
+  }
+  res6 = SWIG_ConvertPtr(swig_obj[5], &argp6,SWIGTYPE_p_DSVariablePool, 0 |  0 );
+  if (!SWIG_IsOK(res6)) {
+    SWIG_exception_fail(SWIG_ArgError(res6), "in method '" "DSDesignSpaceInitializeMassBalances" "', argument " "6"" of type '" "DSVariablePool const *""'"); 
+  }
+  arg6 = (DSVariablePool *)(argp6);
+  {
+    /* Check if is a list */
+    if (PyList_Check(swig_obj[6])) {
+      int size = PyList_Size(swig_obj[6]);
+      int i = 0;
+      arg7 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(swig_obj[6],i);
+        if (PyString_Check(o))
+        arg7[i] = PyString_AsString(PyList_GetItem(swig_obj[6],i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg7);
+          return NULL;
+        }
+      }
+      arg7[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  {
+    arg8 = (DSUInteger) PyLong_AsUnsignedLongMask(swig_obj[7]);
+  }
+  {
+    arg9 = (DSUInteger) PyLong_AsUnsignedLongMask(swig_obj[8]);
+  }
+  {
+    /* Check if is a list */
+    if (PyList_Check(swig_obj[9])) {
+      int size = PyList_Size(swig_obj[9]);
+      int i = 0;
+      arg10 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(swig_obj[9],i);
+        if (PyString_Check(o))
+        arg10[i] = PyString_AsString(PyList_GetItem(swig_obj[9],i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg10);
+          return NULL;
+        }
+      }
+      arg10[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  DSDesignSpaceInitializeMassBalances(arg1,(char const **)arg2,(char const **)arg3,(char const **)arg4,arg5,(DSVariablePool const *)arg6,(char const **)arg7,arg8,arg9,(char const **)arg10);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -19007,6 +19917,185 @@ SWIGINTERN PyObject *_wrap_DSDesignSpaceConserved(PyObject *SWIGUNUSEDPARM(self)
   arg1 = (DSDesignSpace *)(argp1);
   result = (bool)DSDesignSpaceConserved((DSDesignSpace const *)arg1);
   resultobj = SWIG_From_bool((bool)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceShouldConsiderMassBalances(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceShouldConsiderMassBalances" "', argument " "1"" of type '" "DSDesignSpace const *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  result = (bool)DSDesignSpaceShouldConsiderMassBalances((DSDesignSpace const *)arg1);
+  resultobj = SWIG_From_bool((bool)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceAdjustCodominantStoichiometry(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceAdjustCodominantStoichiometry" "', argument " "1"" of type '" "DSDesignSpace const *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  result = (bool)DSDesignSpaceAdjustCodominantStoichiometry((DSDesignSpace const *)arg1);
+  resultobj = SWIG_From_bool((bool)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceSkipOverlappingCodominantPhenotypes(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceSkipOverlappingCodominantPhenotypes" "', argument " "1"" of type '" "DSDesignSpace const *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  result = (bool)DSDesignSpaceSkipOverlappingCodominantPhenotypes((DSDesignSpace const *)arg1);
+  resultobj = SWIG_From_bool((bool)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceShouldAdjustCodominantBoundaries(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceShouldAdjustCodominantBoundaries" "', argument " "1"" of type '" "DSDesignSpace *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  result = (bool)DSDesignSpaceShouldAdjustCodominantBoundaries(arg1);
+  resultobj = SWIG_From_bool((bool)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceFinAtIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  DSUInteger arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[2] ;
+  char *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "DSDesignSpaceFinAtIndex", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceFinAtIndex" "', argument " "1"" of type '" "DSDesignSpace const *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  {
+    arg2 = (DSUInteger) PyLong_AsUnsignedLongMask(swig_obj[1]);
+  }
+  result = (char *)DSDesignSpaceFinAtIndex((DSDesignSpace const *)arg1,arg2);
+  {
+    if (result == NULL) {
+      return NULL;
+    }
+    resultobj = PyString_FromFormat("%s", result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceFoutAtIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  DSUInteger arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[2] ;
+  char *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "DSDesignSpaceFoutAtIndex", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceFoutAtIndex" "', argument " "1"" of type '" "DSDesignSpace const *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  {
+    arg2 = (DSUInteger) PyLong_AsUnsignedLongMask(swig_obj[1]);
+  }
+  result = (char *)DSDesignSpaceFoutAtIndex((DSDesignSpace const *)arg1,arg2);
+  {
+    if (result == NULL) {
+      return NULL;
+    }
+    resultobj = PyString_FromFormat("%s", result);
+  }
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSDesignSpaceNumberOfMetabolicBlocks(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSDesignSpace *arg1 = (DSDesignSpace *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  DSUInteger result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSDesignSpace, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSDesignSpaceNumberOfMetabolicBlocks" "', argument " "1"" of type '" "DSDesignSpace const *""'"); 
+  }
+  arg1 = (DSDesignSpace *)(argp1);
+  result = DSDesignSpaceNumberOfMetabolicBlocks((DSDesignSpace const *)arg1);
+  {
+    resultobj = PyInt_FromLong((unsigned long)result);
+  }
   return resultobj;
 fail:
   return NULL;
@@ -20379,6 +21468,29 @@ SWIGINTERN PyObject *_wrap_DSVectorEncode(PyObject *SWIGUNUSEDPARM(self), PyObje
   }
   result = (DSVectorMessage *)DSVectorEncode((DSUInteger const *)arg1,arg2);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSVectorMessage, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DSMassBalanceEncode(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DSMassBalanceData *arg1 = (DSMassBalanceData *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  DSMassBalanceDataMessage *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_DSMassBalanceData, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DSMassBalanceEncode" "', argument " "1"" of type '" "DSMassBalanceData const *""'"); 
+  }
+  arg1 = (DSMassBalanceData *)(argp1);
+  result = (DSMassBalanceDataMessage *)DSMassBalanceEncode((DSMassBalanceData const *)arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_DSMassBalanceDataMessage, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -24109,6 +25221,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "DSMatrixIdentity", _wrap_DSMatrixIdentity, METH_O, NULL},
 	 { "DSMatrixRandomNumbers", _wrap_DSMatrixRandomNumbers, METH_VARARGS, NULL},
 	 { "DSMatrixByParsingString", _wrap_DSMatrixByParsingString, METH_O, NULL},
+	 { "DSMatrixFromStringVector", _wrap_DSMatrixFromStringVector, METH_VARARGS, NULL},
 	 { "DSMatrixBySubstractingMatrix", _wrap_DSMatrixBySubstractingMatrix, METH_VARARGS, NULL},
 	 { "DSMatrixByAddingMatrix", _wrap_DSMatrixByAddingMatrix, METH_VARARGS, NULL},
 	 { "DSMatrixByDividingMatrix", _wrap_DSMatrixByDividingMatrix, METH_VARARGS, NULL},
@@ -24203,6 +25316,8 @@ static PyMethodDef SwigMethods[] = {
 	 { "DSExpressionMultiplyExpressionByConstant", _wrap_DSExpressionMultiplyExpressionByConstant, METH_VARARGS, NULL},
 	 { "DSExpressionByCompressingConstantVariables", _wrap_DSExpressionByCompressingConstantVariables, METH_VARARGS, NULL},
 	 { "DSExpressionIsEqualToExpression", _wrap_DSExpressionIsEqualToExpression, METH_VARARGS, NULL},
+	 { "DSStringIsEqualToStringIgnoringOrder", _wrap_DSStringIsEqualToStringIgnoringOrder, METH_VARARGS, NULL},
+	 { "DSExpressionIsEqualToExpressionIgnoringOrder", _wrap_DSExpressionIsEqualToExpressionIgnoringOrder, METH_VARARGS, NULL},
 	 { "DSExpressionByReplacingSubExpression", _wrap_DSExpressionByReplacingSubExpression, METH_VARARGS, NULL},
 	 { "DSExpressionRecastSystemEquations", _wrap_DSExpressionRecastSystemEquations, METH_VARARGS, NULL},
 	 { "DSExpressionEvaluateWithVariablePool", _wrap_DSExpressionEvaluateWithVariablePool, METH_VARARGS, NULL},
@@ -24211,9 +25326,15 @@ static PyMethodDef SwigMethods[] = {
 	 { "DSExpressionEquationRHSExpression", _wrap_DSExpressionEquationRHSExpression, METH_O, NULL},
 	 { "DSExpressionVariablesInExpression", _wrap_DSExpressionVariablesInExpression, METH_O, NULL},
 	 { "DSExpressionAsString", _wrap_DSExpressionAsString, METH_O, NULL},
+	 { "DSExpressionBranchAtIndexAsString", _wrap_DSExpressionBranchAtIndexAsString, METH_VARARGS, NULL},
+	 { "DSExpressionNumberOfTerms", _wrap_DSExpressionNumberOfTerms, METH_O, NULL},
 	 { "DSExpressionAsLatexString", _wrap_DSExpressionAsLatexString, METH_VARARGS, NULL},
 	 { "DSExpressionPrint", _wrap_DSExpressionPrint, METH_O, NULL},
 	 { "DSExpressionFromPowerlawInMatrixForm", _wrap_DSExpressionFromPowerlawInMatrixForm, METH_VARARGS, NULL},
+	 { "DSExpressionSimplifyExpressionAsString", _wrap_DSExpressionSimplifyExpressionAsString, METH_O, NULL},
+	 { "DSExpressionSimplifyExpressionAsExpression", _wrap_DSExpressionSimplifyExpressionAsExpression, METH_O, NULL},
+	 { "DSExpressionByParsingStringSimplifyExpressionAsExpression", _wrap_DSExpressionByParsingStringSimplifyExpressionAsExpression, METH_O, NULL},
+	 { "DSExpressionByParsingStringSimplifyExpressionAsString", _wrap_DSExpressionByParsingStringSimplifyExpressionAsString, METH_O, NULL},
 	 { "DSExpressionFromLogPowerlawInMatrixForm", _wrap_DSExpressionFromLogPowerlawInMatrixForm, METH_VARARGS, NULL},
 	 { "DSGMASystemCopy", _wrap_DSGMASystemCopy, METH_O, NULL},
 	 { "DSGMASystemFree", _wrap_DSGMASystemFree, METH_O, NULL},
@@ -24285,6 +25406,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "DSSSystemLogarithmicSolution", _wrap_DSSSystemLogarithmicSolution, METH_O, NULL},
 	 { "DSuSSystemLogarithmicSolution", _wrap_DSuSSystemLogarithmicSolution, METH_O, NULL},
 	 { "DSSSystemAlpha", _wrap_DSSSystemAlpha, METH_O, NULL},
+	 { "DSSSystemAlphaAdjusted", _wrap_DSSSystemAlphaAdjusted, METH_O, NULL},
 	 { "DSSSystemBeta", _wrap_DSSSystemBeta, METH_O, NULL},
 	 { "DSSSystemGd", _wrap_DSSSystemGd, METH_O, NULL},
 	 { "DSSSystemGi", _wrap_DSSSystemGi, METH_O, NULL},
@@ -24314,11 +25436,13 @@ static PyMethodDef SwigMethods[] = {
 	 { "DSSSystemIsConserved", _wrap_DSSSystemIsConserved, METH_O, NULL},
 	 { "DSSSystemIsUnstable", _wrap_DSSSystemIsUnstable, METH_O, NULL},
 	 { "DSSSystemIsFalseBlowing", _wrap_DSSSystemIsFalseBlowing, METH_O, NULL},
+	 { "DSSSystemAdjustCodominantStoichiometry", _wrap_DSSSystemAdjustCodominantStoichiometry, METH_O, NULL},
 	 { "DSSSystemShouldFreeXd", _wrap_DSSSystemShouldFreeXd, METH_O, NULL},
 	 { "DSSSystemShouldFreeXi", _wrap_DSSSystemShouldFreeXi, METH_O, NULL},
 	 { "DSSSystemSetIsSingular", _wrap_DSSSystemSetIsSingular, METH_VARARGS, NULL},
 	 { "DSSSystemSetIsConserved", _wrap_DSSSystemSetIsConserved, METH_VARARGS, NULL},
 	 { "DSSSystemSetIsUnstable", _wrap_DSSSystemSetIsUnstable, METH_VARARGS, NULL},
+	 { "DSSSystemSetAdjustCodominantStoichiometry", _wrap_DSSSystemSetAdjustCodominantStoichiometry, METH_VARARGS, NULL},
 	 { "DSSSystemSetShouldFreeXd", _wrap_DSSSystemSetShouldFreeXd, METH_VARARGS, NULL},
 	 { "DSSSystemSetShouldFreeXi", _wrap_DSSSystemSetShouldFreeXi, METH_VARARGS, NULL},
 	 { "DSSSystemRecalculateSolution", _wrap_DSSSystemRecalculateSolution, METH_O, NULL},
@@ -24327,6 +25451,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "DSSSystemPrintEquations", _wrap_DSSSystemPrintEquations, METH_O, NULL},
 	 { "DSSSystemPrintSolution", _wrap_DSSSystemPrintSolution, METH_O, NULL},
 	 { "DSSSystemPrintLogarithmicSolution", _wrap_DSSSystemPrintLogarithmicSolution, METH_O, NULL},
+	 { "DSSSystemAdjustStoichiometryOfCodominantCase", _wrap_DSSSystemAdjustStoichiometryOfCodominantCase, METH_O, NULL},
 	 { "DSSSystemEncode", _wrap_DSSSystemEncode, METH_O, NULL},
 	 { "DSSSystemFromSSystemMessage", _wrap_DSSSystemFromSSystemMessage, METH_O, NULL},
 	 { "DSSSystemDecode", _wrap_DSSSystemDecode, METH_VARARGS, NULL},
@@ -24335,6 +25460,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "DSCaseCopy", _wrap_DSCaseCopy, METH_O, NULL},
 	 { "DSCaseFree", _wrap_DSCaseFree, METH_O, NULL},
 	 { "DSCaseVolumeFree", _wrap_DSCaseVolumeFree, METH_O, NULL},
+	 { "DSCaseMassBalanceDataFree", _wrap_DSCaseMassBalanceDataFree, METH_O, NULL},
 	 { "DSCaseWithTermsFromGMA", _wrap_DSCaseWithTermsFromGMA, METH_VARARGS, NULL},
 	 { "DSCaseWithTermsFromDesignSpace", _wrap_DSCaseWithTermsFromDesignSpace, METH_VARARGS, NULL},
 	 { "DSCaseHasSolution", _wrap_DSCaseHasSolution, METH_O, NULL},
@@ -24358,11 +25484,17 @@ static PyMethodDef SwigMethods[] = {
 	 { "DSCaseXd", _wrap_DSCaseXd, METH_O, NULL},
 	 { "DSCaseXd_a", _wrap_DSCaseXd_a, METH_O, NULL},
 	 { "DSCaseXi", _wrap_DSCaseXi, METH_O, NULL},
+	 { "DSCaseNumberOfMassBalances", _wrap_DSCaseNumberOfMassBalances, METH_O, NULL},
+	 { "DSCaseDominantFinAtIndex", _wrap_DSCaseDominantFinAtIndex, METH_VARARGS, NULL},
+	 { "DSCaseDominantFoutAtIndex", _wrap_DSCaseDominantFoutAtIndex, METH_VARARGS, NULL},
 	 { "DSCaseRecalculateBoundaryMatrices", _wrap_DSCaseRecalculateBoundaryMatrices, METH_O, NULL},
 	 { "DSCaseDoubleValueBoundariesAtPoint", _wrap_DSCaseDoubleValueBoundariesAtPoint, METH_VARARGS, NULL},
 	 { "DSCaseDoubleValueBoundariesAtPointSortXi", _wrap_DSCaseDoubleValueBoundariesAtPointSortXi, METH_VARARGS, NULL},
 	 { "DSCaseAddConstraints", _wrap_DSCaseAddConstraints, METH_VARARGS, NULL},
 	 { "DSCaseRemoveRedundantBoundaries", _wrap_DSCaseRemoveRedundantBoundaries, METH_O, NULL},
+	 { "DSCaseAdjustStoichiometryOfCodominantCase", _wrap_DSCaseAdjustStoichiometryOfCodominantCase, METH_O, NULL},
+	 { "DSCaseCodominantCaseFulfillMassBalances", _wrap_DSCaseCodominantCaseFulfillMassBalances, METH_VARARGS, NULL},
+	 { "dsCyclicalDesignSpaceCodominantCaseAdjustConditionMatrices_DominantInput", _wrap_dsCyclicalDesignSpaceCodominantCaseAdjustConditionMatrices_DominantInput, METH_VARARGS, NULL},
 	 { "DSCaseConditionsAreValid", _wrap_DSCaseConditionsAreValid, METH_O, NULL},
 	 { "DSCaseHasSharedBoundaries", _wrap_DSCaseHasSharedBoundaries, METH_VARARGS, NULL},
 	 { "DSCaseSharedBoundaries", _wrap_DSCaseSharedBoundaries, METH_VARARGS, NULL},
@@ -24471,15 +25603,27 @@ static PyMethodDef SwigMethods[] = {
 	 { "DSDesignSpaceSetSerial", _wrap_DSDesignSpaceSetSerial, METH_VARARGS, NULL},
 	 { "DSDesignSpaceSetCyclical", _wrap_DSDesignSpaceSetCyclical, METH_VARARGS, NULL},
 	 { "DSDesignSpaceSetResolveCoDominance", _wrap_DSDesignSpaceSetResolveCoDominance, METH_VARARGS, NULL},
+	 { "DSDesignSpaceSetAdjustCodominantStoichiometry", _wrap_DSDesignSpaceSetAdjustCodominantStoichiometry, METH_VARARGS, NULL},
+	 { "DSDesignSpaceSetSkipOverlappingCodominantPhenotypes", _wrap_DSDesignSpaceSetSkipOverlappingCodominantPhenotypes, METH_VARARGS, NULL},
+	 { "DSDesignSpaceSetShouldConsiderMassBalances", _wrap_DSDesignSpaceSetShouldConsiderMassBalances, METH_VARARGS, NULL},
+	 { "DSDesignSpaceSetAdjustCodominantBoundaries", _wrap_DSDesignSpaceSetAdjustCodominantBoundaries, METH_VARARGS, NULL},
 	 { "DSDesignSpaceSetUnstable", _wrap_DSDesignSpaceSetUnstable, METH_VARARGS, NULL},
 	 { "DSDesignSpaceSetResolveConservations", _wrap_DSDesignSpaceSetResolveConservations, METH_VARARGS, NULL},
 	 { "DSDesignSpaceSetNumberOfConservations", _wrap_DSDesignSpaceSetNumberOfConservations, METH_VARARGS, NULL},
 	 { "DSDesignSpaceSetNumberOfInheritedConservations", _wrap_DSDesignSpaceSetNumberOfInheritedConservations, METH_VARARGS, NULL},
+	 { "DSDesignSpaceInitializeMassBalances", _wrap_DSDesignSpaceInitializeMassBalances, METH_VARARGS, NULL},
 	 { "DSDesignSpaceSerial", _wrap_DSDesignSpaceSerial, METH_O, NULL},
 	 { "DSDesignSpaceCyclical", _wrap_DSDesignSpaceCyclical, METH_O, NULL},
 	 { "DSDesignSpaceResolveCoDominance", _wrap_DSDesignSpaceResolveCoDominance, METH_O, NULL},
 	 { "DSDesignSpaceUnstable", _wrap_DSDesignSpaceUnstable, METH_O, NULL},
 	 { "DSDesignSpaceConserved", _wrap_DSDesignSpaceConserved, METH_O, NULL},
+	 { "DSDesignSpaceShouldConsiderMassBalances", _wrap_DSDesignSpaceShouldConsiderMassBalances, METH_O, NULL},
+	 { "DSDesignSpaceAdjustCodominantStoichiometry", _wrap_DSDesignSpaceAdjustCodominantStoichiometry, METH_O, NULL},
+	 { "DSDesignSpaceSkipOverlappingCodominantPhenotypes", _wrap_DSDesignSpaceSkipOverlappingCodominantPhenotypes, METH_O, NULL},
+	 { "DSDesignSpaceShouldAdjustCodominantBoundaries", _wrap_DSDesignSpaceShouldAdjustCodominantBoundaries, METH_O, NULL},
+	 { "DSDesignSpaceFinAtIndex", _wrap_DSDesignSpaceFinAtIndex, METH_VARARGS, NULL},
+	 { "DSDesignSpaceFoutAtIndex", _wrap_DSDesignSpaceFoutAtIndex, METH_VARARGS, NULL},
+	 { "DSDesignSpaceNumberOfMetabolicBlocks", _wrap_DSDesignSpaceNumberOfMetabolicBlocks, METH_O, NULL},
 	 { "DSDesignSpaceXi", _wrap_DSDesignSpaceXi, METH_O, NULL},
 	 { "DSDesignSpaceXd", _wrap_DSDesignSpaceXd, METH_O, NULL},
 	 { "DSDesignSpaceNumberOfEquations", _wrap_DSDesignSpaceNumberOfEquations, METH_O, NULL},
@@ -24526,6 +25670,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "DSDesignSpaceEncode", _wrap_DSDesignSpaceEncode, METH_O, NULL},
 	 { "DSExtensionDataEncode", _wrap_DSExtensionDataEncode, METH_O, NULL},
 	 { "DSVectorEncode", _wrap_DSVectorEncode, METH_VARARGS, NULL},
+	 { "DSMassBalanceEncode", _wrap_DSMassBalanceEncode, METH_O, NULL},
 	 { "DSDesignSpaceFromDesignSpaceMessage", _wrap_DSDesignSpaceFromDesignSpaceMessage, METH_O, NULL},
 	 { "DSDesignSpaceDecode", _wrap_DSDesignSpaceDecode, METH_VARARGS, NULL},
 	 { "DSVerticesAlloc", _wrap_DSVerticesAlloc, METH_O, NULL},
@@ -24670,6 +25815,8 @@ static swig_type_info _swigt__p_DSExpressionArray = {"_p_DSExpressionArray", "DS
 static swig_type_info _swigt__p_DSExtensionDataMessage = {"_p_DSExtensionDataMessage", "DSExtensionDataMessage *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSGMASystem = {"_p_DSGMASystem", "DSGMASystem *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSGMASystemMessage = {"_p_DSGMASystemMessage", "DSGMASystemMessage *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_DSMassBalanceData = {"_p_DSMassBalanceData", "DSMassBalanceData *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_DSMassBalanceDataMessage = {"_p_DSMassBalanceDataMessage", "DSMassBalanceDataMessage *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSMatrix = {"_p_DSMatrix", "DSMatrix *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSMatrixArray = {"_p_DSMatrixArray", "DSMatrixArray *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DSMatrixArrayMessage = {"_p_DSMatrixArrayMessage", "DSMatrixArrayMessage *", 0, 0, (void*)0, 0};
@@ -24720,6 +25867,8 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_DSExtensionDataMessage,
   &_swigt__p_DSGMASystem,
   &_swigt__p_DSGMASystemMessage,
+  &_swigt__p_DSMassBalanceData,
+  &_swigt__p_DSMassBalanceDataMessage,
   &_swigt__p_DSMatrix,
   &_swigt__p_DSMatrixArray,
   &_swigt__p_DSMatrixArrayMessage,
@@ -24770,6 +25919,8 @@ static swig_cast_info _swigc__p_DSExpressionArray[] = {  {&_swigt__p_DSExpressio
 static swig_cast_info _swigc__p_DSExtensionDataMessage[] = {  {&_swigt__p_DSExtensionDataMessage, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DSGMASystem[] = {  {&_swigt__p_DSGMASystem, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DSGMASystemMessage[] = {  {&_swigt__p_DSGMASystemMessage, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_DSMassBalanceData[] = {  {&_swigt__p_DSMassBalanceData, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_DSMassBalanceDataMessage[] = {  {&_swigt__p_DSMassBalanceDataMessage, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DSMatrix[] = {  {&_swigt__p_DSMatrix, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DSMatrixArray[] = {  {&_swigt__p_DSMatrixArray, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DSMatrixArrayMessage[] = {  {&_swigt__p_DSMatrixArrayMessage, 0, 0, 0},{0, 0, 0, 0}};
@@ -24820,6 +25971,8 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_DSExtensionDataMessage,
   _swigc__p_DSGMASystem,
   _swigc__p_DSGMASystemMessage,
+  _swigc__p_DSMassBalanceData,
+  _swigc__p_DSMassBalanceDataMessage,
   _swigc__p_DSMatrix,
   _swigc__p_DSMatrixArray,
   _swigc__p_DSMatrixArrayMessage,
@@ -25636,6 +26789,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "DS_SSYSTEM_FLAG_FREE_XI",SWIG_From_int((int)(0x04)));
   SWIG_Python_SetConstant(d, "DS_SSYSTEM_FLAG_UNSTABLE",SWIG_From_int((int)(0x08)));
   SWIG_Python_SetConstant(d, "DS_SSYSTEM_FLAG_CONSERVED",SWIG_From_int((int)(0x10)));
+  SWIG_Python_SetConstant(d, "DS_SSYSTEM_FLAG_ADJUST_CODOMINANT_STOICHIOMETRY",SWIG_From_int((int)(0x20)));
   SWIG_Python_SetConstant(d, "M_DS_CASE_NULL",SWIG_FromCharPtr("NULL pointer: Case is NULL"));
   SWIG_Python_SetConstant(d, "DS_CASE_NUMBER_BIG_ENDIAN",SWIG_From_int((int)(0)));
   SWIG_Python_SetConstant(d, "DS_CASE_NUMBER_SMALL_ENDIAN",SWIG_From_int((int)(1)));
@@ -25645,6 +26799,10 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "DS_DESIGN_SPACE_FLAG_RESOLVE_CO_DOMINANCE",SWIG_From_int((int)(0x04)));
   SWIG_Python_SetConstant(d, "DS_DESIGN_SPACE_FLAG_UNSTABLE",SWIG_From_int((int)(0x08)));
   SWIG_Python_SetConstant(d, "DS_DESIGN_SPACE_FLAG_CONSERVATIONS",SWIG_From_int((int)(0x10)));
+  SWIG_Python_SetConstant(d, "DS_DESIGN_SPACE_FLAG_CO_DOMINANCE_ADJUST_STOICHIOMETRY",SWIG_From_int((int)(0x20)));
+  SWIG_Python_SetConstant(d, "DS_DESIGN_SPACE_FLAG_CO_DOMINANCE_SKIP_OVERLAPPING_PHENOTYPES",SWIG_From_int((int)(0x40)));
+  SWIG_Python_SetConstant(d, "DS_DESIGN_SPACE_FLAG_MASS_BALANCES",SWIG_From_int((int)(0x80)));
+  SWIG_Python_SetConstant(d, "DS_DESIGN_SPACE_FLAG_C0_DOMINANCE_ADJUST_BOUNDARIES",SWIG_From_int((int)(0x100)));
   SWIG_Python_SetConstant(d, "M_DS_VERTICES_NULL",SWIG_FromCharPtr("NULL pointer: Vertices object is NULL"));
   SWIG_Python_SetConstant(d, "M_DS_DICTIONARY_NULL",SWIG_FromCharPtr("NULL pointer: Dictionary is NULL"));
   SWIG_Python_SetConstant(d, "M_DS_STACK_NULL",SWIG_FromCharPtr("NULL pointer: stack is NULL"));

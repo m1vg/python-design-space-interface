@@ -304,6 +304,9 @@ def DSMatrixRandomNumbers(rows, columns):
 def DSMatrixByParsingString(string):
     return _dspace_interface.DSMatrixByParsingString(string)
 
+def DSMatrixFromStringVector(string, rows, columns):
+    return _dspace_interface.DSMatrixFromStringVector(string, rows, columns)
+
 def DSMatrixBySubstractingMatrix(lvalue, rvalue):
     return _dspace_interface.DSMatrixBySubstractingMatrix(lvalue, rvalue)
 
@@ -592,6 +595,12 @@ def DSExpressionByCompressingConstantVariables(expression, assumedConstant):
 def DSExpressionIsEqualToExpression(lhs, rhs):
     return _dspace_interface.DSExpressionIsEqualToExpression(lhs, rhs)
 
+def DSStringIsEqualToStringIgnoringOrder(lhs_string, rhs_string):
+    return _dspace_interface.DSStringIsEqualToStringIgnoringOrder(lhs_string, rhs_string)
+
+def DSExpressionIsEqualToExpressionIgnoringOrder(lhs, rhs):
+    return _dspace_interface.DSExpressionIsEqualToExpressionIgnoringOrder(lhs, rhs)
+
 def DSExpressionByReplacingSubExpression(expression, target, substitute):
     return _dspace_interface.DSExpressionByReplacingSubExpression(expression, target, substitute)
 
@@ -616,6 +625,12 @@ def DSExpressionVariablesInExpression(expression):
 def DSExpressionAsString(expression):
     return _dspace_interface.DSExpressionAsString(expression)
 
+def DSExpressionBranchAtIndexAsString(expression, index):
+    return _dspace_interface.DSExpressionBranchAtIndexAsString(expression, index)
+
+def DSExpressionNumberOfTerms(expression):
+    return _dspace_interface.DSExpressionNumberOfTerms(expression)
+
 def DSExpressionAsLatexString(expression, substitutionDict):
     return _dspace_interface.DSExpressionAsLatexString(expression, substitutionDict)
 
@@ -624,6 +639,18 @@ def DSExpressionPrint(expression):
 
 def DSExpressionFromPowerlawInMatrixForm(row, Kd, Xd, Ki, Xi, C):
     return _dspace_interface.DSExpressionFromPowerlawInMatrixForm(row, Kd, Xd, Ki, Xi, C)
+
+def DSExpressionSimplifyExpressionAsString(expression):
+    return _dspace_interface.DSExpressionSimplifyExpressionAsString(expression)
+
+def DSExpressionSimplifyExpressionAsExpression(expression):
+    return _dspace_interface.DSExpressionSimplifyExpressionAsExpression(expression)
+
+def DSExpressionByParsingStringSimplifyExpressionAsExpression(string):
+    return _dspace_interface.DSExpressionByParsingStringSimplifyExpressionAsExpression(string)
+
+def DSExpressionByParsingStringSimplifyExpressionAsString(string):
+    return _dspace_interface.DSExpressionByParsingStringSimplifyExpressionAsString(string)
 
 def DSExpressionFromLogPowerlawInMatrixForm(row, Kd, Xd, Ki, Xi, C):
     return _dspace_interface.DSExpressionFromLogPowerlawInMatrixForm(row, Kd, Xd, Ki, Xi, C)
@@ -733,6 +760,7 @@ DS_SSYSTEM_FLAG_FREE_XD = _dspace_interface.DS_SSYSTEM_FLAG_FREE_XD
 DS_SSYSTEM_FLAG_FREE_XI = _dspace_interface.DS_SSYSTEM_FLAG_FREE_XI
 DS_SSYSTEM_FLAG_UNSTABLE = _dspace_interface.DS_SSYSTEM_FLAG_UNSTABLE
 DS_SSYSTEM_FLAG_CONSERVED = _dspace_interface.DS_SSYSTEM_FLAG_CONSERVED
+DS_SSYSTEM_FLAG_ADJUST_CODOMINANT_STOICHIOMETRY = _dspace_interface.DS_SSYSTEM_FLAG_ADJUST_CODOMINANT_STOICHIOMETRY
 
 def DSSSystemCopy(ssys):
     return _dspace_interface.DSSSystemCopy(ssys)
@@ -845,6 +873,9 @@ def DSuSSystemLogarithmicSolution(ssys):
 def DSSSystemAlpha(ssys):
     return _dspace_interface.DSSSystemAlpha(ssys)
 
+def DSSSystemAlphaAdjusted(ssys):
+    return _dspace_interface.DSSSystemAlphaAdjusted(ssys)
+
 def DSSSystemBeta(ssys):
     return _dspace_interface.DSSSystemBeta(ssys)
 
@@ -932,6 +963,9 @@ def DSSSystemIsUnstable(ssys):
 def DSSSystemIsFalseBlowing(ssys):
     return _dspace_interface.DSSSystemIsFalseBlowing(ssys)
 
+def DSSSystemAdjustCodominantStoichiometry(ssys):
+    return _dspace_interface.DSSSystemAdjustCodominantStoichiometry(ssys)
+
 def DSSSystemShouldFreeXd(ssys):
     return _dspace_interface.DSSSystemShouldFreeXd(ssys)
 
@@ -946,6 +980,9 @@ def DSSSystemSetIsConserved(ssys, isConserved):
 
 def DSSSystemSetIsUnstable(ssys, isUnstable):
     return _dspace_interface.DSSSystemSetIsUnstable(ssys, isUnstable)
+
+def DSSSystemSetAdjustCodominantStoichiometry(ssys, AdjustStoichiometry):
+    return _dspace_interface.DSSSystemSetAdjustCodominantStoichiometry(ssys, AdjustStoichiometry)
 
 def DSSSystemSetShouldFreeXd(ssys, shouldFreeXd):
     return _dspace_interface.DSSSystemSetShouldFreeXd(ssys, shouldFreeXd)
@@ -970,6 +1007,9 @@ def DSSSystemPrintSolution(ssys):
 
 def DSSSystemPrintLogarithmicSolution(ssys):
     return _dspace_interface.DSSSystemPrintLogarithmicSolution(ssys)
+
+def DSSSystemAdjustStoichiometryOfCodominantCase(ssys):
+    return _dspace_interface.DSSSystemAdjustStoichiometryOfCodominantCase(ssys)
 
 def DSSSystemEncode(ssys):
     return _dspace_interface.DSSSystemEncode(ssys)
@@ -997,6 +1037,9 @@ def DSCaseFree(aCase):
 
 def DSCaseVolumeFree(caseVolume):
     return _dspace_interface.DSCaseVolumeFree(caseVolume)
+
+def DSCaseMassBalanceDataFree(aCase):
+    return _dspace_interface.DSCaseMassBalanceDataFree(aCase)
 
 def DSCaseWithTermsFromGMA(gma, termArray, prefix):
     return _dspace_interface.DSCaseWithTermsFromGMA(gma, termArray, prefix)
@@ -1067,6 +1110,15 @@ def DSCaseXd_a(aCase):
 def DSCaseXi(aCase):
     return _dspace_interface.DSCaseXi(aCase)
 
+def DSCaseNumberOfMassBalances(aCase):
+    return _dspace_interface.DSCaseNumberOfMassBalances(aCase)
+
+def DSCaseDominantFinAtIndex(aCase, i):
+    return _dspace_interface.DSCaseDominantFinAtIndex(aCase, i)
+
+def DSCaseDominantFoutAtIndex(aCase, i):
+    return _dspace_interface.DSCaseDominantFoutAtIndex(aCase, i)
+
 def DSCaseRecalculateBoundaryMatrices(aCase):
     return _dspace_interface.DSCaseRecalculateBoundaryMatrices(aCase)
 
@@ -1081,6 +1133,15 @@ def DSCaseAddConstraints(aCase, strings, numberOfConstraints):
 
 def DSCaseRemoveRedundantBoundaries(aCase):
     return _dspace_interface.DSCaseRemoveRedundantBoundaries(aCase)
+
+def DSCaseAdjustStoichiometryOfCodominantCase(aCase):
+    return _dspace_interface.DSCaseAdjustStoichiometryOfCodominantCase(aCase)
+
+def DSCaseCodominantCaseFulfillMassBalances(ds, newCase, numberZeroBoundaries, zeroBoundaries, numberZeroBoundariesPerBlock, factors):
+    return _dspace_interface.DSCaseCodominantCaseFulfillMassBalances(ds, newCase, numberZeroBoundaries, zeroBoundaries, numberZeroBoundariesPerBlock, factors)
+
+def dsCyclicalDesignSpaceCodominantCaseAdjustConditionMatrices_DominantInput(newCase, dominant_input, factor):
+    return _dspace_interface.dsCyclicalDesignSpaceCodominantCaseAdjustConditionMatrices_DominantInput(newCase, dominant_input, factor)
 
 def DSCaseConditionsAreValid(aCase):
     return _dspace_interface.DSCaseConditionsAreValid(aCase)
@@ -1381,6 +1442,10 @@ DS_DESIGN_SPACE_FLAG_CYCLICAL = _dspace_interface.DS_DESIGN_SPACE_FLAG_CYCLICAL
 DS_DESIGN_SPACE_FLAG_RESOLVE_CO_DOMINANCE = _dspace_interface.DS_DESIGN_SPACE_FLAG_RESOLVE_CO_DOMINANCE
 DS_DESIGN_SPACE_FLAG_UNSTABLE = _dspace_interface.DS_DESIGN_SPACE_FLAG_UNSTABLE
 DS_DESIGN_SPACE_FLAG_CONSERVATIONS = _dspace_interface.DS_DESIGN_SPACE_FLAG_CONSERVATIONS
+DS_DESIGN_SPACE_FLAG_CO_DOMINANCE_ADJUST_STOICHIOMETRY = _dspace_interface.DS_DESIGN_SPACE_FLAG_CO_DOMINANCE_ADJUST_STOICHIOMETRY
+DS_DESIGN_SPACE_FLAG_CO_DOMINANCE_SKIP_OVERLAPPING_PHENOTYPES = _dspace_interface.DS_DESIGN_SPACE_FLAG_CO_DOMINANCE_SKIP_OVERLAPPING_PHENOTYPES
+DS_DESIGN_SPACE_FLAG_MASS_BALANCES = _dspace_interface.DS_DESIGN_SPACE_FLAG_MASS_BALANCES
+DS_DESIGN_SPACE_FLAG_C0_DOMINANCE_ADJUST_BOUNDARIES = _dspace_interface.DS_DESIGN_SPACE_FLAG_C0_DOMINANCE_ADJUST_BOUNDARIES
 
 def DSDesignSpaceAlloc():
     return _dspace_interface.DSDesignSpaceAlloc()
@@ -1412,6 +1477,18 @@ def DSDesignSpaceSetCyclical(ds, cyclical):
 def DSDesignSpaceSetResolveCoDominance(ds, Codominance):
     return _dspace_interface.DSDesignSpaceSetResolveCoDominance(ds, Codominance)
 
+def DSDesignSpaceSetAdjustCodominantStoichiometry(ds, adjust):
+    return _dspace_interface.DSDesignSpaceSetAdjustCodominantStoichiometry(ds, adjust)
+
+def DSDesignSpaceSetSkipOverlappingCodominantPhenotypes(ds, adjust):
+    return _dspace_interface.DSDesignSpaceSetSkipOverlappingCodominantPhenotypes(ds, adjust)
+
+def DSDesignSpaceSetShouldConsiderMassBalances(ds, mass_balance):
+    return _dspace_interface.DSDesignSpaceSetShouldConsiderMassBalances(ds, mass_balance)
+
+def DSDesignSpaceSetAdjustCodominantBoundaries(ds, adjust_boundaries):
+    return _dspace_interface.DSDesignSpaceSetAdjustCodominantBoundaries(ds, adjust_boundaries)
+
 def DSDesignSpaceSetUnstable(ds, Unstable):
     return _dspace_interface.DSDesignSpaceSetUnstable(ds, Unstable)
 
@@ -1423,6 +1500,9 @@ def DSDesignSpaceSetNumberOfConservations(ds, numberOfConservations):
 
 def DSDesignSpaceSetNumberOfInheritedConservations(collapsed, original):
     return _dspace_interface.DSDesignSpaceSetNumberOfInheritedConservations(collapsed, original)
+
+def DSDesignSpaceInitializeMassBalances(ds, fin_strings, fout_strings, signature_string, numberOfMassBalances, metabolicBlocks, S_string, rows, columns, rxns):
+    return _dspace_interface.DSDesignSpaceInitializeMassBalances(ds, fin_strings, fout_strings, signature_string, numberOfMassBalances, metabolicBlocks, S_string, rows, columns, rxns)
 
 def DSDesignSpaceSerial(ds):
     return _dspace_interface.DSDesignSpaceSerial(ds)
@@ -1438,6 +1518,27 @@ def DSDesignSpaceUnstable(ds):
 
 def DSDesignSpaceConserved(ds):
     return _dspace_interface.DSDesignSpaceConserved(ds)
+
+def DSDesignSpaceShouldConsiderMassBalances(ds):
+    return _dspace_interface.DSDesignSpaceShouldConsiderMassBalances(ds)
+
+def DSDesignSpaceAdjustCodominantStoichiometry(ds):
+    return _dspace_interface.DSDesignSpaceAdjustCodominantStoichiometry(ds)
+
+def DSDesignSpaceSkipOverlappingCodominantPhenotypes(ds):
+    return _dspace_interface.DSDesignSpaceSkipOverlappingCodominantPhenotypes(ds)
+
+def DSDesignSpaceShouldAdjustCodominantBoundaries(ds):
+    return _dspace_interface.DSDesignSpaceShouldAdjustCodominantBoundaries(ds)
+
+def DSDesignSpaceFinAtIndex(ds, n):
+    return _dspace_interface.DSDesignSpaceFinAtIndex(ds, n)
+
+def DSDesignSpaceFoutAtIndex(ds, n):
+    return _dspace_interface.DSDesignSpaceFoutAtIndex(ds, n)
+
+def DSDesignSpaceNumberOfMetabolicBlocks(ds):
+    return _dspace_interface.DSDesignSpaceNumberOfMetabolicBlocks(ds)
 
 def DSDesignSpaceXi(ds):
     return _dspace_interface.DSDesignSpaceXi(ds)
@@ -1576,6 +1677,9 @@ def DSExtensionDataEncode(extensionData):
 
 def DSVectorEncode(data, n):
     return _dspace_interface.DSVectorEncode(data, n)
+
+def DSMassBalanceEncode(data):
+    return _dspace_interface.DSMassBalanceEncode(data)
 
 def DSDesignSpaceFromDesignSpaceMessage(message):
     return _dspace_interface.DSDesignSpaceFromDesignSpaceMessage(message)
