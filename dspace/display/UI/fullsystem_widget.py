@@ -180,7 +180,7 @@ class FullSystem(object):
 
         x_min_time = FloatText(description='Initial Time Point', value=0, visible=True)
         x_max_time = FloatText(description='Final Time Point', value=100, visible=True)
-        self.step_time = FloatText(value=1000, description='Number of Points for Time')
+        self.step_time = FloatText(value=1, description='Step size (Time Unit/# Points)') # Number of Points for Time
 
         title_s = 'Analysis of the ' + controller.name + ' by system design space showing a time course plot'
         title = Text(description='Title', value=title_s)
@@ -328,7 +328,14 @@ class FullSystem(object):
 
         # Titrations
         self.step= FloatText(value=100, description='Number of Points for ' + str(self.xlabel.value))
-        self.backwards = Checkbox(value=False, description='Show Backwards Integration')
+        self.backwards = Checkbox(value=False, description='Forward & Backwards Integration', visible=False)
+        self.backwards_only = Checkbox(value=False, description='Backwards Integration Only', visible=False)
+        self.integration_type = Dropdown(description='Direction of Integration',
+                                         values=['Forward Integration', 'Backwards Integration', 'Forward & Backwards Integration'],
+                                         options=['Forward Integration', 'Backwards Integration', 'Forward & Backwards Integration'],
+                                         value='Forward Integration',
+                                         visible=True)
+        self.integration_type.on_trait_change(self.process_integration_type, 'value')
         self.s_system_steady_states_box = Box()
         self.s_system_steady_states_box.show_ssystems = Checkbox(value=False, description='Show S-System Approximation')
         self.s_system_steady_states_box.only_cases = Textarea(description='Only Cases', visible=False)
@@ -421,11 +428,14 @@ class FullSystem(object):
         self.response_times_box.reference = reference_state
         self.response_times_box.ignore_if_less = response_time_ignore_if_less_titration
 
+        # simplify this structure!
         if controller.ds.number_conservations != 0:
             self.advanced_titrations.children = [initial_string] + \
                                                 [value for key, value in self.initial_concentration2.iteritems()] + \
                                                 [self.step] + \
+                                                [self.integration_type] + \
                                                 [self.backwards] + \
+                                                [self.backwards_only] + \
                                                 [self.s_system_steady_states_box] + \
                                                 [self.checkbox_custom_points_titration] + \
                                                 [self.custom_points_titration] + \
@@ -440,7 +450,9 @@ class FullSystem(object):
             self.advanced_titrations.children = [initial_string] + \
                                                 [value for key, value in self.initial_concentration2.iteritems()] + \
                                                 [self.step] + \
+                                                [self.integration_type] +\
                                                 [self.backwards] + \
+                                                [self.backwards_only] + \
                                                 [self.s_system_steady_states_box] + \
                                                 [self.checkbox_custom_points_titration] + \
                                                 [self.custom_points_titration] + \
@@ -559,6 +571,17 @@ class FullSystem(object):
             i.on_trait_change(self.update_field, 'value')
         y_axis.on_trait_change(self.titration_custom_function_update_fields, 'value')
         return ('Full System', full_widget)
+
+    def process_integration_type(self, name, value):
+        if self.integration_type.value == 'Forward Integration':
+            self.backwards.value = False
+            self.backwards_only.value = False
+        if self.integration_type.value == 'Backwards Integration':
+            self.backwards.value = False
+            self.backwards_only.value = True
+        if self.integration_type.value == 'Forward & Backwards Integration':
+            self.backwards.value = True
+            self.backwards_only.value = False
 
     def update_event_box(self, name, value):
         tag1 = self.advanced_event_integration.event_type.value
@@ -1390,7 +1413,7 @@ class FullSystem(object):
             for element in self.conservations_variable_list:
                 yinit_conserved = np.append(yinit_conserved, self.initial_concentration[element].value)
 
-        time = np.linspace(self.x_min_time.value, self.x_max_time.value, self.step_time.value)
+        time = np.linspace(self.x_min_time.value, self.x_max_time.value, self.step_time.value**-1 * self.x_max_time.value)
 
         # attach string containing initial conditions to self.controller object
         self.controller.initial_conditions_caption = initial_conditions_string[:-2]
@@ -1461,7 +1484,7 @@ class FullSystem(object):
             for element in self.conservations_variable_list:
                 yinit_conserved = np.append(yinit_conserved, self.initial_concentration[element].value)
 
-        time = np.linspace(self.x_min_time.value, self.x_max_time.value, self.step_time.value)
+        time = np.linspace(self.x_min_time.value, self.x_max_time.value, self.step_time.value**-1 * self.x_max_time.value)
 
         # attach string containing initial conditions to self.controller object
         self.controller.initial_conditions_caption = initial_conditions_string[:-2]
@@ -1570,7 +1593,7 @@ class FullSystem(object):
 
 
         # generate time vector.
-        time = np.linspace(self.x_min_time.value, self.x_max_time.value, self.step_time.value)
+        time = np.linspace(self.x_min_time.value, self.x_max_time.value, self.step_time.value**-1 * self.x_max_time.value)
 
         # Generate first steady state point
         y = self.solve_ode(yinit, yinit_conserved, time)
@@ -1625,80 +1648,85 @@ class FullSystem(object):
             results_dic_PhaseShift.update({el.target.value: [phase_shift]})
             results_dic_Amplitude.update({el.target.value: [amplitude]})
 
-        # loop over other elements of target_x_parameter
-        for w in target_x_parameter[1:]:
-            self.parameters.update({self.xlabel.value: w})
-            # initial concentrations correspond to last steady state point in results_dic.
-            # Remember that the order of the dictionary does not correspond to the order with wich the elements were stored.
-            yinit = np.array([])
-            yinit_conserved = np.array([])
+        if self.backwards.value is True and self.backwards_only.value is True:
+            raise ValueError('Only one type of integration can be performed at a time.')
 
-            for element in self.ode_equations:
-                yinit = np.append(yinit, results_dic[str(element.lhs).replace('.', '')][-1])
+        if self.backwards_only.value is False:
+            # loop over other elements of target_x_parameter
+            for w in target_x_parameter[1:]:
+                self.parameters.update({self.xlabel.value: w})
+                # initial concentrations correspond to last steady state point in results_dic.
+                # Remember that the order of the dictionary does not correspond to the order with wich the elements were stored.
+                yinit = np.array([])
+                yinit_conserved = np.array([])
 
-            if self.solver.value != 'ODEINT' and self.controller.ds.number_conservations != 0:
-                for element in self.conservations_variable_list:
-                    yinit_conserved = np.append(yinit_conserved, results_dic[element][-1])
-
-            # Generate next steady state point
-            y = self.solve_ode(yinit, yinit_conserved, time)
-
-            # parse and append
-            for counter, element in enumerate(self.ode_equations):
-                results_dic[str(element.lhs).replace('.', '')].append(y[-1, counter])
-            if self.solver.value != 'ODEINT' and self.controller.ds.number_conservations != 0:
-                for counter2, element in enumerate(self.conservations_variable_list):
-                    results_dic[element].append(y[-1, counter+counter2+1])
-
-            # calculate phase shift and frequencies
-            if el.calculate.value is True and el.target.value != 'None' and el.reference.value != 'None':
-                reference_vector = find_vector(variable_list, y, el.reference.value)
-                target_vector = find_vector(variable_list, y, el.target.value)
-                phase_shift, amplitude = calculate_phase_shifts_from_vectors(time,
-                                                                             reference_vector,
-                                                                             target_vector,
-                                                                             mode='Excel')
-                results_dic_PhaseShift[el.target.value].append(phase_shift)
-                results_dic_Amplitude[el.target.value].append(amplitude)
-
-            # if calculating response times and the reference is initial x_point, update y_init and y_init_conserved
-            if calculate_response_time_w.value is True:
-                if reference_response_time.value == 'Initial Point':
-                    y = self.solve_ode(yinit_initial_x_point, yinit_conserved_initial_x_point, time)
-
-                # parse and append
-                method = method_response_time.value
-                threshold = ignore_if_less.value / 100
-
-                for counter, element in enumerate(self.ode_equations):
-                    var = str(element.lhs).replace('.', '')
-                    vector = y[:, counter]
-                    response = calculate_response_time_vector(time, vector, method, threshold)[indx]
-                    results_dic_response[var].append(response)
+                for element in self.ode_equations:
+                    yinit = np.append(yinit, results_dic[str(element.lhs).replace('.', '')][-1])
 
                 if self.solver.value != 'ODEINT' and self.controller.ds.number_conservations != 0:
-                    for counter2, var in enumerate(self.conservations_variable_list):
-                        vector = y[:, counter + counter2 + 1]
+                    for element in self.conservations_variable_list:
+                        yinit_conserved = np.append(yinit_conserved, results_dic[element][-1])
+
+                # Generate next steady state point
+                y = self.solve_ode(yinit, yinit_conserved, time)
+
+                # parse and append
+                for counter, element in enumerate(self.ode_equations):
+                    results_dic[str(element.lhs).replace('.', '')].append(y[-1, counter])
+                if self.solver.value != 'ODEINT' and self.controller.ds.number_conservations != 0:
+                    for counter2, element in enumerate(self.conservations_variable_list):
+                        results_dic[element].append(y[-1, counter+counter2+1])
+
+                # calculate phase shift and frequencies
+                if el.calculate.value is True and el.target.value != 'None' and el.reference.value != 'None':
+                    reference_vector = find_vector(variable_list, y, el.reference.value)
+                    target_vector = find_vector(variable_list, y, el.target.value)
+                    phase_shift, amplitude = calculate_phase_shifts_from_vectors(time,
+                                                                                 reference_vector,
+                                                                                 target_vector,
+                                                                                 mode='Excel')
+                    results_dic_PhaseShift[el.target.value].append(phase_shift)
+                    results_dic_Amplitude[el.target.value].append(amplitude)
+
+                # if calculating response times and the reference is initial x_point, update y_init and y_init_conserved
+                if calculate_response_time_w.value is True:
+                    if reference_response_time.value == 'Initial Point':
+                        y = self.solve_ode(yinit_initial_x_point, yinit_conserved_initial_x_point, time)
+
+                    # parse and append
+                    method = method_response_time.value
+                    threshold = ignore_if_less.value / 100
+
+                    for counter, element in enumerate(self.ode_equations):
+                        var = str(element.lhs).replace('.', '')
+                        vector = y[:, counter]
                         response = calculate_response_time_vector(time, vector, method, threshold)[indx]
                         results_dic_response[var].append(response)
 
-        if self.conservations_dictionary is not None and self.solver.value == 'ODEINT':
-            self.complement_results_dic(results_dic)
+                    if self.solver.value != 'ODEINT' and self.controller.ds.number_conservations != 0:
+                        for counter2, var in enumerate(self.conservations_variable_list):
+                            vector = y[:, counter + counter2 + 1]
+                            response = calculate_response_time_vector(time, vector, method, threshold)[indx]
+                            results_dic_response[var].append(response)
 
-        # complement dictionary with auxiliary variables
-        self.complement_results_dic_with_aux_variables(results_dic, len(target_x_parameter))
+            if self.conservations_dictionary is not None and self.solver.value == 'ODEINT':
+                self.complement_results_dic(results_dic)
 
-        if self.backwards.value is True:
+            # complement dictionary with auxiliary variables
+            self.complement_results_dic_with_aux_variables(results_dic, len(target_x_parameter))
+
+        if self.backwards.value is True or self.backwards_only.value is True:
             # now let's go backwards. ##################################################
 
-            # parse initial concentrations:
-            yinit = np.array([])
-            yinit_conserved = np.array([])
-            for element in self.ode_equations:
-                yinit = np.append(yinit, results_dic[str(element.lhs).replace('.', '')][-1])
-            if self.solver.value != 'ODEINT' and self.controller.ds.number_conservations != 0:
-                for element in self.conservations_variable_list:
-                    yinit_conserved = np.append(yinit_conserved, results_dic[element][-1])
+            # parse initial concentrations only if integration is performed forward and backwards at the same time.
+            if self.backwards_only.value is False:
+                yinit = np.array([])
+                yinit_conserved = np.array([])
+                for element in self.ode_equations:
+                    yinit = np.append(yinit, results_dic[str(element.lhs).replace('.', '')][-1])
+                if self.solver.value != 'ODEINT' and self.controller.ds.number_conservations != 0:
+                    for element in self.conservations_variable_list:
+                        yinit_conserved = np.append(yinit_conserved, results_dic[element][-1])
 
             # generate vector of parameters
             target_x_parameter_reversed = np.linspace(np.log10(self.x_max.value), np.log10(self.x_min.value), num=self.step.value)
@@ -1767,20 +1795,21 @@ class FullSystem(object):
 
             # End of backwards routine
 
-        # lets generate hin vector
-        forward = self.process_titration_vector(results_dic,
-                                                titration_vector=target_x_parameter,
-                                                titration_variable=str(self.xlabel.value))
-
         # plotting routine
         fig = plt.figure(figsize=[5.5698, 4], dpi=600, facecolor='w')
         ax = fig.add_axes([0.1714, 0.2, 0.6, 0.7])
 
         ax.set_title('Titration Plot')
         ax.set_xlabel('Log('+self.xlabel.value+')')
-        ax.plot(np.log10(target_x_parameter), forward, 'blue', linewidth=1)
 
-        if self.backwards.value is True:
+        if self.backwards_only.value is False:
+            # lets generate hin vector
+            forward = self.process_titration_vector(results_dic,
+                                                    titration_vector=target_x_parameter,
+                                                    titration_variable=str(self.xlabel.value))
+            ax.plot(np.log10(target_x_parameter), forward, 'blue', linewidth=1)
+
+        if self.backwards.value is True or self.backwards_only.value is True:
             ax.plot(np.log10(target_x_parameter_reversed), backward, 'orange', linewidth=1)
 
         ax.ticklabel_format(useOffset=False)
@@ -1810,6 +1839,13 @@ class FullSystem(object):
                 ax.set_ylim(self.y_min.value,
                             self.y_max.value)
 
+        new_caption = self.caption.value + ' A final time point of ' + str(self.x_max_time.value) + ' and a step size of '
+        new_caption += str(self.step_time.value) + ' were used to numerically integrate the Full System.'
+        new_caption += ' Blue line represents titration for ' +\
+                       'increasing values of this variable, while orange ' +\
+                       'line represents decreasing values. Black solid line ' +\
+                       'is the S-system approximation. '
+
 
         buf = cStringIO.StringIO()
         canvas = FigureCanvasAgg(fig)
@@ -1819,10 +1855,11 @@ class FullSystem(object):
         # Generate Popup containing figure.
         controller.figures.add_figure(data,
                                       title=self.title.value,
-                                      caption=self.caption.value + ' Blue line represents titration for '
-                                                                   'increasing values of this variable, while orange '
-                                                                   'line represents decreasing values. Black solid line '
-                                                                   'is the S-system approximation. ',
+                                      # caption=self.caption.value + ' Blue line represents titration for '
+                                      #                              'increasing values of this variable, while orange '
+                                      #                              'line represents decreasing values. Black solid line '
+                                      #                              'is the S-system approximation. ',
+                                      caption=new_caption,
                                       pvals=controller.pvals.copy(),
                                       colors=None)
 
@@ -1835,7 +1872,7 @@ class FullSystem(object):
             self.advanced_titrations.export_excel_data.amplitude = results_dic_Amplitude
         if calculate_response_time_w.value is True:
             self.advanced_titrations.export_excel_data.response_time = results_dic_response
-        if self.backwards.value is True:
+        if self.backwards.value is True or self.backwards_only.value is True:
             self.advanced_titrations.export_excel_data.results_backwards = results_dic_back
             self.advanced_titrations.export_excel_data.independent_parameter_backwards = target_x_parameter_reversed
         self.advanced_titrations.export_excel_data.independent_parameter_forward = target_x_parameter
@@ -1871,7 +1908,7 @@ class FullSystem(object):
 
     def trajectories_case(self, b):
         controller = self.controller
-        time = np.linspace(self.x_min_time.value, self.x_max_time.value, self.step_time.value)
+        time = np.linspace(self.x_min_time.value, self.x_max_time.value, self.step_time.value**-1 * self.x_max_time.value)
         fig = plt.figure(figsize=[5.5698, 4], dpi=600, facecolor='w')
         ax = fig.add_axes([0.1714, 0.2, 0.6, 0.7])
         cap = ""
@@ -2018,6 +2055,9 @@ class FullSystem(object):
         data = buf.getvalue()
         plt.close()
 
+        new_caption = self.caption.value + ' A final time point of ' + str(self.x_max_time.value) + ' and a step size of '
+        new_caption += str(self.step_time.value) + ' were used to numerically integrate the Full System.'
+
         if self.include_final_point_marker.value is True:
             cap += " Final point of each trajectory is shown by a star marker. "
         if self.include_ss_approximation.value is True:
@@ -2025,9 +2065,12 @@ class FullSystem(object):
                    "Black: a s-system with 0 eigenvalues with (+) real part. Blue: a s-system with 1 eigenvalue with " \
                    "(+) real part. Orange: a s-system with 2 eigenvalues with (+) real part. "
 
+        new_caption += cap
+
         controller.figures.add_figure(data,
                                       title=self.title.value,
-                                      caption=self.caption.value + cap,
+                                      # caption=self.caption.value + cap,
+                                      caption=new_caption,
                                       pvals=controller.pvals.copy(),
                                       colors=None)
 
@@ -2106,14 +2149,16 @@ class FullSystem(object):
 
             with pd.ExcelWriter(self.controller.name + '_' + b.case + '.xlsx') as writer:
 
-                order = [b.independent_parameter_identity] + b.results_forward.keys()
-                data_forwards = b.results_forward
-                df_forwards = pd.DataFrame(data=data_forwards)
-                df_forwards.insert(0, b.independent_parameter_identity, b.independent_parameter_forward)
-                df_forwards = df_forwards[order]
-                df_forwards.to_excel(writer, sheet_name='Forwards', index=False)
+                if self.backwards_only.value is False:
+                    order = [b.independent_parameter_identity] + b.results_forward.keys()
+                    data_forwards = b.results_forward
+                    df_forwards = pd.DataFrame(data=data_forwards)
+                    df_forwards.insert(0, b.independent_parameter_identity, b.independent_parameter_forward)
+                    df_forwards = df_forwards[order]
+                    df_forwards.to_excel(writer, sheet_name='Forwards', index=False)
 
-                if self.backwards.value is True:
+                if self.backwards.value is True or self.backwards_only.value is True:
+                    order = [b.independent_parameter_identity] + b.results_backwards.keys()
                     data_backwards = b.results_backwards
                     df_backwards = pd.DataFrame(data=data_backwards)
                     df_backwards.insert(0, b.independent_parameter_identity, b.independent_parameter_backwards)
@@ -2325,6 +2370,9 @@ class FullSystem(object):
                     new_caption = self.caption.value + ' The phase shift values are: ' + ', '.join(phase_shift) + '.'
                 else:
                     new_caption += ' The phase shift values are: ' + ', '.join(phase_shift)
+
+        new_caption = self.caption.value + ' A final time point of ' + str(self.x_max_time.value) + ' and a step size of '
+        new_caption += str(self.step_time.value) + ' were used to numerically integrate the Full System.'
 
         ax.set_xlabel(self.xlabel.value)
         buf = cStringIO.StringIO()

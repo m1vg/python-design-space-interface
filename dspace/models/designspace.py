@@ -88,18 +88,15 @@ class DesignSpace(GMASystem):
             DSDesignSpaceSetNumberOfConservations(self._swigwrapper, number_conservations)
         if resolve_codominance is True:
             DSDesignSpaceSetResolveCoDominance(self._swigwrapper, True)
-            if adjust_codominant_stoichiometry is True:
-                DSDesignSpaceSetAdjustCodominantStoichiometry(self._swigwrapper, True)
-            if skip_overlapping_codominant_phenotypes is True:
-                DSDesignSpaceSetSkipOverlappingCodominantPhenotypes(self._swigwrapper, True)
-        if consider_mass_balances is True:
+            DSDesignSpaceSetAdjustCodominantStoichiometry(self._swigwrapper, adjust_codominant_stoichiometry)
+            DSDesignSpaceSetSkipOverlappingCodominantPhenotypes(self._swigwrapper, skip_overlapping_codominant_phenotypes)
+            DSDesignSpaceSetShouldConsiderMassBalances(self._swigwrapper, consider_mass_balances)
+            DSDesignSpaceSetAdjustCodominantBoundaries(self._swigwrapper, codominance_adjust_boundaries)
             fin, fout, signature, metabolic_pools, S_string, rows, columns, rxns = self.generate_mass_balances()
             # print("fin and fout are: ", fin, fout, signature)
             DSDesignSpaceInitializeMassBalances(self._swigwrapper, fin, fout, signature, len(fin),
                                                 metabolic_pools._swigwrapper,
                                                 S_string, rows, columns, rxns)
-        if codominance_adjust_boundaries is True:
-            DSDesignSpaceSetAdjustCodominantBoundaries(self._swigwrapper, True)
         if resolve_cycles == True:
             setattr(self, '_resolve_cycles', True)
             DSDesignSpaceCalculateCyclicalCases(self._swigwrapper)

@@ -107,7 +107,7 @@ class CasesTable(object):
                             filters,
                             add_filter
                             ])
-        button = Button(value=False, description='Create/modify cases table')
+        button = Button(value=False, description='Enumerate Phenotypic Repertoire')  #'Create/modify cases table'
         button.on_click(self.show_cases)
         button.wi = wi
         button.options = options
@@ -374,7 +374,7 @@ class CasesTable(object):
         if controller.ds == None:
             b.wi.visible = False
             self.table.children = []
-            b.description = 'Create/modify cases table'
+            b.description = 'Enumerate Phenotypic Repertoire' #  'Create/modify cases table'
             return
         if b.wi.visible == False:
             self.table.children = []
@@ -383,7 +383,7 @@ class CasesTable(object):
             return
         self.create_case_table(b, mode=str(b.options.value))
         b.wi.visible = False
-        b.description = 'Create/modify cases table'
+        b.description = 'Enumerate Phenotypic Repertoire' #  'Create/modify cases table'
 
     def create_string_for_table_long(self, cases, b, s):
         d = dict((i, []) for i in b.headers)
