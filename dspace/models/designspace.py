@@ -819,7 +819,7 @@ class DesignSpace(GMASystem):
                 groups.append(group_i)
                 assigned.append(index1)
 
-        # 3. we now loop for each group and indentify the mass balances
+        # 3. we now loop for each group and identify the mass balances
         fin_vector = []
         fout_vector = []
         metabolic_pools_dic = {}
@@ -828,7 +828,7 @@ class DesignSpace(GMASystem):
             N_i = N[group_i, :]
             metabolic_pools_i = [metabolic_pools[i] for i in group_i]
             metabolic_pools_dic.update(dict((met, pool_n) for met in metabolic_pools_i))
-            fin, fout = self.indentify_input_output_fluxes(S_i, N_i, rxns, metabolic_pools_i)
+            fin, fout = self.identify_input_output_fluxes(S_i, N_i, rxns, metabolic_pools_i)
             fin_vector.append(fin)
             fout_vector.append(fout)
         metabolic_pools_variable_pool = VariablePool()
@@ -860,7 +860,7 @@ class DesignSpace(GMASystem):
 
         return fin_string, fout_string, signature, metabolic_pools_variable_pool, S_string, rows, columns, rxns
 
-    def indentify_input_output_fluxes(self, S, N, rxns, metabolic_pools):
+    def identify_input_output_fluxes(self, S, N, rxns, metabolic_pools):
 
         # Exchange reactions are identified
         sum_rows = np.sum(N, axis=0)
